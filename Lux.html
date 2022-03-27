@@ -51,32 +51,12 @@
         txt.innerHTML = html;
         return txt.value;
     }
-    function dedent(s){
-        // find shortest indentation
-        var min;
-        s = s.split('\n');
-        for(var i = 0; i < s.length; i++){
-            var line = s[i];
-            var spaces = line.search(/\S/);
-            if((min > spaces || min == undefined) && spaces >= 0){
-                min = spaces;
-            }
-        }
-        // remove indentation
-        for(var i = 0; i < s.length; i++){
-            var line = s[i];
-            s[i] = line.substring(min, line.length);
-        }
-
-        // join and return all lines
-        return s.join("\n");
-    }
 
     function copy_code(button_tag) {
         var children = Array.from(button_tag.parentNode.childNodes);
         for(var i = 0; i < children.length; i++){
             if(children[i].tagName == "CODE_") {
-                navigator.clipboard.writeText(decodeHTML(dedent(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""))));
+                navigator.clipboard.writeText(decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, "")));
                 return 0;
             }
         }
@@ -261,18 +241,18 @@
             <syntax_>
                 <fill_>
                     <label_>1</label_>
-                    <code_>
+                    <code_><scroll_>
                         //<elm_>Comment string</elm_><nl_></nl_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>2</label_>
-                    <code_>
+                    <code_><scroll_>
                         /*<elm_>Comment string</elm_>*/
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -280,23 +260,23 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <c_>// Single line comment</c_>
 
                         <c_>/* Multi
                         line
                         comment */</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <c_>/* Multi line /* Anorhter comment */ comment */
                         // Ok                             // ^ Error, unexpected token "comment"</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
 
@@ -318,27 +298,27 @@
             <syntax_>
                 <fill_>
                     <label_>1</label_>
-                    <code_>
+                    <code_><scroll_>
                         #include<space_></space_>"<elm_>absolute/path/to/file</elm_>"<nl_></nl_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>1</label_>
-                    <code_>
+                    <code_><scroll_>
                         #include<space_></space_>"./<elm_>relative/path/to/file</elm_>"<nl_></nl_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>1</label_>
-                    <code_>
+                    <code_><scroll_>
                         #include<space_></space_>"<elm_>relative/path/to/file</elm_>"<nl_></nl_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -346,7 +326,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <c_>// Ok</c_>
                         <k_>#include</k_> <s_>"/home/Lynx/Lux/file.ilsh"</s_>
                         <k_>#include</k_> <s_>"./file.ilsh"</s_>
@@ -356,7 +336,7 @@
                         <c_>//#include ./file.ilsh</c_>
                         <c_>//#include "./non_existent_file"</c_>
                         <c_>//#include ""</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
 
@@ -398,9 +378,9 @@
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         \<nl_></nl_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -408,7 +388,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <c_>// single line comment</c_>\
                         <c_>on two lines</c_>
 
@@ -430,20 +410,20 @@
                         ar +\
                         = <k_>b</k_>;
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <c_>// Error, unexpected token "\"
                             //void ma\\
 
                             //in(){}
                             // Error,  unexpected token "in"</c_>
-                        </code_>
+                        </scroll_></code_>
                 </fill_>
             </example_>
 
@@ -623,13 +603,13 @@
 
             <div class="table-1-container">
                 <div class="table-container table-1-left-container"><table class="table-1-left">
-                    <tr style="height: 80px;"><th>Container scope</th></tr>
-                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#modules">Module           </a></th></tr>
-                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#scopes-and-symbols">Namespace        </a></th></tr>
-                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#enums">             Enum             </a></th></tr>
-                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#structs">           Struct           </a></th></tr>
-                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#functions">         Function         </a></th></tr>
-                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#runtime-statements">Runtime statement</a></th></tr>
+                    <tr style="height: 80px;"><th class="medium">Container scope</th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--text-color)" href="#modules">Module           </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--text-color)" href="#scopes-and-symbols">Namespace        </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--text-color)" href="#enums">             Enum             </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--text-color)" href="#structs">           Struct           </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--text-color)" href="#functions">         Function         </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--text-color)" href="#runtime-statements">Runtime statement</a></th></tr>
                 </table></div>
                 <div class="table-container table-1-right-container"><table class="table-1-right">
                     <tr style="height: 80px;">
@@ -733,7 +713,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <c_>// Module scope</c_>
                         <c_>// Local name: this</c_>
 
@@ -762,7 +742,7 @@
                             <c_>// Relative names: this::fun::s, fun::s</c_>
                             <w_>struct</w_> <t_>s</t_> { <t_>uint</t_> a, b; }
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
@@ -771,13 +751,13 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>void</t_> <f_>main</f_>(){
                             <c_>//var.n = 8;     // Error</c_>
                             <t_>s</t_> var = (<k_>16</k_>); <c_>   // Ok</c_>
                         }
                         <w_>struct</w_> s { <t_>int</t_> n; }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
 
@@ -800,18 +780,18 @@
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         namespace<space_></space_><elm_>name<sup>id</sup></elm_> {<elm_>...</elm_>}
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         namespace {<elm_>...</elm_>}
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -909,19 +889,19 @@
             <syntax_>
                 <left_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         enum<space_></space_><elm_>name<sup>id</sup></elm_> : <elm_><t_>T<sup>type</sup></t_> </elm_>{
                             <elm_>elements<sup>...</sup></elm_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </left_>
                 <right_>
                     <label_>Element syntax</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_>name<sup>id</sup></elm_> = <elm_><t_>T<sup>r</sup></t_></elm_>;
 
 
-                    </code_>
+                    </scroll_></code_>
                 </right_>
             </syntax_>
 
@@ -929,20 +909,20 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>enum</w_> <t_>e</t_> : <t_>int</t_> {
                             a, b;              <c_>// Ok, a = 0, b = 1</c_>
                             c = <k_>-266250</k_>;       <c_>// Ok, c = -266250</c_>
                             d, e = 0;          <c_>// Ok, d = -266249, e = 0</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>enum</w_> <t_>c</t_> : <t_>double</t_> {
                             pi = <k_>3.14159</k_>;      <c_>// Ok</c_>
                             e  = <k_>2.71828</k_>;      <c_>// Ok</c_>
@@ -954,7 +934,7 @@
                             <t_>c</t_> b = <k_>3.14159</k_>;     <c_>// Ok</c_>
                             <t_>int</t_> c = <k_>a</k_>;         <c_>// Ok, implicit conversion from c (double) to int</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
@@ -969,11 +949,11 @@
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         strict<space_></space_>enum<space_></space_><elm_>name<sup>id</sup></elm_> : <elm_><t_>T<sup>type</sup></t_></elm_> {
                             <elm_>elements<sup>...</sup></elm_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -981,7 +961,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>strict enum</w_> <t_>c</t_> : <t_>double</t_> {
                             pi  = <k_>3.14159</k_>;
                             e   = <k_>2.71828</k_>;
@@ -993,7 +973,7 @@
                             <c_>//c b = 1.61803;   // Error, cannot convert from double to strict enum</c_>
                             <t_>int</t_> c = <k_>a</k_>;         <c_>// Ok, implicit conversion from c (double) to int</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1023,19 +1003,19 @@
             <syntax_>
                 <left_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         struct<space_></space_><elm_>name<sup>id</sup></elm_> {
                             <elm_>members<sup>...</sup></elm_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </left_>
                 <right_>
                     <label_>Member syntax</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>;
 
 
-                    </code_>
+                    </scroll_></code_>
                 </right_>
             </syntax_>
 
@@ -1043,7 +1023,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>struct</w_> <t_>idk</t_> {
                             <t_>uint</t_> a, b;        <c_>// Ok</c_>
                             <t_>double</t_>[<k_>4</k_>] c;      <c_>// Ok</c_>
@@ -1056,7 +1036,7 @@
                             var.b = <k_>var.a</k_> * <k_>4</k_>;      <c_>// Ok, var = (4, 8, ?)</c_>
                             <c_>//var.b = var.c[0];     // Error, var.c is uninitialized</span>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1092,18 +1072,18 @@
             <syntax_>
                 <fill_>
                     <label_>1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>T</t_><sup>type</sup></elm_>[<elm_><t_>uint<sup>r</sup></t_></elm_>]<space_></space_><elm_>name<sup>id</sup></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>T</t_><sup>type</sup></elm_>[] <elm_>name<sup>id</sup></elm_> = <elm_><t_>T[]<sup>r</sup></t_></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -1111,12 +1091,12 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>uint</t_>[<k_>4</k_>] <f_>func</f_>(<t_>float</t_>[<k_>4</k_>] n){
                             <w_>if</w_>(n[<k_>3</k_>]) <w_>return</w_> n * <k_>4</k_>;
                             <w_>else</w_> <w_>return</w_> n[<k_>0</k_>];
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1257,7 +1237,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>a</a_>[<k_>5</k_>]) {}
                         <t_>void</t_> <f_>fun2</f_>(<t_>bool</t_> <a_>a</a_>) {}
 
@@ -1274,7 +1254,7 @@
 
                             <t_>uint</t_> arr[<k_>1.2</k_>];                            <c_>// Ok, arr has 1 element</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1308,7 +1288,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>auto</t_> <f_>func</f_>(){
                             <w_>return</w_> <k_>true</k_>;        <c_>// func has type bool</c_>
                         }
@@ -1319,17 +1299,17 @@
                             <t_>auto</t_> c = <f_>func</f_>();    <c_>// c has type bool</c_>
                             <c_>// No return statement, main has type void</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>auto</t_>[<k_>4</k_>] a = <k_>1</k_>;          <c_>// a has type int[4] and value (1, 1, 1, 1)</c_>
                         <t_>auto</t_>[<k_>2</k_>] <t_>const</t_> b = !<k_>a</k_>;   <c_>// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1363,27 +1343,27 @@
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         typeof(<elm_><t_>T</t_><sup>r</sup></elm_>)
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         baseof(<elm_><t_>T</t_><sup>r</sup></elm_>)
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         //TODO
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1412,33 +1392,33 @@
             <syntax_>
                 <fill_>
                     <label_> - Struct</label_>
-                    <code_>
+                    <code_><scroll_>
                         struct {
                             <elm_>members<sup>...</sup></elm_>
                         } <elm_>symbol name<sup>id</sup></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>1 - Enum</label_>
-                    <code_>
+                    <code_><scroll_>
                         enum : <elm_><t_>T<sup>type</sup></t_></elm_> {
                             <elm_>elements<sup>...</sup></elm_>
                         } <elm_>symbol name<sup>id</sup></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>2 - Enum</label_>
-                    <code_>
+                    <code_><scroll_>
                         strict enum : <elm_><t_>T<sup>type</sup></t_></elm_> {
                             <elm_>elements<sup>...</sup></elm_>
                         } <elm_>symbol name<sup>id</sup></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -1446,7 +1426,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>strict enum</w_> : <t_>bool</t_> {
                             on = <k_>true</k_>;
                             off = <k_>false</k_>;
@@ -1455,14 +1435,14 @@
                         <t_>void</t_> <f_>main</f_>(){
                             this.grasses = <t_>typeof</t_>(grasses)::<k_>on</k_>;
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>struct</w_> {
                             <t_>uint</t_> a, b;
                             <w_>enum</w_> : int {
@@ -1482,7 +1462,7 @@
 
                             <t_>typeof</t_>(var.a) a = <k_>0</k_>;
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1514,18 +1494,18 @@
             <syntax_>
                 <fill_>
                     <label_>1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
             <sep_></sep_>
             <syntax_>
                 <fill_>
                     <label_>2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_> = <elm_><t_>T<sup>r</sup></t_></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -1533,7 +1513,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>uint</t_> variable = <k_>0</k_>;         <c_>// Ok, variable has value 0</c_>
                         <t_>float</t_> nya = <k_>5</k_> + <k_>variable</k_>;  <c_>// Ok, nya ha value 5.0</c_>
                         <t_>bool</t_> var$;                 <c_>// Ok, var$ has undefined value</c_>
@@ -1543,7 +1523,7 @@
                         <c_>//double foo               // Error, ';' is not optional</c_>
                         <c_>//b $var;                  // Error, invalid identifier</c_>
                         <c_>//b 2var;                  // Error, invalid identifier</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1579,7 +1559,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">1</label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>uint3</t_> <f_>fun1</f_>(<t_>bool</t_> <a_>arg</a_>) {
                             $0 = <k_>1</k_>;             <c_>// Ok, $0 has type uint and value 1</c_>
                             <c_>//$2 = $1;          // Error, $1 has undefined type</c_>
@@ -1594,14 +1574,14 @@
                         }
 
                         <c_>//uint var = $9;        // Error, temporary variables cannot be used outside of functions</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <sep_></sep_>
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)">2</label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>void</t_> <f_>fun3</f_>(<t_>bool</t_> <a_>arg</a_>, <t_>uint2</t_> &<a_>ref</a_>) {
                             <w_>if</w_>(arg) $0 = <k_>1</k_>;             <c_>// $0 has type uint</c_>
                             <w_>else</w_>    $0 = { <k_>0</k_>, <k_>1</k_> };      <c_>// $0 has type uint2</c_>
@@ -1612,7 +1592,7 @@
                             <w_>else</w_>    $0 = { <k_>2</k_>, <k_>3</k_> };      <c_>// $0 has type uint2</c_>
                             ref = <k_>$0</k_>;                   <c_>// Ok, $0 has type uint2</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1650,15 +1630,15 @@
             <syntax_>
                 <left_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>(<elm_>arguments<sup>...</sup></elm_>) {<elm_>...</elm_>}
-                    </code_>
+                    </scroll_></code_>
                 </left_>
                 <right_>
                     <label_>Parameter syntax</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>
-                    </code_>
+                    </scroll_></code_>
                 </right_>
             </syntax_>
 
@@ -1666,14 +1646,14 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>void</t_> <f_>func1</f_>() {}
 
                         <t_>void</t_> <f_>main</f_>(){
                             <t_>int</t_> n = <k_>0</k_>;
                             <c_>// ...</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -1701,9 +1681,9 @@
             <syntax_>
                 <fill_>
                     <label_ class="nobefore">Parameter syntax</label_>
-                    <code_>
+                    <code_><scroll_>
                         <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_>&<elm_>name<sup>id</sup></elm_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -1711,7 +1691,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>void</t_> <f_>fun1</f_>(<t_>uint</t_> <a_>arg1</a_>, <t_>uint</t_> &<a_>arg2</a_>) {
                             arg1 = <k_>0</k_>;     <c_>// c_doesn't modify main::a, but the local argument in which its value was copied</span>
                             arg2 = <k_>0</k_>;     <c_>// c_modifies main::b</span>
@@ -1724,7 +1704,7 @@
                         }
 
                         <c_>//void fun2(const int &arg1){} // Error, references cannot be const</c_>
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
 
@@ -1751,9 +1731,9 @@
             <syntax_>
                 <fill_>
                     <label_></label_>
-                    <code_>
+                    <code_><scroll_>
                         return<space_></space_><elm_><t_>T<sup>r</sup></t_></elm_>;
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </syntax_>
 
@@ -1761,7 +1741,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <t_>void</t_> <f_>empty_function_1</f_>() { <w_>return</w_>; }    <c_>// Ok</c_>
                         <t_>void</t_> <f_>empty_function_2</f_>() {}             <c_>// Ok</c_>
 
@@ -1775,7 +1755,7 @@
                             <t_>uint</t_> n = <f_>empty_function_3</f_>();       <c_>// Ok</c_>
                             n = <f_>f</f_>(<f_>f</f_>(<k_>n</k_>));                       <c_>// Ok</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
 
@@ -1825,7 +1805,7 @@
             <example_>
                 <fill_>
                     <label_ onclick="copy_code(this)"></label_>
-                    <code_>
+                    <code_><scroll_>
                         <w_>struct</w_> <t_>s</t_> {
                             <t_>uint</t_> a;            <c_>// Ok, non-const member</c_>
                             <c_>//uint const b;    // Error, struct members cannot be const</c_>
@@ -1842,7 +1822,7 @@
                             <c_>//a = 2;                        // Error, cannot assign values to const variables</c_>
                             c = <k_>a</k_> + b;                      <c_>// Ok</c_>
                         }
-                    </code_>
+                    </scroll_></code_>
                 </fill_>
             </example_>
             <p>
@@ -2115,7 +2095,7 @@
                         <td class="center">
                             <elm_><code>(</code><code>)</code></elm_>
                         </td>
-                        <td class="center">(<elm_><t_>T<sup>r</sup></t_></elm_>)</td>
+                        <td class="center nowrap">(<elm_><t_>T<sup>r</sup></t_></elm_>)</td>
                         <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Grouping</td>
                         <td class="left" rowspan=5>Other</td>
@@ -2128,12 +2108,12 @@
                                 <elm_><code>[</code><code>]</code></elm_><br>
                                 <span class="op_template">with(T == struct_t)</span><br>
                             </td>
-                            <td class="center"><elm_><t_>T[]</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
+                            <td class="center nowrap"><elm_><t_>T[]</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
                             <td class="center"><code><t_>T<sup>l</sup></t_></code></td>
                             <td class="left" rowspan=2>Subscription</td>
                         </tr>
                         <tr>
-                            <td class="center"><elm_><t_>T</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
+                            <td class="center nowrap"><elm_><t_>T</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
                             <td class="center"><code><t_>member type<sup>l</sup></t_></code></td>
                         </tr>
                         <tr>
@@ -2142,12 +2122,12 @@
                                 <code>.</code><br>
                                 <span class="op_template">with(T == struct_t)</span><br>
                             </td>
-                            <td class="center"><elm_><t_>T[]<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T[]<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
                             <td class="center"><code><t_>T<sup>l</sup></t_></code></td>
                             <td class="left" rowspan=2>Member access</td>
                         </tr>
                         <tr>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
                             <td class="center"><code><t_>member type<sup>l</sup></t_></code></td>
                         </tr>
                         <tr>
@@ -2155,7 +2135,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>++</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_>++</td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_>++</td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Postfix increment</td>
                             <td class="left" rowspan=6>Arithmetic</td>
@@ -2165,7 +2145,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>--</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_>--</td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_>--</td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Postfix decrement</td>
                         </tr>
@@ -2176,7 +2156,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>++</code>
                             </td>
-                            <td class="center">++<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap">++<elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Prefix increment</td>
                         </tr>
@@ -2185,7 +2165,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>--</code>
                             </td>
-                            <td class="center">--<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap">--<elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Prefix decrement</td>
                         </tr>
@@ -2194,7 +2174,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>+</code>
                             </td>
-                            <td class="center">+<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap">+<elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Promotion</td>
                         </tr>
@@ -2203,7 +2183,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>-</code>
                             </td>
-                            <td class="center">-<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap">-<elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Inversion</td>
                         </tr>
@@ -2212,13 +2192,13 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>~</code>
                             </td>
-                            <td class="center">~<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap">~<elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Bitwise NOT</td>
                             <td class="left">Binary</td>
                         </tr>
                         <tr>
-                            <td class="center"><code>!</code></td>
+                            <td class="center nowrap"><code>!</code></td>
                             <td class="center">!<elm_><t_>bool<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Logical NOT</td>
@@ -2231,7 +2211,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>*</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &#42; <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &#42; <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Multiplication</td>
                             <td class="left" rowspan=5>Arithmetic</td>
@@ -2241,7 +2221,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>/</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> / <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> / <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Division</td>
                         </tr>
@@ -2250,7 +2230,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>%</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> % <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> % <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Modulo</td>
                         </tr>
@@ -2261,7 +2241,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>+</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> + <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> + <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Addition</td>
                         </tr>
@@ -2270,7 +2250,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>-</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> - <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> - <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Subtraction</td>
                         </tr>
@@ -2281,7 +2261,7 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>&lt;&lt;</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;&lt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;&lt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><codet_>T<sup>r</sup></codet_></code></td>
                             <td class="left">Left bit shift</td>
                             <td class="left" rowspan=2>Binary</td>
@@ -2291,7 +2271,7 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>&gt;&gt;</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;&gt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;&gt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Right bit shift</td>
                         </tr>
@@ -2302,7 +2282,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&lt;</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &lt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &lt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Less than</td>
                             <td class="left" rowspan=8>Comparison</td>
@@ -2312,7 +2292,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&lt;=</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Less or equal than</td>
                         </tr>
@@ -2321,7 +2301,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&gt;</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &gt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &gt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Greater than</td>
                         </tr>
@@ -2330,7 +2310,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&gt;=</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Greater or equal than</td>
                         </tr>
@@ -2341,7 +2321,7 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>==</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> == <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> == <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Equality</td>
                         </tr>
@@ -2350,19 +2330,19 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>!=</code>
                             </td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> != <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> != <elm_><t_>T<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Inequality</td>
                         </tr>
                         <tr>
                             <td class="center"><code>=:</code></td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> =: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> =: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Existence</td>
                         </tr>
                         <tr>
                             <td class="center"><code>!:</code></td>
-                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> !: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
+                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> !: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
                             <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Inexistence</td>
                         </tr>
@@ -2372,7 +2352,7 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>&</code>
                         </td>
-                        <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> & <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> & <elm_><t_>T<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Bitwise AND</td>
                         <td class="left" rowspan=3>Binary</td>
@@ -2383,7 +2363,7 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>^</code>
                         </td>
-                        <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> ^ <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> ^ <elm_><t_>T<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Bitwise XOR</td>
                     </tr>
@@ -2393,14 +2373,14 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>|</code>
                         </td>
-                        <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> | <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> | <elm_><t_>T<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Bitwise OR</td>
                     </tr>
                     <tr>
                         <td class="center">12</td>
                         <td class="center"><code>&&</code></td>
-                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> && <elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> && <elm_><t_>bool<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                         <td class="left">Logical AND</td>
                         <td class="left" rowspan=3>Logical</td>
@@ -2408,21 +2388,21 @@
                     <tr>
                         <td class="center">13</td>
                         <td class="center"><code>^^</code></td>
-                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> ^^ <elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> ^^ <elm_><t_>bool<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                         <td class="left">Logical XOR</td>
                     </tr>
                     <tr>
                         <td class="center">14</td>
                         <td class="center"><code>||</code></td>
-                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> || <elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> || <elm_><t_>bool<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                         <td class="left">Logical OR</td>
                     </tr>
                     <tr>
                         <td class="center">15</td>
                         <td class="center"><elm_><code>?</code><code>:</code></elm_></td>
-                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> ? <elm_><t_>T<sup>r</sup></t_></elm_> : <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> ? <elm_><t_>T<sup>r</sup></t_></elm_> : <elm_><t_>T<sup>r</sup></t_></elm_></td>
                         <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Selection operator</td>
                         <td class="left">Other</td>
@@ -2453,8 +2433,48 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    function dedent(s){
+        // find shortest indentation
+        var min;
+        s = s.split('\n');
+        for(var i = 0; i < s.length; i++){
+            var line = s[i];
+            var spaces = line.search(/\S/);
+            if((min > spaces || min == undefined) && spaces >= 0){
+                min = spaces;
+            }
+        }
+        // remove indentation
+        for(var i = 0; i < s.length; i++){
+            var line = s[i];
+            s[i] = line.substring(min, line.length);
+        }
+
+        // join and return all lines
+        return s.join("\n");
+    }
+
+
+    function fix_code() {
+        var children = Array.from(document.getElementsByTagName("SCROLL_"));
+        for(var i = 0; i < children.length; i++){
+            children[i].innerHTML = dedent(children[i].innerHTML) + "\n";
+        }
+    }
+
+
+    fix_code();
+</script>
+
+
 </body>
 </html>
+
+
+
 
 
 

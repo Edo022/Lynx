@@ -81,7 +81,8 @@ syntax_, example_ {
     font-family: monospace, monospace;      background-color: transparent;                          ;
     font-size: var(--font-size-mono-medium);padding: 0;                                             ;
     word-spacing: normal;                   margin: 3ch 0 0 0;                                      ;
-    line-height: 18px;                      display: flex;                                          }
+    line-height: 18px;                      display: flex;
+}
 
     /* Interal containers */
     syntax_ left_, syntax_ right_, syntax_ fill_, example_ fill_ {
@@ -96,9 +97,9 @@ syntax_, example_ {
             display: block;                                                                         ;
             background-color: var(--bg-color-pre);      margin: -3ch 0 -38px 0;                     ;
             border-radius: 10px 10px 0 0;               padding: 4px 20px 22px 20px;                ;
-            z-index: -5;                                width: 100vw;                               ;
-            white-space: nowrap;                        max-width: min-content;                     ;
-            font-weight: bold;                                                                      ;
+            z-index: -5;                                width: min-content;                         ;
+            white-space: nowrap;                        max-width: calc(100% - 20px * 2);           ;
+            font-weight: bold;                          overflow-x: hidden;                         ;
         }
         example_ fill_ label_::before { content: "Example "; }
         syntax_ left_ label_::before, syntax_ fill_ label_::before { content: "Syntax "; }
@@ -108,11 +109,20 @@ syntax_, example_ {
 
         /* Code */
         syntax_ left_ code_, syntax_ right_ code_, syntax_ fill_ code_, example_ fill_ code_ {
-            display: block;                             margin: 1ch 0 -1ch calc(-4ch * 6);          ;
-            background-color: transparent;              padding: 0 20px 0 20px;                     ;
+            display: block;                             margin: 1ch 0 -1ch 0;                       ;
+            background-color: transparent;              padding: 0;                                 ;
             line-height: var(--wide-line-height);       width: 100vw;                               ;
-            white-space: pre;                           max-width: min-content;                     ;
-        }
+            white-space: pre;                           max-width: 100%;                            ;
+            overflow: hidden;                                                                       }
+
+            /* Fix visible overflow-y not working with non-visible overflow-x */
+            syntax_ left_ code_ scroll_, syntax_ right_ code_ scroll_, syntax_ fill_ code_ scroll_, example_ fill_ code_ scroll_ {
+                width: calc(100% - 20px * 2);           margin: 0 20px 0 20px;                      ;
+                height: 100%;                           padding: 0;                                 ;
+                display: block;                                                                     ;
+                overflow-x: scroll;                                                                 ;
+            }                                                                                       /*
+        }                                                                                           */
 
         /* Stop selection in both*/
         syntax_ left_ label_, syntax_ right_ label_, syntax_ fill_ label_, example_ fill_ label_,
@@ -130,14 +140,6 @@ syntax_, example_ {
     example_ fill_ code_ { line-height: var(--code-line-height); }                                  /*
 }                                                                                                   */
 
-
-/* Indentation margins for indented pre blocks */
-.fix-indentation-1 { margin-left: calc(-4ch * 1); }
-.fix-indentation-2 { margin-left: calc(-4ch * 2); }
-.fix-indentation-3 { margin-left: calc(-4ch * 3); }
-.fix-indentation-4 { margin-left: calc(-4ch * 4); }
-.fix-indentation-5 { margin-left: calc(-4ch * 5); }
-.fix-indentation-6 { margin-left: calc(-4ch * 6); }
 
 
 /* Horizontal separators*/                          /*
