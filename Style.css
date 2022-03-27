@@ -172,19 +172,20 @@ body {
     word-spacing: var(--word-spacing);
     font-weight: 450;
     line-height: var(--line-height);
+    width: 100vw; height: 100vh;
 }
 div.main-container {
-    height: 100vw; max-height: 100%;        position:fixed;                             margin: 0;
+    height: 100vh; max-height: 100%;        position:fixed;                             margin: 0;
     width:  100vw; max-width:  100%;        display: flex;                              padding: 0;
 }
 div.main-right-container {
-    height: 100vw; max-height: 100%;        overflow-x: hidden;                         margin: 0;
+    height: 100vh; max-height: 100%;        overflow-x: hidden;                         margin: 0;
     width: 100vw;                           overflow-y: scroll;                         padding: 0 var(--main-padding) 0 var(--main-padding);
     max-width: calc(100% - var(--main-left-max-width) - var(--main-padding) * 2);
 }
 div.main-left-container {
     background-color: var(--bg-color);       overflow-x: auto;                          margin: 0;
-    height: 100%; max-height: 100%;          overflow-y: scroll;                        padding: 0 var(--main-left-padding) 0 var(--main-left-padding);
+    height: 100vh; max-height: 100%;         overflow-y: scroll;                        padding: 0 var(--main-left-padding) 0 var(--main-left-padding);
     width: 100vw;                            z-index: 1;                                position:relative;
     max-width: calc(var(--main-left-max-width) - var(--main-left-padding) * 2 - 1px); /* 1px right border */
     vertical-align: top;
