@@ -5,10 +5,9 @@
     --wide-line-height:       3.5ch;
     --code-line-height:       2.5ch;
 
-    --font-size-small:        0.8vmax;
-    --font-size-medium:       0.8vmax;
-    --font-size-mono-medium:  0.6vmax;
-    --font-size-large:        1.2vmax;
+    --font-size-medium:       16px;
+    --font-size-mono-medium:  14px;
+    --font-size-large:        24px;
 
     --main-left-padding:    2vw;
     --main-padding:         4vw;
@@ -42,7 +41,7 @@
 
 
 /* Utility */
-.right  { text-align: right;  }     .small  { font-size: var(--font-size-small);  }
+.right  { text-align: right;  }
 .left   { text-align: left;   }     .medium { font-size: var(--font-size-medium); }
 .center { text-align: center; }     .large  { font-size: var(--font-size-large);  }
 .nowrap { white-space: nowrap; }
