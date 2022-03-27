@@ -170,7 +170,7 @@ body {
     font-family: Cantarell;                 background-color: var(--bg-color);          margin: 0;
     font-size: medium;                      color: var(--text-color);                   padding: 0;
     word-spacing: var(--word-spacing);
-    font-weight: 450;
+    font-weight: normal;
     line-height: var(--line-height);
     width: 100vw; height: 100vh;
 }
