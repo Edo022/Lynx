@@ -167,7 +167,8 @@ syntax_, example_ {
 
 /* Page layout */
 body {
-    font-family: Cantarell;                 background-color: var(--bg-color);          margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-color);                                                  margin: 0;
     font-size: medium;                      color: var(--text-color);                   padding: 0;
     word-spacing: var(--word-spacing);
     font-weight: normal;
