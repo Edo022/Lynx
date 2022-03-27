@@ -42,6 +42,47 @@
     </style>
 </head>
 <body>
+<script>
+    function decodeHTML(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+    function dedent(s){
+        // find shortest indentation
+        var min;
+        s = s.split('\n');
+        for(var i = 0; i < s.length; i++){
+            var line = s[i];
+            var spaces = line.search(/\S/);
+            if((min > spaces || min == undefined) && spaces >= 0){
+                min = spaces;
+            }
+        }
+        // remove indentation
+        for(var i = 0; i < s.length; i++){
+            var line = s[i];
+            s[i] = line.substring(min, line.length);
+        }
+
+        // join and return all lines
+        return s.join("\n");
+    }
+
+    function copy_code(button_tag) {
+        var children = Array.from(button_tag.parentNode.childNodes);
+        for(var i = 0; i < children.length; i++){
+            if(children[i].tagName == "CODE_") {
+                navigator.clipboard.writeText(decodeHTML(dedent(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""))));
+                return 0;
+            }
+        }
+    }
+</script>
+
+
+
+
 <div class="main-container hide-scrollbar">
 
     <!--------------------------------------------------------------------->
@@ -145,6 +186,7 @@
                 </ul>
             </li>
             <li class="index-section"><a href="#quick-reference-tabs">Quick reference tabs</a></li>
+            <li class="index-section"><a href="#complete-examples">Complete examples</a></li>
         </ul>
     </div>
 
@@ -161,7 +203,7 @@
             <!--------------------------------------------------------------------->
             <div style="margin-top: var(--main-padding);"></div>
             <h1 id="overview-no-header">Lux - Lynx shading language</h1>
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <p>
                 Lux is a <b>high level compiled shading language</b> with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing buffers and shaders.<br>
                 It compiles to <b>GLSL 4.6</b>.
@@ -180,7 +222,7 @@
             <!--------------------------------------------------------------------->
             <!-- Preprocessor                                                    -->
             <!--------------------------------------------------------------------->
-            <div class="separator-1"></div>
+            <sep-1_></sep-1_>
             <h1 id=preprocessor>Preprocessor</h1>
             <p>
                 The <b>preprocessing</b> phase is done <b>before compiling</b> the code.<br>
@@ -199,7 +241,7 @@
             <!--------------------------------------------------------------------->
             <!-- Comments                                                        -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id=comments>Comments</h2>
             <p>
                 <b>Comments</b> are <b>portions of code</b> that are <b>purposely ignored</b>.<br>
@@ -210,21 +252,50 @@
                 Single line comments start with <code>//</code> and end at the first newline character.<br>
                 Multiline comments start with <code>/*</code> and end with <code>*/</code>
             </p>
-
-            <div class="fancy-code-label">Syntax 1</div>
-            <pre class="fancy-code-single-line">//<span class="syntax-elm">Comment string</span><span class="hidden">↩</span></pre>
-            <div class="fancy-code-label">Syntax 2</div>
-            <pre class="fancy-code-single-line">/*<span class="syntax-elm">Comment string</span>*/</pre>
-
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-comment">// Single line comment</span>
-
-                <span class="lynx-comment">/* Multi
-                line
-                comment */</span>
-            </pre></div>
             <p>Comments cannot be nested.</p>
+
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>1</label_>
+                    <code_>
+                        //<elm_>Comment string</elm_><nl_></nl_>
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>2</label_>
+                    <code_>
+                        /*<elm_>Comment string</elm_>*/
+                    </code_>
+                </fill_>
+            </syntax_>
+
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">1</label_>
+                    <code_>
+                        <c_>// Single line comment</c_>
+
+                        <c_>/* Multi
+                        line
+                        comment */</c_>
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">2</label_>
+                    <code_>
+                        <c_>/* Multi line /* Anorhter comment */ comment */
+                        // Ok                             // ^ Error, unexpected token "comment"</c_>
+                    </code_>
+                </fill_>
+            </example_>
 
 
 
@@ -232,7 +303,7 @@
             <!--------------------------------------------------------------------->
             <!-- Include statement                                               -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id=include-statement>Include statement</h2>
             <p>
                 <b>Include statements</b> are used to <b>paste code</b> from other files.<br>
@@ -240,25 +311,51 @@
                 The path to the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
                 Both absolute and relative paths are supported.
             </p>
-            <div class="fancy-code-label">Syntax 1</div>
-            <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"<span class="syntax-elm">absolute/path/to/file</span>"<span class="hidden">↩</span></pre>
-            <div class="fancy-code-label">Syntax 2</div>
-            <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"./<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
-            <div class="fancy-code-label">Syntax 3</div>
-            <pre class="fancy-code-single-line">#include<span class="hidden">·</span>"<span class="syntax-elm">relative/path/to/file</span>"<span class="hidden">↩</span></pre>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>1</label_>
+                    <code_>
+                        #include<space_></space_>"<elm_>absolute/path/to/file</elm_>"<nl_></nl_>
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>1</label_>
+                    <code_>
+                        #include<space_></space_>"./<elm_>relative/path/to/file</elm_>"<nl_></nl_>
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>1</label_>
+                    <code_>
+                        #include<space_></space_>"<elm_>relative/path/to/file</elm_>"<nl_></nl_>
+                    </code_>
+                </fill_>
+            </syntax_>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-comment">// Ok</span>
-                <span class="lynx-keyword">#include</span> <span class="lynx-string">"/home/Lynx/Lux/file.ilsh"</span>
-                <span class="lynx-keyword">#include</span> <span class="lynx-string">"./file.ilsh"</span>
-                <span class="lynx-keyword">#include</span> <span class="lynx-string">"file.ilsh"</span>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <c_>// Ok</c_>
+                        <k_>#include</k_> <s_>"/home/Lynx/Lux/file.ilsh"</s_>
+                        <k_>#include</k_> <s_>"./file.ilsh"</s_>
+                        <k_>#include</k_> <s_>"file.ilsh"</s_>
 
-                <span class="lynx-comment">// Error</span>
-                <span class="lynx-comment">//#include ./file.ilsh</span>
-                <span class="lynx-comment">//#include "./non_existent_file"</span>
-                <span class="lynx-comment">//#include ""</span>
-            </pre></div>
+                        <c_>// Error</c_>
+                        <c_>//#include ./file.ilsh</c_>
+                        <c_>//#include "./non_existent_file"</c_>
+                        <c_>//#include ""</c_>
+                    </code_>
+                </fill_>
+            </example_>
 
 
 
@@ -266,7 +363,7 @@
             <!--------------------------------------------------------------------->
             <!-- Macros                                                          -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="macros">Macros</h2>
 
 
@@ -275,7 +372,7 @@
             <!--------------------------------------------------------------------->
             <!-- Conditionals                                                    -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="conditionals">Conditionals</h2>
 
 
@@ -284,42 +381,68 @@
             <!--------------------------------------------------------------------->
             <!-- Line continuation token                                         -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="line-continuation-token">Line continuation token</h2>
             <p>
                 The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
                 It consists of a <code>\</code> immediatly followed by a newline character.
             </p>
             <p>
-                Line continuation tokens can be used inside comments or other preprocessor directives.
+                Line continuation tokens can be used inside comments or other preprocessor directives, but cannot be nested.
             </p>
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line">\<span class="hidden">↩</span></pre>
 
-            <div class="fancy-code-label">These are all allowed</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-comment">// single line comment</span>\
-                <span class="lynx-comment">on two lines</span>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        \<nl_></nl_>
+                    </code_>
+                </fill_>
+            </syntax_>
 
-                <span class="lynx-comment">// #include "path/to/file"</span>
-                <span class="lynx-keyword">#include</span> <span class="lynx-string">"pat</span>\
-                <span class="lynx-string">h/to/file</span>\
-                <span class="lynx-string">"</span>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">1</label_>
+                    <code_>
+                        <c_>// single line comment</c_>\
+                        <c_>on two lines</c_>
 
-                <span class="lynx-comment">// void function() {
-                //   uint var = 0, b = 0;
-                //   var += b;
-                // }</span>
-                <span class="lynx-type">vo</span>\
-                <span class="lynx-type">id</span> <span class="lynx-func">fun</span>\
-                <span class="lynx-func">ction</span>() {
-                <span class="lynx-type">uint</span> va\
-                r = <span class="lynx-literal">0</span>, b = <span class="lynx-literal">0</span>;
-                v\
-                ar +\
-                = <span class="lynx-literal">b</span>;
-                }
-            </pre></div>
+                        <c_>// #include "path/to/file"</c_>
+                        <k_>#include</k_> <s_>"pat</s_>\
+                        <s_>h/to/file</s_>\
+                        <s_>"</s_>
+
+                        <c_>// void function() {
+                        //   uint var = 0, b = 0;
+                        //   var += b;
+                        // }</c_>
+                        <t_>vo</t_>\
+                        <t_>id</t_> <f_>fun</f_>\
+                        <f_>ction</f_>() {
+                        <t_>uint</t_> va\
+                        r = <k_>0</k_>, b = <k_>0</k_>;
+                        v\
+                        ar +\
+                        = <k_>b</k_>;
+                        }
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">2</label_>
+                    <code_>
+                        <c_>// Error, unexpected token "\"
+                            //void ma\\
+
+                            //in(){}
+                            // Error,  unexpected token "in"</c_>
+                        </code_>
+                </fill_>
+            </example_>
 
 
 
@@ -331,7 +454,7 @@
             <!--------------------------------------------------------------------->
             <!-- Language components                                             -->
             <!--------------------------------------------------------------------->
-            <div class="separator-1"></div>
+            <sep-1_></sep-1_>
             <h1 id="language-components">Language components</h1>
 
 
@@ -340,7 +463,7 @@
             <!--------------------------------------------------------------------->
             <!-- Tokens and identifiers                                          -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="tokens-and-identifiers">Tokens and identifiers</h2>
             <p>
                 Any sequence of one or more characters that is left after the preprocessing phase is called a token.<br>
@@ -369,101 +492,104 @@
                     <tr>
                         <td>Keyword</td>
                         <td class="center" colspan=2>
-                            <code class="lynx-keyword">namespace</code>
-                            <code class="lynx-keyword">enum</code>
-                            <code class="lynx-keyword">struct</code>
-                            <code class="lynx-keyword">auto</code>
-                            <code class="lynx-type">typeof</code>
-                            <code class="lynx-type">baseof</code>
-                            <code class="lynx-keyword">typegroup</code>
-                            <code class="lynx-type">const</code>
-                            <code class="lynx-keyword">alias</code>
+                            <a href="#namespaces">                  <code><w_>namespace</w_></code></a>
+                            <a href="#enums">                       <code><w_>enum</w_></code></a>
+                            <a href="#structs">                     <code><w_>struct</w_></code></a>
+                            <a href="#auto-specifier">              <code><w_>auto</w_></code></a>
+                            <a href="#typeof-and-baseof-specifiers"><code><t_>typeof</t_></code></a>
+                            <a href="#typeof-and-baseof-specifiers"><code><t_>baseof</t_></code></a>
+                            <a href="#type-groups">                 <code><w_>typegroup</w_></code></a>
+                            <a href="#const-qualifier">             <code><t_>const</t_></code></a>
+                            <a href="#symbol-aliases">              <code><w_>alias</w_></code></a>
                         </td>
                         <td class="center" colspan=2>
-                            <code class="lynx-keyword">if</code>
-                            <code class="lynx-keyword">select</code>
-                            <code class="lynx-keyword">for</code>
-                            <code class="lynx-keyword">while</code>
-                            <code class="lynx-keyword">do</code>
-                            <code class="lynx-keyword">continue</code>
-                            <code class="lynx-keyword">break</code>
-                            <code class="lynx-keyword">once</code>
-                            <code class="lynx-keyword">then</code>
-                            <code class="lynx-keyword">else</code>
-                            <code class="lynx-keyword">return</code>
+                            <a href="#if-statement">                 <code><w_>if</w_></code></a>
+                            <a href="#select-statement">             <code><w_>select</w_></code></a>
+                            <a href="#for-loops">                    <code><w_>for</w_></code></a>
+                            <a href="#while-loops">                  <code><w_>while</w_></code></a>
+                            <a href="#while-loops">                  <code><w_>do</w_></code></a>
+                            <a href="#continue-and-break-statements"><code><w_>continue</w_></code></a>
+                            <a href="#continue-and-break-statements"><code><w_>break</w_></code></a>
+                            <a href="#once-statement">               <code><w_>once</w_></code></a>
+                            <a href="#then-statement">               <code><w_>then</w_></code></a>
+                            <a href="#else-statement">               <code><w_>else</w_></code></a>
+                            <a href="#return-statement">             <code><w_>return</w_></code></a>
                         </td>
                     </tr>
                     <tr>
                         <td>Operator</td>
                         <td class="center">
-                            <code>!</code>
-                            <code>==</code>
-                            <code>!=</code>
-                            <code>:=</code>
-                            <code>&&</code>
-                            <code>^^</code>
-                            <code>||</code>
-                            <code>&lt;</code>
-                            <code>&lt;=</code>
-                            <code>&gt;</code>
-                            <code>&gt;=</code>
+                            <a href="#operators"><code>!</code></a>
+                            <a href="#operators"><code>==</code></a>
+                            <a href="#operators"><code>!=</code></a>
+                            <a href="#operators"><code>=:</code></a>
+                            <a href="#operators"><code>!:</code></a>
+                            <a href="#operators"><code>&&</code></a>
+                            <a href="#operators"><code>^^</code></a>
+                            <a href="#operators"><code>||</code></a>
+                            <a href="#operators"><code>&lt;</code></a>
+                            <a href="#operators"><code>&lt;=</code></a>
+                            <a href="#operators"><code>&gt;</code></a>
+                            <a href="#operators"><code>&gt;=</code></a>
                         </td>
                         <td class="center">
-                            <code>+</code>
-                            <code>-</code>
-                            <code>++</code>
-                            <code>--</code>
-                            <code>*</code>
-                            <code>/</code>
-                            <code>%</code>
+                            <a href="#operators"><code>+</code></a>
+                            <a href="#operators"><code>-</code></a>
+                            <a href="#operators"><code>++</code></a>
+                            <a href="#operators"><code>--</code></a>
+                            <a href="#operators"><code>*</code></a>
+                            <a href="#operators"><code>/</code></a>
+                            <a href="#operators"><code>%</code></a>
                         </td>
                         <td class="center">
-                            <code>&</code>
-                            <code>|</code>
-                            <code>^</code>
-                            <code>&lt;&lt;</code>
-                            <code>&gt;&gt;</code>
-                            <code>~</code>
+                            <a href="#operators"><code>&</code></a>
+                            <a href="#operators"><code>|</code></a>
+                            <a href="#operators"><code>^</code></a>
+                            <a href="#operators"><code>&lt;&lt;</code></a>
+                            <a href="#operators"><code>&gt;&gt;</code></a>
+                            <a href="#operators"><code>~</code></a>
                         </td>
                         <td class="center wide-lines">
-                            <span class="syntax-elm"><code>(</code><code>)</code></span>
-                            <span class="syntax-elm"><code>[</code><code>]</code></span>
-                            <code>.</code>
-                            <span class="syntax-elm"><code>?</code><code>:</code></span>
+                            <a href="#special-operators"><elm_><code>(</code><code>)</code></elm_></a>
+                            <a href="#special-operators"><elm_><code>[</code><code>]</code></elm_></a>
+                            <a href="#special-operators"><code>.</code></a>
+                            <a href="#special-operators"><elm_><code>?</code><code>:</code></elm_></a>
                         </td>
                     </tr>
                     <tr>
                         <td>Punctuation token</td>
                         <td class="center wide-lines" width="20%">
-                            <span class="syntax-elm"><code>(</code><code>)</code></span>
-                            <span class="syntax-elm"><code>{</code><code>}</code></span>
-                            <span class="syntax-elm"><code>[</code><code>]</code></span>
+                            <elm_><code>(</code><code>)</code></elm_>
+                            <a href="#scopes-and-symbols"><elm_><code>{</code><code>}</code></elm_></a>
+                            <a href="#arrays">            <elm_><code>[</code><code>]</code></elm_></a>
                         </td>
                         <td class="center" width="20%">
                             <code>,</code>
                             <code>;</code>
                             <code>|</code>
-                            <code>::</code>
+                            <a href="#scopes-and-symbols"><code>::</code></a>
                         </td>
-                        <td class="center" width="20%"><code>&</code></td>
-                        <td class="center" width="20%"><code>:</code></td>
+                        <td class="center" width="20%"><a href="#parameters-and-references"><code>&</code></a></td>
+                        <td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>
                     </tr>
                     <tr>
                         <td>Assignment token</td>
-                        <td class="center"><code>=</code></td>
                         <td class="center">
-                            <code>+=</code>
-                            <code>*=</code>
-                            <code>-=</code>
-                            <code>/=</code>
-                            <code>%=</code>
+                            <a href="#assignments"><code>=</code></a>
+                        </td>
+                        <td class="center">
+                            <a href="#assignments"><code>+=</code></a>
+                            <a href="#assignments"><code>*=</code></a>
+                            <a href="#assignments"><code>-=</code></a>
+                            <a href="#assignments"><code>/=</code></a>
+                            <a href="#assignments"><code>%=</code></a>
                         </td>
                         <td class="center" colspan=2><div style="width: 50%;">
-                            <code>&=</code>
-                            <code>|=</code>
-                            <code>^=</code>
-                            <code>&lt;&lt;=</code>
-                            <code>&gt;&gt;=</code>
+                            <a href="#assignments"><code>&=</code></a>
+                            <a href="#assignments"><code>|=</code></a>
+                            <a href="#assignments"><code>^=</code></a>
+                            <a href="#assignments"><code>&lt;&lt;=</code></a>
+                            <a href="#assignments"><code>&gt;&gt;=</code></a>
                         </div></td>
                     </tr>
                 </tbody>
@@ -473,12 +599,6 @@
                 They must be unique to the current scope and not overlap with keywords.<br>
                 Temporary variables are the only identifiers that are allowed to start with a <code>$</code>.
             </p>
-            <p>
-                See
-                <a href="#literals">Literals</a>,
-                <a href="#operators">Operators</a>,
-                <a href="#scopes">Scopes</a>
-            </p>
 
 
 
@@ -486,13 +606,13 @@
             <!--------------------------------------------------------------------->
             <!-- Scopes and symbols                                              -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="scopes-and-symbols">Scopes and symbols</h2>
             <p>A <b>symbol</b> is any <b>language component</b> that can be declared.</p>
             <p>
                 <b>Scopes</b> define which <b>symbols</b> the code can <b>reference</b> and their absolute and relative names.<br>
-                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. This includes <code>functions</code>, <code>structs</code>,  <code>enums</code>, <code>namespaces</code>, <code>unnamed scopes</code> and <code>runtime statements</code>.<br>
-                The only exception is the <b>module scope</b>. It is always defined and contains all the symbols and scopes declared in the module. It can be referenced using the <code>this</code> keyword.
+                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. the only exception is the <b>module scope</b>. It is always defined and contains all the symbols and scopes declared in the module. It can be referenced using the <code>this</code> identifier.<br>
+                Like normal scopes, <code>this</code> can also be shadowed.
             </p>
             <p>
                 Each scope can only contain certain types of symbols:
@@ -501,25 +621,25 @@
             <div class="table-1-container">
                 <div class="table-container table-1-left-container"><table class="table-1-left">
                     <tr style="height: 80px;"><th>Container scope</th></tr>
-                    <tr style="height: 80px;"><th>Module</th></tr>
-                    <tr style="height: 80px;"><th>Namespace</th></tr>
-                    <tr style="height: 80px;"><th>Enum</th></tr>
-                    <tr style="height: 80px;"><th>Struct</th></tr>
-                    <tr style="height: 80px;"><th>Function</th></tr>
-                    <tr style="height: 80px;"><th>Runtime statement</th></tr>
+                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#modules">Module           </a></th></tr>
+                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#scopes-and-symbols">Namespace        </a></th></tr>
+                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#enums">             Enum             </a></th></tr>
+                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#structs">           Struct           </a></th></tr>
+                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#functions">         Function         </a></th></tr>
+                    <tr style="height: 80px;"><th><a style="color: var(--text-color)" href="#runtime-statements">Runtime statement</a></th></tr>
                 </table></div>
                 <div class="table-container table-1-right-container"><table class="table-1-right">
                     <tr style="height: 80px;">
-                        <td>Variable</td>
-                        <td>Type group</td>
-                        <td>Runtime statement</td>
-                        <td>Function parameter</td>
-                        <td>Enum element</td>
-                        <td>Struct element</td>
-                        <td>Struct</td>
-                        <td>Enum</td>
-                        <td>Namespace</td>
-                        <td>Symbol alias</td>
+                        <td><a style="color: var(--text-color)" href="#variables">                 Variable          </a></td>
+                        <td><a style="color: var(--text-color)" href="#type-groups">               Type group        </a></td>
+                        <td><a style="color: var(--text-color)" href="#runtime-statements">        Runtime statement </a></td>
+                        <td><a style="color: var(--text-color)" href="#parametersa-and-references">Function parameter</a></td>
+                        <td><a style="color: var(--text-color)" href="#enums">                     Enum element      </a></td>
+                        <td><a style="color: var(--text-color)" href="#structs">                   Struct element    </a></td>
+                        <td><a style="color: var(--text-color)" href="#structs">                   Struct            </a></td>
+                        <td><a style="color: var(--text-color)" href="#enums">                     Enum              </a></td>
+                        <td><a style="color: var(--text-color)" href="#namespaces">                Namespace         </a></td>
+                        <td><a style="color: var(--text-color)" href="#symbol-aliases">            Symbol alias      </a></td>
                     </tr>
                     <tr style="height: 80px;">
                         <td class="table-1-y">Yes</td>
@@ -606,58 +726,57 @@
             </p>
             <p>Symbols declared in unnamed scopes cannot be referenced from outside, and unnamed symbols cannot be referenced at all</p>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-comment">// Module scope</span>
-                <span class="lynx-comment">// Local name: this</span>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <c_>// Module scope</c_>
+                        <c_>// Local name: this</c_>
 
 
-                <span class="lynx-comment">// Local name: s</span>
-                <span class="lynx-comment">// Relative names: this::s</span>
-                <span class="lynx-keyword">struct</span> <span class="lynx-type">s</span> { <span class="lynx-type">uint</span> n; }</span>
+                        <c_>// Local name: s</c_>
+                        <c_>// Relative names: this::s</c_>
+                        <w_>struct</w_> <t_>s</t_> { <t_>uint</t_> n; }
 
-                <span class="lynx-keyword">namespace</span> {
-                    <span class="lynx-comment">// Local name: fun</span>
-                    <span class="lynx-comment">// Unnamed enclosing scope, cannot be referenced from outside</span>
-                    <span class="lynx-type">void</span> <span class="lynx-func">fun</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) {}
-                }
+                        <w_>namespace</w_> {
+                            <c_>// Local name: fun</c_>
+                            <c_>// Unnamed enclosing scope, cannot be referenced from outside</c_>
+                            <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>n</a_>) {}
+                        }
 
 
-                <span class="lynx-comment">// Local name: fun</span>
-                <span class="lynx-comment">// Relative names: this::fun</span>
-                <span class="lynx-type">void</span> <span class="lynx-func">fun</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) {
-                    <span class="lynx-keyword">if</span>(n){
-                        <span class="lynx-comment">// Local name: s2</span>
-                        <span class="lynx-comment">// Unnamed enclosing scope, cannot be referenced from outside</span>
-                        <span class="lynx-keyword">struct</span> <span class="lynx-type">s2</span></span> { <span class="lynx-type">uint</span> n; };
-                    }
+                        <c_>// Local name: fun</c_>
+                        <c_>// Relative names: this::fun</c_>
+                        <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>n</a_>) {
+                            <w_>if</w_>(n){
+                                <c_>// Local name: s2</c_>
+                                <c_>// Unnamed enclosing scope, cannot be referenced from outside</c_>
+                                <w_>struct</w_> <t_>s2</t_> { <t_>uint</t_> n; };
+                            }
 
-                    <span class="lynx-comment">// Local name: s, shadows this::s</span>
-                    <span class="lynx-comment">// Relative names: this::fun::s, fun::s</span>
-                    <span class="lynx-keyword">struct</span> <span class="lynx-type">s</span></span> { <span class="lynx-type">uint</span> a, b; }
-                }
-            </pre></div>
+                            <c_>// Local name: s, shadows this::s</c_>
+                            <c_>// Relative names: this::fun::s, fun::s</c_>
+                            <w_>struct</w_> <t_>s</t_> { <t_>uint</t_> a, b; }
+                        }
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
             <p>Symbols can be declared anywhere in the scope, except for variables, which have to be declared before they are used in expressions.</p>
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-comment">var.n = 8;       // Error</span>
-                    <span class="lynx-type">s</span> var = (<span class="lynx-literal">16</span>); <span class="lynx-comment">   // Ok</span>
-                }
-                <span class="lynx-keyword">struct</span> s { <span class="lynx-type">int</span> n; }
-            </pre></div>
-            <p>
-                See
-                <a href="#namespaces">Namespaces</a>,
-                <a href="#variables">Variables</a>,
-                <a href="#functions">Functions</a>,
-                <a href="#structs">Structs</a>,
-                <a href="#enums">Enums</a>,
-                <a href="#selection">Selection</a>,
-                <a href="#iteration">Iteration</a>,
-                <a href="#else-statement">Else statement</a>,
-                <a href="#symbol-aliases">Symbol aliases</a>
-            </p>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>void</t_> <f_>main</f_>(){
+                            <c_>//var.n = 8;     // Error</c_>
+                            <t_>s</t_> var = (<k_>16</k_>); <c_>   // Ok</c_>
+                        }
+                        <w_>struct</w_> s { <t_>int</t_> n; }
+                    </code_>
+                </fill_>
+            </example_>
 
 
 
@@ -665,26 +784,33 @@
             <!--------------------------------------------------------------------->
             <!-- Namespaces                                                      -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="namespaces">Namespaces</h2>
             <p>
-                <b>Namespaces</b> are used to create <b>named scopes</b> which can contain variables, functions, enums, structs, type groups and symbol aliases.<br>
+                <b>Namespaces</b> are used to create <b>named scopes</b> which can contain
+                <a href="#variables">variables</a>, <a href="#functions">functions</a>, <a href="#structs">structs</a>, <a href="#enums">enums</a>, <a href="#symbol-aliases">symbol aliases</a>.<br>
                 They don't affect the runtime behaviour and can be declared in any scope.<br>
                 Unnamed namespaces are allowed.
             </p>
 
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line">namespace<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> {<span class="syntax-elm">...</span>}</pre>
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line">namespace {<span class="syntax-elm">...</span>}</pre>
-            <p>
-                See
-                <a href="#variables">Variables</a>,
-                <a href="#functions">Functions</a>,
-                <a href="#structs">Structs</a>,
-                <a href="#enums">Enums</a>,
-                <a href="#symbol-aliases">Symbol aliases</a>
-            </p>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        namespace<space_></space_><elm_>name<sup>id</sup></elm_> {<elm_>...</elm_>}
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        namespace {<elm_>...</elm_>}
+                    </code_>
+                </fill_>
+            </syntax_>
 
 
 
@@ -692,7 +818,7 @@
             <!--------------------------------------------------------------------->
             <!-- Types                                                           -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="types">Types</h2>
             <p>
                 <b>Data types</b> define how <b>values</b> are <b>interpreted</b> during runtime and how they can be used within expressions.<br>
@@ -703,7 +829,7 @@
             <!--------------------------------------------------------------------->
             <!-- Primitive types                                                 -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="primitive-types">Primitive types</h3>
             <p>Lux features <b>five primitive types</b>, which can be used to define more complex types such as structs, arrays and enums.</p>
             <p>
@@ -718,33 +844,33 @@
                     <th>Value type  </th>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">uint</code></td>
+                    <td><code><t_>uint</t_></code></td>
                     <td class="center">4</td>
                     <td>Unsigned integral number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">int</code></td>
+                    <td><code><t_>int</t_></code></td>
                     <td class="center">4</td>
                     <td>Signed integral number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">float</code></td>
+                    <td><code><t_>float</t_></code></td>
                     <td class="center">4</td>
                     <td>Floating point number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">double</code></td>
+                    <td><code><t_>double</t_></code></td>
                     <td class="center">8</td>
                     <td>Floating point number</td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">bool</code></td>
+                    <td><code><t_>bool</t_></code></td>
                     <td class="center">4</td>
-                    <td>Boolean value. <code class="lynx-literal">true</code> or <code class="lynx-literal">false</code></td>
+                    <td>Boolean value. <code><k_>true</k_></code> or <code><k_>false</k_></code></td>
                 </tr>
             </table></div>
             <p>
-                As in most programming languages, the boolean <code class="lynx-literal">true</code> and <code class="lynx-literal">false</code> values correspond to the integral literals <code class="lynx-literal">1</code> and <code class="lynx-literal">0</code>. They can be used interchangeably.<br>
+                As in most programming languages, the boolean <code><k_>true</k_></code> and <code><k_>false</k_></code> values correspond to the integral literals <code><k_>1</k_></code> and <code><k_>0</k_></code>. They can be used interchangeably.<br>
                 Unsigned integers cannot represent negative numbers, but the maximum value is twice as high as their signed counterpart.
             </p>
             <p>
@@ -761,7 +887,7 @@
             <!--------------------------------------------------------------------->
             <!-- Enums                                                           -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="enums">Enums</h3>
             <p>
                 <b>Enums</b> are used to <b>name</b> and <b>group</b> literal <b>constants</b> of the same type.<br>
@@ -776,67 +902,99 @@
                 Enums with no elements are not allowed.
             </p>
 
-            <div class="fancy-code-label">Syntax</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                enum<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> : <span class="syntax-elm lynx-type">T</span> {
-                    <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
-                    <span class="syntax-elm">...</span>
-                }
-            </pre></div>
+            <sep_></sep_>
+            <syntax_>
+                <left_>
+                    <label_></label_>
+                    <code_>
+                        enum<space_></space_><elm_>name<sup>id</sup></elm_> : <elm_><t_>T<sup>type</sup></t_> </elm_>{
+                            <elm_>elements<sup>...</sup></elm_>
+                        }
+                    </code_>
+                </left_>
+                <right_>
+                    <label_>Element syntax</label_>
+                    <code_>
+                        <elm_>name<sup>id</sup></elm_> = <elm_><t_>T<sup>r</sup></t_></elm_>;
 
-            <div class="fancy-code-label">Example 1</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">enum</span> <span class="lynx-type">e</span> : <span class="lynx-type">int</span> {
-                    a, b;              <span class="lynx-comment">// Ok, a = 0, b = 1</span>
-                    c = <span class="lynx-literal">-266250</span>;       <span class="lynx-comment">// Ok, c = -266250</span>
-                    d, e = 0;          <span class="lynx-comment">// Ok, d = -266249, e = 0</span>
-                }
-            </pre></div>
-            <div class="fancy-code-label">Example 2</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">enum</span> <span class="lynx-type">c</span> : <span class="lynx-type">double</span> {
-                    pi = <span class="lynx-literal">3.14159</span>;      <span class="lynx-comment">// Ok</span>
-                    e  = <span class="lynx-literal">2.71828</span>;      <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-comment">//phi;             // Error, uninitialized non-integral enum value</span>
-                }
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">c</span> a = <span class="lynx-literal">c::pi</span>;       <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-type">c</span> b = <span class="lynx-literal">3.14159</span>;     <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-type">int</span> c = <span class="lynx-literal">a</span>;         <span class="lynx-comment">// Ok, implicit conversion from c (double) to int</span>
-                }
-            </pre></div>
+                    </code_>
+                </right_>
+            </syntax_>
+
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">1</label_>
+                    <code_>
+                        <w_>enum</w_> <t_>e</t_> : <t_>int</t_> {
+                            a, b;              <c_>// Ok, a = 0, b = 1</c_>
+                            c = <k_>-266250</k_>;       <c_>// Ok, c = -266250</c_>
+                            d, e = 0;          <c_>// Ok, d = -266249, e = 0</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">2</label_>
+                    <code_>
+                        <w_>enum</w_> <t_>c</t_> : <t_>double</t_> {
+                            pi = <k_>3.14159</k_>;      <c_>// Ok</c_>
+                            e  = <k_>2.71828</k_>;      <c_>// Ok</c_>
+                            <c_>//phi;             // Error, uninitialized non-integral enum value</c_>
+                        }
+
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>c</t_> a = <k_>c::pi</k_>;       <c_>// Ok</c_>
+                            <t_>c</t_> b = <k_>3.14159</k_>;     <c_>// Ok</c_>
+                            <t_>int</t_> c = <k_>a</k_>;         <c_>// Ok, implicit conversion from c (double) to int</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
 
             <p>
-                By default, all enums behave exactly as their base types, much like a <a href="#symbol-aliases">Symbol alias</a>.<br>
-                When implicit conversions from other types are undesirable, enums can be declared as <code class="lynx-keyword">strict</code>.<br>
-                Stict enums only allow values of the same enum, but can still be implicitly converted to other types.
+                By default, all enums behave exactly as their base types, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
+                When implicit conversions from other types are undesirable, enums can be declared as <code><w_>strict</w_></code>.<br>
+                Strict enums only allow values of the same enum, but can still be implicitly converted to other types.
             </p>
-            <div class="fancy-code-label">Syntax</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                strict<span class="hidden">·</span>enum<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> : <span class="syntax-elm lynx-type">T</span> {
-                    <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
-                    <span class="syntax-elm">...</span>
-                }
-            </pre></div>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">strict enum</span> <span class="lynx-type">c</span> : <span class="lynx-type">double</span> {
-                    pi  = <span class="lynx-literal">3.14159</span>;
-                    e   = <span class="lynx-literal">2.71828</span>;
-                    phi = <span class="lynx-literal">1.61803</span>;
-                }
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        strict<space_></space_>enum<space_></space_><elm_>name<sup>id</sup></elm_> : <elm_><t_>T<sup>type</sup></t_></elm_> {
+                            <elm_>elements<sup>...</sup></elm_>
+                        }
+                    </code_>
+                </fill_>
+            </syntax_>
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">c</span> a = <span class="lynx-literal">c::phi</span>;      <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-comment">//c b = 1.61803;   // Error, cannot convert from double to strict enum</span>
-                    <span class="lynx-type">int</span> c = <span class="lynx-literal">a</span>;         <span class="lynx-comment">// Ok, implicit conversion from c (double) to int</span>
-                }
-            </pre></div>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <w_>strict enum</w_> <t_>c</t_> : <t_>double</t_> {
+                            pi  = <k_>3.14159</k_>;
+                            e   = <k_>2.71828</k_>;
+                            phi = <k_>1.61803</k_>;
+                        }
+
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>c</t_> a = <k_>c::phi</k_>;      <c_>// Ok</c_>
+                            <c_>//c b = 1.61803;   // Error, cannot convert from double to strict enum</c_>
+                            <t_>int</t_> c = <k_>a</k_>;         <c_>// Ok, implicit conversion from c (double) to int</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
-                See //TODO fix see things from beginning to here
-                See //TODO ADD LINKS TO KEYWORDS USED IN PARAGRAPHS
+                See
                 <a href="#primitive-types">Primitive types</a>,
                 <a href="#implicit-conversions">Implicit conversions</a>
             </p>
@@ -845,106 +1003,123 @@
             <!--------------------------------------------------------------------->
             <!-- Structs                                                         -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="structs">Structs</h3>
             <p>
-                Structs are used to group multiple values of different types.<br>
+                <b>Structs</b> are used to <b>group</b> multiple <b>variables</b> of different types.<br>
                 The members are declared in the same way as variables, and they can be of any type, including enums, arrays and other structures.<br>
-                A member cannot be const and cannot have an initializer value.<br>
+                They cannot be <a href="#const-qualifier"><code><t_>const</t_></code></a> and cannot have initializer values.<br>
                 Like variables, uninitialized members cannot be used within expressions. Struct values must also be fully initialized before they can be used in expressions.
             </p>
             <p>
-                Structs can be referenced before their definition.<br>
-                It is allowed to declare structures, enums and symbol aliases inside a struct.<br>
-                Empty structs are not allowed.
+                Empty structs are allowed.<br>
+                Member access is explained in <a href="#special-operators">Special operators</a>.<br>
+                Struct initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
-            <p>
-                Member access is explained in <a href="#special-operators">Special operators</a>
-                //TODO MOVE VALUE LISTS TO #multiple-assignments
-            </p>
-
-            <div class="fancy-code-label">Syntax</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                struct<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> {
-                    <span class="syntax-elm lynx-type">member type</span><span class="hidden">·</span><span class="syntax-elm">member identifier</span>;
-                    <span class="syntax-elm">...</span>
-                }
-            </pre></div>
-
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">struct</span> <span class="lynx-type">idk</span> {
-                    <span class="lynx-type">uint</span> a, b;
-                    <span class="lynx-type">double</span> c;
-                }
+            <sep_></sep_>
+            <syntax_>
+                <left_>
+                    <label_></label_>
+                    <code_>
+                        struct<space_></space_><elm_>name<sup>id</sup></elm_> {
+                            <elm_>members<sup>...</sup></elm_>
+                        }
+                    </code_>
+                </left_>
+                <right_>
+                    <label_>Member syntax</label_>
+                    <code_>
+                        <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>;
 
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">i</span>){
-                    <span class="lynx-type">idk</span> var;
+                    </code_>
+                </right_>
+            </syntax_>
 
-                    var.a = <span class="lynx-literal">4</span>;              <span class="lynx-comment">// Ok, var = (4, ?, ?)</span>
-                    var.b = <span class="lynx-literal">var.a</span> * <span class="lynx-literal">4</span>;      <span class="lynx-comment">// Ok, var = (4, 8, ?)</span>
-                    var[<span class="lynx-literal">2</span>] = <span class="lynx-literal">0.33</span>;          <span class="lynx-comment">// Ok, var = (4, 8, 0.33)</span>
-                    var[<span class="lynx-literal">2</span>, <span class="lynx-literal">0</span>] = <span class="lynx-literal">var</span>[<span class="lynx-literal">3</span>, <span class="lynx-literal">2</span>];  <span class="lynx-comment">// Ok, var = (4, ?, ?)</span>
-                    <span class="lynx-comment">//var[4] = 0.33;        // Error, invalid index</span>
-                    <span class="lynx-comment">//var[i] = 0.33;        // Error, unknown index</span>
-                }
-            </pre></div>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <w_>struct</w_> <t_>idk</t_> {
+                            <t_>uint</t_> a, b;        <c_>// Ok</c_>
+                            <t_>double</t_>[<k_>4</k_>] c;      <c_>// Ok</c_>
+                            <c_>//double const d; // Error, struct members cannot be const</c_>
+                        }
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>idk</t_> var;
+
+                            var.a = <k_>4</k_>;              <c_>// Ok, var = (4, ?, ?)</c_>
+                            var.b = <k_>var.a</k_> * <k_>4</k_>;      <c_>// Ok, var = (4, 8, ?)</c_>
+                            <c_>//var.b = var.c[0];     // Error, var.c is uninitialized</span>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
-                <a href="#arrays">Arrays</a>
-                <a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a>
+                <a href="#primitive-types">Primitive types</a>,
+                <a href="#arrays">Arrays</a>,
+                <a href="#enums">Enums</a>
             </p>
 
 
             <!--------------------------------------------------------------------->
             <!-- Arrays                                                          -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="arrays">Arrays</h3>
             <p>
-                Arrays can aggregate values of the same type.<br>
-                Functions, parameters, right values, variables and struct member can all have array type.
-            </p>
-            <p>
+                <b>Arrays</b> can <b>aggregate values</b> of the same type.<br>
+                Functions, parameters, right values, variables and struct member can all have array type.<br>
                 Arrays can use any base type, including structs, enums and other arrays.<br>
                 An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
             </p>
             <p>
                 Array declarations are identical to normal types, but <code>[</code><code>]</code> tokens follow the type, optionally enclosing an expression to specify the number of elements.<br>
                 Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
-                If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be of an implicitly convertible array type.
+                If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be an implicitly convertible list.
             </p>
             <p>
-                There are no dynamic arrays.
-            </p>
-            <p>
-                Member access is explained in <a href="#special-operators">Special operators</a>
-                //TODO MOVE VALUE LISTS TO #multiple-assignments
+                There are no dynamic arrays.<br>
+                Member access is explained in <a href="#special-operators">Special operators</a>.<br>
+                Array initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
 
-            <div class="fancy-code-label">Syntax 1</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm lynx-type">T</span>[<span class="syntax-elm"><span class="lynx-type">uint</span> expression</span>]<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span>;</pre>
-            <div class="fancy-code-label">Syntax 2</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm lynx-type">T</span>[<span class="syntax-elm"><span class="lynx-type">uint</span> expression</span>]<span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> = <span class="syntax-elm"><span class="lynx-type">T[]</span> expression</span>;</pre>
-            <div class="fancy-code-label">Syntax 3</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm lynx-type">T</span>[] <span class="syntax-elm">symbol identifier</span> = <span class="syntax-elm"><span class="lynx-type">T[]</span> expression</span>;</pre>
+            <syntax_>
+                <fill_>
+                    <label_>1</label_>
+                    <code_>
+                        <elm_><t_>T</t_><sup>type</sup></elm_>[<elm_><t_>uint<sup>r</sup></t_></elm_>]<space_></space_><elm_>name<sup>id</sup></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>2</label_>
+                    <code_>
+                        <elm_><t_>T</t_><sup>type</sup></elm_>[] <elm_>name<sup>id</sup></elm_> = <elm_><t_>T[]<sup>r</sup></t_></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">uint</span>[<span class="lynx-literal">4</span>] arr1    = (<span class="lynx-literal">1</span>, <span class="lynx-literal">2</span>, <span class="lynx-literal">3</span>, <span class="lynx-literal">4</span>);  <span class="lynx-comment">// Ok, arr1 = (1,  2,   3, 4)</span>
-                <span class="lynx-type">uint</span>[<span class="lynx-literal">2</span>][<span class="lynx-literal">2</span>] arr2 = (<span class="lynx-literal">1</span>, <span class="lynx-literal">2</span>, <span class="lynx-literal">3</span>, <span class="lynx-literal">4</span>);  <span class="lynx-comment">// Ok, arr2 = ((1, 2), (3, 4)). Explained in Constructors</span>
-                <span class="lynx-type">uint</span>[<span class="lynx-literal">2</span>][<span class="lynx-literal">2</span>] arr3 = <span class="lynx-literal">arr1</span>;          <span class="lynx-comment">// Ok, arr3 = ((1, 2), (3, 4)). Explained in Constructors</span>
-                <span class="lynx-type">uint</span>[<span class="lynx-literal">5</span>] arr4 = <span class="lynx-literal">1</span>;                <span class="lynx-comment">// Ok, arr4 = (1, 1, 1, 1, 1)</span>
-                <span class="lynx-type">uint</span>[] arr5 = (<span class="lynx-literal">8</span>, <span class="lynx-literal">7</span>, <span class="lynx-literal">6</span>);         <span class="lynx-comment">// Ok, arr5 = (8,  7,  6)</span>
-                <span class="lynx-type">uint</span>[] arr6 = <span class="lynx-literal">arr4</span> * <span class="lynx-literal">2</span>;          <span class="lynx-comment">// Ok, arr6 = (16, 14, 12)</span>
-
-                <span class="lynx-comment">//uint[4] arr1 = (1, 2, 3);      // Error, inizializer doesn't have enough elements</span>
-                <span class="lynx-comment">//uint[] arr1  = 1;              // Error, cannot determine the array size</span>
-            </pre></div>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>uint</t_>[<k_>4</k_>] <f_>func</f_>(<t_>float</t_>[<k_>4</k_>] n){
+                            <w_>if</w_>(n[<k_>3</k_>]) <w_>return</w_> n * <k_>4</k_>;
+                            <w_>else</w_> <w_>return</w_> n[<k_>0</k_>];
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#primitive-types">Primitive types</a>,
+                <a href="#enums">Enums</a>,
                 <a href="#implicit-conversions">Implicit conversions</a>,
                 <a href="#constructors">Constructors</a>
             </p>
@@ -953,10 +1128,11 @@
             <!--------------------------------------------------------------------->
             <!-- Implicit conversions                                            -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="implicit-conversions">Implicit conversions</h3>
             <p>
-                Implicit conversions are performed when an expression of the incorrect type is used in place of the expected one.<br>
+                <b>Implicit conversions</b> are performed when an <b>expression</b> of the <b>incorrect type</b> is used in place of the expected one.<br>
+                This includes anything whose syntax requires an expression.<br>
                 In function overloads and templates, the actual type of the value always takes precedence over conversions.
             </p>
             <p>
@@ -971,77 +1147,77 @@
                 </tr></thead>
                 <tbody>
                     <tr>
-                        <td rowspan="3"><code class="lynx-type">uint</code></td>
-                        <td><code class="lynx-type">int</code></td>
-                        <td>Values over <code class="lynx-literal">limits::int::max</code> overflow to <code class="lynx-literal">limits::int::min&nbsp;+&nbsp;n&nbsp;-&nbsp;1</code></td>
+                        <td rowspan="3"><code><t_>uint</t_></code></td>
+                        <td><code><t_>int</t_></code></td>
+                        <td>Values over <code>limits::int::<k_>max</k_></code> overflow to <code>limits::int::<k_>min</k_> + <k_>n</k_> - <k_>1</k_></code></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">float</code><code class="lynx-type">double</code></td>
+                        <td><code><t_>float</t_></code><code><t_>double</t_></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">bool</code></td>
-                        <td><code class="lynx-literal">1</code> is evaluated as <code class="lynx-literal">true</code>, any other value as <code class="lynx-literal">false</code></td>
+                        <td><code><t_>bool</t_></code></td>
+                        <td><code><k_>1</k_></code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="3"><code class="lynx-type">int</code></td>
-                        <td><code class="lynx-type">uint</code></td>
-                        <td>Negative values underflow to <code class="lynx-literal">limits::uint::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code></td>
+                        <td rowspan="3"><code><t_>int</t_></code></td>
+                        <td><code><t_>uint</t_></code></td>
+                        <td>Negative values underflow to <code>limits::uint::<k_>max</k_> + <k_>n</k_> + <k_>1</k_></code></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">float</code><code class="lynx-type">double</code></td>
+                        <td><code><t_>float</t_></code><code><t_>double</t_></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">bool</code></td>
-                        <td><code class="lynx-literal">1</code> is evaluated as <code class="lynx-literal">true</code>, any other value as <code class="lynx-literal">false</code></td>
+                        <td><code><t_>bool</t_></code></td>
+                        <td><code><k_></k_>1</code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="4"><code class="lynx-type">float</code></td>
-                        <td><code class="lynx-type">uint</code></td>
-                        <td>The decimal part is truncated. Negative values underflow to <code class="lynx-literal">limits::uint::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
-                        If the value is not between <code class="lynx-literal">limits::uint::min</code> and <code class="lynx-literal">limits::uint::max</code>, the result is <b>undefined</b></td>
+                        <td rowspan="4"><code><t_>float</t_></code></td>
+                        <td><code><t_>uint</t_></code></td>
+                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k_>max</k_> + <k_>n</k_> + <k_>1</k_></code>.<br>
+                        If the value is not between <code>limits::uint::<k_>min</k_></code> and <code>limits::uint::<k_>max</k_></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">int</code></td>
+                        <td><code><t_>int</t_></code></td>
                         <td>The decimal part is truncated.<br>
-                        If the value is not between <code class="lynx-literal">limits::int::min</code> and <code class="lynx-literal">limits::int::max</code>, the result is <b>undefined</b></td>
+                        If the value is not between <code>limits::int::<k_>min</k_></code> and <code>limits::int::<k_>max</k_></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">double</code></td>
+                        <td><code><t_>double</t_></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">bool</code></td>
-                        <td><code class="lynx-literal">1.0</code> is evaluated as <code class="lynx-literal">true</code>, any other value as <code class="lynx-literal">false</code></td>
+                        <td><code><t_>bool</t_></code></td>
+                        <td><code><k_>1.0</k_></code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="4"><code class="lynx-type">double</code></td>
-                        <td><code class="lynx-type">uint</code></td>
-                        <td>The decimal part is truncated. Negative values underflow to <code class="lynx-literal">limits::uint::max&nbsp;+&nbsp;n&nbsp;+&nbsp;1</code>.<br>
-                        If the value is not between <code class="lynx-literal">limits::uint::min</code> and <code class="lynx-literal">limits::uint::max</code>, the result is <b>undefined</b></td>
+                        <td rowspan="4"><code><t_>double</t_></code></td>
+                        <td><code><t_>uint</t_></code></td>
+                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k_>max</k_> + <k_>n</k_> + <k_>1</k_></code>.<br>
+                        If the value is not between <code>limits::uint::<k_>min</k_></code> and <code>limits::uint::<k_>max</k_></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">int</code></td>
+                        <td><code><t_>int</t_></code></td>
                         <td>The decimal part is truncated.<br>
-                        If the value is not between <code class="lynx-literal">limits::int::min</code> and <code class="lynx-literal">limits::int::max</code>, the result is <b>undefined</b></td>
+                        If the value is not between <code>limits::int::<k_>min</k_></code> and <code>limits::int::<k_>max</k_></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">float</code></td>
+                        <td><code><t_>float</t_></code></td>
                         <td>The result is approximated using the maximum precision available</td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">bool</code></td>
-                        <td><code class="lynx-literal">1.0</code> is evaluated as <code class="lynx-literal">true</code>, any other value as <code class="lynx-literal">false</code></td>
+                        <td><code><t_>bool</t_></code></td>
+                        <td><code><k_>1.0</k_></code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="3"><code class="lynx-type">bool</code></td>
-                        <td><code class="lynx-type">uint</code><code class="lynx-type">int</code></td>
-                        <td><code class="lynx-literal">true</code> is evaluated as <code class="lynx-literal">1</code>, <code class="lynx-literal">false</code> as <code class="lynx-literal">0</code></td>
+                        <td rowspan="3"><code><t_>bool</t_></code></td>
+                        <td><code><t_>uint</t_></code><code><t_>int</t_></code></td>
+                        <td><code><k_>true</k_></code> is evaluated as <code><k_>1</k_></code>, <code><k_>false</k_></code> as <code><k_>0</k_></code></td>
                     </tr>
                     <tr>
-                        <td><code class="lynx-type">float</code><code class="lynx-type">double</code></td>
-                        <td><code class="lynx-literal">true</code> is evaluated as <code class="lynx-literal">1.0</code>, <code class="lynx-literal">false</code> as <code class="lynx-literal">0.0</code></td>
+                        <td><code><t_>float</t_></code><code><t_>double</t_></code></td>
+                        <td><code><k_>true</k_></code> is evaluated as <code><k_>1.0</k_></code>, <code><k_>false</k_></code> as <code><k_>0.0</k_></code></td>
                     </tr>
                 </tbody>
             </table></div>
@@ -1054,45 +1230,50 @@
                     <th>Expected type    </th>
                     <th>Behaviour        </th>
                 </tr>
-                <td><code class="lynx-type">T</code>   </td>
-                <td><code class="lynx-type">U[n]</code></td>
-                <td>Each element of the result is initialized with the value of the starting data, converted from <code class="lynx-type">T</code> to <code class="lynx-type">U</code></td>
+                <td><code><t_>T</t_></code>   </td>
+                <td><code><t_>U[n]</t_></code></td>
+                <td>Each element of the result is initialized with the value of the starting expression, converted from <code><t_>T</t_></code> to <code><t_>U</t_></code></td>
                 <tr>
-                    <td><code class="lynx-type">T[n]</code></td>
-                    <td><code class="lynx-type">U[n]</code></td>
-                    <td>Each element of the result is initialized with the corresponding value of the starting array, converted from <code class="lynx-type">T</code> to <code class="lynx-type">U</code></td>
+                    <td><code><t_>T[n]</t_></code></td>
+                    <td><code><t_>U[n]</t_></code></td>
+                    <td>Each element of the result is initialized with the corresponding value of the starting array, converted from <code><t_>T</t_></code> to <code><t_>U</t_></code></td>
                 </tr>
                 <tr>
-                    <td><code class="lynx-type">T[n]</code></td>
-                    <td><code class="lynx-type">bool</code></td>
-                    <td>Evaluated as <code class="lynx-literal">true</code> if all the elements of the initial array converted from <code class="lynx-type">T</code> to <code class="lynx-type"e>bool</code> evaluate as <code class="lynx-literal">true</code>, <code class="lynx-literal">false</code> otherwise</td>
+                    <td><code><t_>T[n]</t_></code></td>
+                    <td><code><t_>bool</t_></code></td>
+                    <td>Evaluated as <code><k_>true</k_></code> if all the elements of the initial array converted from <code><t_>T</t_></code> to <code><t_>bool</t_></code> evaluate as <code><k_>true</k_></code>, <code><k_>false</k_></code> otherwise</td>
                 </tr>
             </table></div>
             <p>
-                Values cannot be explicitly casted as in C. To convert a value, constructors are used.<br>
+                Values cannot be explicitly casted as in C. To convert a value, <a href="constructors">constructors</a> are used.<br>
                 Attempting to convert incompatible types will result in a semantic error.<br>
-                Structs are not convertible.
+                Structs are never convertible.
             </p>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">void</span> <span class="lynx-func">fun</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">a</span>[<span class="lynx-literal">5</span>]) {}
-                <span class="lynx-type">void</span> <span class="lynx-func">fun2</span>(<span class="lynx-type">bool</span> <span class="lynx-arg">a</span>) {}
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>a</a_>[<k_>5</k_>]) {}
+                        <t_>void</t_> <f_>fun2</f_>(<t_>bool</t_> <a_>a</a_>) {}
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-keyword">struct</span> { <span class="lynx-type">uint</span> n; } var = (<span class="lynx-literal">0</span>);
-                    <span class="lynx-comment">//fun(var);                               // Error, structs cannot be converted</span>
-                    <span class="lynx-comment">//fun(float[2](1.0, 4.4));                // Error, arrays have different lengths</span>
-                    <span class="lynx-func">fun</span>(<span class="lynx-literal">2</span>);                                   <span class="lynx-comment">// Ok, a = (2, 2, 2, 2, 2)</span>
-                    <span class="lynx-func">fun</span>(<span class="lynx-type">float</span>[<span class="lynx-literal">5</span>](<span class="lynx-literal">1.0</span>, <span class="lynx-literal">4.4</span>, <span class="lynx-literal">5.5</span>, <span class="lynx-literal">-33</span>, <span class="lynx-literal">2.11</span>));  <span class="lynx-comment">// Ok, a = (1, 4, 5, 4294967263, 2)</span>
+                        <t_>void</t_> <f_>main</f_>(){
+                            <w_>struct</w_> { <t_>uint</t_> n; } var = (<k_>0</k_>);
+                            <c_>//fun(var);                               // Error, structs cannot be converted</c_>
+                            <c_>//fun(float[2](1.0, 4.4));                // Error, arrays have different lengths</c_>
+                            <f_>fun</f_>(<k_>2</k_>);                                   <c_>// Ok, a = (2, 2, 2, 2, 2)</c_>
+                            <f_>fun</f_>(<t_>float</t_>[<k_>5</k_>](<k_>1.0</k_>, <k_>4.4</k_>, <k_>5.5</k_>, <k_>-33</k_>, <k_>2.11</k_>));  <c_>// Ok, a = (1, 4, 5, 4294967263, 2)</c_>
 
-                    <span class="lynx-func">fun2</span>(<span class="lynx-literal">2</span>);                                  <span class="lynx-comment">// Ok, a = true</span>
-                    <span class="lynx-func">fun2</span>(<span class="lynx-type">float</span>[<span class="lynx-literal">5</span>](<span class="lynx-literal">1.0</span>, <span class="lynx-literal">4.4</span>, <span class="lynx-literal">5.5</span>, <span class="lynx-literal">-33</span>, <span class="lynx-literal">2.11</span>)); <span class="lynx-comment">// Ok, a = true</span>
-                    <span class="lynx-func">fun2</span>(<span class="lynx-type">float</span>[<span class="lynx-literal">5</span>](<span class="lynx-literal">1.0</span>, <span class="lynx-literal">4.4</span>, <span class="lynx-literal">5.5</span>, <span class="lynx-literal">-33</span>, <span class="lynx-literal">0</span>   )); <span class="lynx-comment">// Ok, a = false</span>
+                            <f_>fun2</f_>(<k_>2</k_>);                                  <c_>// Ok, a = true</c_>
+                            <f_>fun2</f_>(<t_>float</t_>[<k_>5</k_>](<k_>1.0</k_>, <k_>4.4</k_>, <k_>5.5</k_>, <k_>-33</k_>, <k_>2.11</k_>)); <c_>// Ok, a = true</c_>
+                            <f_>fun2</f_>(<t_>float</t_>[<k_>5</k_>](<k_>1.0</k_>, <k_>4.4</k_>, <k_>5.5</k_>, <k_>-33</k_>, <k_>0</k_>   )); <c_>// Ok, a = false</c_>
 
-                    <span class="lynx-type">uint</span> arr[<span class="lynx-literal">1.2</span>];                            <span class="lynx-comment">// Ok, arr has 1 element</span>
-                }
-            </pre></div>
+                            <t_>uint</t_> arr[<k_>1.2</k_>];                            <c_>// Ok, arr has 1 element</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#arrays">Arrays</a>,
@@ -1104,40 +1285,50 @@
             <!--------------------------------------------------------------------->
             <!-- Auto specifier                                                  -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="auto-specifier">Auto specifier</h3>
             <p>
-                The <code class="lynx-type">auto</code> specifier can be used as a type when declaring a variable or function.<br>
+                The <b><code><t_>auto</t_></code></b> specifier can be <b>used as</b> a <b>type</b> when declaring a variable or function.<br>
                 The actual type of the symbol will be the same as the expression used to initialize it.<br>
             </p>
             <p>
-                <code class="lynx-type">auto</code> is not allowed in struct members declarations and function parameters.<br>
-                The type of <code class="lynx-type">auto</code> functions is determined by their return value.<br>
-                There is no <code class="lynx-type">auto</code> constructor.
+                <code><t_>auto</t_></code> is not allowed in struct members declarations and function parameters.<br>
+                The type of <code><t_>auto</t_></code> functions is determined by their return value.<br>
+                There is no <code><t_>auto</t_></code> constructor.
             </p>
             <p>
-                <code class="lynx-type">auto</code> arrays and <code class="lynx-type">const</code> <code class="lynx-type">auto</code> symbols are allowed.
+                <code><t_>auto</t_></code> arrays and <code><t_>const</t_></code> <code><t_>auto</t_></code> symbols are allowed.
                 //TODO auto functions that depend on an argument value
             </p>
 
-            <div class="fancy-code-label">Example 1</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">auto</span> <span class="lynx-func">func</span>(){
-                    <span class="lynx-keyword">return</span> <span class="lynx-literal">true</span>;        <span class="lynx-comment">// func has type bool</span>
-                }
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">1</label_>
+                    <code_>
+                        <t_>auto</t_> <f_>func</f_>(){
+                            <w_>return</w_> <k_>true</k_>;        <c_>// func has type bool</c_>
+                        }
 
-                <span class="lynx-type">auto</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">auto</span> a = <span class="lynx-literal">2</span>;         <span class="lynx-comment">// a has type uint</span>
-                    <span class="lynx-type">auto</span> b = <span class="lynx-literal">5.4</span> * <span class="lynx-literal">a</span>;   <span class="lynx-comment">// b has type float</span>
-                    <span class="lynx-type">auto</span> c = <span class="lynx-func">func</span>();    <span class="lynx-comment">// c has type bool</span>
-                    <span class="lynx-comment">// No return statement, main has type void</span>
-                }
-            </pre></div>
-            <div class="fancy-code-label">Example 2</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">auto</span>[<span class="lynx-literal">4</span>] a = <span class="lynx-literal">1</span>;          <span class="lynx-comment">// a has type int[4] and value (1, 1, 1, 1)</span>
-                <span class="lynx-type">auto</span>[<span class="lynx-literal">2</span>] <span class="lynx-type">const</span> b = !<span class="lynx-literal">a</span>;   <span class="lynx-comment">// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</span>
-            </pre></div>
+                        <t_>auto</t_> <f_>main</f_>(){
+                            <t_>auto</t_> a = <k_>2</k_>;         <c_>// a has type uint</c_>
+                            <t_>auto</t_> b = <k_>5.4</k_> * <k_>a</k_>;   <c_>// b has type float</c_>
+                            <t_>auto</t_> c = <f_>func</f_>();    <c_>// c has type bool</c_>
+                            <c_>// No return statement, main has type void</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">2</label_>
+                    <code_>
+                        <t_>auto</t_>[<k_>4</k_>] a = <k_>1</k_>;          <c_>// a has type int[4] and value (1, 1, 1, 1)</c_>
+                        <t_>auto</t_>[<k_>2</k_>] <t_>const</t_> b = !<k_>a</k_>;   <c_>// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</c_>
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#functions">Functions</a>,
@@ -1148,45 +1339,50 @@
             <!--------------------------------------------------------------------->
             <!-- Typeof and baseof specifiers                                    -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="typeof-and-baseof-specifiers">Typeof and baseof specifiers</h3>
             <p>
-                The <code class="lynx-type">typeof</code> and <code class="lynx-type">baseof</code> specifiers are used in the same way as auto, but the type is defined by the expression passed to them.<br>
-                <code class="lynx-type">typeof</code> returns the type of the expression, <code class="lynx-type">baseof</code> returns it's base type.
+                The <b><code><t_>typeof</t_></code></b> and <b><code><t_>baseof</t_></code></b> specifiers are used in the same way as <code><t_>auto</t_></code>, but the <b>type</b> is defined by the <b>expression</b> that is passed to them.<br>
+                <code><t_>typeof</t_></code> returns the type of the expression, <code><t_>baseof</t_></code> returns it's base type.
             </p>
             <p>
-                <code class="lynx-type">baseof</code> can only be used on arrays, enums and primitive types.<br>
+                <code><t_>baseof</t_></code> can only be used on arrays, enums and primitive types.<br>
                 The base type of primitive types is the type itself.<br>
                 The expressions passed to those specifiers are always evaluated at compile time.
             </p>
             <p>
-                The <code class="lynx-type">typeof</code> and <code class="lynx-type">baseof</code> specifiers can be used as constructors.<br>
+                The <code><t_>typeof</t_></code> and <code><t_>baseof</t_></code> specifiers can be used as constructors.<br>
                 Circular dependencies are a semantic error.
                 //TODO
             </p>
 
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm">typeof</span>(<span class="syntax-elm lynx-type">T</span>)</pre>
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm">baseof</span>(<span class="syntax-elm lynx-type">T</span>)</pre>
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">auto</span>[<span class="lynx-literal">3</span>] <span class="lynx-func">func</span>(<span class="lynx-keyword">typeof</span>(<span class="lynx-func">func</span>(<span class="lynx-literal">0</span>)) <span class="lynx-arg">n</span>) { <span class="lynx-comment">// 2 - func::n has type bool[3]</span>
-                    <span class="lynx-keyword">return</span> !n * <span class="lynx-type">int</span>(<span class="lynx-literal">0</span>, <span class="lynx-literal">1</span>, <span class="lynx-literal">2</span>);    <span class="lynx-comment"> // 1 - func has type bool</span>
-                }
-
-                <span class="lynx-type">baseof</span>(<span class="lynx-func">main</span>::a) <span class="lynx-type">const</span> g = <span class="lynx-literal">4</span>;     <span class="lynx-comment"> // g has type bool and value true</span>
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">baseof</span>(g) b = <span class="lynx-literal">a</span>;             <span class="lynx-comment"> // b has type bool and balue false</span>
-
-                    <span class="lynx-comment">/*                     bool constructor, value 0
-                                        ┌───────────┴──────────┐*/</span>
-                    <span class="lynx-type">typeof</span>(<span class="lynx-func">func</span>(<span class="lynx-literal">0</span>))[<span class="lynx-literal">2</span>] a = <span class="lynx-type">baseof</span>(<span class="lynx-func">func</span>(<span class="lynx-literal">0</span>))(<span class="lynx-func">func</span>(<span class="lynx-literal">5</span>));<span class="lynx-comment">/* a has type bool[3][2] and value ((0, 0, 0), (0, 0, 0))
-                    └───────┬────────┘                     └──┬──┘
-                        bool[3][2]               type bool[3], value (0, 0, 0)*/</span>
-                }
-                //TODO write an easier example
-            </pre></div>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        typeof(<elm_><t_>T</t_><sup>r</sup></elm_>)
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        baseof(<elm_><t_>T</t_><sup>r</sup></elm_>)
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        //TODO
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#functions">Functions</a>,
@@ -1197,73 +1393,95 @@
             <!--------------------------------------------------------------------->
             <!-- Unnamed types                                                   -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h2 id="unnamed-types">Unnamed types</h2>
             <p>
                 When a type doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the type and the symbol in the same construct.<br>
                 Similarly to the C syntax, the type name is not specified and the definition is used as type of the symbol.
             </p>
             <p>
-                Any symbol defined inside those types can still be referenced through the <code class="lynx-type">typeof</code> and <code class="lynx-type">auto</code> specifiers.<br>
+                Any symbol defined inside those types can still be referenced through the <code><t_>typeof</t_></code> and <code><t_>auto</t_></code> specifiers.<br>
                 Members of unnamed structs can be accessed using the member access operator, like normal structs.<br>
-                Defining an unnamed type without also declaring the symbol is allowed, but it generates a warning as it would just be a weird <a href="#namespaces"><code class="lynx-keyword">namespace</code></a>.
+                Defining an unnamed type without also declaring the symbol is allowed, but it generates a warning as the type and anything declared in it would be unaccessible.
             </p>
 
-            <div class="fancy-code-label">Struct syntax</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                struct {
-                    <span class="syntax-elm lynx-type">member type</span><span class="hidden">·</span><span class="syntax-elm">member identifier</span>;
-                    <span class="syntax-elm">...</span>
-                } <span class="syntax-elm">symbol identifier</span>;
-            </pre></div>
-            <div class="fancy-code-label">Enum syntax 1</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                enum : <span class="syntax-elm lynx-type">T</span> {
-                    <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
-                    <span class="syntax-elm">...</span>
-                } <span class="syntax-elm">symbol identifier</span>;
-            </pre></div>
-            <div class="fancy-code-label">Enum syntax 2</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line wide-lines">
-                strict enum : <span class="syntax-elm lynx-type">T</span> {
-                    <span class="syntax-elm">element identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;
-                    <span class="syntax-elm">...</span>
-                } <span class="syntax-elm">symbol identifier</span>;
-            </pre></div>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_> - Struct</label_>
+                    <code_>
+                        struct {
+                            <elm_>members<sup>...</sup></elm_>
+                        } <elm_>symbol name<sup>id</sup></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>1 - Enum</label_>
+                    <code_>
+                        enum : <elm_><t_>T<sup>type</sup></t_></elm_> {
+                            <elm_>elements<sup>...</sup></elm_>
+                        } <elm_>symbol name<sup>id</sup></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>2 - Enum</label_>
+                    <code_>
+                        strict enum : <elm_><t_>T<sup>type</sup></t_></elm_> {
+                            <elm_>elements<sup>...</sup></elm_>
+                        } <elm_>symbol name<sup>id</sup></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
 
-            <div class="fancy-code-label">Example 1</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">strict enum</span> : <span class="lynx-type">bool</span> {
-                    on = <span class="lynx-literal">true</span>;
-                    off = <span class="lynx-literal">false</span>;
-                } grasses;
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">1</label_>
+                    <code_>
+                        <w_>strict enum</w_> : <t_>bool</t_> {
+                            on = <k_>true</k_>;
+                            off = <k_>false</k_>;
+                        } grasses;
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    this.grasses = <span class="lynx-type">typeof</span>(grasses)::<span class="lynx-literal">on</span>;
-                }
-            </pre></div>
-            <div class="fancy-code-label">Example 2</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">struct</span> {
-                    <span class="lynx-type">uint</span> a, b;
-                    <span class="lynx-keyword">enum</span> : int {
-                        idk1;
-                        idk2;
-                    } c;
-                } <span class="lynx-func">fun</span>(){
-                    <span class="lynx-keyword">return</span> { <span class="lynx-literal">1</span>, <span class="lynx-literal">1</span>, <span class="lynx-literal">0</span> }; <span class="lynx-comment">// Ok, unnamed struct constructor</span>
-                }
+                        <t_>void</t_> <f_>main</f_>(){
+                            this.grasses = <t_>typeof</t_>(grasses)::<k_>on</k_>;
+                        }
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">2</label_>
+                    <code_>
+                        <w_>struct</w_> {
+                            <t_>uint</t_> a, b;
+                            <w_>enum</w_> : int {
+                                idk1;
+                                idk2;
+                            } c;
+                        } <f_>fun</f_>(){
+                            <w_>return</w_> { <k_>1</k_>, <k_>1</k_>, <k_>0</k_> }; <c_>// Ok, unnamed struct constructor</c_>
+                        }
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">auto</span> var = fun();
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>auto</t_> var = fun();
 
-                    <span class="lynx-comment">// Both are allowed</span>
-                    var.c = <span class="lynx-type">typeof</span>(var.c)::<span class="lynx-literal">idk1</span></span>;
-                    var.c = <span class="lynx-type">typeof</span>(<span class="lynx-type">typeof</span>(<span class="lynx-func">fun</span>)::c)::<span class="lynx-literal">idk2</span></span>;
+                            <c_>// Both are allowed</c_>
+                            var.c = <t_>typeof</t_>(var.c)::<k_>idk1</k_></span>;
+                            var.c = <t_>typeof</t_>(<t_>typeof</t_>(<f_>fun</f_>)::c)::<k_>idk2</k_></span>;
 
-                    <span class="lynx-type">typeof</span>(var.a) a = <span class="lynx-literal">0</span>;
-                }
-            </pre></div>
+                            <t_>typeof</t_>(var.a) a = <k_>0</k_>;
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a>,
@@ -1276,36 +1494,55 @@
             <!--------------------------------------------------------------------->
             <!-- Variables                                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="variables">Variables</h2>
             <p>
-                Variables are <b>named memory locations</b> that can contain values of the specified type.<br>
+                <b>Variables</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
                 Each variable <b>must be declared</b> before it is used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
             </p>
             <p>
-                A variable declaration consists of the type, the name and an optional <code>=</code> followed by an expression of a compatible type that is used to <b>inizialize it</b>.<br>
-                If an initializer expression is not specified, the value of the variable is <b>undefined</b>.<br>
-                <b>Evaluating</b> an expression that can result in an <b>undefined value</b> is considered a <b>logical error</b> and will stop the compilation process.<br>
+                A variable declaration consists of the type, the name and an optional <code>=</code> followed by an expression of a compatible type that is used to inizialize it.<br>
+                If an initializer expression is not specified, the value of the variable is undefined.<br>
+                Evaluating an expression that can result in an undefined value is considered a logical error and will stop the compilation process.<br>
                 Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
             </p>
 
-            <div class="fancy-code-label">Syntax 1</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm lynx-type">T</span><span class="hidden">·</span><span class="syntax-elm">symbol identifier</span>;</pre>
-            <div class="fancy-code-label">Syntax 2</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm lynx-type">T</span><span class="hidden">·</span><span class="syntax-elm">symbol identifier</span> = <span class="syntax-elm"><span class="lynx-type">T</span> expression</span>;</pre>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>1</label_>
+                    <code_>
+                        <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_>2</label_>
+                    <code_>
+                        <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_> = <elm_><t_>T<sup>r</sup></t_></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">uint</span> variable = <span class="lynx-literal">0</span>;         <span class="lynx-comment">// Ok, variable has value 0</span>
-                <span class="lynx-type">float</span> nya = <span class="lynx-literal">5</span> + <span class="lynx-literal">variable</span>;  <span class="lynx-comment">// Ok, nya ha value 5.0</span>
-                <span class="lynx-type">bool</span> var$;                 <span class="lynx-comment">// Ok, var$ has undefined value</span>
-                <span class="lynx-comment">//b var_2 = var$;          // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</span>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>uint</t_> variable = <k_>0</k_>;         <c_>// Ok, variable has value 0</c_>
+                        <t_>float</t_> nya = <k_>5</k_> + <k_>variable</k_>;  <c_>// Ok, nya ha value 5.0</c_>
+                        <t_>bool</t_> var$;                 <c_>// Ok, var$ has undefined value</c_>
+                        <c_>//b var_2 = var$;          // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</c_>
 
-                <span class="lynx-comment">//double variable;         // Error, the identifier "variable" is already declared</span>
-                <span class="lynx-comment">//double foo               // Error, ';' is not optional</span>
-                <span class="lynx-comment">//b $var;                  // Error, invalid identifier</span>
-                <span class="lynx-comment">//b 2var;                  // Error, invalid identifier</span>
-            </pre></div>
+                        <c_>//double variable;         // Error, the identifier "variable" is already declared</c_>
+                        <c_>//double foo               // Error, ';' is not optional</c_>
+                        <c_>//b $var;                  // Error, invalid identifier</c_>
+                        <c_>//b 2var;                  // Error, invalid identifier</c_>
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#types">Types</a>,
@@ -1317,10 +1554,10 @@
             <!--------------------------------------------------------------------->
             <!-- Temporary variables                                             -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="temporary-variables">Temporary variables</h3>
             <p>
-                Temporary variables are a special set of identifiers that have dynamic type and don't need to be declared.<br>
+                <b>Temporary variables</b> are a special set of identifiers that have <b>dynamic type</b> and don't need to be declared.<br>
                 These identifiers are meant to replace local variables whose only purpose is holding values that don't need to be used more than a few times.<br>
                 A temporary variable is identified by the <code>$</code> character followed by an arbitrary number of decimal digits, which denote its name.<br>
             </p>
@@ -1329,42 +1566,52 @@
                 There is no limit to the number of temporary variables a function can use.<br>
             </p>
             <p>
-                The <b>type</b> of a temporary variable can only be changed through direct assignments (<code>=</code>) and it must be <b>unambiguously determinable</b> in order for the variable to be evaulated.
-                This means that reading the value of a temporary variable after one or more branches that may have assigned it <b>different types</b> is not allowed and will result in a <b>semantic error</b>.<br>
+                The type of a temporary variable can only be changed through direct assignments (<code>=</code>) and it must be unambiguously determinable in order for the variable to be evaulated.
+                This means that reading the value of a temporary variable after one or more branches that may have assigned it different types is not allowed and will result in a semantic error.<br>
                 Using temporary variables whose type is undefined will also result in a semantic error.
             </p>
             <p>They act as normal variables for anything else.</p>
 
-            <div class="fancy-code-label">Example 1</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">uint3</span> <span class="lynx-func">fun1</span>(<span class="lynx-type">bool</span> <span class="lynx-arg">arg</span>) {
-                    $0 = <span class="lynx-literal">1</span>;             <span class="lynx-comment">// Ok, $0 has type uint and value 1</span>
-                    <span class="lynx-comment">//$2 = $1;          // Error, $1 has undefined type</span>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">1</label_>
+                    <code_>
+                        <t_>uint3</t_> <f_>fun1</f_>(<t_>bool</t_> <a_>arg</a_>) {
+                            $0 = <k_>1</k_>;             <c_>// Ok, $0 has type uint and value 1</c_>
+                            <c_>//$2 = $1;          // Error, $1 has undefined type</c_>
 
-                    <span class="lynx-type">uint3</span> vec = { <span class="lynx-literal">0</span>, <span class="lynx-literal">1</span>, <span class="lynx-literal">2</span> };
-                    $2 = <span class="lynx-literal">true</span>;          <span class="lynx-comment">// Ok, $2 has type b and value true</span>
-                    $2 = <span class="lynx-literal">vec</span>;           <span class="lynx-comment">// Ok, $2 has type uint3 and value { 0, 1, 2 }</span>
-                }
+                            <t_>uint3</t_> vec = { <k_>0</k_>, <k_>1</k_>, <k_>2</k_> };
+                            $2 = <k_>true</k_>;          <c_>// Ok, $2 has type b and value true</c_>
+                            $2 = <k_>vec</k_>;           <c_>// Ok, $2 has type uint3 and value { 0, 1, 2 }</c_>
+                        }
 
-                <span class="lynx-type">void</span> <span class="lynx-func">fun2</span>(<span class="lynx-type">uint3</span> <span class="lynx-arg">vec</span>) {
-                    <span class="lynx-comment">//uint var = $2;    // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</span>
-                }
+                        <t_>void</t_> <f_>fun2</f_>(<t_>uint3</t_> <a_>vec</a_>) {
+                            <c_>//uint var = $2;    // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</c_>
+                        }
 
-                <span class="lynx-comment">//uint var = $9;        // Error, temporary variables cannot be used outside of functions</span>
-            </pre></div>
-            <div class="fancy-code-label">Example 2</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">void</span> <span class="lynx-func">fun3</span>(<span class="lynx-type">bool</span> <span class="lynx-arg">arg</span>, <span class="lynx-type">uint2</span> &<span class="lynx-arg">ref</span>) {
-                    <span class="lynx-keyword">if</span>(arg) $0 = <span class="lynx-literal">1</span>;             <span class="lynx-comment">// $0 has type uint</span>
-                    <span class="lynx-keyword">else</span>    $0 = { <span class="lynx-literal">0</span>, <span class="lynx-literal">1</span> };      <span class="lynx-comment">// $0 has type uint2</span>
-                    <span class="lynx-comment">//ref = $0;                 // Error, cannot determine the type of $0</span>
-                    $0 = ref;                   <span class="lynx-comment">// Ok, $0 has type uint2 and the same value as ref</span>
+                        <c_>//uint var = $9;        // Error, temporary variables cannot be used outside of functions</c_>
+                    </code_>
+                </fill_>
+            </example_>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)">2</label_>
+                    <code_>
+                        <t_>void</t_> <f_>fun3</f_>(<t_>bool</t_> <a_>arg</a_>, <t_>uint2</t_> &<a_>ref</a_>) {
+                            <w_>if</w_>(arg) $0 = <k_>1</k_>;             <c_>// $0 has type uint</c_>
+                            <w_>else</w_>    $0 = { <k_>0</k_>, <k_>1</k_> };      <c_>// $0 has type uint2</c_>
+                            <c_>//ref = $0;                 // Error, cannot determine the type of $0</c_>
+                            $0 = ref;                   <c_>// Ok, $0 has type uint2 and the same value as ref</c_>
 
-                    <span class="lynx-keyword">if</span>(arg) $0 = { <span class="lynx-literal">0</span>, <span class="lynx-literal">1</span> };      <span class="lynx-comment">// $0 has type uint2</span>
-                    <span class="lynx-keyword">else</span>    $0 = { <span class="lynx-literal">2</span>, <span class="lynx-literal">3</span> };      <span class="lynx-comment">// $0 has type uint2</span>
-                    ref = <span class="lynx-literal">$0</span>;                   <span class="lynx-comment">// Ok, $0 has type uint2</span>
-                }
-            </pre></div>
+                            <w_>if</w_>(arg) $0 = { <k_>0</k_>, <k_>1</k_> };      <c_>// $0 has type uint2</c_>
+                            <w_>else</w_>    $0 = { <k_>2</k_>, <k_>3</k_> };      <c_>// $0 has type uint2</c_>
+                            ref = <k_>$0</k_>;                   <c_>// Ok, $0 has type uint2</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#types">Types</a>,
@@ -1379,32 +1626,53 @@
             <!--------------------------------------------------------------------->
             <!-- Functions                                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="functions">Functions</h2>
             <p>
-                Functions are the <b>main component</b> of the language. They contain the statements that will be executed during run time and manage inputs and outputs of the shader.<br>
+                <b>Functions</b> are the <b>main component</b> of the language. They contain the statements that will be executed during run time and manage inputs and outputs of the shader.<br>
+                A function definition consists of its type and name followed by a list of arguments and its statements enclosed in <code>{</code><code>}</code> delimiters.
             </p>
             <p>
-                A function definition consists of its type and name followed by a list of arguments and its statements enclosed in <code>{</code><code>}</code> delimiters.<br>
+                A function can take an arbitrary number of parameters of any type. Paramters are declared like variables and behave in the same exact way.<br>
+                The expressions used to call the function are called arguments.<br>
+                Each argument must be implicitly convertible to the type of the parameter.<br>
                 Functions are allowed to take no arguments.
             </p>
             <p>
-                The <code class="lynx-func">main</code> function is where the <b>code execution starts and ends</b>.<br>
-                Every shader <b>must define</b> the <b>main</b> as a <b>void</b> function. As such, it cannot return values.<br>
+                The <b><code><f_>main</f_></code> function</b> is where the <b>code execution starts and ends</b>.<br>
+                Every shader <b>must define</b> the <b>main</b> as a void function. As such, it cannot return values.<br>
             </p>
 
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm lynx-type">T</span><span class="hidden">·</span><span class="syntax-elm">symbol identifier</span>(<span class="syntax-elm lynx-type">U</span><span class="hidden">·</span><span class="syntax-elm">arg identifier</span>, <span class="syntax-elm">...</span>) {<span class="syntax-elm">...</span>}</pre>
+            <sep_></sep_>
+            <syntax_>
+                <left_>
+                    <label_></label_>
+                    <code_>
+                        <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>(<elm_>arguments<sup>...</sup></elm_>) {<elm_>...</elm_>}
+                    </code_>
+                </left_>
+                <right_>
+                    <label_>Parameter syntax</label_>
+                    <code_>
+                        <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>
+                    </code_>
+                </right_>
+            </syntax_>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">void</span> <span class="lynx-func">func1</span>() {}
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>void</t_> <f_>func1</f_>() {}
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">int</span> n = <span class="lynx-literal">0</span>;
-                    <span class="lynx-comment">// ...</span>
-                }
-            </pre></div>
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>int</t_> n = <k_>0</k_>;
+                            <c_>// ...</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#runtime-statements">Runtime statements</a>,
@@ -1415,37 +1683,48 @@
             <!--------------------------------------------------------------------->
             <!-- Parameters and references                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="parameters-and-references">Parameters and references</h3>
-            <p>
-                A function can take an <b>arbitrary number</b> of <b>parameters</b> of any type. Parameters are declared like variables and behave in the same exact way.<br>
-                The expressions used to call the function are called arguments.<br>
-                Each argument <b>must be implicitly convertible</b> to the type of the parameter.
-            </p>
             <p>
                 By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
                 If a parameter name is preceeded by a <b><code>&</code></b> token, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
             </p>
             <p>
-                Declaring a reference parameter as const is a syntax error and passing an unnamed value as argument of a reference parameter is a semantic error.<br>
+                Declaring a reference parameter as const is a syntax error and passing an r-value as argument of a reference parameter is a semantic error.<br>
                 Notice that in this case, the <code>&</code> token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
             </p>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">void</span> <span class="lynx-func">fun1</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">arg1</span>, <span class="lynx-type">uint</span> &<span class="lynx-arg">arg2</span>) {
-                    arg1 = <span class="lynx-literal">0</span>;     <span class="lynx-comment">// This doesn't modify main::a, but the local argument in which its value was copied</span>
-                    arg2 = <span class="lynx-literal">0</span>;     <span class="lynx-comment">// This modifies main::b</span>
-                }
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_ class="nobefore">Parameter syntax</label_>
+                    <code_>
+                        <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_>&<elm_>name<sup>id</sup></elm_>
+                    </code_>
+                </fill_>
+            </syntax_>
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">uint</span> a, b;
-                    <span class="lynx-func">fun1</span>(a, b);   <span class="lynx-comment">// a keeps an undefined value, b is set to 0</span>
-                    <span class="lynx-comment">//fun1(a, 5); // Error, cannot pass literals to reference parameters</span>
-                }
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>void</t_> <f_>fun1</f_>(<t_>uint</t_> <a_>arg1</a_>, <t_>uint</t_> &<a_>arg2</a_>) {
+                            arg1 = <k_>0</k_>;     <c_>// c_doesn't modify main::a, but the local argument in which its value was copied</span>
+                            arg2 = <k_>0</k_>;     <c_>// c_modifies main::b</span>
+                        }
 
-                <span class="lynx-comment">//void fun2(const int &arg1){} // Error, references cannot be const</span>
-            </pre></div>
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>uint</t_> a, b;
+                            <f_>fun1</f_>(a, b);   <c_>// a keeps an undefined value, b is set to 0</c_>
+                            <c_>//fun1(a, 5); // Error, cannot pass literals to reference parameters</c_>
+                        }
+
+                        <c_>//void fun2(const int &arg1){} // Error, references cannot be const</c_>
+                    </code_>
+                </fill_>
+            </example_>
+
             <p>
                 See
                 <a href="#const-qualifier">Const qualifier</a>,
@@ -1456,52 +1735,66 @@
             <!--------------------------------------------------------------------->
             <!-- Return statement                                                -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="return-statement">Return statement</h3>
             <p>
-                The <b>type</b> of the function defines the type of the <b>value</b> that is <b>returned</b> by the function when called.<br>
-                Values are returned using the <code class="lynx-keyword">return</code> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
-                Functions that <b>don't return</b> a value must be defined using the <b><code class="lynx-type">void</code> type</b>.<br>
-                Void functions are allowed to contain no statements. <b>Non-void</b> functions must <b>always return</b> a value.
+                The type of the function defines the type of the value that is returned by the function when called.<br>
+                <b>Values</b> are <b>returned</b> using the <b><code><k_>return</k_></code></b> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
+                Functions that <b>don't return</b> a value must be defined using the <b><code><t_>void</t_></code> type</b>.<br>
+                Void functions are allowed to contain no statements. Non-void functions must always return a value.
             </p>
 
-            <div class="fancy-code-label">Syntax</div>
-            <pre class="fancy-code-single-line"><span class="syntax-elm">return</span><span class="hidden">·</span><span class="syntax-elm">expression</span>;</pre>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-type">void</span> <span class="lynx-func">empty_function_1</span>() { <span class="lynx-keyword">return</span>; }   <span class="lynx-comment">// Ok</span>
-                <span class="lynx-type">void</span> <span class="lynx-func">empty_function_2</span>() {}            <span class="lynx-comment">// Ok</span>
+            <sep_></sep_>
+            <syntax_>
+                <fill_>
+                    <label_></label_>
+                    <code_>
+                        return<space_></space_><elm_><t_>T<sup>r</sup></t_></elm_>;
+                    </code_>
+                </fill_>
+            </syntax_>
 
-                <span class="lynx-type">uint</span> <span class="lynx-func">empty_function_3</span>() { <span class="lynx-keyword">return</span> <span class="lynx-literal">0</span>; }  <span class="lynx-comment">// Ok</span>
-                <span class="lynx-comment">//uint empty_function_4() {}           // Error, non-void functions must return a value</span>
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <t_>void</t_> <f_>empty_function_1</f_>() { <w_>return</w_>; }    <c_>// Ok</c_>
+                        <t_>void</t_> <f_>empty_function_2</f_>() {}             <c_>// Ok</c_>
 
-                <span class="lynx-type">uint</span> <span class="lynx-func">f</span>(<span class="lynx-type">uint</span> <span class="lynx-arg">n</span>) { <span class="lynx-keyword">return</span> n * <span class="lynx-literal">2</span>; }       <span class="lynx-comment">// Ok</span>
-                <span class="lynx-comment">//void f() { }                         // Error, f is already defined</span>
+                        <t_>uint</t_> <f_>empty_function_3</f_>() { <w_>return</w_> <k_>0</k_>; }  <c_>// Ok</c_>
+                        <c_>//uint empty_function_4() {}           // Error, non-void functions must return a value</c_>
 
-                <span class="lynx-type">void</span> <span class="lynx-func">main</span>(){
-                    <span class="lynx-type">uint</span> n = <span class="lynx-func">empty_function_3</span>();       <span class="lynx-comment">// Ok</span>
-                    n = <span class="lynx-func">f</span>(<span class="lynx-func">f</span>(<span class="lynx-literal">n</span>));                       <span class="lynx-comment">// Ok</span>
-                }
-            </pre></div>
+                        <t_>uint</t_> <f_>f</f_>(<t_>uint</t_> <a_>n</a_>) { <w_>return</w_> n * <k_>2</k_>; }       <c_>// Ok</c_>
+                        <c_>//void f() { }                         // Error, f is already defined</c_>
+
+                        <t_>void</t_> <f_>main</f_>(){
+                            <t_>uint</t_> n = <f_>empty_function_3</f_>();       <c_>// Ok</c_>
+                            n = <f_>f</f_>(<f_>f</f_>(<k_>n</k_>));                       <c_>// Ok</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
 
 
             <!--------------------------------------------------------------------->
             <!-- Function calls                                                  -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="function-calls">Function calls</h3>
 
 
             <!--------------------------------------------------------------------->
             <!-- Template functions                                              -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="template-functions">Template functions</h3>
 
 
             <!--------------------------------------------------------------------->
             <!-- Type groups                                                     -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="type-groups">Type groups</h3>
 
 
@@ -1510,10 +1803,10 @@
             <!--------------------------------------------------------------------->
             <!-- Const qualifier                                                 -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="const-qualifier">Const qualifier</h2>
             <p>
-                The <code class="lynx-type">const</code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
+                The <code><t_>const</t_></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
                 Reference const parameters are not allowed, as well as const functions and const struct members.<br>
             </p>
             <p>
@@ -1525,25 +1818,30 @@
                 Const variables cannot have undefined value.
             </p>
 
+            <sep_></sep_>
+            <example_>
+                <fill_>
+                    <label_ onclick="copy_code(this)"></label_>
+                    <code_>
+                        <w_>struct</w_> <t_>s</t_> {
+                            <t_>uint</t_> a;            <c_>// Ok, non-const member</c_>
+                            <c_>//uint const b;    // Error, struct members cannot be const</c_>
+                        }
+                        <t_>s const</t_> var;           <c_>// Ok, const global variable</c_>
 
-            <div class="fancy-code-label">Example</div>
-            <div class="fancy-code-multi-line-fix"><pre class="fancy-code-multi-line">
-                <span class="lynx-keyword">struct</span> <span class="lynx-type">s</span> {
-                    <span class="lynx-type">uint</span> a;            <span class="lynx-comment">// Ok, non-const member</span>
-                    <span class="lynx-comment">//uint const b;    // Error, struct members cannot be const</span>
-                } <span class="lynx-type">const</span> var;           <span class="lynx-comment">// Ok, const global variable</span>
+                        <c_>//double const fun(){}              // Error, functions cannot be const</c_>
+                        <c_>//double fun(double const &arg){}   // Error, references cannot be const</c_>
 
-                <span class="lynx-comment">//double const fun(){}              // Error, functions cannot be const</span>
-                <span class="lynx-comment">//double fun(double const &arg){}   // Error, references cannot be const</span>
-
-                <span class="lynx-type">double</span> <span class="lynx-func">fun</span>(<span class="lynx-type">double const</span> arg) {      <span class="lynx-comment">// Ok, const parameter</span>
-                    <span class="lynx-comment">//uint a;                       // Error, uninitialized const</span>
-                    <span class="lynx-type">u64 const</span> a = 4;                <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-type">u64 const</span> b = arg, c;           <span class="lynx-comment">// Ok</span>
-                    <span class="lynx-comment">//a = 2;                        // Error, cannot assign values to const variables</span>
-                    c = <span class="lynx-literal">a</span> + b;                      <span class="lynx-comment">// Ok</span>
-                }
-            </pre></div>
+                        <t_>double</t_> <f_>fun</f_>(<t_>double </t_> arg) {           <c_>// Ok, const parameter</c_>
+                            <c_>//uint a;                       // Error, uninitialized const</c_>
+                            <t_>u64</t_> a = 4;                      <c_>// Ok</c_>
+                            <t_>u64</t_> b = arg, c;                 <c_>// Ok</c_>
+                            <c_>//a = 2;                        // Error, cannot assign values to const variables</c_>
+                            c = <k_>a</k_> + b;                      <c_>// Ok</c_>
+                        }
+                    </code_>
+                </fill_>
+            </example_>
             <p>
                 See
                 <a href="#compiler-optimizations">Compiler optimizations</a>
@@ -1555,7 +1853,7 @@
             <!--------------------------------------------------------------------->
             <!-- Symbol aliases                                                  -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="symbol-aliases">Symbol aliases</h2>
 
 
@@ -1568,7 +1866,7 @@
             <!--------------------------------------------------------------------->
             <!-- Runtime statements                                              -->
             <!--------------------------------------------------------------------->
-            <div class="separator-1"></div>
+            <sep-1_></sep-1_>
             <h1 id="runtime-statements">Runtime statements</h1>
 
 
@@ -1576,7 +1874,7 @@
             <!--------------------------------------------------------------------->
             <!-- Left and right values                                           -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="left-and-right-values">Left and right values</h2>
 
 
@@ -1584,38 +1882,38 @@
             <!--------------------------------------------------------------------->
             <!-- Expressions                                                     -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="expressions">Expressions</h2>
 
             <!--------------------------------------------------------------------->
             <!-- Literals                                                        -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="literals">Literals</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Constructors                                                    -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="constructors">Constructors</h3>
             <p>CONSTRUCTORS ARE SPECIAL FUNCTIONS //TODO</p>
 
             <!--------------------------------------------------------------------->
             <!-- Operators                                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="operators">Operators</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Special operators                                               -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="special-operators">Special operators</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Array operations                                                -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="array-operations">Array operations</h3>
 
 
@@ -1623,19 +1921,19 @@
             <!--------------------------------------------------------------------->
             <!-- Assignments                                                     -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="assignments">Assignments</h2>
 
             <!--------------------------------------------------------------------->
             <!-- Composite assignments                                           -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="composite-assignments">Composite assignments</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Multiple assignments                                            -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="multiple-assignments">Multiple assignments</h3>
 
 
@@ -1643,19 +1941,19 @@
             <!--------------------------------------------------------------------->
             <!-- Selection                                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="selection">Selection</h2>
 
             <!--------------------------------------------------------------------->
             <!-- If statement                                                    -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="if-statement">If statement</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Select statement                                                -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="select-statement">Select statement</h3>
 
 
@@ -1663,37 +1961,37 @@
             <!--------------------------------------------------------------------->
             <!-- Iteration                                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="iteration">Iteration</h2>
 
             <!--------------------------------------------------------------------->
             <!-- For loops                                                       -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="for-loops">For loops</h3>
 
             <!--------------------------------------------------------------------->
             <!-- While loops                                                     -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="while-loops">While loops</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Continue and break statements                                   -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="continue-and-break-statements">Continue and break statements</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Once statement                                                  -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="once-statement">Once statement</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Then statement                                                  -->
             <!--------------------------------------------------------------------->
-            <div class="separator-3"></div>
+            <sep-3_></sep-3_>
             <h3 id="then-statement">Then statement</h3>
 
 
@@ -1701,7 +1999,7 @@
             <!--------------------------------------------------------------------->
             <!-- Else statement                                                  -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="else-statement">Else statement</h2>
 
 
@@ -1713,7 +2011,7 @@
             <!--------------------------------------------------------------------->
             <!-- Compilation                                                     -->
             <!--------------------------------------------------------------------->
-            <div class="separator-1"></div>
+            <sep-1_></sep-1_>
             <h1 id="compilation">Compilation</h1>
 
 
@@ -1721,7 +2019,7 @@
             <!--------------------------------------------------------------------->
             <!-- Modules                                                         -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="modules">Modules</h2>
 
 
@@ -1729,7 +2027,7 @@
             <!--------------------------------------------------------------------->
             <!-- Compilation phases and error types                              -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="compilation-phases-and-error-types">Compilation phases and error types</h2>
 
 
@@ -1737,7 +2035,7 @@
             <!--------------------------------------------------------------------->
             <!-- Global initialization order                                     -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="global-initialization-order">Global initialization order</h2>
 
 
@@ -1745,7 +2043,7 @@
             <!--------------------------------------------------------------------->
             <!-- Branching performance                                           -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="branching-performance">Branching performance</h2>
 
 
@@ -1753,7 +2051,7 @@
             <!--------------------------------------------------------------------->
             <!-- Compiler optimizations                                          -->
             <!--------------------------------------------------------------------->
-            <div class="separator-2"></div>
+            <sep-2_></sep-2_>
             <h2 id="compiler-optimizations">Compiler optimizations</h2>
 
 
@@ -1765,7 +2063,7 @@
             <!--------------------------------------------------------------------->
             <!-- Standard modules                                                -->
             <!--------------------------------------------------------------------->
-            <div class="separator-1"></div>
+            <sep-1_></sep-1_>
             <h1 id="standard-modules">Standard modules</h1>
 
 
@@ -1777,7 +2075,7 @@
             <!--------------------------------------------------------------------->
             <!-- Quick reference tabs                                            -->
             <!--------------------------------------------------------------------->
-            <div class="separator-1"></div>
+            <sep-1_></sep-1_>
             <h1 id="quick-reference-tabs">Quick reference tabs</h1>
 
             //TODO
@@ -1812,10 +2110,10 @@
                     <tr>
                         <td class="center" >1</td>
                         <td class="center">
-                            <span class="syntax-elm"><code>(</code><code>)</code></span>
+                            <elm_><code>(</code><code>)</code></elm_>
                         </td>
-                        <td class="center"><span class="op_syntax">(<span class="syntax-elm lynx-type">T</span>)</span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                        <td class="center">(<elm_><t_>T<sup>r</sup></t_></elm_>)</td>
+                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Grouping</td>
                         <td class="left" rowspan=5>Other</td>
                     </tr>
@@ -1824,16 +2122,16 @@
                             <td class="center" rowspan=6>2</td>
                             <td class="center" rowspan=2>
                                 <span class="op_template">-</span><br>
-                                <span class="syntax-elm"><code>[</code><code>]</code></span><br>
+                                <elm_><code>[</code><code>]</code></elm_><br>
                                 <span class="op_template">with(T == struct_t)</span><br>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T[]</span>[<span class="syntax-elm lynx-type">uint</span>]</span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> l-value</span></td>
+                            <td class="center"><elm_><t_>T[]</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
+                            <td class="center"><code><t_>T<sup>l</sup></t_></code></td>
                             <td class="left" rowspan=2>Subscription</td>
                         </tr>
                         <tr>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span>[<span class="syntax-elm lynx-type">uint</span>]</span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">member type</span> l-value</span></td>
+                            <td class="center"><elm_><t_>T</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
+                            <td class="center"><code><t_>member type<sup>l</sup></t_></code></td>
                         </tr>
                         <tr>
                             <td class="center" rowspan=2>
@@ -1841,21 +2139,21 @@
                                 <code>.</code><br>
                                 <span class="op_template">with(T == struct_t)</span><br>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T[]</span>.<span class="syntax-elm lynx-var">identifier</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> l-value</span></td>
+                            <td class="center"><elm_><t_>T[]<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
+                            <td class="center"><code><t_>T<sup>l</sup></t_></code></td>
                             <td class="left" rowspan=2>Member access</td>
                         </tr>
                         <tr>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span>.<span class="syntax-elm lynx-var">identifier</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">member type</span> l-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
+                            <td class="center"><code><t_>member type<sup>l</sup></t_></code></td>
                         </tr>
                         <tr>
                             <td class="center">
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>++</code>
                             </td>
-                            <td class="center"><span class="syntax-elm lynx-type">T</span>++</td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_>++</td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Postfix increment</td>
                             <td class="left" rowspan=6>Arithmetic</td>
                         </tr>
@@ -1864,8 +2162,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>--</code>
                             </td>
-                            <td class="center"><span class="syntax-elm lynx-type">T</span>--</td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_>--</td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Postfix decrement</td>
                         </tr>
                     <!-- -->
@@ -1875,8 +2173,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>++</code>
                             </td>
-                            <td class="center"><span class="op_syntax">++<span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center">++<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Prefix increment</td>
                         </tr>
                         <tr>
@@ -1884,8 +2182,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>--</code>
                             </td>
-                            <td class="center"><span class="op_syntax">--<span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center">--<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Prefix decrement</td>
                         </tr>
                         <tr>
@@ -1893,8 +2191,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>+</code>
                             </td>
-                            <td class="center"><span class="op_syntax">+<span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center">+<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Promotion</td>
                         </tr>
                         <tr>
@@ -1902,8 +2200,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>-</code>
                             </td>
-                            <td class="center"><span class="op_syntax">-<span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center">-<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Inversion</td>
                         </tr>
                         <tr>
@@ -1911,15 +2209,15 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>~</code>
                             </td>
-                            <td class="center"><span class="op_syntax">~<span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center">~<elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Bitwise NOT</td>
                             <td class="left">Binary</td>
                         </tr>
                         <tr>
                             <td class="center"><code>!</code></td>
-                            <td class="center"><span class="op_syntax">!<span class="syntax-elm lynx-type">bool</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</td>
+                            <td class="center">!<elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Logical NOT</td>
                             <td class="left">Logical</td>
                         </tr>
@@ -1930,8 +2228,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>*</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &#42; <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &#42; <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Multiplication</td>
                             <td class="left" rowspan=5>Arithmetic</td>
                         </tr>
@@ -1940,8 +2238,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>/</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> / <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> / <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Division</td>
                         </tr>
                         <tr>
@@ -1949,8 +2247,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>%</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> % <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> % <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Modulo</td>
                         </tr>
                     <!-- -->
@@ -1960,8 +2258,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>+</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> + <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> + <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Addition</td>
                         </tr>
                         <tr>
@@ -1969,8 +2267,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>-</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> - <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> - <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Subtraction</td>
                         </tr>
                     <!-- -->
@@ -1980,8 +2278,8 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>&lt;&lt;</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &lt;&lt; <span class="syntax-elm lynx-type">uint</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;&lt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><codet_>T<sup>r</sup></codet_></code></td>
                             <td class="left">Left bit shift</td>
                             <td class="left" rowspan=2>Binary</td>
                         </tr>
@@ -1990,8 +2288,8 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>&gt;&gt;</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &gt;&gt; <span class="syntax-elm lynx-type">uint</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;&gt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                             <td class="left">Right bit shift</td>
                         </tr>
                     <!-- -->
@@ -2001,18 +2299,18 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&lt;</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &lt; <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &lt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Less than</td>
-                            <td class="left" rowspan=7>Comparison</td>
+                            <td class="left" rowspan=8>Comparison</td>
                         </tr>
                         <tr>
                             <td class="center">
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&lt;=</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &lt;= <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Less or equal than</td>
                         </tr>
                         <tr>
@@ -2020,8 +2318,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&gt;</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &gt; <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &gt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Greater than</td>
                         </tr>
                         <tr>
@@ -2029,19 +2327,19 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&gt;=</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> &gt;= <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Greater or equal than</td>
                         </tr>
                     <!-- -->
                         <tr>
-                            <td class="center" rowspan=3>8</td>
+                            <td class="center" rowspan=4>8</td>
                             <td class="center">
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>==</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> == <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> == <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Equality</td>
                         </tr>
                         <tr>
@@ -2049,15 +2347,21 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>!=</code>
                             </td>
-                            <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> != <span class="syntax-elm lynx-type">T</span></span></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> != <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Inequality</td>
                         </tr>
                         <tr>
-                            <td class="center"><code>:=</code></td>
-                            <td class="center"></td>
-                            <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                            <td class="center"><code>=:</code></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> =: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                             <td class="left">Existence</td>
+                        </tr>
+                        <tr>
+                            <td class="center"><code>!:</code></td>
+                            <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> !: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
+                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="left">Inexistence</td>
                         </tr>
                     <tr>
                         <td class="center">9</td>
@@ -2065,8 +2369,8 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>&</code>
                         </td>
-                        <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> & <span class="syntax-elm lynx-type">T</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                        <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> & <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Bitwise AND</td>
                         <td class="left" rowspan=3>Binary</td>
                     </tr>
@@ -2076,8 +2380,8 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>^</code>
                         </td>
-                        <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> ^ <span class="syntax-elm lynx-type">T</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                        <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> ^ <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Bitwise XOR</td>
                     </tr>
                     <tr>
@@ -2086,50 +2390,62 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>|</code>
                         </td>
-                        <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">T</span> | <span class="syntax-elm lynx-type">T</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                        <td class="center"><elm_><t_>T<sup>r</sup></t_></elm_> | <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
                         <td class="left">Bitwise OR</td>
                     </tr>
                     <tr>
                         <td class="center">12</td>
                         <td class="center"><code>&&</code></td>
-                        <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">bool</span> && <span class="syntax-elm lynx-type">bool</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> && <elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                         <td class="left">Logical AND</td>
                         <td class="left" rowspan=3>Logical</td>
                     </tr>
                     <tr>
                         <td class="center">13</td>
                         <td class="center"><code>^^</code></td>
-                        <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">bool</span> ^^ <span class="syntax-elm lynx-type">bool</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> ^^ <elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                         <td class="left">Logical XOR</td>
                     </tr>
                     <tr>
                         <td class="center">14</td>
                         <td class="center"><code>||</code></td>
-                        <td class="center"><span class="op_syntax"><span class="syntax-elm lynx-type">bool</span> || <span class="syntax-elm lynx-type">bool</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">bool</span> r-value</span></td>
+                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> || <elm_><t_>bool<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
                         <td class="left">Logical OR</td>
                     </tr>
                     <tr>
-                        <td class="center" rowspan=2>15</td>
-                        <td class="center" rowspan=2><span class="syntax-elm"><code>?</code><code>:</code></span></td>
-                        <td class="center" rowspan=2><span class="op_syntax"><span class="syntax-elm lynx-type">bool</span> ? <span class="syntax-elm lynx-type">T</span> : <span class="syntax-elm lynx-type">T</span></span></td>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> l-value</span></td>
-                        <td class="left"   rowspan=2>Selection operator</td>
-                        <td class="left"   rowspan=2>Other</td>
-                    </tr>
-                    <tr>
-                        <td class="center"><span class="syntax-elm"><span class="lynx-type">T</span> r-value</span></td>
+                        <td class="center">15</td>
+                        <td class="center"><elm_><code>?</code><code>:</code></elm_></td>
+                        <td class="center"><elm_><t_>bool<sup>r</sup></t_></elm_> ? <elm_><t_>T<sup>r</sup></t_></elm_> : <elm_><t_>T<sup>r</sup></t_></elm_></td>
+                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                        <td class="left">Selection operator</td>
+                        <td class="left">Other</td>
                     </tr>
                 </tbody>
             </table></div>
 
             Operators cannot be used as value. Only their members can
 
-            //TODO add as keyword
             //TODO add with keyword
+
+            //TODO add typographical conventions
+            //TODO <sup>r</sup> = rvalue
+            //TODO <sup>l</sup> = lvalue
+            //TODO <sup>id</sup> = identifier
+
+
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Complete examples                                               -->
+            <!--------------------------------------------------------------------->
+            <sep-1_></sep-1_>
+            <h1 id="complete-examples">Complete examples</h1>
 
         </div>
     </div>
@@ -2191,3 +2507,9 @@ void main() { //TODO multidimensional arrays
 
 
 <p>Althought the file extension is only a convention and can be changed or omitted, it is still recommended to use the correct one, as some softwares may use it to determine the language of the source file.</p>
+
+
+//TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+//TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+//TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+//TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
