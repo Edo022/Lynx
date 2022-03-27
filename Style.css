@@ -77,158 +77,184 @@ s- { color: #db966e; }                      /* String   */
 
 
 
-/* Syntax and examples */
-syntax-, example- {
-    font-family: monospace, monospace;      background-color: transparent;                          ;
-    font-size: var(--font-size-mono-medium);padding: 0;                                             ;
-    word-spacing: normal;                   margin: 3ch 0 0 0;                                      ;
-    line-height: 18px;                      display: flex;
-}
-
-    /* Interal containers */
-    syntax- left-, syntax- right-, syntax- fill-, example- fill- {
-        display: block;                                                                             ;
-        width:  calc(50% - 5px); max-width: 100%;       margin: 0 0 0 0;                            ;
-        height: min-content; max-height: min-content;   padding: 0;                                 ;
-        background-color: var(--bg-color-pre);          border-radius: 10px;                        ;
-        overflow-y: visible;                                                                        }
-
-        /* Labels */
-        syntax- left- label-, syntax- right- label-, syntax- fill- label-, example- fill- label- {
-            display: block;                                                                         ;
-            background-color: var(--bg-color-pre);      margin: -3ch 0 -38px 0;                     ;
-            border-radius: 10px 10px 0 0;               padding: 4px 20px 22px 20px;                ;
-            z-index: -5;                                width: min-content;                         ;
-            white-space: nowrap;                        max-width: calc(100% - 20px * 2);           ;
-            font-weight: bold;                          overflow-x: hidden;                         ;
-        }
-        example- fill- label-::before { content: "Example "; }
-        syntax- left- label-::before, syntax- fill- label-::before { content: "Syntax "; }
-        example- fill- label-::after       { content: " ⧉"; color: var(--bg-color-pre); }
-        example- fill- label-:hover::after { content: " ⧉"; color: var(--text-color);   }
-        example- fill- label-:active, example- fill- label-:active::after { color: var(--clicked-label-color); }
-
-        /* Code */
-        syntax- left- code-, syntax- right- code-, syntax- fill- code-, example- fill- code- {
-            display: block;                             margin: 1ch 0 -1ch 0;                       ;
-            background-color: transparent;              padding: 0;                                 ;
-            line-height: var(--wide-line-height);       width: 100vw;                               ;
-            white-space: pre;                           max-width: 100%;                            ;
-            overflow: hidden;                                                                       }
-
-            /* Fix visible overflow-y not working with non-visible overflow-x */
-            syntax- left- code- scroll-, syntax- right- code- scroll-, syntax- fill- code- scroll-, example- fill- code- scroll- {
-                width: calc(100% - 20px * 2);           margin: 0 20px 0 20px;                      ;
-                height: 100%;                           padding: 0;                                 ;
-                display: block;                                                                     ;
-                overflow-x: scroll;                                                                 ;
-            }                                                                                       /*
-        }                                                                                           */
-
-        /* Stop selection in both*/
-        syntax- left- label-, syntax- right- label-, syntax- fill- label-, example- fill- label-,
-        syntax- left- code-,  syntax- right- code-,  syntax- fill- code-,  example- fill- code- {
-            -webkit-touch-callout: none;                                                            ;
-            -webkit-user-select: none;                                                              ;
-            -moz-user-select: none;                                                                 ;
-            -ms-user-select: none;                                                                  ;
-            user-select: none;                                                                      ;
-        }                                                                                           /*
-    }                                                                                               */
-    syntax- left-  { margin-right: 5px; }
-    syntax- right- { margin-left:  5px; }
-    syntax- fill-, example- fill- { width: 100%; }
-    example- fill- code- { line-height: var(--code-line-height); }                                  /*
-}                                                                                                   */
-
-
-
-/* Horizontal separators*/                          /*
-{                                                   */
-    sep-1- {
-        display: block;
-        background-color: var(--sep-color);
-        height: 2px;        border-radius: 10px;
-        width: 100%;        margin: 20ch 0 20ch 0;
-    }
-    sep-2- {
-        display: block;
-        background-color: var(--sep-color);
-        height: 1px;        border-radius: 10px;
-        width: 100%;        margin: 8ch 0 8ch 0;
-    }
-    sep-3- {
-        display: block;
-        background-color: transparent;
-        width: 100%;
-        margin-top: 8ch;
-    }
-    sep- {
-        display: block;
-        background-color: transparent;
-        width: 100%;
-        margin-top: 5ch;
-    }                                               /*
-}                                                   */
-
 
 /* Page layout */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: var(--bg-color);                                                  margin: 0;
-    font-size: var(--font-size-medium);     color: var(--text-color);                   padding: 0;
-    word-spacing: var(--word-spacing);
-    letter-spacing: var(--char-spacing);
-    font-weight: normal;
-    line-height: var(--line-height);
-    width: 100vw; height: 100vh;
-}
-div.main-container {
-    height: 100vh; max-height: 100%;        position:fixed;                             margin: 0;
-    width:  100vw; max-width:  100%;        display: flex;                              padding: 0;
-}
-div.main-right-container {
-    height: 100vh; max-height: 100%;        overflow-x: hidden;                         margin: 0;
-    width: 100vw;                           overflow-y: scroll;                         padding: 0 var(--main-padding) 0 var(--main-padding);
-    max-width: calc(100% - var(--main-left-max-width) - var(--main-padding) * 2);
-}
-div.main-left-container {
-    background-color: var(--bg-color);       overflow-x: auto;                          margin: 0;
-    height: 100vh; max-height: 100%;         overflow-y: scroll;                        padding: 0 var(--main-left-padding) 0 var(--main-left-padding);
-    width: 100vw;                            z-index: 1;                                position:relative;
-    max-width: calc(var(--main-left-max-width) - var(--main-left-padding) * 2 - 1px); /* 1px right border */
-    vertical-align: top;
-    border-right: 1px solid var(--sep-color);
-}
+    background-color: var(--bg-color);                                      margin: 0;                               ;
+    font-size: var(--font-size-medium);         color: var(--text-color);   padding: 0;                              ;
+    word-spacing: var(--word-spacing);                                                                               ;
+    letter-spacing: var(--char-spacing);                                                                             ;
+    font-weight: normal;                                                                                             ;
+    line-height: var(--line-height);                                                                                 ;
+    width: 100vw; height: 100vh;                                                                                     }
 
 
-/* Language logo */
-.logo {
-    background-color: black;
-    padding: 0;
-    height: 100vh;
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size:50%;
-    z-index: -2;
-}
-.logo-right {
-    position: relative;
-    margin: var(--main-padding) 0 var(--main-padding) 0;
-    height: calc(100vh - var(--main-padding) * 2);
-    width: 100vw; max-width: 100%;
-}
-.logo-right-top {
-    position: fixed;
-    top: 0;
-    width: 100vw;
-    right: var(--main-padding);
-    background-color: var(--bg-color);
-    height: var(--main-padding);
-    max-height: var(--main-padding);
-    z-index: -1;
-}
+    /* Language logo */
+    logo- {
+        display: block;                                                                                             ;
+        background-color: black;
+        padding: 0;                                                                                                 ;
+        height: 100vh;                                                                                              ;
+        background-attachment: fixed;                                                                               ;
+        background-position: center;                                                                                ;
+        background-repeat: no-repeat;                                                                               ;
+        background-size:50%;                                                                                        ;
+        z-index: -2;                                                                                                ;
+    }
+
+    /* Main components */
+    main- {
+        display: block;                                                                                             ;
+        height: 100vh; max-height: 100%;            position:fixed;             margin: 0;                          ;
+        width:  100vw; max-width:  100%;            display: flex;              padding: 0;                         }
+
+        /* Page contents */
+        main- > right- {
+            display: block;                                                                                         ;
+            height: 100vh; max-height: 100%;        overflow-x: hidden;         margin: 0;                          ;
+            width: 100vw;                           overflow-y: scroll;         padding: 0 var(--main-padding) 0 var(--main-padding);
+            max-width: calc(100% - var(--main-left-max-width) - var(--main-padding) * 2);                           }
+
+            /* Smaller language logo fix */
+            main- > right- > logo-top- {
+                display: block;                                                                                     ;
+                position: fixed;                                                                                    ;
+                top: 0;                                                                                             ;
+                width: 100vw;                                                                                       ;
+                right: var(--main-padding);                                                                         ;
+                background-color: var(--bg-color);                                                                  ;
+                height: var(--main-padding);                                                                        ;
+                max-height: var(--main-padding);                                                                    ;
+                z-index: -1;                                                                                        ;
+            }
+            /* Smaller language logo */
+            main- > right- > logo- {
+                display: block;                                                                                     ;
+                position: relative;                                                                                 ;
+                margin: var(--main-padding) 0 var(--main-padding) 0;                                                ;
+                height: calc(100vh - var(--main-padding) * 2);                                                      ;
+                width: 100vw; max-width: 100%;                                                                      ;
+            }
+
+            /* Page contents background */
+            main- > right- > main-scroll- {
+                background-color: var(--bg-color);                                                                  ;
+            }                                                                                                       /*
+        }                                                                                                           */
+
+        /* Index */
+        main- > left- {
+            display: block;                                                                                         ;
+            background-color: var(--bg-color);      overflow-x: auto;           margin: 0;                          ;
+            height: 100vh; max-height: 100%;        overflow-y: scroll;         padding: 0 var(--main-left-padding) 0 var(--main-left-padding);
+            width: 100vw;                           z-index: 1;                 position:relative;                  ;
+            max-width: calc(var(--main-left-max-width) - var(--main-left-padding) * 2 - 1px); /* 1px right border */;
+            border-right: 1px solid var(--sep-color);                                                               ;
+        }                                                                                                           /*
+    }                                                                                                               */
+
+
+
+
+    /* Syntax and examples */
+    syntax-, example- {
+        font-family: monospace, monospace;      background-color: transparent;                                      ;
+        font-size: var(--font-size-mono-medium);padding: 0;                                                         ;
+        word-spacing: normal;                   margin: 3ch 0 0 0;                                                  ;
+        line-height: 18px;                      display: flex;                                                      }
+
+
+        /* Interal containers */
+        syntax- > left-, syntax- > right-, syntax- > fill-, example- > fill- {
+            display: block;                                                                                         ;
+            width:  calc(50% - 5px); max-width: 100%;       margin: 0 0 0 0;                                        ;
+            height: min-content; max-height: min-content;   padding: 0;                                             ;
+            background-color: var(--bg-color-pre);          border-radius: 10px;                                    ;
+            overflow-y: visible;                                                                                    }
+
+            /* Labels */
+            syntax- > left- > label-, syntax- > right- > label-, syntax- > fill- > label-, example- > fill- > label- {
+                display: block;                                                                                     ;
+                background-color: var(--bg-color-pre);      margin: -3ch 0 -38px 0;                                 ;
+                border-radius: 10px 10px 0 0;               padding: 4px 20px 22px 20px;                            ;
+                z-index: -5;                                width: min-content;                                     ;
+                white-space: nowrap;                        max-width: calc(100% - 20px * 2);                       ;
+                font-weight: bold;                          overflow-x: hidden;                                     ;
+            }
+            example- > fill- > label-::before { content: "Example "; }
+            syntax- > left- > label-::before, syntax- > fill- > label-::before { content: "Syntax "; }
+            example- > fill- > label-::after       { content: " ⧉"; color: var(--bg-color-pre); }
+            example- > fill- > label-:hover::after { content: " ⧉"; color: var(--text-color);   }
+            example- > fill- > label-:active, example- > fill- > label-:active::after { color: var(--clicked-label-color); }
+
+            /* Code */
+            syntax- > left- > code-, syntax- > right- > code-, syntax- > fill- > code-, example- > fill- > code- {
+                display: block;                             margin: 1ch 0 -1ch 0;                                   ;
+                background-color: transparent;              padding: 0;                                             ;
+                line-height: var(--wide-line-height);       width: 100vw;                                           ;
+                white-space: pre;                           max-width: 100%;                                        ;
+                overflow: hidden;                                                                                   }
+
+                /* Fix visible overflow-y not working with non-visible overflow-x */
+                syntax- > left- > code- > scroll-, syntax- > right- > code- > scroll-, syntax- > fill- > code- > scroll-, example- > fill- > code- > scroll- {
+                    width: calc(100% - 20px * 2);           margin: 0 20px 0 20px;                                  ;
+                    height: 100%;                           padding: 0;                                             ;
+                    display: block;                                                                                 ;
+                    overflow-x: scroll;                                                                             ;
+                }                                                                                                   /*
+            }                                                                                                       */
+
+            /* Stop selection in both*/
+            syntax- > left- > label-, syntax- > right- > label-, syntax- > fill- > label-, example- > fill- > label-,
+            syntax- > left- > code-,  syntax- > right- > code-,  syntax- > fill- > code-,  example- > fill- > code- {
+                -webkit-touch-callout: none;                                                                        ;
+                -webkit-user-select: none;                                                                          ;
+                -moz-user-select: none;                                                                             ;
+                -ms-user-select: none;                                                                              ;
+                user-select: none;                                                                                  ;
+            }                                                                                                       /*
+        }                                                                                                           */
+        syntax- > left-  { margin-right: 5px; }
+        syntax- > right- { margin-left:  5px; }
+        syntax- > fill-, example- > fill- { width: 100%; }
+        example- > fill- > code- { line-height: var(--code-line-height); }                                          /*
+    }                                                                                                               */
+
+
+
+    /* Horizontal separators*/                                                                                      /*
+    {                                                                                                               */
+        sep-1- {
+            display: block;                                                                                         ;
+            background-color: var(--sep-color);                                                                     ;
+            height: 2px;        border-radius: 10px;                                                                ;
+            width: 100%;        margin: 20ch 0 20ch 0;                                                              ;
+        }
+        sep-2- {
+            display: block;                                                                                         ;
+            background-color: var(--sep-color);                                                                     ;
+            height: 1px;        border-radius: 10px;                                                                ;
+            width: 100%;        margin: 8ch 0 8ch 0;                                                                ;
+        }
+        sep-3- {
+            display: block;                                                                                         ;
+            background-color: transparent;                                                                          ;
+            width: 100%;                                                                                            ;
+            margin-top: 8ch;                                                                                        ;
+        }
+        sep- {
+            display: block;                                                                                         ;
+            background-color: transparent;                                                                          ;
+            width: 100%;                                                                                            ;
+            margin-top: 5ch;                                                                                        ;
+        }                                                                                                           /*
+    }
+}                                                                                                                   */
+
+
+
+
 
 
 
@@ -249,6 +275,9 @@ table {
     line-height: 2.4ch;
     width: 100%;
     overflow: hidden;
+}
+table tr th {
+    white-space: nowrap;
 }
 .wide-lines {
     line-height: var(--wide-line-height);

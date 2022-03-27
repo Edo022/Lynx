@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Lux language</title>
+    <title>The Lux language</title>
     <meta charset="UTF-8">
-    <meta name="author" content="" /> <!-- TODO -->
-    <meta name="description" content="" /> <!-- TODO -->
+    <meta name="author" content="Snek" />
+    <meta name="description" content="Lux language specification" />
 
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
-
     <link rel="stylesheet" type="text/css" href="Style.css" media="screen">
 
     <style>
@@ -73,12 +72,12 @@
 
 
 
-<div class="main-container hide-scrollbar">
+<main- class="hide-scrollbar">
 
     <!--------------------------------------------------------------------->
     <!-- Index                                                           -->
     <!--------------------------------------------------------------------->
-    <div class="main-left-container hide-scrollbar">
+    <left- class="hide-scrollbar">
         <ul style="padding-left:0;" class="index">
             <li class="index-section" style="margin-top: 0px;"><a href="#overview-no-header">Overview</a></li>
             <li class="index-section" style="margin-top: 0px;"><a href="#preprocessor">Preprocessor</a>
@@ -178,16 +177,16 @@
             <li class="index-section"><a href="#quick-reference-tabs">Quick reference tabs</a></li>
             <li class="index-section"><a href="#complete-examples">Complete examples</a></li>
         </ul>
-    </div>
+    </left->
 
-    <div class="main-right-container hide-scrollbar">
+    <right- class="hide-scrollbar">
         <!--------------------------------------------------------------------->
         <!-- Logo                                                            -->
         <!--------------------------------------------------------------------->
-        <div class="logo-right-top"></div>
-        <div class="logo logo-right" style="background-image: url('Lux-logo.png');"></div>
+        <logo-top-></logo-top->
+        <logo- style="background-image: url('Lux-logo.png');"></logo->
 
-        <div style="background-color: var(--bg-color);">
+        <main-scroll->
             <!--------------------------------------------------------------------->
             <!-- Overview                                                        -->
             <!--------------------------------------------------------------------->
@@ -1076,6 +1075,7 @@
                 Array initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
 
+            <sep-></sep->
             <syntax->
                 <fill->
                     <label->1</label->
@@ -1139,38 +1139,38 @@
                     <tr>
                         <td rowspan="3"><code><t->uint</t-></code></td>
                         <td><code><t->int</t-></code></td>
-                        <td>Values over <code>limits::int::<k->max</k-></code> overflow to <code>limits::int::<k->min</k-> + <k->n</k-> - <k->1</k-></code></td>
+                        <td class="wide-lines">Values over <code>limits::int::<k->max</k-></code> overflow to <code>limits::int::<k->min</k-> + <k->n</k-> - <k->1</k-></code></td>
                     </tr>
                     <tr>
-                        <td><code><t->float</t-></code><code><t->double</t-></code></td>
+                        <td><code><t->float</t-></code> <code><t->double</t-></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
                         <td><code><t->bool</t-></code></td>
-                        <td><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
+                        <td class="wide-lines"><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
                         <td rowspan="3"><code><t->int</t-></code></td>
                         <td><code><t->uint</t-></code></td>
-                        <td>Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code></td>
+                        <td class="wide-lines">Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code></td>
                     </tr>
                     <tr>
-                        <td><code><t->float</t-></code><code><t->double</t-></code></td>
+                        <td><code><t->float</t-></code> <code><t->double</t-></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
                         <td><code><t->bool</t-></code></td>
-                        <td><code><k-></k->1</code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
+                        <td class="wide-lines"><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
                         <td rowspan="4"><code><t->float</t-></code></td>
                         <td><code><t->uint</t-></code></td>
-                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
+                        <td class="wide-lines">The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
                         If the value is not between <code>limits::uint::<k->min</k-></code> and <code>limits::uint::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
                         <td><code><t->int</t-></code></td>
-                        <td>The decimal part is truncated.<br>
+                        <td class="wide-lines">The decimal part is truncated.<br>
                         If the value is not between <code>limits::int::<k->min</k-></code> and <code>limits::int::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
@@ -1179,17 +1179,17 @@
                     </tr>
                     <tr>
                         <td><code><t->bool</t-></code></td>
-                        <td><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
+                        <td class="wide-lines"><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
                         <td rowspan="4"><code><t->double</t-></code></td>
                         <td><code><t->uint</t-></code></td>
-                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
+                        <td class="wide-lines">The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
                         If the value is not between <code>limits::uint::<k->min</k-></code> and <code>limits::uint::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
                         <td><code><t->int</t-></code></td>
-                        <td>The decimal part is truncated.<br>
+                        <td class="wide-lines">The decimal part is truncated.<br>
                         If the value is not between <code>limits::int::<k->min</k-></code> and <code>limits::int::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
@@ -1198,16 +1198,16 @@
                     </tr>
                     <tr>
                         <td><code><t->bool</t-></code></td>
-                        <td><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
+                        <td class="wide-lines"><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
                         <td rowspan="3"><code><t->bool</t-></code></td>
-                        <td><code><t->uint</t-></code><code><t->int</t-></code></td>
-                        <td><code><k->true</k-></code> is evaluated as <code><k->1</k-></code>, <code><k->false</k-></code> as <code><k->0</k-></code></td>
+                        <td><code><t->uint</t-></code> <code><t->int</t-></code></td>
+                        <td class="wide-lines"><code><k->true</k-></code> is evaluated as <code><k->1</k-></code>, <code><k->false</k-></code> as <code><k->0</k-></code></td>
                     </tr>
                     <tr>
-                        <td><code><t->float</t-></code><code><t->double</t-></code></td>
-                        <td><code><k->true</k-></code> is evaluated as <code><k->1.0</k-></code>, <code><k->false</k-></code> as <code><k->0.0</k-></code></td>
+                        <td><code><t->float</t-></code> <code><t->double</t-></code></td>
+                        <td class="wide-lines"><code><k->true</k-></code> is evaluated as <code><k->1.0</k-></code>, <code><k->false</k-></code> as <code><k->0.0</k-></code></td>
                     </tr>
                 </tbody>
             </table></div>
@@ -1235,7 +1235,7 @@
                 </tr>
             </table></div>
             <p>
-                Values cannot be explicitly casted as in C. To convert a value, <a href="constructors">constructors</a> are used.<br>
+                Values cannot be explicitly casted as in C. To convert a value, <a href="#constructors">constructors</a> are used.<br>
                 Attempting to convert incompatible types will result in a semantic error.<br>
                 Structs are never convertible.
             </p>
@@ -2437,9 +2437,9 @@
             <sep-1-></sep-1->
             <h1 id="complete-examples">Complete examples</h1>
 
-        </div>
-    </div>
-</div>
+        </main-scroll->
+    </right->
+</main->
 
 
 
