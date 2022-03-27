@@ -45,6 +45,10 @@
     </style>
 </head>
 <body>
+
+
+
+
 <script>
     function decodeHTML(html) {
         var txt = document.createElement("textarea");
@@ -55,8 +59,11 @@
     function copy_code(button_tag) {
         var children = Array.from(button_tag.parentNode.childNodes);
         for(var i = 0; i < children.length; i++){
-            if(children[i].tagName == "CODE_") {
-                navigator.clipboard.writeText(decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, "")));
+            if(children[i].tagName == "CODE-") {
+                var output_text = decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""));
+                navigator.clipboard.writeText(output_text.substring(1, output_text.length - 2));
+                //                           Remove leading newline ^                       ^
+                //                             Remove trailing newline and CSS fix newline -'
                 return 0;
             }
         }
@@ -186,7 +193,7 @@
             <!--------------------------------------------------------------------->
             <div style="margin-top: var(--main-padding);"></div>
             <h1 id="overview-no-header">Lux - Lynx shading language</h1>
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <p>
                 Lux is a <b>high level compiled shading language</b> with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing buffers and shaders.<br>
                 It compiles to <b>GLSL 4.6</b>.
@@ -205,7 +212,7 @@
             <!--------------------------------------------------------------------->
             <!-- Preprocessor                                                    -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id=preprocessor>Preprocessor</h1>
             <p>
                 The <b>preprocessing</b> phase is done <b>before compiling</b> the code.<br>
@@ -224,7 +231,7 @@
             <!--------------------------------------------------------------------->
             <!-- Comments                                                        -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id=comments>Comments</h2>
             <p>
                 <b>Comments</b> are <b>portions of code</b> that are <b>purposely ignored</b>.<br>
@@ -237,48 +244,48 @@
             </p>
             <p>Comments cannot be nested.</p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>1</label_>
-                    <code_><scroll_>
-                        //<elm_>Comment string</elm_><nl_></nl_>
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>2</label_>
-                    <code_><scroll_>
-                        /*<elm_>Comment string</elm_>*/
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        //<elm->Comment string</elm-><nl-></nl->
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->2</label->
+                    <code-><scroll->
+                        /*<elm->Comment string</elm->*/
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">1</label_>
-                    <code_><scroll_>
-                        <c_>// Single line comment</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <c->// Single line comment</c->
 
-                        <c_>/* Multi
+                        <c->/* Multi
                         line
-                        comment */</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">2</label_>
-                    <code_><scroll_>
-                        <c_>/* Multi line /* Anorhter comment */ comment */
-                        // Ok                             // ^ Error, unexpected token "comment"</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                        comment */</c->
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">2</label->
+                    <code-><scroll->
+                        <c->/* Multi line /* Anorhter comment */ comment */
+                        // Ok                             // ^ Error, unexpected token "comment"</c->
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
 
@@ -286,7 +293,7 @@
             <!--------------------------------------------------------------------->
             <!-- Include statement                                               -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id=include-statement>Include statement</h2>
             <p>
                 <b>Include statements</b> are used to <b>paste code</b> from other files.<br>
@@ -294,51 +301,51 @@
                 The path to the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
                 Both absolute and relative paths are supported.
             </p>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>1</label_>
-                    <code_><scroll_>
-                        #include<space_></space_>"<elm_>absolute/path/to/file</elm_>"<nl_></nl_>
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>1</label_>
-                    <code_><scroll_>
-                        #include<space_></space_>"./<elm_>relative/path/to/file</elm_>"<nl_></nl_>
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>1</label_>
-                    <code_><scroll_>
-                        #include<space_></space_>"<elm_>relative/path/to/file</elm_>"<nl_></nl_>
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        #include<space-></space->"<elm->absolute/path/to/file</elm->"<nl-></nl->
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        #include<space-></space->"./<elm->relative/path/to/file</elm->"<nl-></nl->
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        #include<space-></space->"<elm->relative/path/to/file</elm->"<nl-></nl->
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <c_>// Ok</c_>
-                        <k_>#include</k_> <s_>"/home/Lynx/Lux/file.ilsh"</s_>
-                        <k_>#include</k_> <s_>"./file.ilsh"</s_>
-                        <k_>#include</k_> <s_>"file.ilsh"</s_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <c->// Ok</c->
+                        <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->
+                        <k->#include</k-> <s->"./file.ilsh"</s->
+                        <k->#include</k-> <s->"file.ilsh"</s->
 
-                        <c_>// Error</c_>
-                        <c_>//#include ./file.ilsh</c_>
-                        <c_>//#include "./non_existent_file"</c_>
-                        <c_>//#include ""</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                        <c->// Error</c->
+                        <c->//#include ./file.ilsh</c->
+                        <c->//#include "./non_existent_file"</c->
+                        <c->//#include ""</c->
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
 
@@ -346,7 +353,7 @@
             <!--------------------------------------------------------------------->
             <!-- Macros                                                          -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="macros">Macros</h2>
 
 
@@ -355,7 +362,7 @@
             <!--------------------------------------------------------------------->
             <!-- Conditionals                                                    -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="conditionals">Conditionals</h2>
 
 
@@ -364,7 +371,7 @@
             <!--------------------------------------------------------------------->
             <!-- Line continuation token                                         -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="line-continuation-token">Line continuation token</h2>
             <p>
                 The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
@@ -374,58 +381,58 @@
                 Line continuation tokens can be used inside comments or other preprocessor directives, but cannot be nested.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        \<nl_></nl_>
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        \<nl-></nl->
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">1</label_>
-                    <code_><scroll_>
-                        <c_>// single line comment</c_>\
-                        <c_>on two lines</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <c->// single line comment</c->\
+                        <c->on two lines</c->
 
-                        <c_>// #include "path/to/file"</c_>
-                        <k_>#include</k_> <s_>"pat</s_>\
-                        <s_>h/to/file</s_>\
-                        <s_>"</s_>
+                        <c->// #include "path/to/file"</c->
+                        <k->#include</k-> <s->"pat</s->\
+                        <s->h/to/file</s->\
+                        <s->"</s->
 
-                        <c_>// void function() {
+                        <c->// void function() {
                         //   uint var = 0, b = 0;
                         //   var += b;
-                        // }</c_>
-                        <t_>vo</t_>\
-                        <t_>id</t_> <f_>fun</f_>\
-                        <f_>ction</f_>() {
-                        <t_>uint</t_> va\
-                        r = <k_>0</k_>, b = <k_>0</k_>;
+                        // }</c->
+                        <t->vo</t->\
+                        <t->id</t-> <f->fun</f->\
+                        <f->ction</f->() {
+                        <t->uint</t-> va\
+                        r = <k->0</k->, b = <k->0</k->;
                         v\
                         ar +\
-                        = <k_>b</k_>;
+                        = <k->b</k->;
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">2</label_>
-                    <code_><scroll_>
-                        <c_>// Error, unexpected token "\"
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">2</label->
+                    <code-><scroll->
+                        <c->// Error, unexpected token "\"
                             //void ma\\
 
                             //in(){}
-                            // Error,  unexpected token "in"</c_>
-                        </scroll_></code_>
-                </fill_>
-            </example_>
+                            // Error,  unexpected token "in"</c->
+                        </scroll-></code->
+                </fill->
+            </example->
 
 
 
@@ -437,7 +444,7 @@
             <!--------------------------------------------------------------------->
             <!-- Language components                                             -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id="language-components">Language components</h1>
 
 
@@ -446,7 +453,7 @@
             <!--------------------------------------------------------------------->
             <!-- Tokens and identifiers                                          -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="tokens-and-identifiers">Tokens and identifiers</h2>
             <p>
                 Any sequence of one or more characters that is left after the preprocessing phase is called a token.<br>
@@ -475,28 +482,28 @@
                     <tr>
                         <td>Keyword</td>
                         <td class="center" colspan=2>
-                            <a href="#namespaces">                  <code><w_>namespace</w_></code></a>
-                            <a href="#enums">                       <code><w_>enum</w_></code></a>
-                            <a href="#structs">                     <code><w_>struct</w_></code></a>
-                            <a href="#auto-specifier">              <code><w_>auto</w_></code></a>
-                            <a href="#typeof-and-baseof-specifiers"><code><t_>typeof</t_></code></a>
-                            <a href="#typeof-and-baseof-specifiers"><code><t_>baseof</t_></code></a>
-                            <a href="#type-groups">                 <code><w_>typegroup</w_></code></a>
-                            <a href="#const-qualifier">             <code><t_>const</t_></code></a>
-                            <a href="#symbol-aliases">              <code><w_>alias</w_></code></a>
+                            <a href="#namespaces">                  <code><w->namespace</w-></code></a>
+                            <a href="#enums">                       <code><w->enum</w-></code></a>
+                            <a href="#structs">                     <code><w->struct</w-></code></a>
+                            <a href="#auto-specifier">              <code><w->auto</w-></code></a>
+                            <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a>
+                            <a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a>
+                            <a href="#type-groups">                 <code><w->typegroup</w-></code></a>
+                            <a href="#const-qualifier">             <code><t->const</t-></code></a>
+                            <a href="#symbol-aliases">              <code><w->alias</w-></code></a>
                         </td>
                         <td class="center" colspan=2>
-                            <a href="#if-statement">                 <code><w_>if</w_></code></a>
-                            <a href="#select-statement">             <code><w_>select</w_></code></a>
-                            <a href="#for-loops">                    <code><w_>for</w_></code></a>
-                            <a href="#while-loops">                  <code><w_>while</w_></code></a>
-                            <a href="#while-loops">                  <code><w_>do</w_></code></a>
-                            <a href="#continue-and-break-statements"><code><w_>continue</w_></code></a>
-                            <a href="#continue-and-break-statements"><code><w_>break</w_></code></a>
-                            <a href="#once-statement">               <code><w_>once</w_></code></a>
-                            <a href="#then-statement">               <code><w_>then</w_></code></a>
-                            <a href="#else-statement">               <code><w_>else</w_></code></a>
-                            <a href="#return-statement">             <code><w_>return</w_></code></a>
+                            <a href="#if-statement">                 <code><w->if</w-></code></a>
+                            <a href="#select-statement">             <code><w->select</w-></code></a>
+                            <a href="#for-loops">                    <code><w->for</w-></code></a>
+                            <a href="#while-loops">                  <code><w->while</w-></code></a>
+                            <a href="#while-loops">                  <code><w->do</w-></code></a>
+                            <a href="#continue-and-break-statements"><code><w->continue</w-></code></a>
+                            <a href="#continue-and-break-statements"><code><w->break</w-></code></a>
+                            <a href="#once-statement">               <code><w->once</w-></code></a>
+                            <a href="#then-statement">               <code><w->then</w-></code></a>
+                            <a href="#else-statement">               <code><w->else</w-></code></a>
+                            <a href="#return-statement">             <code><w->return</w-></code></a>
                         </td>
                     </tr>
                     <tr>
@@ -533,18 +540,18 @@
                             <a href="#operators"><code>~</code></a>
                         </td>
                         <td class="center wide-lines">
-                            <a href="#special-operators"><elm_><code>(</code><code>)</code></elm_></a>
-                            <a href="#special-operators"><elm_><code>[</code><code>]</code></elm_></a>
+                            <a href="#special-operators"><elm-><code>(</code><code>)</code></elm-></a>
+                            <a href="#special-operators"><elm-><code>[</code><code>]</code></elm-></a>
                             <a href="#special-operators"><code>.</code></a>
-                            <a href="#special-operators"><elm_><code>?</code><code>:</code></elm_></a>
+                            <a href="#special-operators"><elm-><code>?</code><code>:</code></elm-></a>
                         </td>
                     </tr>
                     <tr>
                         <td>Punctuation token</td>
                         <td class="center wide-lines" width="20%">
-                            <elm_><code>(</code><code>)</code></elm_>
-                            <a href="#scopes-and-symbols"><elm_><code>{</code><code>}</code></elm_></a>
-                            <a href="#arrays">            <elm_><code>[</code><code>]</code></elm_></a>
+                            <elm-><code>(</code><code>)</code></elm->
+                            <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
+                            <a href="#arrays">            <elm-><code>[</code><code>]</code></elm-></a>
                         </td>
                         <td class="center" width="20%">
                             <code>,</code>
@@ -589,7 +596,7 @@
             <!--------------------------------------------------------------------->
             <!-- Scopes and symbols                                              -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="scopes-and-symbols">Scopes and symbols</h2>
             <p>A <b>symbol</b> is any <b>language component</b> that can be declared.</p>
             <p>
@@ -709,57 +716,57 @@
             </p>
             <p>Symbols declared in unnamed scopes cannot be referenced from outside, and unnamed symbols cannot be referenced at all</p>
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <c_>// Module scope</c_>
-                        <c_>// Local name: this</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <c->// Module scope</c->
+                        <c->// Local name: this</c->
 
 
-                        <c_>// Local name: s</c_>
-                        <c_>// Relative names: this::s</c_>
-                        <w_>struct</w_> <t_>s</t_> { <t_>uint</t_> n; }
+                        <c->// Local name: s</c->
+                        <c->// Relative names: this::s</c->
+                        <w->struct</w-> <t->s</t-> { <t->uint</t-> n; }
 
-                        <w_>namespace</w_> {
-                            <c_>// Local name: fun</c_>
-                            <c_>// Unnamed enclosing scope, cannot be referenced from outside</c_>
-                            <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>n</a_>) {}
+                        <w->namespace</w-> {
+                            <c->// Local name: fun</c->
+                            <c->// Unnamed enclosing scope, cannot be referenced from outside</c->
+                            <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
                         }
 
 
-                        <c_>// Local name: fun</c_>
-                        <c_>// Relative names: this::fun</c_>
-                        <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>n</a_>) {
-                            <w_>if</w_>(n){
-                                <c_>// Local name: s2</c_>
-                                <c_>// Unnamed enclosing scope, cannot be referenced from outside</c_>
-                                <w_>struct</w_> <t_>s2</t_> { <t_>uint</t_> n; };
+                        <c->// Local name: fun</c->
+                        <c->// Relative names: this::fun</c->
+                        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
+                            <w->if</w->(n){
+                                <c->// Local name: s2</c->
+                                <c->// Unnamed enclosing scope, cannot be referenced from outside</c->
+                                <w->struct</w-> <t->s2</t-> { <t->uint</t-> n; };
                             }
 
-                            <c_>// Local name: s, shadows this::s</c_>
-                            <c_>// Relative names: this::fun::s, fun::s</c_>
-                            <w_>struct</w_> <t_>s</t_> { <t_>uint</t_> a, b; }
+                            <c->// Local name: s, shadows this::s</c->
+                            <c->// Relative names: this::fun::s, fun::s</c->
+                            <w->struct</w-> <t->s</t-> { <t->uint</t-> a, b; }
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
             <p>Symbols can be declared anywhere in the scope, except for variables, which have to be declared before they are used in expressions.</p>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>void</t_> <f_>main</f_>(){
-                            <c_>//var.n = 8;     // Error</c_>
-                            <t_>s</t_> var = (<k_>16</k_>); <c_>   // Ok</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->void</t-> <f->main</f->(){
+                            <c->//var.n = 8;     // Error</c->
+                            <t->s</t-> var = (<k->16</k->); <c->   // Ok</c->
                         }
-                        <w_>struct</w_> s { <t_>int</t_> n; }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                        <w->struct</w-> s { <t->int</t-> n; }
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
 
@@ -767,7 +774,7 @@
             <!--------------------------------------------------------------------->
             <!-- Namespaces                                                      -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="namespaces">Namespaces</h2>
             <p>
                 <b>Namespaces</b> are used to create <b>named scopes</b> which can contain
@@ -776,24 +783,24 @@
                 Unnamed namespaces are allowed.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        namespace<space_></space_><elm_>name<sup>id</sup></elm_> {<elm_>...</elm_>}
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        namespace {<elm_>...</elm_>}
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        namespace<space-></space-><elm->name<sup>id</sup></elm-> {<elm->...</elm->}
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        namespace {<elm->...</elm->}
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
 
 
@@ -801,7 +808,7 @@
             <!--------------------------------------------------------------------->
             <!-- Types                                                           -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="types">Types</h2>
             <p>
                 <b>Data types</b> define how <b>values</b> are <b>interpreted</b> during runtime and how they can be used within expressions.<br>
@@ -812,7 +819,7 @@
             <!--------------------------------------------------------------------->
             <!-- Primitive types                                                 -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="primitive-types">Primitive types</h3>
             <p>Lux features <b>five primitive types</b>, which can be used to define more complex types such as structs, arrays and enums.</p>
             <p>
@@ -827,33 +834,33 @@
                     <th>Value type  </th>
                 </tr>
                 <tr>
-                    <td><code><t_>uint</t_></code></td>
+                    <td><code><t->uint</t-></code></td>
                     <td class="center">4</td>
                     <td>Unsigned integral number</td>
                 </tr>
                 <tr>
-                    <td><code><t_>int</t_></code></td>
+                    <td><code><t->int</t-></code></td>
                     <td class="center">4</td>
                     <td>Signed integral number</td>
                 </tr>
                 <tr>
-                    <td><code><t_>float</t_></code></td>
+                    <td><code><t->float</t-></code></td>
                     <td class="center">4</td>
                     <td>Floating point number</td>
                 </tr>
                 <tr>
-                    <td><code><t_>double</t_></code></td>
+                    <td><code><t->double</t-></code></td>
                     <td class="center">8</td>
                     <td>Floating point number</td>
                 </tr>
                 <tr>
-                    <td><code><t_>bool</t_></code></td>
+                    <td><code><t->bool</t-></code></td>
                     <td class="center">4</td>
-                    <td>Boolean value. <code><k_>true</k_></code> or <code><k_>false</k_></code></td>
+                    <td>Boolean value. <code><k->true</k-></code> or <code><k->false</k-></code></td>
                 </tr>
             </table></div>
             <p>
-                As in most programming languages, the boolean <code><k_>true</k_></code> and <code><k_>false</k_></code> values correspond to the integral literals <code><k_>1</k_></code> and <code><k_>0</k_></code>. They can be used interchangeably.<br>
+                As in most programming languages, the boolean <code><k->true</k-></code> and <code><k->false</k-></code> values correspond to the integral literals <code><k->1</k-></code> and <code><k->0</k-></code>. They can be used interchangeably.<br>
                 Unsigned integers cannot represent negative numbers, but the maximum value is twice as high as their signed counterpart.
             </p>
             <p>
@@ -870,7 +877,7 @@
             <!--------------------------------------------------------------------->
             <!-- Enums                                                           -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="enums">Enums</h3>
             <p>
                 <b>Enums</b> are used to <b>name</b> and <b>group</b> literal <b>constants</b> of the same type.<br>
@@ -885,97 +892,97 @@
                 Enums with no elements are not allowed.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <left_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        enum<space_></space_><elm_>name<sup>id</sup></elm_> : <elm_><t_>T<sup>type</sup></t_> </elm_>{
-                            <elm_>elements<sup>...</sup></elm_>
+            <sep-></sep->
+            <syntax->
+                <left->
+                    <label-></label->
+                    <code-><scroll->
+                        enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm->{
+                            <elm->elements<sup>...</sup></elm->
                         }
-                    </scroll_></code_>
-                </left_>
-                <right_>
-                    <label_>Element syntax</label_>
-                    <code_><scroll_>
-                        <elm_>name<sup>id</sup></elm_> = <elm_><t_>T<sup>r</sup></t_></elm_>;
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Element syntax</label->
+                    <code-><scroll->
+                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;
 
 
-                    </scroll_></code_>
-                </right_>
-            </syntax_>
+                    </scroll-></code->
+                </right->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">1</label_>
-                    <code_><scroll_>
-                        <w_>enum</w_> <t_>e</t_> : <t_>int</t_> {
-                            a, b;              <c_>// Ok, a = 0, b = 1</c_>
-                            c = <k_>-266250</k_>;       <c_>// Ok, c = -266250</c_>
-                            d, e = 0;          <c_>// Ok, d = -266249, e = 0</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <w->enum</w-> <t->e</t-> : <t->int</t-> {
+                            a, b;              <c->// Ok, a = 0, b = 1</c->
+                            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
+                            d, e = 0;          <c->// Ok, d = -266249, e = 0</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">2</label_>
-                    <code_><scroll_>
-                        <w_>enum</w_> <t_>c</t_> : <t_>double</t_> {
-                            pi = <k_>3.14159</k_>;      <c_>// Ok</c_>
-                            e  = <k_>2.71828</k_>;      <c_>// Ok</c_>
-                            <c_>//phi;             // Error, uninitialized non-integral enum value</c_>
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">2</label->
+                    <code-><scroll->
+                        <w->enum</w-> <t->c</t-> : <t->double</t-> {
+                            pi = <k->3.14159</k->;      <c->// Ok</c->
+                            e  = <k->2.71828</k->;      <c->// Ok</c->
+                            <c->//phi;             // Error, uninitialized non-integral enum value</c->
                         }
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>c</t_> a = <k_>c::pi</k_>;       <c_>// Ok</c_>
-                            <t_>c</t_> b = <k_>3.14159</k_>;     <c_>// Ok</c_>
-                            <t_>int</t_> c = <k_>a</k_>;         <c_>// Ok, implicit conversion from c (double) to int</c_>
+                        <t->void</t-> <f->main</f->(){
+                            <t->c</t-> a = <k->c::pi</k->;       <c->// Ok</c->
+                            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
+                            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
 
             <p>
                 By default, all enums behave exactly as their base types, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
-                When implicit conversions from other types are undesirable, enums can be declared as <code><w_>strict</w_></code>.<br>
+                When implicit conversions from other types are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
                 Strict enums only allow values of the same enum, but can still be implicitly converted to other types.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        strict<space_></space_>enum<space_></space_><elm_>name<sup>id</sup></elm_> : <elm_><t_>T<sup>type</sup></t_></elm_> {
-                            <elm_>elements<sup>...</sup></elm_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        strict<space-></space->enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-></elm-> {
+                            <elm->elements<sup>...</sup></elm->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <w_>strict enum</w_> <t_>c</t_> : <t_>double</t_> {
-                            pi  = <k_>3.14159</k_>;
-                            e   = <k_>2.71828</k_>;
-                            phi = <k_>1.61803</k_>;
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
+                            pi  = <k->3.14159</k->;
+                            e   = <k->2.71828</k->;
+                            phi = <k->1.61803</k->;
                         }
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>c</t_> a = <k_>c::phi</k_>;      <c_>// Ok</c_>
-                            <c_>//c b = 1.61803;   // Error, cannot convert from double to strict enum</c_>
-                            <t_>int</t_> c = <k_>a</k_>;         <c_>// Ok, implicit conversion from c (double) to int</c_>
+                        <t->void</t-> <f->main</f->(){
+                            <t->c</t-> a = <k->c::phi</k->;      <c->// Ok</c->
+                            <c->//c b = 1.61803;   // Error, cannot convert from double to strict enum</c->
+                            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#primitive-types">Primitive types</a>,
@@ -986,12 +993,12 @@
             <!--------------------------------------------------------------------->
             <!-- Structs                                                         -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="structs">Structs</h3>
             <p>
                 <b>Structs</b> are used to <b>group</b> multiple <b>variables</b> of different types.<br>
                 The members are declared in the same way as variables, and they can be of any type, including enums, arrays and other structures.<br>
-                They cannot be <a href="#const-qualifier"><code><t_>const</t_></code></a> and cannot have initializer values.<br>
+                They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
                 Like variables, uninitialized members cannot be used within expressions. Struct values must also be fully initialized before they can be used in expressions.
             </p>
             <p>
@@ -999,46 +1006,46 @@
                 Member access is explained in <a href="#special-operators">Special operators</a>.<br>
                 Struct initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
-            <sep_></sep_>
-            <syntax_>
-                <left_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        struct<space_></space_><elm_>name<sup>id</sup></elm_> {
-                            <elm_>members<sup>...</sup></elm_>
+            <sep-></sep->
+            <syntax->
+                <left->
+                    <label-></label->
+                    <code-><scroll->
+                        struct<space-></space-><elm->name<sup>id</sup></elm-> {
+                            <elm->members<sup>...</sup></elm->
                         }
-                    </scroll_></code_>
-                </left_>
-                <right_>
-                    <label_>Member syntax</label_>
-                    <code_><scroll_>
-                        <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>;
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Member syntax</label->
+                    <code-><scroll->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
 
 
-                    </scroll_></code_>
-                </right_>
-            </syntax_>
+                    </scroll-></code->
+                </right->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <w_>struct</w_> <t_>idk</t_> {
-                            <t_>uint</t_> a, b;        <c_>// Ok</c_>
-                            <t_>double</t_>[<k_>4</k_>] c;      <c_>// Ok</c_>
-                            <c_>//double const d; // Error, struct members cannot be const</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <w->struct</w-> <t->idk</t-> {
+                            <t->uint</t-> a, b;        <c->// Ok</c->
+                            <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
+                            <c->//double const d; // Error, struct members cannot be const</c->
                         }
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>idk</t_> var;
+                        <t->void</t-> <f->main</f->(){
+                            <t->idk</t-> var;
 
-                            var.a = <k_>4</k_>;              <c_>// Ok, var = (4, ?, ?)</c_>
-                            var.b = <k_>var.a</k_> * <k_>4</k_>;      <c_>// Ok, var = (4, 8, ?)</c_>
-                            <c_>//var.b = var.c[0];     // Error, var.c is uninitialized</span>
+                            var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
+                            var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
+                            <c->//var.b = var.c[0];     // Error, var.c is uninitialized</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#primitive-types">Primitive types</a>,
@@ -1050,7 +1057,7 @@
             <!--------------------------------------------------------------------->
             <!-- Arrays                                                          -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="arrays">Arrays</h3>
             <p>
                 <b>Arrays</b> can <b>aggregate values</b> of the same type.<br>
@@ -1069,36 +1076,36 @@
                 Array initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
 
-            <syntax_>
-                <fill_>
-                    <label_>1</label_>
-                    <code_><scroll_>
-                        <elm_><t_>T</t_><sup>type</sup></elm_>[<elm_><t_>uint<sup>r</sup></t_></elm_>]<space_></space_><elm_>name<sup>id</sup></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>2</label_>
-                    <code_><scroll_>
-                        <elm_><t_>T</t_><sup>type</sup></elm_>[] <elm_>name<sup>id</sup></elm_> = <elm_><t_>T[]<sup>r</sup></t_></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <syntax->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        <elm-><t->T</t-><sup>type</sup></elm->[<elm-><t->uint<sup>r</sup></t-></elm->]<space-></space-><elm->name<sup>id</sup></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->2</label->
+                    <code-><scroll->
+                        <elm-><t->T</t-><sup>type</sup></elm->[] <elm->name<sup>id</sup></elm-> = <elm-><t->T[]<sup>r</sup></t-></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>uint</t_>[<k_>4</k_>] <f_>func</f_>(<t_>float</t_>[<k_>4</k_>] n){
-                            <w_>if</w_>(n[<k_>3</k_>]) <w_>return</w_> n * <k_>4</k_>;
-                            <w_>else</w_> <w_>return</w_> n[<k_>0</k_>];
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
+                            <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
+                            <w->else</w-> <w->return</w-> n[<k->0</k->];
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#primitive-types">Primitive types</a>,
@@ -1111,7 +1118,7 @@
             <!--------------------------------------------------------------------->
             <!-- Implicit conversions                                            -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="implicit-conversions">Implicit conversions</h3>
             <p>
                 <b>Implicit conversions</b> are performed when an <b>expression</b> of the <b>incorrect type</b> is used in place of the expected one.<br>
@@ -1130,77 +1137,77 @@
                 </tr></thead>
                 <tbody>
                     <tr>
-                        <td rowspan="3"><code><t_>uint</t_></code></td>
-                        <td><code><t_>int</t_></code></td>
-                        <td>Values over <code>limits::int::<k_>max</k_></code> overflow to <code>limits::int::<k_>min</k_> + <k_>n</k_> - <k_>1</k_></code></td>
+                        <td rowspan="3"><code><t->uint</t-></code></td>
+                        <td><code><t->int</t-></code></td>
+                        <td>Values over <code>limits::int::<k->max</k-></code> overflow to <code>limits::int::<k->min</k-> + <k->n</k-> - <k->1</k-></code></td>
                     </tr>
                     <tr>
-                        <td><code><t_>float</t_></code><code><t_>double</t_></code></td>
+                        <td><code><t->float</t-></code><code><t->double</t-></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
-                        <td><code><t_>bool</t_></code></td>
-                        <td><code><k_>1</k_></code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
+                        <td><code><t->bool</t-></code></td>
+                        <td><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="3"><code><t_>int</t_></code></td>
-                        <td><code><t_>uint</t_></code></td>
-                        <td>Negative values underflow to <code>limits::uint::<k_>max</k_> + <k_>n</k_> + <k_>1</k_></code></td>
+                        <td rowspan="3"><code><t->int</t-></code></td>
+                        <td><code><t->uint</t-></code></td>
+                        <td>Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code></td>
                     </tr>
                     <tr>
-                        <td><code><t_>float</t_></code><code><t_>double</t_></code></td>
+                        <td><code><t->float</t-></code><code><t->double</t-></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
-                        <td><code><t_>bool</t_></code></td>
-                        <td><code><k_></k_>1</code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
+                        <td><code><t->bool</t-></code></td>
+                        <td><code><k-></k->1</code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="4"><code><t_>float</t_></code></td>
-                        <td><code><t_>uint</t_></code></td>
-                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k_>max</k_> + <k_>n</k_> + <k_>1</k_></code>.<br>
-                        If the value is not between <code>limits::uint::<k_>min</k_></code> and <code>limits::uint::<k_>max</k_></code>, the result is <b>undefined</b></td>
+                        <td rowspan="4"><code><t->float</t-></code></td>
+                        <td><code><t->uint</t-></code></td>
+                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
+                        If the value is not between <code>limits::uint::<k->min</k-></code> and <code>limits::uint::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code><t_>int</t_></code></td>
+                        <td><code><t->int</t-></code></td>
                         <td>The decimal part is truncated.<br>
-                        If the value is not between <code>limits::int::<k_>min</k_></code> and <code>limits::int::<k_>max</k_></code>, the result is <b>undefined</b></td>
+                        If the value is not between <code>limits::int::<k->min</k-></code> and <code>limits::int::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code><t_>double</t_></code></td>
+                        <td><code><t->double</t-></code></td>
                         <td>No changes</td>
                     </tr>
                     <tr>
-                        <td><code><t_>bool</t_></code></td>
-                        <td><code><k_>1.0</k_></code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
+                        <td><code><t->bool</t-></code></td>
+                        <td><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="4"><code><t_>double</t_></code></td>
-                        <td><code><t_>uint</t_></code></td>
-                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k_>max</k_> + <k_>n</k_> + <k_>1</k_></code>.<br>
-                        If the value is not between <code>limits::uint::<k_>min</k_></code> and <code>limits::uint::<k_>max</k_></code>, the result is <b>undefined</b></td>
+                        <td rowspan="4"><code><t->double</t-></code></td>
+                        <td><code><t->uint</t-></code></td>
+                        <td>The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
+                        If the value is not between <code>limits::uint::<k->min</k-></code> and <code>limits::uint::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code><t_>int</t_></code></td>
+                        <td><code><t->int</t-></code></td>
                         <td>The decimal part is truncated.<br>
-                        If the value is not between <code>limits::int::<k_>min</k_></code> and <code>limits::int::<k_>max</k_></code>, the result is <b>undefined</b></td>
+                        If the value is not between <code>limits::int::<k->min</k-></code> and <code>limits::int::<k->max</k-></code>, the result is <b>undefined</b></td>
                     </tr>
                     <tr>
-                        <td><code><t_>float</t_></code></td>
+                        <td><code><t->float</t-></code></td>
                         <td>The result is approximated using the maximum precision available</td>
                     </tr>
                     <tr>
-                        <td><code><t_>bool</t_></code></td>
-                        <td><code><k_>1.0</k_></code> is evaluated as <code><k_>true</k_></code>, any other value as <code><k_>false</k_></code></td>
+                        <td><code><t->bool</t-></code></td>
+                        <td><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
                     <tr>
-                        <td rowspan="3"><code><t_>bool</t_></code></td>
-                        <td><code><t_>uint</t_></code><code><t_>int</t_></code></td>
-                        <td><code><k_>true</k_></code> is evaluated as <code><k_>1</k_></code>, <code><k_>false</k_></code> as <code><k_>0</k_></code></td>
+                        <td rowspan="3"><code><t->bool</t-></code></td>
+                        <td><code><t->uint</t-></code><code><t->int</t-></code></td>
+                        <td><code><k->true</k-></code> is evaluated as <code><k->1</k-></code>, <code><k->false</k-></code> as <code><k->0</k-></code></td>
                     </tr>
                     <tr>
-                        <td><code><t_>float</t_></code><code><t_>double</t_></code></td>
-                        <td><code><k_>true</k_></code> is evaluated as <code><k_>1.0</k_></code>, <code><k_>false</k_></code> as <code><k_>0.0</k_></code></td>
+                        <td><code><t->float</t-></code><code><t->double</t-></code></td>
+                        <td><code><k->true</k-></code> is evaluated as <code><k->1.0</k-></code>, <code><k->false</k-></code> as <code><k->0.0</k-></code></td>
                     </tr>
                 </tbody>
             </table></div>
@@ -1213,18 +1220,18 @@
                     <th>Expected type    </th>
                     <th>Behaviour        </th>
                 </tr>
-                <td><code><t_>T</t_></code>   </td>
-                <td><code><t_>U[n]</t_></code></td>
-                <td>Each element of the result is initialized with the value of the starting expression, converted from <code><t_>T</t_></code> to <code><t_>U</t_></code></td>
+                <td><code><t->T</t-></code>   </td>
+                <td><code><t->U[n]</t-></code></td>
+                <td>Each element of the result is initialized with the value of the starting expression, converted from <code><t->T</t-></code> to <code><t->U</t-></code></td>
                 <tr>
-                    <td><code><t_>T[n]</t_></code></td>
-                    <td><code><t_>U[n]</t_></code></td>
-                    <td>Each element of the result is initialized with the corresponding value of the starting array, converted from <code><t_>T</t_></code> to <code><t_>U</t_></code></td>
+                    <td><code><t->T[n]</t-></code></td>
+                    <td><code><t->U[n]</t-></code></td>
+                    <td>Each element of the result is initialized with the corresponding value of the starting array, converted from <code><t->T</t-></code> to <code><t->U</t-></code></td>
                 </tr>
                 <tr>
-                    <td><code><t_>T[n]</t_></code></td>
-                    <td><code><t_>bool</t_></code></td>
-                    <td>Evaluated as <code><k_>true</k_></code> if all the elements of the initial array converted from <code><t_>T</t_></code> to <code><t_>bool</t_></code> evaluate as <code><k_>true</k_></code>, <code><k_>false</k_></code> otherwise</td>
+                    <td><code><t->T[n]</t-></code></td>
+                    <td><code><t->bool</t-></code></td>
+                    <td>Evaluated as <code><k->true</k-></code> if all the elements of the initial array converted from <code><t->T</t-></code> to <code><t->bool</t-></code> evaluate as <code><k->true</k-></code>, <code><k->false</k-></code> otherwise</td>
                 </tr>
             </table></div>
             <p>
@@ -1233,30 +1240,30 @@
                 Structs are never convertible.
             </p>
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>void</t_> <f_>fun</f_>(<t_>uint</t_> <a_>a</a_>[<k_>5</k_>]) {}
-                        <t_>void</t_> <f_>fun2</f_>(<t_>bool</t_> <a_>a</a_>) {}
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->a</a->[<k->5</k->]) {}
+                        <t->void</t-> <f->fun2</f->(<t->bool</t-> <a->a</a->) {}
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <w_>struct</w_> { <t_>uint</t_> n; } var = (<k_>0</k_>);
-                            <c_>//fun(var);                               // Error, structs cannot be converted</c_>
-                            <c_>//fun(float[2](1.0, 4.4));                // Error, arrays have different lengths</c_>
-                            <f_>fun</f_>(<k_>2</k_>);                                   <c_>// Ok, a = (2, 2, 2, 2, 2)</c_>
-                            <f_>fun</f_>(<t_>float</t_>[<k_>5</k_>](<k_>1.0</k_>, <k_>4.4</k_>, <k_>5.5</k_>, <k_>-33</k_>, <k_>2.11</k_>));  <c_>// Ok, a = (1, 4, 5, 4294967263, 2)</c_>
+                        <t->void</t-> <f->main</f->(){
+                            <w->struct</w-> { <t->uint</t-> n; } var = (<k->0</k->);
+                            <c->//fun(var);                               // Error, structs cannot be converted</c->
+                            <c->//fun(float[2](1.0, 4.4));                // Error, arrays have different lengths</c->
+                            <f->fun</f->(<k->2</k->);                                   <c->// Ok, a = (2, 2, 2, 2, 2)</c->
+                            <f->fun</f->(<t->float</t->[<k->5</k->](<k->1.0</k->, <k->4.4</k->, <k->5.5</k->, <k->-33</k->, <k->2.11</k->));  <c->// Ok, a = (1, 4, 5, 4294967263, 2)</c->
 
-                            <f_>fun2</f_>(<k_>2</k_>);                                  <c_>// Ok, a = true</c_>
-                            <f_>fun2</f_>(<t_>float</t_>[<k_>5</k_>](<k_>1.0</k_>, <k_>4.4</k_>, <k_>5.5</k_>, <k_>-33</k_>, <k_>2.11</k_>)); <c_>// Ok, a = true</c_>
-                            <f_>fun2</f_>(<t_>float</t_>[<k_>5</k_>](<k_>1.0</k_>, <k_>4.4</k_>, <k_>5.5</k_>, <k_>-33</k_>, <k_>0</k_>   )); <c_>// Ok, a = false</c_>
+                            <f->fun2</f->(<k->2</k->);                                  <c->// Ok, a = true</c->
+                            <f->fun2</f->(<t->float</t->[<k->5</k->](<k->1.0</k->, <k->4.4</k->, <k->5.5</k->, <k->-33</k->, <k->2.11</k->)); <c->// Ok, a = true</c->
+                            <f->fun2</f->(<t->float</t->[<k->5</k->](<k->1.0</k->, <k->4.4</k->, <k->5.5</k->, <k->-33</k->, <k->0</k->   )); <c->// Ok, a = false</c->
 
-                            <t_>uint</t_> arr[<k_>1.2</k_>];                            <c_>// Ok, arr has 1 element</c_>
+                            <t->uint</t-> arr[<k->1.2</k->];                            <c->// Ok, arr has 1 element</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#arrays">Arrays</a>,
@@ -1268,50 +1275,50 @@
             <!--------------------------------------------------------------------->
             <!-- Auto specifier                                                  -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="auto-specifier">Auto specifier</h3>
             <p>
-                The <b><code><t_>auto</t_></code></b> specifier can be <b>used as</b> a <b>type</b> when declaring a variable or function.<br>
+                The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b>type</b> when declaring a variable or function.<br>
                 The actual type of the symbol will be the same as the expression used to initialize it.<br>
             </p>
             <p>
-                <code><t_>auto</t_></code> is not allowed in struct members declarations and function parameters.<br>
-                The type of <code><t_>auto</t_></code> functions is determined by their return value.<br>
-                There is no <code><t_>auto</t_></code> constructor.
+                <code><t->auto</t-></code> is not allowed in struct members declarations and function parameters.<br>
+                The type of <code><t->auto</t-></code> functions is determined by their return value.<br>
+                There is no <code><t->auto</t-></code> constructor.
             </p>
             <p>
-                <code><t_>auto</t_></code> arrays and <code><t_>const</t_></code> <code><t_>auto</t_></code> symbols are allowed.
+                <code><t->auto</t-></code> arrays and <code><t->const</t-></code> <code><t->auto</t-></code> symbols are allowed.
                 //TODO auto functions that depend on an argument value
             </p>
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">1</label_>
-                    <code_><scroll_>
-                        <t_>auto</t_> <f_>func</f_>(){
-                            <w_>return</w_> <k_>true</k_>;        <c_>// func has type bool</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <t->auto</t-> <f->func</f->(){
+                            <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
                         }
 
-                        <t_>auto</t_> <f_>main</f_>(){
-                            <t_>auto</t_> a = <k_>2</k_>;         <c_>// a has type uint</c_>
-                            <t_>auto</t_> b = <k_>5.4</k_> * <k_>a</k_>;   <c_>// b has type float</c_>
-                            <t_>auto</t_> c = <f_>func</f_>();    <c_>// c has type bool</c_>
-                            <c_>// No return statement, main has type void</c_>
+                        <t->auto</t-> <f->main</f->(){
+                            <t->auto</t-> a = <k->2</k->;         <c->// a has type uint</c->
+                            <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type float</c->
+                            <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
+                            <c->// No return statement, main has type void</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">2</label_>
-                    <code_><scroll_>
-                        <t_>auto</t_>[<k_>4</k_>] a = <k_>1</k_>;          <c_>// a has type int[4] and value (1, 1, 1, 1)</c_>
-                        <t_>auto</t_>[<k_>2</k_>] <t_>const</t_> b = !<k_>a</k_>;   <c_>// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">2</label->
+                    <code-><scroll->
+                        <t->auto</t->[<k->4</k->] a = <k->1</k->;          <c->// a has type int[4] and value (1, 1, 1, 1)</c->
+                        <t->auto</t->[<k->2</k->] <t->const</t-> b = !<k->a</k->;   <c->// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</c->
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#functions">Functions</a>,
@@ -1322,50 +1329,50 @@
             <!--------------------------------------------------------------------->
             <!-- Typeof and baseof specifiers                                    -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="typeof-and-baseof-specifiers">Typeof and baseof specifiers</h3>
             <p>
-                The <b><code><t_>typeof</t_></code></b> and <b><code><t_>baseof</t_></code></b> specifiers are used in the same way as <code><t_>auto</t_></code>, but the <b>type</b> is defined by the <b>expression</b> that is passed to them.<br>
-                <code><t_>typeof</t_></code> returns the type of the expression, <code><t_>baseof</t_></code> returns it's base type.
+                The <b><code><t->typeof</t-></code></b> and <b><code><t->baseof</t-></code></b> specifiers are used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b>expression</b> that is passed to them.<br>
+                <code><t->typeof</t-></code> returns the type of the expression, <code><t->baseof</t-></code> returns it's base type.
             </p>
             <p>
-                <code><t_>baseof</t_></code> can only be used on arrays, enums and primitive types.<br>
+                <code><t->baseof</t-></code> can only be used on arrays, enums and primitive types.<br>
                 The base type of primitive types is the type itself.<br>
                 The expressions passed to those specifiers are always evaluated at compile time.
             </p>
             <p>
-                The <code><t_>typeof</t_></code> and <code><t_>baseof</t_></code> specifiers can be used as constructors.<br>
+                The <code><t->typeof</t-></code> and <code><t->baseof</t-></code> specifiers can be used as constructors.<br>
                 Circular dependencies are a semantic error.
                 //TODO
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        typeof(<elm_><t_>T</t_><sup>r</sup></elm_>)
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        baseof(<elm_><t_>T</t_><sup>r</sup></elm_>)
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        typeof(<elm-><t->T</t-><sup>r</sup></elm->)
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        baseof(<elm-><t->T</t-><sup>r</sup></elm->)
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
                         //TODO
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#functions">Functions</a>,
@@ -1376,95 +1383,95 @@
             <!--------------------------------------------------------------------->
             <!-- Unnamed types                                                   -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h2 id="unnamed-types">Unnamed types</h2>
             <p>
                 When a type doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the type and the symbol in the same construct.<br>
                 Similarly to the C syntax, the type name is not specified and the definition is used as type of the symbol.
             </p>
             <p>
-                Any symbol defined inside those types can still be referenced through the <code><t_>typeof</t_></code> and <code><t_>auto</t_></code> specifiers.<br>
+                Any symbol defined inside those types can still be referenced through the <code><t->typeof</t-></code> and <code><t->auto</t-></code> specifiers.<br>
                 Members of unnamed structs can be accessed using the member access operator, like normal structs.<br>
                 Defining an unnamed type without also declaring the symbol is allowed, but it generates a warning as the type and anything declared in it would be unaccessible.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_> - Struct</label_>
-                    <code_><scroll_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-> - Struct</label->
+                    <code-><scroll->
                         struct {
-                            <elm_>members<sup>...</sup></elm_>
-                        } <elm_>symbol name<sup>id</sup></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>1 - Enum</label_>
-                    <code_><scroll_>
-                        enum : <elm_><t_>T<sup>type</sup></t_></elm_> {
-                            <elm_>elements<sup>...</sup></elm_>
-                        } <elm_>symbol name<sup>id</sup></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>2 - Enum</label_>
-                    <code_><scroll_>
-                        strict enum : <elm_><t_>T<sup>type</sup></t_></elm_> {
-                            <elm_>elements<sup>...</sup></elm_>
-                        } <elm_>symbol name<sup>id</sup></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+                            <elm->members<sup>...</sup></elm->
+                        } <elm->symbol name<sup>id</sup></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->1 - Enum</label->
+                    <code-><scroll->
+                        enum : <elm-><t->T<sup>type</sup></t-></elm-> {
+                            <elm->elements<sup>...</sup></elm->
+                        } <elm->symbol name<sup>id</sup></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->2 - Enum</label->
+                    <code-><scroll->
+                        strict enum : <elm-><t->T<sup>type</sup></t-></elm-> {
+                            <elm->elements<sup>...</sup></elm->
+                        } <elm->symbol name<sup>id</sup></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">1</label_>
-                    <code_><scroll_>
-                        <w_>strict enum</w_> : <t_>bool</t_> {
-                            on = <k_>true</k_>;
-                            off = <k_>false</k_>;
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <w->strict enum</w-> : <t->bool</t-> {
+                            on = <k->true</k->;
+                            off = <k->false</k->;
                         } grasses;
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            this.grasses = <t_>typeof</t_>(grasses)::<k_>on</k_>;
+                        <t->void</t-> <f->main</f->(){
+                            this.grasses = <t->typeof</t->(grasses)::<k->on</k->;
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">2</label_>
-                    <code_><scroll_>
-                        <w_>struct</w_> {
-                            <t_>uint</t_> a, b;
-                            <w_>enum</w_> : int {
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">2</label->
+                    <code-><scroll->
+                        <w->struct</w-> {
+                            <t->uint</t-> a, b;
+                            <w->enum</w-> : int {
                                 idk1;
                                 idk2;
                             } c;
-                        } <f_>fun</f_>(){
-                            <w_>return</w_> { <k_>1</k_>, <k_>1</k_>, <k_>0</k_> }; <c_>// Ok, unnamed struct constructor</c_>
+                        } <f->fun</f->(){
+                            <w->return</w-> { <k->1</k->, <k->1</k->, <k->0</k-> }; <c->// Ok, unnamed struct constructor</c->
                         }
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>auto</t_> var = fun();
+                        <t->void</t-> <f->main</f->(){
+                            <t->auto</t-> var = fun();
 
-                            <c_>// Both are allowed</c_>
-                            var.c = <t_>typeof</t_>(var.c)::<k_>idk1</k_></span>;
-                            var.c = <t_>typeof</t_>(<t_>typeof</t_>(<f_>fun</f_>)::c)::<k_>idk2</k_></span>;
+                            <c->// Both are allowed</c->
+                            var.c = <t->typeof</t->(var.c)::<k->idk1</k->;
+                            var.c = <t->typeof</t->(<t->typeof</t->(<f->fun</f->)::c)::<k->idk2</k->;
 
-                            <t_>typeof</t_>(var.a) a = <k_>0</k_>;
+                            <t->typeof</t->(var.a) a = <k->0</k->;
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a>,
@@ -1477,7 +1484,7 @@
             <!--------------------------------------------------------------------->
             <!-- Variables                                                       -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="variables">Variables</h2>
             <p>
                 <b>Variables</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
@@ -1490,42 +1497,42 @@
                 Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>1</label_>
-                    <code_><scroll_>
-                        <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_>2</label_>
-                    <code_><scroll_>
-                        <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_> = <elm_><t_>T<sup>r</sup></t_></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label->2</label->
+                    <code-><scroll->
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>uint</t_> variable = <k_>0</k_>;         <c_>// Ok, variable has value 0</c_>
-                        <t_>float</t_> nya = <k_>5</k_> + <k_>variable</k_>;  <c_>// Ok, nya ha value 5.0</c_>
-                        <t_>bool</t_> var$;                 <c_>// Ok, var$ has undefined value</c_>
-                        <c_>//b var_2 = var$;          // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
+                        <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
+                        <t->bool</t-> var$;                 <c->// Ok, var$ has undefined value</c->
+                        <c->//b var_2 = var$;          // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</c->
 
-                        <c_>//double variable;         // Error, the identifier "variable" is already declared</c_>
-                        <c_>//double foo               // Error, ';' is not optional</c_>
-                        <c_>//b $var;                  // Error, invalid identifier</c_>
-                        <c_>//b 2var;                  // Error, invalid identifier</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                        <c->//double variable;         // Error, the identifier "variable" is already declared</c->
+                        <c->//double foo               // Error, ';' is not optional</c->
+                        <c->//b $var;                  // Error, invalid identifier</c->
+                        <c->//b 2var;                  // Error, invalid identifier</c->
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#types">Types</a>,
@@ -1537,7 +1544,7 @@
             <!--------------------------------------------------------------------->
             <!-- Temporary variables                                             -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="temporary-variables">Temporary variables</h3>
             <p>
                 <b>Temporary variables</b> are a special set of identifiers that have <b>dynamic type</b> and don't need to be declared.<br>
@@ -1555,46 +1562,46 @@
             </p>
             <p>They act as normal variables for anything else.</p>
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">1</label_>
-                    <code_><scroll_>
-                        <t_>uint3</t_> <f_>fun1</f_>(<t_>bool</t_> <a_>arg</a_>) {
-                            $0 = <k_>1</k_>;             <c_>// Ok, $0 has type uint and value 1</c_>
-                            <c_>//$2 = $1;          // Error, $1 has undefined type</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
+                            $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
+                            <c->//$2 = $1;          // Error, $1 has undefined type</c->
 
-                            <t_>uint3</t_> vec = { <k_>0</k_>, <k_>1</k_>, <k_>2</k_> };
-                            $2 = <k_>true</k_>;          <c_>// Ok, $2 has type b and value true</c_>
-                            $2 = <k_>vec</k_>;           <c_>// Ok, $2 has type uint3 and value { 0, 1, 2 }</c_>
+                            <t->uint3</t-> vec = { <k->0</k->, <k->1</k->, <k->2</k-> };
+                            $2 = <k->true</k->;          <c->// Ok, $2 has type b and value true</c->
+                            $2 = <k->vec</k->;           <c->// Ok, $2 has type uint3 and value { 0, 1, 2 }</c->
                         }
 
-                        <t_>void</t_> <f_>fun2</f_>(<t_>uint3</t_> <a_>vec</a_>) {
-                            <c_>//uint var = $2;    // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</c_>
+                        <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
+                            <c->//uint var = $2;    // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</c->
                         }
 
-                        <c_>//uint var = $9;        // Error, temporary variables cannot be used outside of functions</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)">2</label_>
-                    <code_><scroll_>
-                        <t_>void</t_> <f_>fun3</f_>(<t_>bool</t_> <a_>arg</a_>, <t_>uint2</t_> &<a_>ref</a_>) {
-                            <w_>if</w_>(arg) $0 = <k_>1</k_>;             <c_>// $0 has type uint</c_>
-                            <w_>else</w_>    $0 = { <k_>0</k_>, <k_>1</k_> };      <c_>// $0 has type uint2</c_>
-                            <c_>//ref = $0;                 // Error, cannot determine the type of $0</c_>
-                            $0 = ref;                   <c_>// Ok, $0 has type uint2 and the same value as ref</c_>
+                        <c->//uint var = $9;        // Error, temporary variables cannot be used outside of functions</c->
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">2</label->
+                    <code-><scroll->
+                        <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
+                            <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
+                            <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
+                            <c->//ref = $0;                 // Error, cannot determine the type of $0</c->
+                            $0 = ref;                   <c->// Ok, $0 has type uint2 and the same value as ref</c->
 
-                            <w_>if</w_>(arg) $0 = { <k_>0</k_>, <k_>1</k_> };      <c_>// $0 has type uint2</c_>
-                            <w_>else</w_>    $0 = { <k_>2</k_>, <k_>3</k_> };      <c_>// $0 has type uint2</c_>
-                            ref = <k_>$0</k_>;                   <c_>// Ok, $0 has type uint2</c_>
+                            <w->if</w->(arg) $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
+                            <w->else</w->    $0 = { <k->2</k->, <k->3</k-> };      <c->// $0 has type uint2</c->
+                            ref = <k->$0</k->;                   <c->// Ok, $0 has type uint2</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#types">Types</a>,
@@ -1609,7 +1616,7 @@
             <!--------------------------------------------------------------------->
             <!-- Functions                                                       -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="functions">Functions</h2>
             <p>
                 <b>Functions</b> are the <b>main component</b> of the language. They contain the statements that will be executed during run time and manage inputs and outputs of the shader.<br>
@@ -1622,40 +1629,40 @@
                 Functions are allowed to take no arguments.
             </p>
             <p>
-                The <b><code><f_>main</f_></code> function</b> is where the <b>code execution starts and ends</b>.<br>
+                The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
                 Every shader <b>must define</b> the <b>main</b> as a void function. As such, it cannot return values.<br>
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <left_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        <elm_><t_>T<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>(<elm_>arguments<sup>...</sup></elm_>) {<elm_>...</elm_>}
-                    </scroll_></code_>
-                </left_>
-                <right_>
-                    <label_>Parameter syntax</label_>
-                    <code_><scroll_>
-                        <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_><elm_>name<sup>id</sup></elm_>
-                    </scroll_></code_>
-                </right_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <left->
+                    <label-></label->
+                    <code-><scroll->
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm->arguments<sup>...</sup></elm->) {<elm->...</elm->}
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Parameter syntax</label->
+                    <code-><scroll->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
+                    </scroll-></code->
+                </right->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>void</t_> <f_>func1</f_>() {}
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->void</t-> <f->func1</f->() {}
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>int</t_> n = <k_>0</k_>;
-                            <c_>// ...</c_>
+                        <t->void</t-> <f->main</f->(){
+                            <t->int</t-> n = <k->0</k->;
+                            <c->// ...</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#runtime-statements">Runtime statements</a>,
@@ -1666,7 +1673,7 @@
             <!--------------------------------------------------------------------->
             <!-- Parameters and references                                       -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="parameters-and-references">Parameters and references</h3>
             <p>
                 By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
@@ -1677,36 +1684,36 @@
                 Notice that in this case, the <code>&</code> token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_ class="nobefore">Parameter syntax</label_>
-                    <code_><scroll_>
-                        <elm_><t_>U<sup>type</sup></t_></elm_><space_></space_>&<elm_>name<sup>id</sup></elm_>
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Parameter syntax</label->
+                    <code-><scroll->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space->&<elm->name<sup>id</sup></elm->
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>void</t_> <f_>fun1</f_>(<t_>uint</t_> <a_>arg1</a_>, <t_>uint</t_> &<a_>arg2</a_>) {
-                            arg1 = <k_>0</k_>;     <c_>// c_doesn't modify main::a, but the local argument in which its value was copied</span>
-                            arg2 = <k_>0</k_>;     <c_>// c_modifies main::b</span>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
+                            arg1 = <k->0</k->;     <c->// c_doesn't modify main::a, but the local argument in which its value was copied</c->
+                            arg2 = <k->0</k->;     <c->// c_modifies main::b</c->
                         }
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>uint</t_> a, b;
-                            <f_>fun1</f_>(a, b);   <c_>// a keeps an undefined value, b is set to 0</c_>
-                            <c_>//fun1(a, 5); // Error, cannot pass literals to reference parameters</c_>
+                        <t->void</t-> <f->main</f->(){
+                            <t->uint</t-> a, b;
+                            <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
+                            <c->//fun1(a, 5); // Error, cannot pass literals to reference parameters</c->
                         }
 
-                        <c_>//void fun2(const int &arg1){} // Error, references cannot be const</c_>
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                        <c->//void fun2(const int &arg1){} // Error, references cannot be const</c->
+                    </scroll-></code->
+                </fill->
+            </example->
 
             <p>
                 See
@@ -1718,66 +1725,66 @@
             <!--------------------------------------------------------------------->
             <!-- Return statement                                                -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="return-statement">Return statement</h3>
             <p>
                 The type of the function defines the type of the value that is returned by the function when called.<br>
-                <b>Values</b> are <b>returned</b> using the <b><code><k_>return</k_></code></b> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
-                Functions that <b>don't return</b> a value must be defined using the <b><code><t_>void</t_></code> type</b>.<br>
+                <b>Values</b> are <b>returned</b> using the <b><code><k->return</k-></code></b> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
+                Functions that <b>don't return</b> a value must be defined using the <b><code><t->void</t-></code> type</b>.<br>
                 Void functions are allowed to contain no statements. Non-void functions must always return a value.
             </p>
 
-            <sep_></sep_>
-            <syntax_>
-                <fill_>
-                    <label_></label_>
-                    <code_><scroll_>
-                        return<space_></space_><elm_><t_>T<sup>r</sup></t_></elm_>;
-                    </scroll_></code_>
-                </fill_>
-            </syntax_>
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <t_>void</t_> <f_>empty_function_1</f_>() { <w_>return</w_>; }    <c_>// Ok</c_>
-                        <t_>void</t_> <f_>empty_function_2</f_>() {}             <c_>// Ok</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
+                        <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
 
-                        <t_>uint</t_> <f_>empty_function_3</f_>() { <w_>return</w_> <k_>0</k_>; }  <c_>// Ok</c_>
-                        <c_>//uint empty_function_4() {}           // Error, non-void functions must return a value</c_>
+                        <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
+                        <c->//uint empty_function_4() {}           // Error, non-void functions must return a value</c->
 
-                        <t_>uint</t_> <f_>f</f_>(<t_>uint</t_> <a_>n</a_>) { <w_>return</w_> n * <k_>2</k_>; }       <c_>// Ok</c_>
-                        <c_>//void f() { }                         // Error, f is already defined</c_>
+                        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+                        <c->//void f() { }                         // Error, f is already defined</c->
 
-                        <t_>void</t_> <f_>main</f_>(){
-                            <t_>uint</t_> n = <f_>empty_function_3</f_>();       <c_>// Ok</c_>
-                            n = <f_>f</f_>(<f_>f</f_>(<k_>n</k_>));                       <c_>// Ok</c_>
+                        <t->void</t-> <f->main</f->(){
+                            <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
+                            n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
             <!--------------------------------------------------------------------->
             <!-- Function calls                                                  -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="function-calls">Function calls</h3>
 
 
             <!--------------------------------------------------------------------->
             <!-- Template functions                                              -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="template-functions">Template functions</h3>
 
 
             <!--------------------------------------------------------------------->
             <!-- Type groups                                                     -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="type-groups">Type groups</h3>
 
 
@@ -1786,10 +1793,10 @@
             <!--------------------------------------------------------------------->
             <!-- Const qualifier                                                 -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="const-qualifier">Const qualifier</h2>
             <p>
-                The <code><t_>const</t_></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
+                The <code><t->const</t-></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
                 Reference const parameters are not allowed, as well as const functions and const struct members.<br>
             </p>
             <p>
@@ -1801,30 +1808,30 @@
                 Const variables cannot have undefined value.
             </p>
 
-            <sep_></sep_>
-            <example_>
-                <fill_>
-                    <label_ onclick="copy_code(this)"></label_>
-                    <code_><scroll_>
-                        <w_>struct</w_> <t_>s</t_> {
-                            <t_>uint</t_> a;            <c_>// Ok, non-const member</c_>
-                            <c_>//uint const b;    // Error, struct members cannot be const</c_>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <w->struct</w-> <t->s</t-> {
+                            <t->uint</t-> a;            <c->// Ok, non-const member</c->
+                            <c->//uint const b;    // Error, struct members cannot be const</c->
                         }
-                        <t_>s const</t_> var;           <c_>// Ok, const global variable</c_>
+                        <t->s const</t-> var;           <c->// Ok, const global variable</c->
 
-                        <c_>//double const fun(){}              // Error, functions cannot be const</c_>
-                        <c_>//double fun(double const &arg){}   // Error, references cannot be const</c_>
+                        <c->//double const fun(){}              // Error, functions cannot be const</c->
+                        <c->//double fun(double const &arg){}   // Error, references cannot be const</c->
 
-                        <t_>double</t_> <f_>fun</f_>(<t_>double </t_> arg) {           <c_>// Ok, const parameter</c_>
-                            <c_>//uint a;                       // Error, uninitialized const</c_>
-                            <t_>u64</t_> a = 4;                      <c_>// Ok</c_>
-                            <t_>u64</t_> b = arg, c;                 <c_>// Ok</c_>
-                            <c_>//a = 2;                        // Error, cannot assign values to const variables</c_>
-                            c = <k_>a</k_> + b;                      <c_>// Ok</c_>
+                        <t->double</t-> <f->fun</f->(<t->double </t-> arg) {           <c->// Ok, const parameter</c->
+                            <c->//uint a;                       // Error, uninitialized const</c->
+                            <t->u64</t-> a = 4;                      <c->// Ok</c->
+                            <t->u64</t-> b = arg, c;                 <c->// Ok</c->
+                            <c->//a = 2;                        // Error, cannot assign values to const variables</c->
+                            c = <k->a</k-> + b;                      <c->// Ok</c->
                         }
-                    </scroll_></code_>
-                </fill_>
-            </example_>
+                    </scroll-></code->
+                </fill->
+            </example->
             <p>
                 See
                 <a href="#compiler-optimizations">Compiler optimizations</a>
@@ -1836,7 +1843,7 @@
             <!--------------------------------------------------------------------->
             <!-- Symbol aliases                                                  -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="symbol-aliases">Symbol aliases</h2>
 
 
@@ -1849,7 +1856,7 @@
             <!--------------------------------------------------------------------->
             <!-- Runtime statements                                              -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id="runtime-statements">Runtime statements</h1>
 
 
@@ -1857,7 +1864,7 @@
             <!--------------------------------------------------------------------->
             <!-- Left and right values                                           -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="left-and-right-values">Left and right values</h2>
 
 
@@ -1865,38 +1872,38 @@
             <!--------------------------------------------------------------------->
             <!-- Expressions                                                     -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="expressions">Expressions</h2>
 
             <!--------------------------------------------------------------------->
             <!-- Literals                                                        -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="literals">Literals</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Constructors                                                    -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="constructors">Constructors</h3>
             <p>CONSTRUCTORS ARE SPECIAL FUNCTIONS //TODO</p>
 
             <!--------------------------------------------------------------------->
             <!-- Operators                                                       -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="operators">Operators</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Special operators                                               -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="special-operators">Special operators</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Array operations                                                -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="array-operations">Array operations</h3>
 
 
@@ -1904,19 +1911,19 @@
             <!--------------------------------------------------------------------->
             <!-- Assignments                                                     -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="assignments">Assignments</h2>
 
             <!--------------------------------------------------------------------->
             <!-- Composite assignments                                           -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="composite-assignments">Composite assignments</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Multiple assignments                                            -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="multiple-assignments">Multiple assignments</h3>
 
 
@@ -1924,19 +1931,19 @@
             <!--------------------------------------------------------------------->
             <!-- Selection                                                       -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="selection">Selection</h2>
 
             <!--------------------------------------------------------------------->
             <!-- If statement                                                    -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="if-statement">If statement</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Select statement                                                -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="select-statement">Select statement</h3>
 
 
@@ -1944,37 +1951,37 @@
             <!--------------------------------------------------------------------->
             <!-- Iteration                                                       -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="iteration">Iteration</h2>
 
             <!--------------------------------------------------------------------->
             <!-- For loops                                                       -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="for-loops">For loops</h3>
 
             <!--------------------------------------------------------------------->
             <!-- While loops                                                     -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="while-loops">While loops</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Continue and break statements                                   -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="continue-and-break-statements">Continue and break statements</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Once statement                                                  -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="once-statement">Once statement</h3>
 
             <!--------------------------------------------------------------------->
             <!-- Then statement                                                  -->
             <!--------------------------------------------------------------------->
-            <sep-3_></sep-3_>
+            <sep-3-></sep-3->
             <h3 id="then-statement">Then statement</h3>
 
 
@@ -1982,7 +1989,7 @@
             <!--------------------------------------------------------------------->
             <!-- Else statement                                                  -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="else-statement">Else statement</h2>
 
 
@@ -1994,7 +2001,7 @@
             <!--------------------------------------------------------------------->
             <!-- Compilation                                                     -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id="compilation">Compilation</h1>
 
 
@@ -2002,7 +2009,7 @@
             <!--------------------------------------------------------------------->
             <!-- Modules                                                         -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="modules">Modules</h2>
 
 
@@ -2010,7 +2017,7 @@
             <!--------------------------------------------------------------------->
             <!-- Compilation phases and error types                              -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="compilation-phases-and-error-types">Compilation phases and error types</h2>
 
 
@@ -2018,7 +2025,7 @@
             <!--------------------------------------------------------------------->
             <!-- Global initialization order                                     -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="global-initialization-order">Global initialization order</h2>
 
 
@@ -2026,7 +2033,7 @@
             <!--------------------------------------------------------------------->
             <!-- Branching performance                                           -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="branching-performance">Branching performance</h2>
 
 
@@ -2034,7 +2041,7 @@
             <!--------------------------------------------------------------------->
             <!-- Compiler optimizations                                          -->
             <!--------------------------------------------------------------------->
-            <sep-2_></sep-2_>
+            <sep-2-></sep-2->
             <h2 id="compiler-optimizations">Compiler optimizations</h2>
 
 
@@ -2046,7 +2053,7 @@
             <!--------------------------------------------------------------------->
             <!-- Standard modules                                                -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id="standard-modules">Standard modules</h1>
 
 
@@ -2058,7 +2065,7 @@
             <!--------------------------------------------------------------------->
             <!-- Quick reference tabs                                            -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id="quick-reference-tabs">Quick reference tabs</h1>
 
             //TODO
@@ -2093,10 +2100,10 @@
                     <tr>
                         <td class="center" >1</td>
                         <td class="center">
-                            <elm_><code>(</code><code>)</code></elm_>
+                            <elm-><code>(</code><code>)</code></elm->
                         </td>
-                        <td class="center nowrap">(<elm_><t_>T<sup>r</sup></t_></elm_>)</td>
-                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                        <td class="center nowrap">(<elm-><t->T<sup>r</sup></t-></elm->)</td>
+                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                         <td class="left">Grouping</td>
                         <td class="left" rowspan=5>Other</td>
                     </tr>
@@ -2105,16 +2112,16 @@
                             <td class="center" rowspan=6>2</td>
                             <td class="center" rowspan=2>
                                 <span class="op_template">-</span><br>
-                                <elm_><code>[</code><code>]</code></elm_><br>
+                                <elm-><code>[</code><code>]</code></elm-><br>
                                 <span class="op_template">with(T == struct_t)</span><br>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T[]</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
-                            <td class="center"><code><t_>T<sup>l</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T[]</t-><sup>r</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]</td>
+                            <td class="center"><code><t->T<sup>l</sup></t-></code></td>
                             <td class="left" rowspan=2>Subscription</td>
                         </tr>
                         <tr>
-                            <td class="center nowrap"><elm_><t_>T</t_><sup>r</sup></elm_>[<elm_><t_>uint</t_><sup>r</sup></elm_>]</td>
-                            <td class="center"><code><t_>member type<sup>l</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T</t-><sup>r</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]</td>
+                            <td class="center"><code><t->member type<sup>l</sup></t-></code></td>
                         </tr>
                         <tr>
                             <td class="center" rowspan=2>
@@ -2122,21 +2129,21 @@
                                 <code>.</code><br>
                                 <span class="op_template">with(T == struct_t)</span><br>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T[]<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
-                            <td class="center"><code><t_>T<sup>l</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T[]<sup>r</sup></t-></elm->.<elm->member<sup>id</sup></elm-></td>
+                            <td class="center"><code><t->T<sup>l</sup></t-></code></td>
                             <td class="left" rowspan=2>Member access</td>
                         </tr>
                         <tr>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_>.<elm_>member<sup>id</sup></elm_></td>
-                            <td class="center"><code><t_>member type<sup>l</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->.<elm->member<sup>id</sup></elm-></td>
+                            <td class="center"><code><t->member type<sup>l</sup></t-></code></td>
                         </tr>
                         <tr>
                             <td class="center">
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>++</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_>++</td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->++</td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Postfix increment</td>
                             <td class="left" rowspan=6>Arithmetic</td>
                         </tr>
@@ -2145,8 +2152,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>--</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_>--</td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->--</td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Postfix decrement</td>
                         </tr>
                     <!-- -->
@@ -2156,8 +2163,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>++</code>
                             </td>
-                            <td class="center nowrap">++<elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap">++<elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Prefix increment</td>
                         </tr>
                         <tr>
@@ -2165,8 +2172,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>--</code>
                             </td>
-                            <td class="center nowrap">--<elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap">--<elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Prefix decrement</td>
                         </tr>
                         <tr>
@@ -2174,8 +2181,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>+</code>
                             </td>
-                            <td class="center nowrap">+<elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap">+<elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Promotion</td>
                         </tr>
                         <tr>
@@ -2183,8 +2190,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>-</code>
                             </td>
-                            <td class="center nowrap">-<elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap">-<elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Inversion</td>
                         </tr>
                         <tr>
@@ -2192,15 +2199,15 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>~</code>
                             </td>
-                            <td class="center nowrap">~<elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap">~<elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Bitwise NOT</td>
                             <td class="left">Binary</td>
                         </tr>
                         <tr>
                             <td class="center nowrap"><code>!</code></td>
-                            <td class="center">!<elm_><t_>bool<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center">!<elm-><t->bool<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Logical NOT</td>
                             <td class="left">Logical</td>
                         </tr>
@@ -2211,8 +2218,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>*</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &#42; <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &#42; <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Multiplication</td>
                             <td class="left" rowspan=5>Arithmetic</td>
                         </tr>
@@ -2221,8 +2228,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>/</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> / <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> / <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Division</td>
                         </tr>
                         <tr>
@@ -2230,8 +2237,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>%</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> % <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> % <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Modulo</td>
                         </tr>
                     <!-- -->
@@ -2241,8 +2248,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>+</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> + <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> + <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Addition</td>
                         </tr>
                         <tr>
@@ -2250,8 +2257,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>-</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> - <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> - <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Subtraction</td>
                         </tr>
                     <!-- -->
@@ -2261,8 +2268,8 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>&lt;&lt;</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;&lt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><codet_>T<sup>r</sup></codet_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt;&lt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><codet->T<sup>r</sup></codet-></code></td>
                             <td class="left">Left bit shift</td>
                             <td class="left" rowspan=2>Binary</td>
                         </tr>
@@ -2271,8 +2278,8 @@
                                 <span class="op_template">with(T == int_t)</span><br>
                                 <code>&gt;&gt;</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;&gt; <elm_><t_>uint<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt;&gt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Right bit shift</td>
                         </tr>
                     <!-- -->
@@ -2282,8 +2289,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&lt;</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &lt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt; <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Less than</td>
                             <td class="left" rowspan=8>Comparison</td>
                         </tr>
@@ -2292,8 +2299,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&lt;=</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &lt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt;= <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Less or equal than</td>
                         </tr>
                         <tr>
@@ -2301,8 +2308,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&gt;</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &gt; <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt; <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Greater than</td>
                         </tr>
                         <tr>
@@ -2310,8 +2317,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>&gt;=</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> &gt;= <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt;= <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Greater or equal than</td>
                         </tr>
                     <!-- -->
@@ -2321,8 +2328,8 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>==</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> == <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> == <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Equality</td>
                         </tr>
                         <tr>
@@ -2330,20 +2337,20 @@
                                 <span class="op_template">with(T != struct_t)</span><br>
                                 <code>!=</code>
                             </td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> != <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> != <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Inequality</td>
                         </tr>
                         <tr>
                             <td class="center"><code>=:</code></td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> =: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> =: <elm-><t->T[]<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Existence</td>
                         </tr>
                         <tr>
                             <td class="center"><code>!:</code></td>
-                            <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> !: <elm_><t_>T[]<sup>r</sup></t_></elm_></td>
-                            <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> !: <elm-><t->T[]<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Inexistence</td>
                         </tr>
                     <tr>
@@ -2352,8 +2359,8 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>&</code>
                         </td>
-                        <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> & <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                        <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> & <elm-><t->T<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                         <td class="left">Bitwise AND</td>
                         <td class="left" rowspan=3>Binary</td>
                     </tr>
@@ -2363,8 +2370,8 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>^</code>
                         </td>
-                        <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> ^ <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                        <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> ^ <elm-><t->T<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                         <td class="left">Bitwise XOR</td>
                     </tr>
                     <tr>
@@ -2373,37 +2380,37 @@
                             <span class="op_template">with(T != int_t)</span><br>
                             <code>|</code>
                         </td>
-                        <td class="center nowrap"><elm_><t_>T<sup>r</sup></t_></elm_> | <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                        <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> | <elm-><t->T<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                         <td class="left">Bitwise OR</td>
                     </tr>
                     <tr>
                         <td class="center">12</td>
                         <td class="center"><code>&&</code></td>
-                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> && <elm_><t_>bool<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> && <elm-><t->bool<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                         <td class="left">Logical AND</td>
                         <td class="left" rowspan=3>Logical</td>
                     </tr>
                     <tr>
                         <td class="center">13</td>
                         <td class="center"><code>^^</code></td>
-                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> ^^ <elm_><t_>bool<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> ^^ <elm-><t->bool<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                         <td class="left">Logical XOR</td>
                     </tr>
                     <tr>
                         <td class="center">14</td>
                         <td class="center"><code>||</code></td>
-                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> || <elm_><t_>bool<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>bool<sup>r</sup></t_></code></td>
+                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> || <elm-><t->bool<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                         <td class="left">Logical OR</td>
                     </tr>
                     <tr>
                         <td class="center">15</td>
-                        <td class="center"><elm_><code>?</code><code>:</code></elm_></td>
-                        <td class="center nowrap"><elm_><t_>bool<sup>r</sup></t_></elm_> ? <elm_><t_>T<sup>r</sup></t_></elm_> : <elm_><t_>T<sup>r</sup></t_></elm_></td>
-                        <td class="center"><code><t_>T<sup>r</sup></t_></code></td>
+                        <td class="center"><elm-><code>?</code><code>:</code></elm-></td>
+                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> ? <elm-><t->T<sup>r</sup></t-></elm-> : <elm-><t->T<sup>r</sup></t-></elm-></td>
+                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                         <td class="left">Selection operator</td>
                         <td class="left">Other</td>
                     </tr>
@@ -2427,7 +2434,7 @@
             <!--------------------------------------------------------------------->
             <!-- Complete examples                                               -->
             <!--------------------------------------------------------------------->
-            <sep-1_></sep-1_>
+            <sep-1-></sep-1->
             <h1 id="complete-examples">Complete examples</h1>
 
         </div>
@@ -2435,6 +2442,9 @@
 </div>
 
 
+
+
+<!-- Fix code indentation because apparently HTML5+CSS3 can't do that -->
 <script>
     function dedent(s){
         // find shortest indentation
@@ -2450,7 +2460,7 @@
         // remove indentation
         for(var i = 0; i < s.length; i++){
             var line = s[i];
-            s[i] = line.substring(min, line.length);
+            s[i] = line.substring(min, line.length); //TODO REMOVE
         }
 
         // join and return all lines
@@ -2459,9 +2469,10 @@
 
 
     function fix_code() {
-        var children = Array.from(document.getElementsByTagName("SCROLL_"));
+        var children = Array.from(document.getElementsByTagName("SCROLL-"));
         for(var i = 0; i < children.length; i++){
             children[i].innerHTML = dedent(children[i].innerHTML) + "\n";
+            // Add trailing newline to fix CSS's bugged max-height  ^
         }
     }
 
