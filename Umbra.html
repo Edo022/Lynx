@@ -1,53 +1,118 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Umbra language</title>
+    <title>The Umbra language</title>
     <meta charset="UTF-8">
-    <meta name="author" content="//TODO">
-    <meta name="description" content="//TODO">
+    <meta name="author" content="Snek" />
+    <meta name="description" content="Umbra language specification" />
+
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="Style.css" media="screen">
+
+    <style>
+    </style>
 </head>
 <body>
-<div class="main-container hide-scrollbar">
+
+
+
+
+<script>
+    //TODO move to .js file
+    function decodeHTML(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
+    function copy_code(button_tag) {
+        var children = Array.from(button_tag.parentNode.childNodes);
+        for(var i = 0; i < children.length; i++){
+            if(children[i].tagName == "CODE-") {
+                var output_text = decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""));
+                navigator.clipboard.writeText(output_text.substring(1, output_text.length - 2));
+                //                           Remove leading newline ^                       ^
+                //                             Remove trailing newline and CSS fix newline -'
+                return 0;
+            }
+        }
+    }
+</script>
+
+
+
+
+<main- class="hide-scrollbar">
 
     <!--------------------------------------------------------------------->
     <!-- Index                                                           -->
     <!--------------------------------------------------------------------->
-    <div class="main-left-container hide-scrollbar" style="border-right: 1px solid var(--separator-color);">
-        <!-- -->
-    </div>
+    <left- class="hide-scrollbar">
+        <ul style="padding-left:0;" class="index">
+        </ul>
+    </left->
 
-    <div class="main-right-container hide-scrollbar">
+    <right- class="hide-scrollbar">
         <!--------------------------------------------------------------------->
         <!-- Logo                                                            -->
         <!--------------------------------------------------------------------->
-        <div class="logo-right-top"></div>
-        <div class="logo logo-right" style="background-image: url('Lux-logo.png');"></div>
+        <logo-top-></logo-top->
+        <logo- style="background-image: url('Umbra-logo.png');"></logo->
 
-        <div style="background-color: var(--bg-color);">
-
+        <main-scroll->
             <!--------------------------------------------------------------------->
             <!-- Overview                                                        -->
             <!--------------------------------------------------------------------->
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-        </div>
-    </div>
-</div>
+            <div style="margin-top: var(--main-padding);"></div>
+            <h1 id="overview-no-header">Umbra - Lynx programming language</h1>
+            <sep-3-></sep-3->
+            <p>
+                Umbra [...].
+            </p>
+        </main-scroll->
+    </right->
+</main->
+
+
+
+
+<!-- Fix code indentation because apparently HTML5+CSS3 can't do that -->
+<script>
+    //TODO move to .js file
+    function dedent(s){
+        // find shortest indentation
+        var min;
+        s = s.split('\n');
+        for(var i = 0; i < s.length; i++){
+            var line = s[i];
+            var spaces = line.search(/\S/);
+            if((min > spaces || min == undefined) && spaces >= 0){
+                min = spaces;
+            }
+        }
+        // remove indentation
+        for(var i = 0; i < s.length; i++){
+            var line = s[i];
+            s[i] = line.substring(min, line.length); //TODO REMOVE
+        }
+
+        // join and return all lines
+        return s.join("\n");
+    }
+
+
+    function fix_code() {
+        var children = Array.from(document.getElementsByTagName("SCROLL-"));
+        for(var i = 0; i < children.length; i++){
+            children[i].innerHTML = dedent(children[i].innerHTML) + "\n";
+            // Add trailing newline to fix CSS's bugged max-height  ^
+        }
+    }
+
+
+    fix_code();
+</script>
+
+
 </body>
 </html>
-
-
-
-<!--
