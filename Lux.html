@@ -77,6 +77,7 @@
                             <li><a href="#enums">Enums</a></li>
                             <li><a href="#structs">Structs</a></li>
                             <li><a href="#arrays">Arrays</a></li>
+                            <li><a href="#tuples">Tuples</a></li>
                             <li><a href="#implicit-conversions">Implicit conversions</a></li>
                             <li><a href="#auto-specifier">Auto specifier</a></li>
                             <li><a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a></li>
@@ -111,12 +112,7 @@
                             <li><a href="#operators">Operators</a></li>
                             <li><a href="#special-operators">Special operators</a></li>
                             <li><a href="#array-operations">Array operations</a></li>
-                        </ul>
-                    </li>
-                    <li><a href="#assignments">Assignments</a>
-                        <ul>
-                            <li><a href="#composite-assignments">Composite assignments</a></li>
-                            <li><a href="#multiple-assignments">Multiple assignments</a></li>
+                            <li><a href="#type-comparison">Type comparison</a></li>
                         </ul>
                     </li>
                     <li><a href="#selection">Selection</a>
@@ -850,8 +846,8 @@
                 <left->
                     <label-></label->
                     <code-><scroll->
-                        enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm->{ <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
-                        strict enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm->{ <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
+                        enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
+                        strict enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
                     </scroll-></code->
                 </left->
                 <right->
@@ -1050,6 +1046,42 @@
 
 
             <!--------------------------------------------------------------------->
+            <!-- Tuples                                                          -->
+            <!--------------------------------------------------------------------->
+            <sep-3-></sep-3->
+            <h3 id="tuples">Tuples</h3>
+            <p>
+                //TODO
+            </p>
+
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                    </scroll-></code->
+                </fill->
+            </syntax->
+
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
+                            <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
+                            <w->else</w-> <w->return</w-> n[<k->0</k->];
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
+            <p>
+                See
+                //TODO
+            </p>
+
+
+            <!--------------------------------------------------------------------->
             <!-- Implicit conversions                                            -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
@@ -1070,6 +1102,8 @@
                     <th>Behaviour</th>
                 </tr></thead>
                 <tbody>
+
+                    <!-- uint ---------------------------------------------------------------------->
                     <tr>
                         <td rowspan="3"><code><t->uint</t-></code></td>
                         <td><code><t->int</t-></code></td>
@@ -1083,6 +1117,8 @@
                         <td><code><t->bool</t-></code></td>
                         <td class="wide-lines"><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
+
+                    <!-- int ----------------------------------------------------------------------->
                     <tr>
                         <td rowspan="3"><code><t->int</t-></code></td>
                         <td><code><t->uint</t-></code></td>
@@ -1096,6 +1132,8 @@
                         <td><code><t->bool</t-></code></td>
                         <td class="wide-lines"><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
+
+                    <!-- float --------------------------------------------------------------------->
                     <tr>
                         <td rowspan="4"><code><t->float</t-></code></td>
                         <td><code><t->uint</t-></code></td>
@@ -1115,6 +1153,8 @@
                         <td><code><t->bool</t-></code></td>
                         <td class="wide-lines"><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
+
+                    <!-- double -------------------------------------------------------------------->
                     <tr>
                         <td rowspan="4"><code><t->double</t-></code></td>
                         <td><code><t->uint</t-></code></td>
@@ -1134,8 +1174,10 @@
                         <td><code><t->bool</t-></code></td>
                         <td class="wide-lines"><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
                     </tr>
+
+                    <!-- bool ---------------------------------------------------------------------->
                     <tr>
-                        <td rowspan="3"><code><t->bool</t-></code></td>
+                        <td rowspan="2"><code><t->bool</t-></code></td>
                         <td><code><t->uint</t-></code> <code><t->int</t-></code></td>
                         <td class="wide-lines"><code><k->true</k-></code> is evaluated as <code><k->1</k-></code>, <code><k->false</k-></code> as <code><k->0</k-></code></td>
                     </tr>
@@ -1146,7 +1188,7 @@
                 </tbody>
             </table></div>
             <p>
-                Additional conversions between arrays and primitive types are described in the following table:
+                Additional conversions for non-primitive types are described as follows:
             </p>
             <div class="table-container"><table>
                 <tr>
@@ -1154,22 +1196,60 @@
                     <th>Expected type    </th>
                     <th>Behaviour        </th>
                 </tr>
-                <td><code><t->T</t-></code>   </td>
-                <td><code><t->U[n]</t-></code></td>
-                <td>Each element of the result is initialized with the value of the starting expression, converted from <code><t->T</t-></code> to <code><t->U</t-></code></td>
+
+                <!-- Element to array ---------------------------------------------------------->
                 <tr>
-                    <td><code><t->T[n]</t-></code></td>
-                    <td><code><t->U[n]</t-></code></td>
-                    <td>Each element of the result is initialized with the corresponding value of the starting array, converted from <code><t->T</t-></code> to <code><t->U</t-></code></td>
+                    <td class="center" rowspan="2"><code><t->T</t-></code></td>
+                    <td class="center"><code><t->T[n]</t-></code></td>
+                    <td rowspan="2">
+                        Each element of the result is initialized with the value of the source expression.<br>
+                        <code><t->T</t-></code> must be implicitly convertible to <code><t->U</t-></code>.
+                    </td>
                 </tr>
                 <tr>
-                    <td><code><t->T[n]</t-></code></td>
-                    <td><code><t->bool</t-></code></td>
-                    <td>Evaluated as <code><k->true</k-></code> if all the elements of the initial array converted from <code><t->T</t-></code> to <code><t->bool</t-></code> evaluate as <code><k->true</k-></code>, <code><k->false</k-></code> otherwise</td>
+                    <td class="center"><code><t->U[n]</t-></code></td>
+                </tr>
+
+                <!-- Tuple to tuple, struct or array ------------------------------------------->
+                <tr>
+                    <td class="center" rowspan="3"><code><t->(T0, ..., Tn)</t-></code></td>
+                    <td class="center"><code><t->(U0, ..., Un)</t-></code></td>
+                    <td rowspan="3">
+                        Each element of the result is initialized with the corresponding value of the source tuple.<br>
+                        The type of each element of the source tuple must be implicitly convertible to the type of the destination element.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="center">
+                        <template->with(U == struct_t)</template-><br>
+                        <code><t->U</t-></code>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="center">
+                        <code><t->U[n]</t-></code>
+                    </td>
+                </tr>
+
+                <!-- Array to array and array to bool ------------------------------------------>
+                <tr>
+                    <td class="center" rowspan="2">
+                        <template->with(T != struct_t && T != tuple_t)</template-><br>
+                        <code><t->T[n]</t-></code>
+                    </td>
+                    <td class="center"><code><t->U[n]</t-></code></td>
+                    <td>
+                        Each element of the result is initialized with the corresponding value of the source array.<br>
+                        <code><t->T</t-></code> must be implicitly convertible to <code><t->U</t-></code>.
+                    </td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->bool</t-></code></td>
+                    <td>Evaluated as <code><k->true</k-></code> if all the elements of the source array converted to <code><t->bool</t-></code> evaluate as <code><k->true</k-></code>, <code><k->false</k-></code> otherwise</td>
                 </tr>
             </table></div>
             <p>
-                Values cannot be explicitly casted as in C. To convert a value, <a href="#constructors">constructors</a> are used.<br>
+                Values cannot be explicitly casted. To convert a value, <a href="#constructors">constructors</a> are used.<br>
                 Attempting to convert incompatible types will result in a semantic error.<br>
                 Structs are never convertible.
             </p>
@@ -1186,6 +1266,7 @@
                             <c->//fun(var);                    // Error, structs cannot be converted</c->
                             <t->int</t->      a = <f->fun</f->(<k->0</k->);           <c->// Ok, fun::a = 2,          main::a = 1</c->
                             <t->float</t->[<k->2</k->] b = <f->fun</f->(<k->-1</k->);          <c->// Ok, fun::a = 4294967263, main::b = (0.0, 0.0)</c->
+                            b = (<k->5</k->, <k->7</k->);                    <c->// Ok, main::b = (5.0, 7.0). Converted from tuple</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -1728,6 +1809,7 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Const qualifier                                                 -->
             <!--------------------------------------------------------------------->
@@ -1799,11 +1881,13 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Left and right values                                           -->
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="left-and-right-values">Left and right values</h2>
+
 
 
 
@@ -1813,11 +1897,13 @@
             <sep-2-></sep-2->
             <h2 id="expressions">Expressions</h2>
 
+
             <!--------------------------------------------------------------------->
             <!-- Literals                                                        -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="literals">Literals</h3>
+
 
             <!--------------------------------------------------------------------->
             <!-- Constructors                                                    -->
@@ -1826,17 +1912,20 @@
             <h3 id="constructors">Constructors</h3>
             <p>CONSTRUCTORS ARE SPECIAL FUNCTIONS //TODO</p>
 
+
             <!--------------------------------------------------------------------->
             <!-- Operators                                                       -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="operators">Operators</h3>
 
+
             <!--------------------------------------------------------------------->
             <!-- Special operators                                               -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="special-operators">Special operators</h3>
+
 
             <!--------------------------------------------------------------------->
             <!-- Array operations                                                -->
@@ -1845,24 +1934,12 @@
             <h3 id="array-operations">Array operations</h3>
 
 
-
             <!--------------------------------------------------------------------->
-            <!-- Assignments                                                     -->
-            <!--------------------------------------------------------------------->
-            <sep-2-></sep-2->
-            <h2 id="assignments">Assignments</h2>
-
-            <!--------------------------------------------------------------------->
-            <!-- Composite assignments                                           -->
+            <!-- Type comparison                                                 -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="composite-assignments">Composite assignments</h3>
+            <h3 id="type-comparison">Type comparison</h3>
 
-            <!--------------------------------------------------------------------->
-            <!-- Multiple assignments                                            -->
-            <!--------------------------------------------------------------------->
-            <sep-3-></sep-3->
-            <h3 id="multiple-assignments">Multiple assignments</h3>
 
 
 
@@ -1872,11 +1949,13 @@
             <sep-2-></sep-2->
             <h2 id="selection">Selection</h2>
 
+
             <!--------------------------------------------------------------------->
             <!-- If statement                                                    -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="if-statement">If statement</h3>
+
 
             <!--------------------------------------------------------------------->
             <!-- Select statement                                                -->
@@ -1886,11 +1965,13 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Iteration                                                       -->
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="iteration">Iteration</h2>
+
 
             <!--------------------------------------------------------------------->
             <!-- For loops                                                       -->
@@ -1898,11 +1979,13 @@
             <sep-3-></sep-3->
             <h3 id="for-loops">For loops</h3>
 
+
             <!--------------------------------------------------------------------->
             <!-- While loops                                                     -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="while-loops">While loops</h3>
+
 
             <!--------------------------------------------------------------------->
             <!-- Continue and break statements                                   -->
@@ -1910,17 +1993,20 @@
             <sep-3-></sep-3->
             <h3 id="continue-and-break-statements">Continue and break statements</h3>
 
+
             <!--------------------------------------------------------------------->
             <!-- Once statement                                                  -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="once-statement">Once statement</h3>
 
+
             <!--------------------------------------------------------------------->
             <!-- Then statement                                                  -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="then-statement">Then statement</h3>
+
 
 
 
@@ -1936,11 +2022,13 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Compilation                                                     -->
             <!--------------------------------------------------------------------->
             <sep-1-></sep-1->
             <h1 id="compilation">Compilation</h1>
+
 
 
 
@@ -1952,11 +2040,13 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Compilation phases and error types                              -->
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="compilation-phases-and-error-types">Compilation phases and error types</h2>
+
 
 
 
@@ -1968,11 +2058,13 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Branching performance                                           -->
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="branching-performance">Branching performance</h2>
+
 
 
 
@@ -1988,11 +2080,13 @@
 
 
 
+
             <!--------------------------------------------------------------------->
             <!-- Standard modules                                                -->
             <!--------------------------------------------------------------------->
             <sep-1-></sep-1->
             <h1 id="standard-modules">Standard modules</h1>
+
 
 
 
@@ -2049,9 +2143,9 @@
                         <tr>
                             <td class="center" rowspan=6>2</td>
                             <td class="center" rowspan=2>
-                                <span class="op_template">-</span><br>
+                                <template->-</template-><br>
                                 <elm-><code>[</code><code>]</code></elm-><br>
-                                <span class="op_template">with(T == struct_t)</span><br>
+                                <template->with(T == struct_t)</template-><br>
                             </td>
                             <td class="center nowrap"><elm-><t->T[]</t-><sup>r</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]</td>
                             <td class="center"><code><t->T<sup>l</sup></t-></code></td>
@@ -2063,9 +2157,9 @@
                         </tr>
                         <tr>
                             <td class="center" rowspan=2>
-                                <span class="op_template">-</span><br>
+                                <template->-</template-><br>
                                 <code>.</code><br>
-                                <span class="op_template">with(T == struct_t)</span><br>
+                                <template->with(T == struct_t)</template-><br>
                             </td>
                             <td class="center nowrap"><elm-><t->T[]<sup>r</sup></t-></elm->.<elm->member<sup>id</sup></elm-></td>
                             <td class="center"><code><t->T<sup>l</sup></t-></code></td>
@@ -2077,7 +2171,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>++</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->++</td>
@@ -2087,7 +2181,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>--</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->--</td>
@@ -2098,7 +2192,7 @@
                         <tr>
                             <td class="center" rowspan=6>3</td>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>++</code>
                             </td>
                             <td class="center nowrap">++<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2107,7 +2201,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>--</code>
                             </td>
                             <td class="center nowrap">--<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2116,7 +2210,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>+</code>
                             </td>
                             <td class="center nowrap">+<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2125,7 +2219,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>-</code>
                             </td>
                             <td class="center nowrap">-<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2134,7 +2228,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T == int_t)</span><br>
+                                <template->with(T == int_t)</template-><br>
                                 <code>~</code>
                             </td>
                             <td class="center nowrap">~<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2153,7 +2247,7 @@
                         <tr>
                             <td class="center" rowspan=3>4</td>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>*</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &#42; <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2163,7 +2257,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>/</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> / <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2172,7 +2266,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>%</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> % <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2183,7 +2277,7 @@
                         <tr>
                             <td class="center" rowspan=2>5</td>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>+</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> + <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2192,7 +2286,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>-</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> - <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2203,7 +2297,7 @@
                         <tr>
                             <td class="center" rowspan=2>6</td>
                             <td class="center">
-                                <span class="op_template">with(T == int_t)</span><br>
+                                <template->with(T == int_t)</template-><br>
                                 <code>&lt;&lt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt;&lt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
@@ -2213,7 +2307,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T == int_t)</span><br>
+                                <template->with(T == int_t)</template-><br>
                                 <code>&gt;&gt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt;&gt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
@@ -2224,7 +2318,7 @@
                         <tr>
                             <td class="center" rowspan=4>7</td>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>&lt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt; <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2234,7 +2328,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>&lt;=</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt;= <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2243,7 +2337,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>&gt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt; <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2252,7 +2346,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>&gt;=</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt;= <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2263,7 +2357,7 @@
                         <tr>
                             <td class="center" rowspan=4>8</td>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>==</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> == <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2272,7 +2366,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <span class="op_template">with(T != struct_t)</span><br>
+                                <template->with(T != struct_t)</template-><br>
                                 <code>!=</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> != <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2294,7 +2388,7 @@
                     <tr>
                         <td class="center">9</td>
                         <td class="center">
-                            <span class="op_template">with(T != int_t)</span><br>
+                            <template->with(T != int_t)</template-><br>
                             <code>&</code>
                         </td>
                         <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> & <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2305,7 +2399,7 @@
                     <tr>
                         <td class="center">10</td>
                         <td class="center">
-                            <span class="op_template">with(T != int_t)</span><br>
+                            <template->with(T != int_t)</template-><br>
                             <code>^</code>
                         </td>
                         <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> ^ <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2315,7 +2409,7 @@
                     <tr>
                         <td class="center">11</td>
                         <td class="center">
-                            <span class="op_template">with(T != int_t)</span><br>
+                            <template->with(T != int_t)</template-><br>
                             <code>|</code>
                         </td>
                         <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> | <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2419,7 +2513,7 @@
 
 
     // Fix syntax codes having different heights because any CSS solution doesn't work and i don't want to add a million wrapper tags
-    function fix_heights(){
+    function fix_syntax_heights(){
         var children = Array.from(document.getElementsByTagName("LEFT-"));
         for(var i = 0; i < children.length; i++){
             var left = children[i];
@@ -2440,8 +2534,17 @@
     }
 
 
+    function fix_elm_height(){
+        var children = Array.from(document.getElementsByTagName("ELM-"));
+        for(var i = 0; i < children.length; i++){
+            children[i].innerHTML += "<sup class=\"nobefore noafter\"></sup><sub class=\"nobefore noafter\"></sub>";
+        }
+    }
+
+
     fix_code();
-    fix_heights();
+    fix_syntax_heights();
+    fix_elm_height();
 </script>
 
 

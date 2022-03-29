@@ -340,7 +340,7 @@ code {
     color: var(--text-color);
     font-size: var(--font-size-code);
 }
-.op_template {
+template- {
     color: var(--hidden-color);
     white-space:nowrap;
     font-size: var(--font-size-code);
@@ -400,3 +400,4 @@ a:hover {
 
 
 .nobefore::before { content: ""; }
+.noafter::after { content: ""; }
