@@ -13,7 +13,8 @@
 
     --main-left-padding:    2vw;
     --main-padding:         4vw;
-    --main-left-max-width:  20vw;
+    --main-left-def-width:  20vw;
+    --main-left-max-width:  50vw;
 
     --bg-color:           #0d1117;
     --bg-color-code:      hsl(212, 18%, 15%);
@@ -75,8 +76,32 @@ s- { color: #db966e; }                      /* String   */
 
 
 
+.slider {
+    position: fixed;
+    z-index: 9999;
+    margin: 50vh 0 0 calc(var(--main-left-padding) * 2);
+    -webkit-appearance: none;
+    width: calc(100vw - var(--main-left-padding) * 2 - var(--main-padding) * 2);
+    height: 25px;
+    background: transparent;
+    outline: none;
+}
 
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 4px;
+    height: 4px;
+    background: transparent;
+    cursor: e-resize;
+}
 
+.slider::-moz-range-thumb {
+    width: 4px;
+    height: 4px;
+    background: transparent;
+    cursor: e-resize;
+}
 
 
 
@@ -110,7 +135,7 @@ body {
 
     /* Main components */
     main- {
-        display: block;                                                                                             ;
+        /* display: block;                                                                                             ; */
         height: 100vh; max-height: 100%;            position:fixed;             margin: 0;                          ;
         width:  100vw; max-width:  100%;            display: flex;              padding: 0;                         }
 
@@ -118,8 +143,8 @@ body {
         main- > right- {
             display: block;                                                                                         ;
             height: 100vh; max-height: 100%;        overflow-x: hidden;         margin: 0;                          ;
-            width: 100vw;                           overflow-y: scroll;         padding: 0 var(--main-padding) 0 var(--main-padding);
-            max-width: calc(100% - var(--main-left-max-width) - var(--main-padding) * 2);                           }
+            width: 100vw;                          overflow-y: scroll;         padding: 0 var(--main-padding) 0 var(--main-padding);
+                                }
 
             /* Smaller language logo fix */
             main- > right- > logo-top- {
@@ -153,9 +178,10 @@ body {
             display: block;                                                                                         ;
             background-color: var(--bg-color);      overflow-x: auto;           margin: 0;                          ;
             height: 100vh; max-height: 100%;        overflow-y: scroll;         padding: 0 var(--main-left-padding) 0 var(--main-left-padding);;
-            width: 100vw;                           z-index: 1;                 position:relative;                  ;
-            max-width: calc(var(--main-left-max-width) - 1px - var(--main-left-padding) * 2); /* 1px right border */;
-            border-right: 1px solid var(--sep-color);                                                               }
+            width: 100vw;                           z-index: 1;                 position: relative;                  ;
+             /* 1px right border */;
+            border-right: 1px solid var(--sep-color);
+                                                                                                }
 
 
             main- > left- > index- {
@@ -169,6 +195,8 @@ body {
                 white-space: nowrap;
                 background-color: var(--bg-color);
                 border-radius: 10px;
+                min-width: 100%;
+                width: calc(min-content + 20px);
             }
             main- > left- > index- indexd-:hover, main- > left- > index- indexh-:hover {
                 background-color: var(--bg-color-pre);

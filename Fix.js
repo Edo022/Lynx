@@ -77,9 +77,10 @@ function fix_index_elm(elm, depth, last){
         var c = children[i];
         if(c.tagName == "INDEXD-" || c.tagName == "INDEXH-") {
             c.innerHTML =
-                "<a style=\"display: inline-block; min-width: 100%; max-width: min-content; margin-left: calc(" + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")\" " +
+                "<a style=\"display: inline-block; padding: 0 1ch 0 1ch;\" " +
                 "href=\"#" + c.innerHTML.toLocaleLowerCase().replaceAll(' ', '-') + "\">" + (c.tagName == "INDEXH-" ? last : last + i + ".") + " " + c.innerHTML + "</a>"
             ;
+            c.style.paddingLeft = "calc(" + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
         }
         else if(c.tagName == "INDEX-") {
             fix_index_elm(c, depth + 1, last + i + ".");
@@ -97,3 +98,4 @@ fix_index();
 fix_code();
 fix_syntax_heights();
 fix_elm_height();
+
