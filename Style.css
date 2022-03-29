@@ -114,7 +114,7 @@ body {
         height: 100vh; max-height: 100%;            position:fixed;             margin: 0;                          ;
         width:  100vw; max-width:  100%;            display: flex;              padding: 0;                         }
 
-        /* Page contents */
+        /* Page container */
         main- > right- {
             display: block;                                                                                         ;
             height: 100vh; max-height: 100%;        overflow-x: hidden;         margin: 0;                          ;
@@ -148,15 +148,35 @@ body {
             }                                                                                                       /*
         }                                                                                                           */
 
-        /* Index */
+        /* Index constainer */
         main- > left- {
             display: block;                                                                                         ;
             background-color: var(--bg-color);      overflow-x: auto;           margin: 0;                          ;
-            height: 100vh; max-height: 100%;        overflow-y: scroll;         padding: 0 var(--main-left-padding) 0 var(--main-left-padding);
+            height: 100vh; max-height: 100%;        overflow-y: scroll;         padding: 0 var(--main-left-padding) 0 var(--main-left-padding);;
             width: 100vw;                           z-index: 1;                 position:relative;                  ;
-            max-width: calc(var(--main-left-max-width) - var(--main-left-padding) * 2 - 1px); /* 1px right border */;
-            border-right: 1px solid var(--sep-color);                                                               ;
-        }                                                                                                           /*
+            max-width: calc(var(--main-left-max-width) - 1px - var(--main-left-padding) * 2); /* 1px right border */;
+            border-right: 1px solid var(--sep-color);                                                               }
+
+
+            main- > left- > index- {
+                display: block;
+                overflow-x: auto;
+                padding: 0;
+                max-width: 100%;
+            }
+            main- > left- > index- indexd-, main- > left- > index- indexh- {
+                display: block;
+                white-space: nowrap;
+                background-color: var(--bg-color);
+                border-radius: 10px;
+            }
+            main- > left- > index- indexd-:hover, main- > left- > index- indexh-:hover {
+                background-color: var(--bg-color-pre);
+            }
+            main- > left- > index- > indexh-:first-child:hover, main- > left- > index- > indexh-:last-child:hover {
+                max-width: 0;
+            }                                                                                                       /*
+        }
     }                                                                                                               */
 
 
@@ -354,41 +374,7 @@ sup::after  { content: ")"; }
 
 
 
-/* Index */
-.index-section {
-    margin: 1ch 0 0 0;
-    font-size: var(--font-size-large);
-    font-weight: bold;
-    padding: 0;
-    line-height: 2.5ch;
-}
-.index-section li {
-    font-size: var(--font-size-medium);
-    font-weight: normal;
-    padding: 0;
-    line-height: 2ch;
-}
-ul.index {
-    counter-reset: section;
-    list-style-type: none;
-}
-ul.index li {
-    list-style-type: none;
-}
-ul.index > li:first-child {
-    margin-top: 0px;
-}
-ul.index li ul {
-    counter-reset: subsection;
-}
-ul.index li:before {
-    counter-increment:section;
-    content:counter(section) ". ";
-}
-ul.index li ul li:before {
-    counter-increment:subsection;
-    content:counter(section) "." counter(subsection) " ";
-}
+
 a:hover, a:visited, a:link {
     text-decoration: none;
     color: var(--link-color);
