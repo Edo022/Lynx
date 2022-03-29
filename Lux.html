@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>The Lux language</title>
+    <title>The Lux shading language</title>
     <meta charset="UTF-8">
     <meta name="author" content="Snek" />
     <meta name="description" content="Lux language specification" />
+    <link rel="icon" href="Lux-logo.png" type="image/icon type">
 
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="Style.css" media="screen">
@@ -48,30 +49,6 @@
 
 
 
-<script>
-    function decodeHTML(html) {
-        var txt = document.createElement("textarea");
-        txt.innerHTML = html;
-        return txt.value;
-    }
-
-    function copy_code(button_tag) {
-        var children = Array.from(button_tag.parentNode.childNodes);
-        for(var i = 0; i < children.length; i++){
-            if(children[i].tagName == "CODE-") {
-                var output_text = decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""));
-                navigator.clipboard.writeText(output_text.substring(1, output_text.length - 2));
-                //                           Remove leading newline ^                       ^
-                //                             Remove trailing newline and CSS fix newline -'
-                return 0;
-            }
-        }
-    }
-</script>
-
-
-
-
 <main- class="hide-scrollbar">
 
     <!--------------------------------------------------------------------->
@@ -79,8 +56,8 @@
     <!--------------------------------------------------------------------->
     <left- class="hide-scrollbar">
         <ul style="padding-left:0;" class="index">
-            <li class="index-section" style="margin-top: 0px;"><a href="#overview-no-header">Overview</a></li>
-            <li class="index-section" style="margin-top: 0px;"><a href="#preprocessor">Preprocessor</a>
+            <li class="index-section"><a href="#overview-no-header">Overview</a></li>
+            <li class="index-section"><a href="#preprocessor">Preprocessor</a>
                 <ul>
                     <li><a href="#comments">Comments</a></li>
                     <li><a href="#include-statement">Include statement</a></li>
@@ -113,11 +90,11 @@
                     </li>
                     <li><a href="#functions">functions</a>
                         <ul>
-                            <li><a href="#parameters-and-references">Parameters and references</a></li>
-                            <li><a href="#return-statement">Return statement</a></li>
-                            <li><a href="#function-calls">Function calls</a></li>
+                            <li><a href="#reference-parameters">Reference parameters</a></li>
+                            <li><a href="#return-statement-and-function-calls">Return statement and function calls</a></li>
                             <li><a href="#template-functions">Template functions</a></li>
                             <li><a href="#type-groups">Type groups</a></li>
+                            <li><a href="#the-main-function">The main function</a></li>
                         </ul>
                     </li>
                     <li><a href="#const-qualifier">Const qualifier</a></li>
@@ -246,22 +223,13 @@
             <sep-></sep->
             <syntax->
                 <fill->
-                    <label->1</label->
+                    <label-></label->
                     <code-><scroll->
                         //<elm->Comment string</elm-><nl-></nl->
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label->2</label->
-                    <code-><scroll->
                         /*<elm->Comment string</elm->*/
                     </scroll-></code->
                 </fill->
             </syntax->
-
             <sep-></sep->
             <example->
                 <fill->
@@ -303,31 +271,14 @@
             <sep-></sep->
             <syntax->
                 <fill->
-                    <label->1</label->
+                    <label-></label->
                     <code-><scroll->
                         #include<space-></space->"<elm->absolute/path/to/file</elm->"<nl-></nl->
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label->1</label->
-                    <code-><scroll->
                         #include<space-></space->"./<elm->relative/path/to/file</elm->"<nl-></nl->
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label->1</label->
-                    <code-><scroll->
                         #include<space-></space->"<elm->relative/path/to/file</elm->"<nl-></nl->
                     </scroll-></code->
                 </fill->
             </syntax->
-
             <sep-></sep->
             <example->
                 <fill->
@@ -558,7 +509,7 @@
                             <code>|</code>
                             <a href="#scopes-and-symbols"><code>::</code></a>
                         </td>
-                        <td class="center" width="20%"><a href="#parameters-and-references"><code>&</code></a></td>
+                        <td class="center" width="20%"><a href="#reference-parameters"><code>&</code></a></td>
                         <td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>
                     </tr>
                     <tr>
@@ -787,19 +738,24 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        namespace<space-></space-><elm->name<sup>id</sup></elm-> {<elm->...</elm->}
+                        namespace<space-></space-><elm->name<sup>id</sup></elm-> { <elm->...</elm-> }
+                        namespace { <elm->...</elm-> }
                     </scroll-></code->
                 </fill->
             </syntax->
             <sep-></sep->
-            <syntax->
+            <example->
                 <fill->
-                    <label-></label->
+                    <label- onclick="copy_code(this)"></label->
                     <code-><scroll->
-                        namespace {<elm->...</elm->}
+                        <w->namespace</w-> a {
+                            <t->int</t-> n = <k->4</k->;
+                        }
+
+                        <t->int</t-> n2 = a::<k->n</k->;
                     </scroll-></code->
                 </fill->
-            </syntax->
+            </example->
 
 
 
@@ -867,6 +823,9 @@
                 There are no 64 bit integers, characters or strings.
             </p>
             <p>
+                The <code><t->void</t-></code> type is a special type. It can only be used to decleare functions that don't return any value.
+            </p>
+            <p>
                 See
                 <a href="#values">Values</a>,
                 <a href="#literals">Literals</a>
@@ -878,38 +837,36 @@
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="enums">Enums</h3>
+            <sep-></sep->
+
             <p>
                 <b>Enums</b> are used to <b>name</b> and <b>group</b> literal <b>constants</b> of the same type.<br>
                 The base type of the enum can be specified after its name and it must be one of the primitive types.<br>
                 Elements are declared in the same way as variables, but neither the type nor the const qualifier are specified explicitly.<br>
                 The initializer values are implicitly converted to the base type of the enum.
             </p>
+            <sep-></sep->
+            <syntax->
+                <left->
+                    <label-></label->
+                    <code-><scroll->
+                        enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm->{ <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
+                        strict enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm->{ <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Element syntax</label->
+                    <code-><scroll->
+                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
+                    </scroll-></code->
+                </right->
+            </syntax->
             <p>
                 Elements of integral enums which are not initizlied will have the value of the preceeding element + 1, or 0 if they are the first.<br>
                 Elements of boolean and floating point enums must always be initialized.<br>
                 Multiple elements can have the same value, but each element can only be declared once.<br>
                 Enums with no elements are not allowed.
             </p>
-
-            <sep-></sep->
-            <syntax->
-                <left->
-                    <label-></label->
-                    <code-><scroll->
-                        enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm->{
-                            <elm->elements<sup>...</sup></elm->
-                        }
-                    </scroll-></code->
-                </left->
-                <right->
-                    <label->Element syntax</label->
-                    <code-><scroll->
-                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;
-
-
-                    </scroll-></code->
-                </right->
-            </syntax->
 
             <sep-></sep->
             <example->
@@ -950,18 +907,6 @@
                 When implicit conversions from other types are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
                 Strict enums only allow values of the same enum, but can still be implicitly converted to other types.
             </p>
-
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        strict<space-></space->enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-></elm-> {
-                            <elm->elements<sup>...</sup></elm->
-                        }
-                    </scroll-></code->
-                </fill->
-            </syntax->
 
             <sep-></sep->
             <example->
@@ -1010,17 +955,14 @@
                 <left->
                     <label-></label->
                     <code-><scroll->
-                        struct<space-></space-><elm->name<sup>id</sup></elm-> {
-                            <elm->members<sup>...</sup></elm->
-                        }
+                        struct<space-></space-><elm->name<sup>id</sup></elm-> { <elm2-><elm->member 0</elm->; <elm->...</elm->; <elm->member n</elm->;</elm2-> }
+                        struct<space-></space-><elm->name<sup>id</sup></elm-> { }
                     </scroll-></code->
                 </left->
                 <right->
                     <label->Member syntax</label->
                     <code-><scroll->
                         <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
-
-
                     </scroll-></code->
                 </right->
             </syntax->
@@ -1078,17 +1020,9 @@
             <sep-></sep->
             <syntax->
                 <fill->
-                    <label->1</label->
+                    <label-></label->
                     <code-><scroll->
                         <elm-><t->T</t-><sup>type</sup></elm->[<elm-><t->uint<sup>r</sup></t-></elm->]<space-></space-><elm->name<sup>id</sup></elm->;
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label->2</label->
-                    <code-><scroll->
                         <elm-><t->T</t-><sup>type</sup></elm->[] <elm->name<sup>id</sup></elm-> = <elm-><t->T[]<sup>r</sup></t-></elm->;
                     </scroll-></code->
                 </fill->
@@ -1245,21 +1179,13 @@
                 <fill->
                     <label- onclick="copy_code(this)"></label->
                     <code-><scroll->
-                        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->a</a->[<k->5</k->]) {}
-                        <t->void</t-> <f->fun2</f->(<t->bool</t-> <a->a</a->) {}
+                        <t->bool</t-> <f->fun</f->(<t->uint</t-> <a->a</a->) { <k->return</k-> !a; }
 
                         <t->void</t-> <f->main</f->(){
                             <w->struct</w-> { <t->uint</t-> n; } var = (<k->0</k->);
-                            <c->//fun(var);                               // Error, structs cannot be converted</c->
-                            <c->//fun(float[2](1.0, 4.4));                // Error, arrays have different lengths</c->
-                            <f->fun</f->(<k->2</k->);                                   <c->// Ok, a = (2, 2, 2, 2, 2)</c->
-                            <f->fun</f->(<t->float</t->[<k->5</k->](<k->1.0</k->, <k->4.4</k->, <k->5.5</k->, <k->-33</k->, <k->2.11</k->));  <c->// Ok, a = (1, 4, 5, 4294967263, 2)</c->
-
-                            <f->fun2</f->(<k->2</k->);                                  <c->// Ok, a = true</c->
-                            <f->fun2</f->(<t->float</t->[<k->5</k->](<k->1.0</k->, <k->4.4</k->, <k->5.5</k->, <k->-33</k->, <k->2.11</k->)); <c->// Ok, a = true</c->
-                            <f->fun2</f->(<t->float</t->[<k->5</k->](<k->1.0</k->, <k->4.4</k->, <k->5.5</k->, <k->-33</k->, <k->0</k->   )); <c->// Ok, a = false</c->
-
-                            <t->uint</t-> arr[<k->1.2</k->];                            <c->// Ok, arr has 1 element</c->
+                            <c->//fun(var);                    // Error, structs cannot be converted</c->
+                            <t->int</t->      a = <f->fun</f->(<k->0</k->);           <c->// Ok, fun::a = 2,          main::a = 1</c->
+                            <t->float</t->[<k->2</k->] b = <f->fun</f->(<k->-1</k->);          <c->// Ok, fun::a = 4294967263, main::b = (0.0, 0.0)</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -1333,10 +1259,11 @@
             <h3 id="typeof-and-baseof-specifiers">Typeof and baseof specifiers</h3>
             <p>
                 The <b><code><t->typeof</t-></code></b> and <b><code><t->baseof</t-></code></b> specifiers are used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b>expression</b> that is passed to them.<br>
-                <code><t->typeof</t-></code> returns the type of the expression, <code><t->baseof</t-></code> returns it's base type.
+                <code><t->typeof</t-></code> returns the type of the expression, <code><t->baseof</t-></code> returns its base type.<br>
+                Using them on the <code><t->void</t-></code> type returns <code><t->void</t-></code>.
             </p>
             <p>
-                <code><t->baseof</t-></code> can only be used on arrays, enums and primitive types.<br>
+                <code><t->baseof</t-></code> can only be used on <a href="#arrays">arrays</a>, <a href="#enums">enums</a> and <a href="#primitive-types">primitive types</a>.<br>
                 The base type of primitive types is the type itself.<br>
                 The expressions passed to those specifiers are always evaluated at compile time.
             </p>
@@ -1352,14 +1279,6 @@
                     <label-></label->
                     <code-><scroll->
                         typeof(<elm-><t->T</t-><sup>r</sup></elm->)
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
                         baseof(<elm-><t->T</t-><sup>r</sup></elm->)
                     </scroll-></code->
                 </fill->
@@ -1369,7 +1288,13 @@
                 <fill->
                     <label- onclick="copy_code(this)"></label->
                     <code-><scroll->
-                        //TODO
+                        <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
+
+                        <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
+                            <t->int</t-> a[<k->2</k->] = (<k->1</k->, <k->2</k->);      <c->// a has type int[2]</c->
+                            <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
+                            <t->baseof</t->(<k->a</k->) c = <k->a</k->[<k->0</k->];     <c->// c has type int</c->
+                        }
                     </scroll-></code->
                 </fill->
             </example->
@@ -1397,36 +1322,35 @@
 
             <sep-></sep->
             <syntax->
-                <fill->
+                <left->
                     <label-> - Struct</label->
                     <code-><scroll->
-                        struct {
-                            <elm->members<sup>...</sup></elm->
-                        } <elm->symbol name<sup>id</sup></elm->;
+                        struct { <elm2-><elm->member 0</elm->; <elm->...</elm->; <elm->member n</elm->;</elm2-> } <elm->symbol definition</elm->;
+                        struct { } <elm->symbol definition</elm->;
                     </scroll-></code->
-                </fill->
+                </left->
+                <right->
+                    <label->Member syntax</label->
+                    <code-><scroll->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
+                    </scroll-></code->
+                </right->
             </syntax->
             <sep-></sep->
             <syntax->
-                <fill->
-                    <label->1 - Enum</label->
+                <left->
+                    <label-> - Enum</label->
                     <code-><scroll->
-                        enum : <elm-><t->T<sup>type</sup></t-></elm-> {
-                            <elm->elements<sup>...</sup></elm->
-                        } <elm->symbol name<sup>id</sup></elm->;
+                        enum : <elm-><t->T<sup>type</sup></t-></elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> } <elm->symbol definition</elm->;
+                        strict enum : <elm-><t->T<sup>type</sup></t-></elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> } <elm->symbol definition</elm->;
                     </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label->2 - Enum</label->
+                </left->
+                <right->
+                    <label->Element syntax</label->
                     <code-><scroll->
-                        strict enum : <elm-><t->T<sup>type</sup></t-></elm-> {
-                            <elm->elements<sup>...</sup></elm->
-                        } <elm->symbol name<sup>id</sup></elm->;
+                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
                     </scroll-></code->
-                </fill->
+                </right->
             </syntax->
 
             <sep-></sep->
@@ -1457,7 +1381,7 @@
                                 idk2;
                             } c;
                         } <f->fun</f->(){
-                            <w->return</w-> { <k->1</k->, <k->1</k->, <k->0</k-> }; <c->// Ok, unnamed struct constructor</c->
+                            <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed struct constructor</c->
                         }
 
                         <t->void</t-> <f->main</f->(){
@@ -1489,6 +1413,7 @@
             <p>
                 <b>Variables</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
                 Each variable <b>must be declared</b> before it is used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
+                //TODO multiple declarations;
             </p>
             <p>
                 A variable declaration consists of the type, the name and an optional <code>=</code> followed by an expression of a compatible type that is used to inizialize it.<br>
@@ -1503,15 +1428,8 @@
                     <label->1</label->
                     <code-><scroll->
                         <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label->2</label->
-                    <code-><scroll->
                         <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;  <c->// See <a href="#const-qualifier"><c->Const qualifier</c-></a></c->
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -1556,7 +1474,7 @@
                 There is no limit to the number of temporary variables a function can use.<br>
             </p>
             <p>
-                The type of a temporary variable can only be changed through direct assignments (<code>=</code>) and it must be unambiguously determinable in order for the variable to be evaulated.
+                The type of a temporary variable can only be changed through direct assignments (<a href="#assignments"><code>=</code></a>) and it must be unambiguously determinable in order for the variable to be evaulated.
                 This means that reading the value of a temporary variable after one or more branches that may have assigned it different types is not allowed and will result in a semantic error.<br>
                 Using temporary variables whose type is undefined will also result in a semantic error.
             </p>
@@ -1628,37 +1546,35 @@
                 Each argument must be implicitly convertible to the type of the parameter.<br>
                 Functions are allowed to take no arguments.
             </p>
-            <p>
-                The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
-                Every shader <b>must define</b> the <b>main</b> as a void function. As such, it cannot return values.<br>
-            </p>
 
             <sep-></sep->
             <syntax->
                 <left->
-                    <label-></label->
+                    <label-> 1</label->
                     <code-><scroll->
-                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm->arguments<sup>...</sup></elm->) {<elm->...</elm->}
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
                     </scroll-></code->
                 </left->
                 <right->
                     <label->Parameter syntax</label->
                     <code-><scroll->
                         <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space->&<elm->name<sup>id</sup></elm->         <c->// See <a href="#reference-parameters"><c->Reference parameters</c-></a></c->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm->    <c->// See <a href="#const-qualifier"><c->Const qualifier</c-></a></c->
                     </scroll-></code->
                 </right->
             </syntax->
-
             <sep-></sep->
             <example->
                 <fill->
                     <label- onclick="copy_code(this)"></label->
                     <code-><scroll->
-                        <t->void</t-> <f->func1</f->() {}
+                        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
 
                         <t->void</t-> <f->main</f->(){
-                            <t->int</t-> n = <k->0</k->;
-                            <c->// ...</c->
+                            <t->int</t-> var = <k->0</k->;
+                            <f->fun</f->(<k->var</k->);
                         }
                     </scroll-></code->
                 </fill->
@@ -1674,7 +1590,7 @@
             <!-- Parameters and references                                       -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="parameters-and-references">Parameters and references</h3>
+            <h3 id="reference-parameters">Reference parameters</h3>
             <p>
                 By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
                 If a parameter name is preceeded by a <b><code>&</code></b> token, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
@@ -1683,16 +1599,6 @@
                 Declaring a reference parameter as const is a syntax error and passing an r-value as argument of a reference parameter is a semantic error.<br>
                 Notice that in this case, the <code>&</code> token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
             </p>
-
-            <sep-></sep->
-            <syntax->
-                <fill->
-                    <label- class="nobefore">Parameter syntax</label->
-                    <code-><scroll->
-                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space->&<elm->name<sup>id</sup></elm->
-                    </scroll-></code->
-                </fill->
-            </syntax->
 
             <sep-></sep->
             <example->
@@ -1723,14 +1629,14 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Return statement                                                -->
+            <!-- Return statement and function calls                             -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="return-statement">Return statement</h3>
+            <h3 id="return-statement-and-function-calls">Return statement and function calls</h3>
             <p>
                 The type of the function defines the type of the value that is returned by the function when called.<br>
                 <b>Values</b> are <b>returned</b> using the <b><code><k->return</k-></code></b> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
-                Functions that <b>don't return</b> a value must be defined using the <b><code><t->void</t-></code> type</b>.<br>
+                Functions that <b>don't return</b> a value must be declared using the <b><code><t->void</t-></code> type</b>.<br>
                 Void functions are allowed to contain no statements. Non-void functions must always return a value.
             </p>
 
@@ -1740,6 +1646,27 @@
                     <label-></label->
                     <code-><scroll->
                         return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+
+            <p>
+                <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
+                A function call must provide an argument for each parameter of the function.<br>
+                Reference parameters (<a href="#reference-parameters"><code>&</code></a>) only allow l-values as arguments, while <a href="#const-qualifier"><code><t->const</t-></code></a> parameters only allow r-values.
+            </p>
+            <p>
+                All non-<code><t->void</t-></code> functions return an r-value.<br>
+                The return value can be used in expressions or be ignored.<br>
+                Calls to <code><t->void</t-></code> functions cannot be used in expressions.
+            </p>
+
+            <sep-></sep->
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <elm->name<sup>id</sup></elm->(<elm-><t->U<sup>r</sup></t-></elm->, <elm-><t->V<sup>r</sup></t-></elm->, <elm->...</elm->)
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -1768,17 +1695,13 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Function calls                                                  -->
-            <!--------------------------------------------------------------------->
-            <sep-3-></sep-3->
-            <h3 id="function-calls">Function calls</h3>
-
-
-            <!--------------------------------------------------------------------->
             <!-- Template functions                                              -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="template-functions">Template functions</h3>
+            <p>
+
+            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -1787,6 +1710,21 @@
             <sep-3-></sep-3->
             <h3 id="type-groups">Type groups</h3>
 
+
+            <!--------------------------------------------------------------------->
+            <!-- The main function                                               -->
+            <!--------------------------------------------------------------------->
+            <sep-3-></sep-3->
+            <h3 id="the-main-function">The main function</h3>
+            <p>
+                The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
+                Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
+            </p>
+            <p>
+                The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
+                The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
+                It can also be called by other functions or itself, but it cannot be a template.<br>
+            </p>
 
 
 
@@ -1800,7 +1738,7 @@
                 Reference const parameters are not allowed, as well as const functions and const struct members.<br>
             </p>
             <p>
-                As opposed to C and GLSL, const identifiers can be initialized using non-const expressions.<br>
+                As opposed to GLSL, const symbols can be initialized using non-const expressions.<br>
                 The qualifier doesn't affect compiler optimizations or the GLSL output in any way.
             </p>
             <p>
@@ -1822,10 +1760,10 @@
                         <c->//double const fun(){}              // Error, functions cannot be const</c->
                         <c->//double fun(double const &arg){}   // Error, references cannot be const</c->
 
-                        <t->double</t-> <f->fun</f->(<t->double </t-> arg) {           <c->// Ok, const parameter</c->
-                            <c->//uint a;                       // Error, uninitialized const</c->
-                            <t->u64</t-> a = 4;                      <c->// Ok</c->
-                            <t->u64</t-> b = arg, c;                 <c->// Ok</c->
+                        <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
+                            <c->//uint const a;                 // Error, uninitialized const</c->
+                            <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
+                            <t->uint const</t-> b = arg, c;          <c->// Ok</c->
                             <c->//a = 2;                        // Error, cannot assign values to const variables</c->
                             c = <k->a</k-> + b;                      <c->// Ok</c->
                         }
@@ -2444,9 +2382,8 @@
 
 
 
-<!-- Fix code indentation because apparently HTML5+CSS3 can't do that -->
 <script>
-    function dedent(s){
+    function format(s){
         // find shortest indentation
         var min;
         s = s.split('\n');
@@ -2460,7 +2397,8 @@
         // remove indentation
         for(var i = 0; i < s.length; i++){
             var line = s[i];
-            s[i] = line.substring(min, line.length); //TODO REMOVE
+            s[i] = (i == 0 || i == s.length - 1) ? "" : "<span class=\"hidden\">" + (("0" + i).slice(-2)) + "&nbsp&nbsp;</span>";
+            s[i] += line.substring(min, line.length);
         }
 
         // join and return all lines
@@ -2468,17 +2406,73 @@
     }
 
 
+
+    // Fix code indentation because apparently HTML5+CSS3 can't do that
     function fix_code() {
         var children = Array.from(document.getElementsByTagName("SCROLL-"));
         for(var i = 0; i < children.length; i++){
-            children[i].innerHTML = dedent(children[i].innerHTML) + "\n";
+            children[i].innerHTML = format(children[i].innerHTML) + "\n";
             // Add trailing newline to fix CSS's bugged max-height  ^
         }
     }
 
 
+
+    // Fix syntax codes having different heights because any CSS solution doesn't work and i don't want to add a million wrapper tags
+    function fix_heights(){
+        var children = Array.from(document.getElementsByTagName("LEFT-"));
+        for(var i = 0; i < children.length; i++){
+            var left = children[i];
+            if(left.parentNode.tagName == "SYNTAX-" || left.parentNode.tagName == "EXAMPLE-") {
+                var right;
+                var children2 = Array.from(left.parentNode.children);
+                for(var j = 0; j < children2.length; j++){
+                    if(children2[j].tagName == 'RIGHT-') {
+                        right = children2[j];
+                        break;
+                    }
+                }
+                var max = Math.max(left.clientHeight, right.clientHeight);
+                left.style.height = max + "px";
+                right.style.height = max + "px";
+            }
+        }
+    }
+
+
     fix_code();
+    fix_heights();
 </script>
+
+
+
+
+<script>
+    function decodeHTML(html) {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
+    function copy_code(button_tag) {
+        var children = Array.from(button_tag.parentNode.childNodes);
+        for(var i = 0; i < children.length; i++){
+            if(children[i].tagName == "CODE-") {
+                var output_text = decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""));
+                output_text = output_text.substring(1, output_text.length - 2).split('\n');
+                //           Remove leading newline ^                       ^
+                //             Remove trailing newline and CSS fix newline -'
+                for(var i = 0; i < output_text.length; i++) {
+                    output_text[i] = output_text[i].slice(4);
+                }
+                navigator.clipboard.writeText(output_text.join("\n"));
+                return 0;
+            }
+        }
+    }
+</script>
+
+
 
 
 </body>
