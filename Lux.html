@@ -80,17 +80,17 @@
         }
 
         function fix_logo(value){
-            document.getElementsByTagName("LOGO-TOP-")[0].style.maxWidth = "calc(100% - " + value + "px - 2px - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-size") + ")";
+            document.getElementsByTagName("LOGO-TOP-")[0].style.maxWidth = "calc(100% - " + value + "px - var(--slider-size) - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-size") + ")";
             document.getElementsByTagName("LOGO-")    [0].style.backgroundPositionX = "calc(100vw / 4 + " + value + "px / 2)";
         }
 
         function update_main_width(obj){
-            document.getElementById("main-left").style.maxWidth  = "calc(" +       obj.value +  "px - var(--main-left-padding))";
-            document.getElementById("main-right").style.maxWidth = "calc(100% - " + obj.value + "px - var(--main-padding) - var(--main-left-padding) * 2)";
+            document.getElementById("main-left").style.maxWidth  = "calc(" +       obj.value +  "px - var(--main-left-padding) + var(--slider-size))";
+            document.getElementById("main-right").style.maxWidth = "calc(100% - " + obj.value + "px - var(--main-padding) * 2 - var(--main-left-padding))";
             fix_logo(obj.value);
         }
 
-        slider.oninput = function() { update_main_width(this);   }
+        slider.oninput = function() { update_main_width(this); }
         function        _onresize() {
             update_range();
             update_main_width(slider);

@@ -15,7 +15,7 @@
     --main-padding:         4vw;
     --main-left-def-width:  20vw;
     --main-left-max-width:  50vw;
-    --slider-size:          20px;
+    --slider-size:          2vw;
 
     --bg-color:           #0d1117;
     --bg-color-code:      hsl(212, 18%, 15%);
@@ -85,25 +85,24 @@ s- { color: #db966e; }                      /* String   */
     width: calc(100vw - var(--main-left-padding) * 2 - var(--main-padding) * 2);
     height: 0;
     background-color: transparent;
-    outline: none;
+}
+.slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
+    cursor: e-resize;
+    background-color: transparent;
+    background: transparent;
+    width: var(--slider-size);
+    height: 100vh;
 }
 .slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: var(--slider-size);
-    height: 100vh;
-    background: transparent;
-    cursor: e-resize;
 }
 .slider::-moz-range-thumb {
-    width: var(--slider-size);
-    height: 100vh;
-    background: transparent;
-    cursor: e-resize;
+    -moz-appearance: none;
 }
-
-
-
+input[type=range]::-moz-range-thumb {
+    border: none;
+}
 
 /* Page layout */
 body {
