@@ -48,14 +48,14 @@
 <body>
     <div style="
         position: fixed; max-width: 999999px;
-        min-width: calc(var(--main-left-padding) * 2);
-            width: calc(var(--main-left-padding) * 2);
+        min-width: calc(var(--main-left-padding) * 2 - var(--slider-size));
+            width: calc(var(--main-left-padding) * 2 - var(--slider-size));
         ", id="slider-start----">
     </div>
     <div style="
         position: fixed; max-width: 999999px;
-        min-width: calc(var(--main-padding) * 2);
-            width: calc(var(--main-padding) * 2);
+        min-width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
+            width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
         ", id="slider-end----">
     </div>
     <div style="width: 100vw", id="slider-max----"></div>
@@ -63,17 +63,25 @@
 <script>
     var style = getComputedStyle(document.body)
     var slider = document.getElementById("myRange");
-    slider.min =       document.getElementById("slider-start----").clientWidth;
-    slider.max = document.getElementById("slider-max----"  ).clientWidth - document.getElementById("slider-end----"  ).clientWidth;
+    var min = document.getElementById("slider-start----").clientWidth;
+    var max = document.getElementById("slider-max----"  ).clientWidth - document.getElementById("slider-end----").clientWidth;
+    slider.min = min;
+    slider.max = max;
+    slider.value = (min + max) / 2;
 
-    slider.oninput = function(){
-        document.getElementById("main-left").style.maxWidth  = "calc(" +       this.value +  "px - var(--main-left-padding) * 2)";
-        document.getElementById("main-right").style.maxWidth = "calc(100% - " + this.value + "px - var(--main-padding) - var(--main-left-padding) * 2)";
+
+    function update_main_width(obj){
+        document.getElementById("main-left").style.maxWidth  = "calc(" +       obj.value +  "px - var(--main-left-padding))";
+        document.getElementById("main-right").style.maxWidth = "calc(100% - " + obj.value + "px - var(--main-padding) - var(--main-left-padding) * 2)";
+    }
+
+    slider.oninput = function() {
+        update_main_width(this);
     }
 </script>
 
 
-<main- class="hide-scrollbar">
+<!-- <main- class="hide-scrollbar"> -->
 
     <!--------------------------------------------------------------------->
     <!-- Index                                                           -->
@@ -2491,7 +2499,7 @@
 
         </main-scroll->
     </right->
-</main->
+<!-- </main-> -->
 
 
 
