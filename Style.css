@@ -15,7 +15,7 @@
     --main-padding:         4vw;
     --main-left-def-width:  20vw;
     --main-left-max-width:  50vw;
-    --slider-size:          4px;
+    --slider-size:          20px;
 
     --bg-color:           #0d1117;
     --bg-color-code:      hsl(212, 18%, 15%);
@@ -79,11 +79,11 @@ s- { color: #db966e; }                      /* String   */
 
 .slider {
     position: fixed;
-    z-index: 4;
+    z-index: 999;
     margin: 50vh 0 0 calc(var(--main-left-padding) * 2);
     -webkit-appearance: none;
     width: calc(100vw - var(--main-left-padding) * 2 - var(--main-padding) * 2);
-    height: 25px;
+    height: 0;
     background-color: transparent;
     outline: none;
 }
@@ -91,13 +91,13 @@ s- { color: #db966e; }                      /* String   */
     -webkit-appearance: none;
     appearance: none;
     width: var(--slider-size);
-    height: var(--slider-size);
+    height: 100vh;
     background: transparent;
     cursor: e-resize;
 }
 .slider::-moz-range-thumb {
     width: var(--slider-size);
-    height: var(--slider-size);
+    height: 100vh;
     background: transparent;
     cursor: e-resize;
 }
@@ -132,76 +132,76 @@ body {
         z-index: -4;                                                                                                ;
     }
 
-    /* Main components */
+    /* Page container */
+    right- {
 
-        /* Page container */
-        right- {
-            display: block;                                                                                         ;
-            height: 100vh; max-height: 100%;        overflow-x: hidden;        padding : 0;                          ;
-            width: 100vw;                          overflow-y: scroll;         margin: 0 var(--main-padding) 0 var(--main-padding);
-            position: fixed; right: 0; z-index: 5;
-                                }
+        display: block;                                                                                         ;
+        height: 100vh; max-height: 100%;        overflow-x: hidden;        padding : 0 1px 0 1px;                          ;
+        width: 100vw;                          overflow-y: scroll;         margin: 0 var(--main-padding) 0 var(--main-padding);
+        position: fixed; right: 0; z-index: 5;
+                            }
 
-            /* Smaller language logo fix */
-            right- > logo-top- {
-                display: block;                                                                                     ;
-                position: fixed;                                                                                    ;
-                top: 0;                                                                                             ;
-                width: 100vw;                                                                                       ;
-                right: var(--main-padding);                                                                         ;
-                background-color: var(--bg-color);                                                                  ;
-                height: var(--main-padding);                                                                        ;
-                max-height: var(--main-padding);                                                                    ;
-                z-index: -3;                                                                                        ;
-            }
-            /* Smaller language logo */
-            right- > logo- {
-                display: block;                                                                                     ;
-                position: relative;                                                                                 ;
-                margin: var(--main-padding) 0 var(--main-padding) 0;                                                ;
-                height: calc(100vh - var(--main-padding) * 2);                                                      ;
-                width: 100vw; max-width: 100%;                                                                      ;
-            }
-
-            /* Page contents background */
-            right- > main-scroll- {
-                background-color: var(--bg-color);                                                                  ;
-            }                                                                                                       /*
-        }                                                                                                           */
-
-        /* Index constainer */
-        left- {
-            display: block;                                                                                         ;
-            background-color: var(--bg-color);      overflow-x: auto;           padding : 0;                          ;
-            height: 100vh; max-height: 100%;        overflow-y: scroll;         margin: 0 var(--main-left-padding) 0 var(--main-left-padding);;
-            width: 100vw;                           z-index: 5;                 position: fixed;                  ;
-             /* 1px right border */;
-            border-right: 1px solid var(--sep-color);
-                                                                                                }
-
-
-            left- > index- {
-                display: block;
-                overflow-x: auto;
-                padding: 0;
-                max-width: 100%;
-            }
-            left- > index- indexd-, left- > index- indexh- {
-                display: block;
-                white-space: nowrap;
-                background-color: var(--bg-color);
-                border-radius: 10px;
-                min-width: 100%;
-                width: calc(min-content + 20px);
-            }
-            left- > index- indexd-:hover, left- > index- indexh-:hover {
-                background-color: var(--bg-color-pre);
-            }
-            left- > index- > indexh-:first-child:hover, left- > index- > indexh-:last-child:hover {
-                max-width: 0;
-            }                                                                                                       /*
+        /* Smaller language logo fix */
+        right- > logo-top- {
+            display: block;                                                                                     ;
+            position: fixed;                                                                                    ;
+            top: 0;                                                                                             ;
+            width: 100vw;                                                                                       ;
+            right: 0;                                                                         ;
+            background-color: var(--bg-color);                                                                  ;
+            height: var(--main-padding);                                                                        ;
+            max-height: var(--main-padding);                                                                    ;
+            z-index: -3;                                                                                        ;
         }
-    }                                                                                                               */
+        /* Smaller language logo */
+        right- > logo- {
+            display: inline-block;                                                                                     ;
+            position: relative;                                                                                 ;
+            margin: var(--main-padding) 0 var(--main-padding) 0;                                                ;
+            height: calc(100vh - var(--main-padding) * 2);                                                      ;
+            width: 100vw; max-width: 100%;                                                                      ;
+            right: 0;
+            background-position-y: center;
+        }
+
+        /* Page contents background */
+        right- > main-scroll- {
+            background-color: var(--bg-color);                                                                  ;
+        }                                                                                                       /*
+    }                                                                                                           */
+
+    /* Index constainer */
+    left- {
+        display: block;                                                                                         ;
+        background-color: var(--bg-color);      overflow-x: auto;           padding : 0;                          ;
+        height: 100vh; max-height: 100%;        overflow-y: scroll;         margin: 0 var(--main-left-padding) 0 var(--main-left-padding);;
+        width: 100vw;                           z-index: 5;                 position: fixed;                  ;
+            /* 1px right border */;
+        border-right: 1px solid var(--sep-color);
+                                                                                            }
+
+
+        left- > index- {
+            display: block;
+            overflow-x: auto;
+            padding: 0;
+            max-width: 100%;
+        }
+        left- > index- indexd-, left- > index- indexh- {
+            display: block;
+            white-space: nowrap;
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            min-width: 100%;
+            width: calc(min-content + 20px);
+        }
+        left- > index- indexd-:hover, left- > index- indexh-:hover {
+            background-color: var(--bg-color-pre);
+        }
+        left- > index- > indexh-:first-child:hover, left- > index- > indexh-:last-child:hover {
+            max-width: 0;
+        }                                                                                                       /*
+    }                                                                                                           */
 
 
 

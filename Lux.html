@@ -45,7 +45,14 @@
         }
     </style>
 </head>
-<body>
+<body onresize="_onresize()">
+
+    <!--------------------------------------------------------------------->
+    <!-- Cursed hack to use a range slider to resize the main containers -->
+    <!-- while keeping it aligned to the left contaner and make it look  -->
+    <!-- like a full height resize handle                                -->
+    <!--------------------------------------------------------------------->
+
     <div style="
         position: fixed; max-width: 999999px;
         min-width: calc(var(--main-left-padding) * 2 - var(--slider-size));
@@ -60,28 +67,38 @@
     </div>
     <div style="width: 100vw", id="slider-max----"></div>
     <input type="range" min="0" max="0" value="0" step="0.01" class="slider" id="myRange">
-<script>
-    var style = getComputedStyle(document.body)
-    var slider = document.getElementById("myRange");
-    var min = document.getElementById("slider-start----").clientWidth;
-    var max = document.getElementById("slider-max----"  ).clientWidth - document.getElementById("slider-end----").clientWidth;
-    slider.min = min;
-    slider.max = max;
-    slider.value = (min + max) / 2;
 
 
-    function update_main_width(obj){
-        document.getElementById("main-left").style.maxWidth  = "calc(" +       obj.value +  "px - var(--main-left-padding))";
-        document.getElementById("main-right").style.maxWidth = "calc(100% - " + obj.value + "px - var(--main-padding) - var(--main-left-padding) * 2)";
-    }
+    <script>
+        var slider = document.getElementById("myRange");
+        function update_range(){
+            var min = document.getElementById("slider-start----").clientWidth;
+            var max = document.getElementById("slider-max----"  ).clientWidth - document.getElementById("slider-end----").clientWidth;
+            slider.min = min;
+            slider.max = max;
+            slider.value = (min + max) / 2;
+        }
 
-    slider.oninput = function() {
-        update_main_width(this);
-    }
-</script>
+        function fix_logo(value){
+            document.getElementsByTagName("LOGO-TOP-")[0].style.maxWidth = "calc(100% - " + value + "px - 2px - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-size") + ")";
+            document.getElementsByTagName("LOGO-")    [0].style.backgroundPositionX = "calc(100vw / 4 + " + value + "px / 2)";
+        }
+
+        function update_main_width(obj){
+            document.getElementById("main-left").style.maxWidth  = "calc(" +       obj.value +  "px - var(--main-left-padding))";
+            document.getElementById("main-right").style.maxWidth = "calc(100% - " + obj.value + "px - var(--main-padding) - var(--main-left-padding) * 2)";
+            fix_logo(obj.value);
+        }
+
+        slider.oninput = function() { update_main_width(this);   }
+        function        _onresize() {
+            update_range();
+            update_main_width(slider);
+        }
+    </script>
 
 
-<!-- <main- class="hide-scrollbar"> -->
+
 
     <!--------------------------------------------------------------------->
     <!-- Index                                                           -->

@@ -99,4 +99,5 @@ fix_code();
 fix_syntax_heights();
 fix_elm_height();
 
+update_range();
 update_main_width(document.getElementById("myRange"));
