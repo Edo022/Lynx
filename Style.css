@@ -77,32 +77,39 @@ s- { color: #db966e; }                      /* String   */
 
 
 
-.slider {
-    position: fixed;
-    z-index: 999;
-    margin: 50vh 0 0 calc(var(--main-left-padding) * 2);
-    -webkit-appearance: none;
-    width: calc(100vw - var(--main-left-padding) * 2 - var(--main-padding) * 2);
-    height: 0;
-    background-color: transparent;
-}
-.slider::-webkit-slider-thumb, .slider::-moz-range-thumb {
-    cursor: e-resize;
-    background-color: transparent;
-    background: transparent;
-    width: var(--slider-size);
-    height: 100vh;
-}
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-}
-.slider::-moz-range-thumb {
-    -moz-appearance: none;
-}
-input[type=range]::-moz-range-thumb {
-    border: none;
-}
+
+
+/* Notice: no one is allowed to modify those 3 selectors. */
+/* Getting this to work on chrome took 6 hours of trying random stuff and any changes could break it */
+        input[type=range] {
+            position: fixed;
+            z-index: -5;
+            margin: 50vh 0 0 calc(var(--main-left-padding) * 2);
+            width: calc(100vw - var(--main-left-padding) * 2 - var(--main-padding) * 2);
+            height: 0;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: e-resize;
+            background-color: transparent;
+            width: var(--slider-size);
+            height: 100vh;
+            border: none;
+        }
+        input[type=range]::-moz-range-thumb {
+            appearance: none;
+            cursor: e-resize;
+            background-color: transparent;
+            width: var(--slider-size);
+            height: 100vh;
+            border: none;
+        }
+/*  */
+
+
 
 /* Page layout */
 body {

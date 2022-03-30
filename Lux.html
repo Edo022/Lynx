@@ -47,53 +47,81 @@
 </head>
 <body onresize="_onresize()">
 
-    <!--------------------------------------------------------------------->
-    <!-- Cursed hack to use a range slider to resize the main containers -->
-    <!-- while keeping it aligned to the left contaner and make it look  -->
-    <!-- like a full height resize handle                                -->
-    <!--------------------------------------------------------------------->
+    <!----------------------------------------------------------------------------------------------------------->
+    <!-- Cursed hack to use an invisible slider to resize the main containers and have it float between them   -->
+    <!-- so that it looks like the user is resizing the containers through an actual full height resize handle -->
+    <!----------------------------------------------------------------------------------------------------------->
 
+    <!-- Calculate the minimum value of the slider -->
     <div style="
         position: fixed; max-width: 999999px;
         min-width: calc(var(--main-left-padding) * 2 - var(--slider-size));
-            width: calc(var(--main-left-padding) * 2 - var(--slider-size));
+        width: calc(var(--main-left-padding) * 2 - var(--slider-size));
         ", id="slider-start----">
     </div>
+
+    <!-- Calculate the maximum value of the slider -->
     <div style="
         position: fixed; max-width: 999999px;
         min-width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
-            width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
+        width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
         ", id="slider-end----">
     </div>
+
+    <!-- Calculate the workspace width in pixels -->
     <div style="width: 100vw", id="slider-max----"></div>
-    <input type="range" min="0" max="0" value="0" step="0.01" class="slider" id="myRange">
+
+    <!-- Slider object -->
+    <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
 
 
     <script>
-        var slider = document.getElementById("myRange");
+        // Save slider element
+        var slider = document.getElementById("main-slider");
+
+
+        // Updates the maximum and minimum values of the slider. Used in browser zoom and window resize
         function update_range(){
             var min = document.getElementById("slider-start----").clientWidth;
             var max = document.getElementById("slider-max----"  ).clientWidth - document.getElementById("slider-end----").clientWidth;
             slider.min = min;
             slider.max = max;
-            slider.value = (min + max) / 2;
         }
 
-        function fix_logo(value){
+        // Updates the logo- and logo-top- width
+        function update_logo_width(value){
             document.getElementsByTagName("LOGO-TOP-")[0].style.maxWidth = "calc(100% - " + value + "px - var(--slider-size) - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-size") + ")";
             document.getElementsByTagName("LOGO-")    [0].style.backgroundPositionX = "calc(100vw / 4 + " + value + "px / 2)";
         }
 
-        function update_main_width(obj){
-            document.getElementById("main-left").style.maxWidth  = "calc(" +       obj.value +  "px - var(--main-left-padding) + var(--slider-size))";
-            document.getElementById("main-right").style.maxWidth = "calc(100% - " + obj.value + "px - var(--main-padding) * 2 - var(--main-left-padding))";
-            fix_logo(obj.value);
+        // Updates the width of the left and right main containers
+        function update_main_width(){
+            document.getElementById("main-left").style.maxWidth  = "calc(" +       slider.value +  "px - var(--main-left-padding) + var(--slider-size))";
+            document.getElementById("main-right").style.maxWidth = "calc(100% - " + slider.value + "px - var(--main-padding) * 2 - var(--main-left-padding))";
+            update_logo_width(slider.value);
+            window.localStorage.setItem("slider-value", slider.value);
         }
 
-        slider.oninput = function() { update_main_width(this); }
-        function        _onresize() {
+        // Update on browser zoom and window resize
+        function _onresize() {
             update_range();
             update_main_width(slider);
+        }
+
+
+        function init_slider_first_time(){
+            window.localStorage.setItem("slider-set", "set");
+            var min = document.getElementById("slider-start----").clientWidth;
+            var max = document.getElementById("slider-max----"  ).clientWidth - document.getElementById("slider-end----").clientWidth;
+            window.localStorage.setItem("slider-value", (min + max) / 2);
+        }
+        // Set slider value after page refresh and initialize it if needed
+        function init_slider(){
+            if(window.localStorage.getItem("slider-set") != "set") {
+                init_slider_first_time();
+            }
+            slider.oninput = function() { update_main_width(this); }
+            slider.value = window.localStorage.getItem("slider-value");
         }
     </script>
 

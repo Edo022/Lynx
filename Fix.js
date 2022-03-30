@@ -99,5 +99,6 @@ fix_code();
 fix_syntax_heights();
 fix_elm_height();
 
+init_slider();
 update_range();
-update_main_width(document.getElementById("myRange"));
+update_main_width();
