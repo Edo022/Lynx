@@ -244,7 +244,7 @@ body {
             syntax- > right- > label-, syntax- > right- { border-color: var(--elm2-border-color); }
             example- > fill- > label-::before { content: "Example "; }
             syntax- > left- > label-::before, syntax- > fill- > label-::before { content: "Syntax "; }
-            example- > fill- > label-::after       { content: " \00a0▆"; text-shadow: -2px -2px var(--clicked-label-color); font-size: calc(var(--font-size-mono) - 2px);}
+            example- > fill- > label-::after       { content: " □"; text-shadow: -0.3ch -0.3ch; }
             example- > fill- > label-:active, example- > fill- > label-:active::after { color: var(--clicked-label-color); }
 
             /* Code */
