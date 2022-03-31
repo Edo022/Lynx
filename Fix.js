@@ -1,5 +1,5 @@
 
-
+// Remove HTML indentation from pre blocks and add the line number
 function format(s){
     // find shortest indentation
     var min;
@@ -50,13 +50,17 @@ function fix_syntax_heights(){
                 }
             }
             var max = Math.max(left.clientHeight, right.clientHeight);
-            left.style.height = max + "px";
-            right.style.height = max + "px";
+            console.log(left.clientHeight);
+            console.log(right.clientHeight);
+            left.style.height = "" + max + "px";
+            right.style.height = "" + max + "px";
+            console.log(right.clientHeight);
         }
     }
 }
 
 
+// Add 0 width <sup> and <sub> elements to <elm-> tags as they usually have a <sup> tag inside and it screws up the vertical alignment
 function fix_elm_height(){
     var children = document.getElementsByTagName("ELM-");
     for(var i = 0; i < children.length; i++){
@@ -69,8 +73,8 @@ function fix_elm_height(){
 
 
 
-var index_indent = "2vw";
-
+// Indent and enumerate index elements
+var index_indent = "4ch";
 function fix_index_elm(elm, depth, last){
     var children = elm.children;
     for(var i = 0; i < children.length; i++){
@@ -87,18 +91,21 @@ function fix_index_elm(elm, depth, last){
         }
     }
 }
-
 function fix_index(){
     var children = document.getElementsByTagName("INDEX-");
     fix_index_elm(children[0], 0, "");
 }
 
 
-fix_index();
-fix_code();
-fix_syntax_heights();
-fix_elm_height();
 
-init_slider();
-update_range();
-update_main_width();
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    fix_index();
+    fix_code();
+    fix_elm_height();
+    fix_syntax_heights();
+
+    init_slider();
+    update_range();
+    update_main_width();
+});

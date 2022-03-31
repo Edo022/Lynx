@@ -16,6 +16,8 @@
     --main-left-def-width:  20vw;
     --main-left-max-width:  50vw;
     --slider-size:          2vw;
+    --logo-size:            50vw;
+    --split-syntax-distance:0.5vw;
 
     --bg-color:           #0d1117;
     --bg-color-code:      hsl(212, 18%, 15%);
@@ -25,7 +27,7 @@
     --link-color:         #50aaff;
     --sep-color:          #282d33;
     --text-color:         #bebebe;
-    --clicked-label-color:#9e9e9e;
+    --clicked-label-color:#7e7e7e;
     --hidden-color:       #555555;
     --elm-border-color:   #353d46;
     --elm2-border-color:  #5889b9;
@@ -139,16 +141,16 @@ body {
     }
 
     /* Page container */
-    right- {
+    body > right- {
 
         display: block;                                                                                         ;
-        height: 100vh; max-height: 100%;        overflow-x: hidden;        padding : 0 1px 0 1px;                          ;
+        height: 100vh; max-height: 100%;        overflow-x: visible;        padding : 0 1px 0 1px;                          ;
         width: 100vw;                          overflow-y: scroll;         margin: 0 var(--main-padding) 0 var(--main-padding);
         position: fixed; right: 0; z-index: 5;
                             }
 
         /* Smaller language logo fix */
-        right- > logo-top- {
+        body > right- > logo-top- {
             display: block;                                                                                     ;
             position: fixed;                                                                                    ;
             top: 0;                                                                                             ;
@@ -160,7 +162,7 @@ body {
             z-index: -3;                                                                                        ;
         }
         /* Smaller language logo */
-        right- > logo- {
+        body > right- > logo- {
             display: inline-block;                                                                                     ;
             position: relative;                                                                                 ;
             margin: var(--main-padding) 0 var(--main-padding) 0;                                                ;
@@ -169,17 +171,17 @@ body {
             right: 0;
             background-position-y: center;
             background-position-x: center;
-            background-size: 50vw;
+            background-size: var(--logo-size);
         }
 
         /* Page contents background */
-        right- > main-scroll- {
+        body > right- > main-scroll- {
             background-color: var(--bg-color);                                                                  ;
         }                                                                                                       /*
     }                                                                                                           */
 
     /* Index constainer */
-    left- {
+    body > left- {
         display: block;                                                                                         ;
         background-color: var(--bg-color);      overflow-x: auto;           padding : 0;                          ;
         height: 100vh; max-height: 100%;        overflow-y: scroll;         margin: 0 var(--main-left-padding) 0 var(--main-left-padding);;
@@ -189,24 +191,24 @@ body {
                                                                                             }
 
 
-        left- > index- {
+        body > left- > index- {
             display: block;
             overflow-x: auto;
             padding: 0;
             max-width: 100%;
         }
-        left- > index- indexd-, left- > index- indexh- {
+        body > left- > index- indexd-, body > left- > index- indexh- {
             display: block;
             white-space: nowrap;
             background-color: var(--bg-color);
             border-radius: 10px;
             min-width: 100%;
-            width: calc(min-content + 20px);
+            width: calc(fit-content + 20px);
         }
-        left- > index- indexd-:hover, left- > index- indexh-:hover {
+        body > left- > index- indexd-:hover, body > left- > index- indexh-:hover {
             background-color: var(--bg-color-pre);
         }
-        left- > index- > indexh-:first-child:hover, left- > index- > indexh-:last-child:hover {
+        body > left- > index- > indexh-:first-child:hover, body > left- > index- > indexh-:last-child:hover {
             max-width: 0;
         }                                                                                                       /*
     }                                                                                                           */
@@ -220,13 +222,13 @@ body {
         font-size: var(--font-size-mono);padding: 0;                                                                ;
         word-spacing: normal;                   margin: 3ch 0 0 0;                                                  ;
         line-height: 18px;                      display: flex;
-        overflow: visible;}
+        overflow: visible; }
 
         /* Interal containers */
         syntax- > left-, syntax- > right-, syntax- > fill-, example- > fill- {
             display: block;                                                                             border-width: 1px;              ;
-            width:  calc(50% - 0.5vw); max-width: 100%;       margin: 0 0 0 -1px;                         border-radius: 0 10px 10px 10px ;
-            height: 100%; max-height: 100%;   padding: 0;                                 border-color: var(--elm-border-color);
+            width:  calc(50% - var(--split-syntax-distance) - 1px); max-width: 100%;       margin: 0 0 0 -1px;                         border-radius: 0 10px 10px 10px ;
+            height: fit-content; max-height: none;   padding: 0;                                 border-color: var(--elm-border-color);
             background-color: var(--bg-color-pre);                                                      border-style: solid;            ;
             overflow-y: visible;                                                                                    }
 
@@ -234,16 +236,15 @@ body {
             syntax- > left- > label-, syntax- > right- > label-, syntax- > fill- > label-, example- > fill- > label- {
                 display: block;                                                                         border-width: 1px 1px 0 1px;
                 background-color: var(--bg-color-pre);      margin: -3.5ch 0 0 -1px;                    border-color: var(--elm-border-color);
-                border-radius: 10px 10px 0 0;               padding: 0.5ch 20px calc(0.5ch + 3px) 20px; border-style: solid;
-                z-index: -5;                                width: min-content;                                     ;
+                border-radius: 10px 10px 0 0;               padding: 0.8ch 20px calc(0.2ch + 3px) 20px; border-style: solid;
+                z-index: -5;                                width: fit-content;                                     ;
                 white-space: nowrap;                        max-width: calc(100% - 20px * 2);                       ;
                 font-weight: bold;                          overflow-x: hidden;                                     ;
             }
             syntax- > right- > label-, syntax- > right- { border-color: var(--elm2-border-color); }
             example- > fill- > label-::before { content: "Example "; }
             syntax- > left- > label-::before, syntax- > fill- > label-::before { content: "Syntax "; }
-            example- > fill- > label-::after       { content: " ⧉"; color: var(--bg-color-pre); }
-            example- > fill- > label-:hover::after { content: " ⧉"; color: var(--text-color);   }
+            example- > fill- > label-::after       { content: " \00a0▆"; text-shadow: -2px -2px var(--clicked-label-color); font-size: calc(var(--font-size-mono) - 2px);}
             example- > fill- > label-:active, example- > fill- > label-:active::after { color: var(--clicked-label-color); }
 
             /* Code */
@@ -263,7 +264,8 @@ body {
                 }                                                                                                   /*
             }                                                                                                       */
             syntax- > left- > code-, syntax- > right- > code-, syntax- > fill- > code- {
-                padding: 1em 0 1em 0;
+                margin: 1em 0 1em 0;
+                height: calc(100% - 1em);
             }
 
             /* Stop selection in both*/
@@ -276,8 +278,8 @@ body {
                 user-select: none;                                                                                  ;
             }                                                                                                       /*
         }                                                                                                           */
-        syntax- > left-  { margin-right: 0.5vw; }
-        syntax- > right- { margin-left:  0.5vw; }
+        syntax- > left-  { margin-right: var(--split-syntax-distance); }
+        syntax- > right- { margin-left:  var(--split-syntax-distance); }
         syntax- > fill-, example- > fill- { width: 100%; }
         example- > fill- > code- { line-height: var(--code-line-height); }                                          /*
     }                                                                                                               */

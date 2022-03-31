@@ -19,7 +19,7 @@
             min-width: 100%;
             border-radius: 10px 0 0 0;
             overflow: hidden;
-            word-spacing: -9999ch;
+            word-spacing: -100vw;
             text-align: center;
         }.table-1-right-container {
             vertical-align: top;
@@ -54,7 +54,7 @@
 
     <!-- Calculate the minimum value of the slider -->
     <div style="
-        position: fixed; max-width: 999999px;
+        position: fixed; max-width: none;
         min-width: calc(var(--main-left-padding) * 2 - var(--slider-size));
         width: calc(var(--main-left-padding) * 2 - var(--slider-size));
         ", id="slider-start----">
@@ -62,7 +62,7 @@
 
     <!-- Calculate the maximum value of the slider -->
     <div style="
-        position: fixed; max-width: 999999px;
+        position: fixed; max-width: none;
         min-width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
         width: calc(var(--main-padding) * 2 + var(--slider-size) * 2);
         ", id="slider-end----">
@@ -282,7 +282,6 @@
                     <indexd->Reference parameters</indexd->
                     <indexd->Return statement and function calls</indexd->
                     <indexd->Template functions</indexd->
-                    <indexd->Type groups</indexd->
                     <indexd->The main function</indexd->
                 </index->
                 <indexd->Const qualifier</indexd->
@@ -1821,7 +1820,7 @@
             <sep-></sep->
             <syntax->
                 <left->
-                    <label-> 1</label->
+                    <label-></label->
                     <code-><scroll->
                         <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
                         <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
@@ -1905,10 +1904,8 @@
             <sep-3-></sep-3->
             <h3 id="return-statement-and-function-calls">Return statement and function calls</h3>
             <p>
-                The type of the function defines the type of the value that is returned by the function when called.<br>
-                <b>Values</b> are <b>returned</b> using the <b><code><k->return</k-></code></b> statement. When this happens, all the remaining statements in the function are skipped and the code execution returns to the caller function.<br>
-                Functions that <b>don't return</b> a value must be declared using the <b><code><t->void</t-></code> type</b>.<br>
-                Void functions are allowed to contain no statements. Non-void functions must always return a value.
+                The <b><code><k->return</k-></code></b> statement skips all remaining statements in the function and <b>returns</b> the <b>code execution</b> to the <b>caller function</b>.<br>
+                Non-void functions can return a value of the same type as the function.<br>
             </p>
 
             <sep-></sep->
@@ -1917,6 +1914,7 @@
                     <label-></label->
                     <code-><scroll->
                         return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;
+                        return;
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -1937,7 +1935,8 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <elm->name<sup>id</sup></elm->(<elm-><t->U<sup>r</sup></t-></elm->, <elm-><t->V<sup>r</sup></t-></elm->, <elm->...</elm->)
+                        <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
+                        <elm->name<sup>id</sup></elm->()
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -1965,21 +1964,113 @@
             </example->
 
 
+            // TODO                      FIX TEMPLATE EXAMPLE 1 > ADD2 RETURN VALUE
             <!--------------------------------------------------------------------->
             <!-- Template functions                                              -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="template-functions">Template functions</h3>
             <p>
-
+                <b>Template functions</b> are the basis of generic programming.<br>
+                They are used to <b>generate functions</b> based on the types passed to function calls.<br>
             </p>
 
+            <sep-></sep->
+            <syntax->
+                <left->
+                    <label-></label->
+                    <code-><scroll->
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
+                        ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+                        ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Parameter syntax</label->
+                    <code-><scroll->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space->&<elm->name<sup>id</sup></elm->
+                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
+                        ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->
+                        ?<elm->type<sup>id</sup></elm-><space-></space->&<elm->name<sup>id</sup></elm->
+                        ?<elm->type<sup>id</sup></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
+                    </scroll-></code->
+                </right->
+            </syntax->
+            <sep-></sep->
 
-            <!--------------------------------------------------------------------->
-            <!-- Type groups                                                     -->
-            <!--------------------------------------------------------------------->
-            <sep-3-></sep-3->
-            <h3 id="type-groups">Type groups</h3>
+            <p>
+                Any function with one or more generic type parameters is considered a template function.<br>
+                Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> token.<br>
+                Parameters declared using the same type identifier will always have the same type in any generated function.
+            </p>
+            <p>
+                Generic type parameters can be references or const.
+            </p>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->){
+                            return a + b;
+                        }
+                        <t->auto</t-> <f->add2</f->(<t->?t</t-> <a->a</a->, <t->?u</t-> <a->b</a->){
+                            <w->return</w-> a + b;
+                        }
+
+                        <t->void</t-> <f->main</f->(){
+                            <f->add</f->(<k->0</k->, <k->1</k->);      <c->// Generates uint add(uint a, uint b)</c->
+                            <f->add</f->(<k->1.8</k->, <k->0.4</k->);  <c->// Generates float add(float a, float b)</c->
+
+                            <f->add2</f->(<k->0</k->, <k->1</k->);     <c->// Generates uint add(2uint a, uint b)</c->
+                            <f->add2</f->(<k->1</k->, <k->0.4</k->);   <c->// Generates float add2(uint a, float b)</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
+            <sep-></sep->
+
+            <p>
+                Templates allow multiple definitions.<br>
+                The <code><w->when</w-></code> and <code><w->default</w-></code> keywords are used to assign the correct one to the generated function, depending on the types used in it.
+            </p>
+            <p>
+                The expression used in the <code><w->when</w-></code> specifier must be known in compile time and cannot depend on the value of variables declared inside one of the function definitions.<br>
+                Calling the function with types that don't match any definition is a semantic error.<br>
+                See <a href="#type-comparison">Type comparison</a>.
+            </p>
+            <sep-></sep->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
+                            floating_point, integral, other;
+                        }
+
+                        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+                        <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
+                            <w->return</w-> type_id::<k->integral</k->;
+                        }
+                        <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
+                            <w->return</w-> type_id::<k->floating_point</k->;
+                        }
+                        <w->default</w-> {
+                            <w->return</w-> type_id::<k->other</k->;
+                        }
+
+
+                        <t->void</t-> <f->main</f->(){
+                            <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id::integral</c->
+                            <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id::floating_point</c->
+                            <f->get_id</f->(<k->1</k->);       <c->// Returns type_id::other</c->
+                            <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id::other</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
             <!--------------------------------------------------------------------->
