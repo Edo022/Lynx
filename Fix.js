@@ -50,11 +50,8 @@ function fix_syntax_heights(){
                 }
             }
             var max = Math.max(left.clientHeight, right.clientHeight);
-            console.log(left.clientHeight);
-            console.log(right.clientHeight);
             left.style.height = "" + max + "px";
             right.style.height = "" + max + "px";
-            console.log(right.clientHeight);
         }
     }
 }
@@ -100,13 +97,9 @@ function fix_index(){
 
 
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", function() {
     fix_index();
     fix_code();
     fix_elm_height();
     fix_syntax_heights();
-
-    init_slider();
-    update_range();
-    update_main_width();
 });

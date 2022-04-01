@@ -49,6 +49,16 @@
 }
 
 
+/* Syntax highlight */
+c- { color: #6d757e; font-weight: 300; }    /* Comment  */
+k- { color: #85b4e0; }                      /* Constant */
+t- { color: #3884dc; }                      /* Type     */
+f- { color: #e6e6b3; }                      /* Function */
+a- { color: #2fc5d0; }                      /* Argument */
+w- { color: #cc94d1; }                      /* Keyword  */
+s- { color: #db966e; }                      /* String   */
+
+
 /* Hide scrollbar */
 .hide-scrollbar::-webkit-scrollbar {
     display: none;
@@ -77,16 +87,6 @@ p, syntax-, example-, table {
 .nowrap { white-space: nowrap; }
 
 
-/* Syntax highlight */
-c- { color: #6d757e; font-weight: 300; }    /* Comment  */
-k- { color: #85b4e0; }                      /* Constant */
-t- { color: #3884dc; }                      /* Type     */
-f- { color: #e6e6b3; }                      /* Function */
-a- { color: #2fc5d0; }                      /* Argument */
-w- { color: #cc94d1; }                      /* Keyword  */
-s- { color: #db966e; }                      /* String   */
-
-
 
 
 /* Notice: no one is allowed to modify those 3 selectors. */
@@ -97,7 +97,7 @@ Main slider { */
         position: fixed;
         z-index: -5;
         margin: 50vh 0 0 calc(var(--main-padding-l));
-        width: calc(100vw - var(--main-padding-l) - var(--main-padding-r));
+        width: calc(100vw - var(--main-padding-r) * 2 - var(--main-padding-l));
         height: 0;
         -webkit-appearance: none;
         appearance: none;
