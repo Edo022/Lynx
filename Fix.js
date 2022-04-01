@@ -85,6 +85,7 @@ function fix_index_elm(elm, depth, last){
                 "href=\"#" + c.innerHTML.toLocaleLowerCase().replaceAll(' ', '-') + "\">" + (c.tagName == "INDEXH-" ? last : last + i + ".") + " " + c.innerHTML + "</a>"
             ;
             c.style.paddingLeft = "calc(" + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
+            c.style.maxWidth = "calc(100% - " + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
         }
         else if(c.tagName == "INDEX-") {
             fix_index_elm(c, depth + 1, last + i + ".");
