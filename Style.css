@@ -1,50 +1,50 @@
 :root {/*
     Font { */
-        --code-decoration-r: 9px;
-        --char-spacing:    -0.06ch;
-        --word-spacing:     0.6ch;
-        --line-height:      2.6ch;
-        --wide-line-h:      3.5ch;
-        --code-line-h:      2.5ch;
+        --code-decoration-r:  9px;
+        --char-spacing:      -0.06ch;
+        --word-spacing:       0.6ch;
+        --line-h:             2.6ch;
+        --wide-line-h:        3.5ch;
+        --code-line-h:        2.5ch;
 
-        --font-size-medium: 16px;
-        --font-size-mono:   14px;
-        --font-size-code:   13px;
-        --font-size-large:  22px;/*
+        --font-size-medium:   16px;
+        --font-size-mono:     14px;
+        --font-size-code:     13px;
+        --font-size-large:    22px;/*
     }
 
     Sizes { */
-        --def-margin:           32px;
-        --main-padding-l:       2vw;
-        --main-padding-r:       4vw;
-        --slider-w:             2vw;
-        --logo-size:            50vw;
-        --split-syntax-distance:0.5vw;
-        --code-h-margin:        20px;
-        --lable-h-padding:      20px;
-        --lable-v-padding:      6px;
-        --lable-h:              2.6ch;/*
+        --def-margin:              32px;
+        --main-padding-l:          2vw;
+        --main-padding-r:          4vw;
+        --slider-w:                2vw;
+        --logo-size:               50vw;
+        --split-syntax-distance:   0.5vw;
+        --code-h-margin:           20px;
+        --lable-h-padding:         20px;
+        --lable-v-padding:         6px;
+        --lable-h:                 2.6ch;/*
     }
 
     Color { */
-        --bg:             #0d1117;
-        --bg-code:        #1f262d;
-        --bg-pre:         #12161c;
-        --bg-elm:         #12161c;
-        --bg-table-odd:   #161a20;
-        --bg-table-even:  #13161b;
-        --bg-table-header:#1b1f24;
+        --bg:               #0d1117;
+        --bg-code:          #1f262d;
+        --bg-pre:           #12161c;
+        --bg-elm:           #12161c;
+        --bg-table-odd:     #161a20;
+        --bg-table-even:    #13161b;
+        --bg-table-header:  #1b1f24;
 
-        --fg-link:        #50aaff;
-        --fg-separator:   #282d33;
-        --fg-text:        #bebebe;
-        --fg-lable-active:#7e7e7e;
-        --fg-hidden:      #555555;
-        --fg-elm-border:  #353d46;
-        --fg-elm2-border: #5889b9;
+        --fg-link:          #50aaff;
+        --fg-separator:     #282d33;
+        --fg-text:          #bebebe;
+        --fg-lable-active:  #7e7e7e;
+        --fg-hidden:        #555555;
+        --fg-elm-border:    #353d46;
+        --fg-elm2-border:   #5889b9;
 
-        --bd-table-cell:  #1a1d20;
-        --bd-table-header:#21262c;/*
+        --bd-table-cell:    #1a1d20;
+        --bd-table-header:  #21262c;/*
     } */
 }
 
@@ -75,7 +75,7 @@ s- { color: #db966e; }                      /* String   */
     padding: 0;
     scrollbar-width: thin;
 }
-p, syntax-, example-, table {
+p, syntax-, example-, table-container {
     margin:  var(--def-margin) 0 var(--def-margin) 0;
 }
 
@@ -134,8 +134,7 @@ body {
 
     word-spacing: var(--word-spacing);
     letter-spacing: var(--char-spacing);
-
-    line-height: var(--line-height);
+    line-height: var(--line-h);
     font-weight: normal;
     font-size: var(--font-size-medium);
     min-width:  100vw;
@@ -155,9 +154,11 @@ body {
 
         background-attachment: fixed;
         background-position: center;
-
         background-size:50%;
-        height: 100vh;
+        min-width:  100vw;
+        max-width:  100vw;
+        min-height: 100vh;
+        max-height: 100vh;
     }
 
 
@@ -167,16 +168,16 @@ body {
     body > right- {
         display: block;
         z-index: 5;
-        overflow-x: visible;
-        overflow-y: scroll;
+        overflow: scroll;
         position: fixed;
 
         right: 0;
         padding: 0 1px 0 1px;
         margin: 0 var(--main-padding-r) 0 var(--main-padding-r);
-
-        width: 100vw;
-        height: 100vh; max-height: 100%;}
+        /* width: Set from JS */
+        max-width: 100vw;
+        min-height: 100vh;
+        max-height: 100vh}
 
 
 
@@ -188,11 +189,11 @@ body {
             position: fixed;
             z-index: -3;
 
-            top: 0; right: 0;
-
-            /**/width: 100vw;
-            /* max-width: Set from JS */
-            /**/height: var(--main-padding-r);
+            top:   0;
+            right: 0;
+            /* width: Set from JS */
+            max-width: 100vw;
+            min-height: var(--main-padding-r);
             max-height: var(--main-padding-r);
         }
 
@@ -205,10 +206,11 @@ body {
             margin: var(--main-padding-r) 0 var(--main-padding-r) 0;
             background-position-y: center;
             /* background-position-x: Set from JS */
-
             background-size: var(--logo-size);
-            height: calc(100vh - var(--main-padding-r) * 2);
-            width: 100%;
+            min-width: 100%;
+            max-width: 100%;
+            min-height: calc(100vh - var(--main-padding-r) * 2);
+            max-height: calc(100vh - var(--main-padding-r) * 2);
         }/*
     }
 
@@ -219,25 +221,22 @@ body {
     body > left- {
         display: block;
         background-color: var(--bg);
-        overflow-x: auto;
-        overflow-y: scroll;
+        overflow: scroll;
         position: fixed;
         z-index: 5;
 
         margin: 0 0 0 var(--main-padding-l);
         border-right: 1px solid var(--fg-separator);
-
+        /* width: Set from JS */
+        max-width: 100%;
         min-height: 100%;
-        max-height: 100%;
-        /**/width: 100%;
-        /* max-width: Set from JS */}
+        max-height: 100%;}
 
 
 
         /* Page index */
         body > left- > index- {
             display: block;
-            overflow-x: auto;
 
             min-width: 100%;
             max-width: 100%;
@@ -256,8 +255,8 @@ body {
 
             /* Index links */
             body > left- > index- indexd- > a, body > left- > index- indexh- > a {
-                /* width: Set from JS */
-                max-width: calc(100%);
+                min-width: 100%;
+                max-width: 100%;
                 min-height: 100%;
                 max-height: 100%;
             }
@@ -281,40 +280,41 @@ body {
         overflow: visible;
 
         word-spacing: normal;
-
         font-size: var(--font-size-mono);
         line-height: 18px;}
 
 
         /* Interal containers */
         syntax- > left-, syntax- > right-, syntax- > fill-, example- > fill- {
-            display: block;
+            display: flex;
+            flex-direction: column;
             overflow: visible;
 
             margin: 0 1px 0 1px;
-
-            /**/width:  calc(50% - var(--split-syntax-distance) - 1px * 2);
-            max-width: 100%;
-            /**/height: fit-content;
+            min-width:  calc(50% - var(--split-syntax-distance) - 1px * 2);
+            max-width:  calc(50% - var(--split-syntax-distance) - 1px * 2);
+            /**/height: fit-content; /* Fixed from JS */
             max-height: none;}
 
 
             /* Labels */
             syntax- > left- > label-, syntax- > right- > label-, syntax- > fill- > label-, example- > fill- > label- {
                 display: block;
-                border-width: 1px 1px 0 1px; position: relative;
+                position: relative;
                 background-color: var(--bg-pre);
-                margin: 0 0 -1px 0;
                 border-color: var(--fg-elm-border);
-                border-radius: var(--code-decoration-r) var(--code-decoration-r) 0 0;
-                padding: var(--lable-v-padding) var(--lable-h-padding) var(--lable-v-padding) var(--lable-h-padding);
                 border-style: solid;
                 z-index: 2;
-                width: fit-content;
                 white-space: nowrap;
-                max-width: calc(100% - var(--lable-h-padding) * 2 - var(--code-decoration-r));
+                overflow: hidden;
+
+                padding: var(--lable-v-padding) var(--lable-h-padding) var(--lable-v-padding) var(--lable-h-padding);
+                margin: 0 0 -1px 0;
                 font-weight: bold;
-                overflow-x: hidden;
+                border-width: 1px 1px 0 1px;
+                border-radius: var(--code-decoration-r) var(--code-decoration-r) 0 0;
+                /**/width: fit-content;
+                max-width: calc(100% - var(--lable-h-padding) * 2 - var(--code-decoration-r));
             }
             example- > fill- > label-::before {
                 content: "Example ";
@@ -335,26 +335,30 @@ body {
             syntax- > left- > code-, syntax- > right- > code-, syntax- > fill- > code-, example- > fill- > code- { position: relative; z-index: 1;
                 display: block;
                 background-color: var(--bg-pre);
-                width: 100%;
-                max-width: 100%;
+                border-style: solid;
                 white-space: pre;
-                height: fit-content;
-                max-height: 100%;
                 overflow: hidden;
+                border-color: var(--fg-elm-border);
+
                 border-width: 1px;
                 border-radius: 0 var(--code-decoration-r) var(--code-decoration-r) var(--code-decoration-r) ;
-                border-color: var(--fg-elm-border);
-                border-style: solid;
-                }
+                min-width: 100%;
+                max-width: 100%;
+                flex: 1; /* I don't know how this works, but it does work */
+                min-height: fit-content;
+                max-height: 100%;}
 
 
                 /* Fix visible overflow-y not working with non-visible overflow-x */
                 syntax- > left- > code- > scroll-, syntax- > right- > code- > scroll-, syntax- > fill- > code- > scroll-, example- > fill- > code- > scroll- {
-                    width: calc(100% - var(--code-h-margin) * 2);
-                    margin: 0 var(--code-h-margin) 0 var(--code-h-margin);
-                    height: 100%;
                     display: block;
-                    overflow-x: auto;
+                    overflow: auto;
+
+                    margin: 0 var(--code-h-margin) 0 var(--code-h-margin);
+                    min-width: calc(100% - var(--code-h-margin) * 2);
+                    max-width: calc(100% - var(--code-h-margin) * 2);
+                    min-height: 100%;
+                    max-height: 100%;
                 }/*
             } */
 
@@ -374,8 +378,14 @@ body {
 
         syntax- > left-  { margin-right: var(--split-syntax-distance); }
         syntax- > right- { margin-left:  var(--split-syntax-distance); }
-        syntax- > fill-, example- > fill- { width: 100%; }
-        example- > fill- > code- { line-height: var(--code-line-h); }/*
+
+        syntax- > fill-, example- > fill- {
+            min-width: calc(100% - 1px * 2);
+            max-width: calc(100% - 1px * 2);
+        }
+        example- > fill- > code- {
+            line-height: var(--code-line-h);
+        }/*
     } */
 
 
@@ -385,24 +395,33 @@ body {
         sep-1- {
             display: block;
             background-color: var(--fg-separator);
-            height: 2px;
             border-radius: 10px;
-            width: 100%;
+
             margin: 20ch 0 20ch 0;
+            min-width: 100%;
+            max-width: 100%;
+            min-height: 2px;
+            max-height: 2px;
         }
         sep-2- {
             display: block;
             background-color: var(--fg-separator);
-            height: 1px;
             border-radius: 10px;
-            width: 100%;
+
             margin: 8ch 0 8ch 0;
+            min-width: 100%;
+            max-width: 100%;
+            min-height: 1px;
+            max-height: 1px;
         }
         sep-3- {
             display: block;
             background-color: transparent;
-            width: 100%;
+
             margin-top: 8ch;
+            min-width: 100%;
+            max-width: 100%;
+            max-height: 0;
         }/*
     }
 } */

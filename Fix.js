@@ -25,7 +25,7 @@ function format(s){
 
 
 // Fix code indentation because apparently HTML5+CSS3 can't do that
-function fix_code() {
+function format_code() {
     var children = document.getElementsByTagName("SCROLL-");
     for(var i = 0; i < children.length; i++){
         children[i].innerHTML = format(children[i].innerHTML) + "\n";
@@ -46,12 +46,15 @@ function fix_syntax_heights(){
             for(var j = 0; j < children2.length; j++){
                 if(children2[j].tagName == 'RIGHT-') {
                     right = children2[j];
+                    console.log("a");
                     break;
                 }
             }
             var max = Math.max(left.clientHeight, right.clientHeight);
             left.style.height = "" + max + "px";
             right.style.height = "" + max + "px";
+            // left.getElementsByTagName("CODE-")[0].style.minHeight = "100%";
+            // right.getElementsByTagName("CODE-")[0].style.minHeight = "100%";
         }
     }
 }
@@ -72,7 +75,7 @@ function fix_elm_height(){
 
 // Indent and enumerate index elements
 var index_indent = "4ch";
-function fix_index_elm(elm, depth, last){
+function format_index_elm(elm, depth, last){
     var children = elm.children;
     for(var i = 0; i < children.length; i++){
         var c = children[i];
@@ -85,21 +88,21 @@ function fix_index_elm(elm, depth, last){
             c.style.maxWidth = "calc(100% - " + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
         }
         else if(c.tagName == "INDEX-") {
-            fix_index_elm(c, depth + 1, last + i + ".");
+            format_index_elm(c, depth + 1, last + i + ".");
         }
     }
 }
-function fix_index(){
+function format_index(){
     var children = document.getElementsByTagName("INDEX-");
-    fix_index_elm(children[0], 0, "");
+    format_index_elm(children[0], 0, "");
 }
 
 
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    fix_index();
-    fix_code();
+    format_index();
+    format_code();
     fix_elm_height();
     fix_syntax_heights();
 });

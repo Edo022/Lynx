@@ -12,14 +12,8 @@ var slider;
 
 // Updates the maximum and minimum values of the slider. Used in browser zoom and window resize
 function update_range(){
-    console.log("min: " + document.getElementById("CALC-SLIDER-MIN").clientWidth);
-    console.log("max: " + document.getElementById("CALC-SLIDER-MAX").clientWidth);
     slider.min = document.getElementById("CALC-SLIDER-MIN").clientWidth;
     slider.max = document.getElementById("CALC-VW"        ).clientWidth - document.getElementById("CALC-SLIDER-MAX").clientWidth;
-    console.log("actual min: " + slider.min);
-    console.log("actual max: " + slider.max);
-
-    console.log("a: " + document.getElementById("CALC-VW").clientWidth);
 }
 
 
@@ -121,7 +115,7 @@ function getBackgroundSize(elem) {
 
 // Updates the logo- and logo-top- width
 function update_logo_width(value){
-    document.getElementsByTagName("LOGO-TOP-")[0].style.maxWidth = "calc(" +
+    document.getElementsByTagName("LOGO-TOP-")[0].style.width = "calc(" +
         "100% - " + value + "px - var(--slider-w) - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-w") +
     ")";
     var logo = document.getElementsByTagName("LOGO-")[0];
@@ -139,12 +133,11 @@ function update_logo_width(value){
 
 // Updates the width of the left and right main containers
 function update_main_width(){
-    console.log("update main width");
-    document.getElementById("main-left").style.maxWidth  = "calc(" +
+    document.getElementById("main-left").style.width  = "calc(" +
         slider.value +  "px - " +
         "var(--main-padding-l)" +
     ")";
-    document.getElementById("main-right").style.maxWidth = "calc(" +
+    document.getElementById("main-right").style.width = "calc(" +
         "100% - " +
         slider.value +  "px - " +
         "var(--main-padding-l) - " +
@@ -169,7 +162,6 @@ function init_slider_first_time(){
 }
 // Set slider value after page refresh and initialize it if needed
 function init_slider(){
-    console.count("slider obj 3: " + slider.outerHTML);
     if(window.localStorage.getItem("slider-set") != "set") {
         init_slider_first_time();
     }
