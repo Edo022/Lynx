@@ -521,8 +521,8 @@
             <p>A <b>symbol</b> is any <b>language component</b> that can be declared.</p>
             <p>
                 <b>Scopes</b> define which <b>symbols</b> the code can <b>reference</b> and their absolute and relative names.<br>
-                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. the only exception is the <b>module scope</b>. It is always defined and contains all the symbols and scopes declared in the module. It can be referenced using the <code>this</code> identifier.<br>
-                Like normal scopes, <code>this</code> can also be shadowed.
+                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. the only exception is the <b>module scope</b>. It is always defined and contains all the symbols and scopes declared in the module. It can be referenced using the <code>module</code> identifier.<br>
+                Like normal scopes, <code>module</code> can also be shadowed, but doing so generates a warning.
             </p>
             <p>
                 Each scope can only contain certain types of symbols:
@@ -641,11 +641,11 @@
                     <label- onclick="copy_code(this)"></label->
                     <code-><scroll->
                         <c->// Module scope</c->
-                        <c->// Local name: this</c->
+                        <c->// Local name: module</c->
 
 
                         <c->// Local name: s</c->
-                        <c->// Relative names: this::s</c->
+                        <c->// Relative names: module::s</c->
                         <w->struct</w-> <t->s</t-> { <t->uint</t-> n; }
 
                         <w->namespace</w-> {
@@ -656,7 +656,7 @@
 
 
                         <c->// Local name: fun</c->
-                        <c->// Relative names: this::fun</c->
+                        <c->// Relative names: module::fun</c->
                         <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
                             <w->if</w->(n){
                                 <c->// Local name: s2</c->
@@ -664,8 +664,8 @@
                                 <w->struct</w-> <t->s2</t-> { <t->uint</t-> n; };
                             }
 
-                            <c->// Local name: s, shadows this::s</c->
-                            <c->// Relative names: this::fun::s, fun::s</c->
+                            <c->// Local name: s, shadows module::s</c->
+                            <c->// Relative names: module::fun::s, fun::s</c->
                             <w->struct</w-> <t->s</t-> { <t->uint</t-> a, b; }
                         }
                     </scroll-></code->
@@ -1408,7 +1408,7 @@
                         } grasses;
 
                         <t->void</t-> <f->main</f->(){
-                            this.grasses = <t->typeof</t->(grasses)::<k->on</k->;
+                            module::grasses = <t->typeof</t->(grasses)::<k->on</k->;
                         }
                     </scroll-></code->
                 </fill->
@@ -1455,7 +1455,7 @@
             <h2 id="variables">Variables</h2>
             <p>
                 <b>Variables</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
-                Each variable <b>must be declared</b> before it is used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
+                Differently from other symbols, each variable <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
                 //TODO multiple declarations;
             </p>
             <p>
@@ -1475,7 +1475,6 @@
                     </scroll-></code->
                 </fill->
             </syntax->
-
             <example->
                 <fill->
                     <label- onclick="copy_code(this)"></label->
@@ -1823,8 +1822,48 @@
                         <t->void</t-> <f->main</f->(){
                             <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id::integral</c->
                             <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id::floating_point</c->
-                            <f->get_id</f->(<k->1</k->);       <c->// Returns type_id::other</c->
                             <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id::other</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
+
+            <p>
+                Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
+            </p>
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->);
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)"></label->
+                    <code-><scroll->
+                        <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
+                            floating_point, integral, other;
+                        }
+
+                        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+                        <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
+                            <w->return</w-> type_id::<k->integral</k->;
+                        }
+                        <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
+                            <w->return</w-> type_id::<k->floating_point</k->;
+                        }
+                        <w->default</w-> {
+                            <w->return</w-> type_id::<k->other</k->;
+                        }
+
+
+                        <t->void</t-> <f->main</f->(){
+                            <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id::integral</c->
+                            <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id::floating_point</c->
+                            <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id::other</c->
+                            <c->//get_id&lt;double&gt;((0.4)); // Error, cannot convert "(double)" tuple to "double"</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -1903,6 +1942,45 @@
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="symbol-aliases">Symbol aliases</h2>
+            <p>
+                <b>Symbol aliases</b> are <b>alternative names</b> for symbols.
+                Symbols can be aliased using the <code><w->alias</w-></code> keyword.<br>
+                Any declared symbol can be aliased, including modules, generated functions and other aliases.
+            </p>
+            <p>
+                An alias is not simply replaced like a <a href="#macros">macro</a> but it identifies the symbol itself in a unique way.<br>
+                Once an alias is declared, the alias and the symbol it aliases can be used interchangeably.
+            </p>
+            <p>
+                Variables can be aliased before their declaration, but the alias can only be used after the declaration of the variable.
+            </p>
+
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        alias <elm->name<sup>id</sup></elm-> = <elm->symbol<sup>id</sup></elm->;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <example->
+                <fill->
+                    <label- onclick="copy_code(this)">1</label->
+                    <code-><scroll->
+                        <w->namespace</w-> n {
+                            <t->void</t-> <f->f</f->(){}
+                        }
+                        <w->alias</w-> n2 = n;        <c->// Ok, n2 = module::n</c->
+                        <w->alias</w-> f2 = n2::<f->f</f->;    <c->// Ok, f2 = (module::n2)::f = module::n::f</c->
+                        <w->alias</w-> f3 = n2::<f->f2</f->;   <c->// Ok, f2 = (module::n2)::(module::f2) = module::n::f</c->
+
+                        <t->void</t-> <f->main</f->(){
+                            <f->f2</f->();            <c->// Ok, calls n::f()</c->
+                            <f->f3</f->();            <c->// Ok, calls n::f()</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
 
@@ -2140,10 +2218,10 @@
             <h1 id="quick-reference-tabs">Quick reference tabs</h1>
 
             //TODO
-            //this.x this.y this.z
-            this::pos.x
-            this::pos.y
-            this::pos.z
+            //module.x module.y module.z
+            module::pos.x
+            module::pos.y
+            module::pos.z
             ^ coordinates in current workspace
 
 

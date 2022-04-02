@@ -50,13 +50,15 @@
 
 
 /* Syntax highlight */
-c- { color: #6d757e; font-weight: 300; }    /* Comment  */
-k- { color: #85b4e0; }                      /* Constant */
-t- { color: #3884dc; }                      /* Type     */
-f- { color: #e6e6b3; }                      /* Function */
-a- { color: #2fc5d0; }                      /* Argument */
-w- { color: #cc94d1; }                      /* Keyword  */
-s- { color: #db966e; }                      /* String   */
+c-  { color: #6d757e; font-weight: 300; }    /* Comment         */
+ce- { color: #d14141; font-weight: 300; }    /* Error comment   */
+cw- { color: #bbb23b; font-weight: 300; }    /* Warning comment */
+k-  { color: #85b4e0; }                      /* Constant        */
+t-  { color: #3884dc; }                      /* Type            */
+f-  { color: #e6e6b3; }                      /* Function        */
+a-  { color: #2fc5d0; }                      /* Argument        */
+w-  { color: #cc94d1; }                      /* Keyword         */
+s-  { color: #db966e; }                      /* String          */
 
 
 /* Hide scrollbar */
