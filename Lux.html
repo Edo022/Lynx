@@ -81,7 +81,9 @@
                     <indexd->Auto specifier</indexd->
                     <indexd->Typeof and baseof specifiers</indexd->
                     <indexd->Unnamed types</indexd->
+                    <indexd->Constructors</indexd->
                 </index->
+                <indexd->Literals</indexd->
                 <index-><indexh->Variables</indexh->
                     <indexd->Temporary variables</indexd->
                 </index->
@@ -95,16 +97,14 @@
                 <indexd->Symbol aliases</indexd->
             </index->
             <index-><indexh->Runtime statements</indexh->
-                <indexd->Left and right values</indexd->
                 <index-><indexh->Expressions</indexh->
-                    <indexd->Literals</indexd->
-                    <indexd->Constructors</indexd->
+                    <indexd->Left and right values</indexd->
                     <indexd->Operators</indexd->
                     <indexd->Special operators</indexd->
                     <indexd->Array operations</indexd->
-                    <indexd->Type comparison</indexd->
+                    <indexd->Type comparisons</indexd->
                 </index->
-                <index-><indexd->Selection</indexd->
+                <index-><indexh->Selection</indexh->
                         <indexd->If statement</indexd->
                         <indexd->Select statement</indexd->
                 </index->
@@ -1446,6 +1446,27 @@
             </p>
 
 
+            <!--------------------------------------------------------------------->
+            <!-- Constructors                                                    -->
+            <!--------------------------------------------------------------------->
+            <sep-3-></sep-3->
+            <h3 id="constructors">Constructors</h3>
+            <p>
+                <b>Constructors</b> are used to <b>generate r-values</b> of the specified type.<br>
+
+            </p>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Literals                                                        -->
+            <!--------------------------------------------------------------------->
+            <sep-2-></sep-2->
+            <h2 id="literals">Literals</h2>
+            //TODO compile time known values have the same color as literals
+
+
 
 
             <!--------------------------------------------------------------------->
@@ -1994,61 +2015,12 @@
             <!--------------------------------------------------------------------->
             <sep-1-></sep-1->
             <h1 id="runtime-statements">Runtime statements</h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Left and right values                                           -->
-            <!--------------------------------------------------------------------->
-            <sep-2-></sep-2->
-            <h2 id="left-and-right-values">Left and right values</h2>
             <p>
-                Values can be left or right values.<br>
-                <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
-                Any other value is a <b>right value</b>.
+                <b>Runtime statements</b> are the <b>instructions</b> that are <b>executed during runtime</b>.<br>
+                They determine the behaviour of the shader, its execution time and compiler optimizations.
             </p>
-            <table>
-                <tr>
-                    <th>Left values</th>
-                    <th>Right values</th>
-                </tr>
-                <tr>
-                    <td>Non-const parameters and referece (<code>&</code>) parameters</td>
-                    <td>Const parameters</td>
-                </tr>
-                <tr>
-                    <td>Result of the field (<code>[</code><code>]</code>) and subscription (<code>.</code>) operators</td>
-                    <td>Result of arithmetic, logical, binary, ternary and comparison operators</td>
-                </tr>
-                <tr>
-                    <td>Non-const varibales</td>
-                    <td>Const variables</td>
-                </tr>
-                <tr>
-                    <td>Temporary variables</td>
-                    <td>Enum elements</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Result of function calls</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Result of constructors</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Result of type comparisons</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Literals</td>
-                </tr>
-            </table>
             <p>
-                Right values can be used anywhere left values can.<br>
-                Only left values can be passed to reference parameters or used as destination of assignment operators.
+                A runtime statement can be an expression, a selection directive or an iteration construct.
             </p>
 
 
@@ -2058,22 +2030,66 @@
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="expressions">Expressions</h2>
+            <p>
+                An <b>expression</b> is any sequence of r-values, l-values and operators that <b>generates a value</b>.
+            </p>
 
 
             <!--------------------------------------------------------------------->
-            <!-- Literals                                                        -->
-            <!--------------------------------------------------------------------->
-            <sep-3-></sep-3->
-            <h3 id="literals">Literals</h3>
-            //TODO compile time known values have the same color as literals
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Constructors                                                    -->
+            <!-- Left and right values                                           -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="constructors">Constructors</h3>
-            //TODO CONSTRUCTORS ARE SPECIAL FUNCTIONS
+            <h3 id="left-and-right-values">Left and right values</h3>
+            <p>
+                Values are divided in left values and right values.<br>
+                <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
+                Any other value is a <b>right value</b>.
+            </p>
+            <table>
+                <tr>
+                    <th>Left values</th>
+                    <th>Right values</th>
+                </tr>
+                <tr>
+                    <td>Non-const <a href="#functions">parameters</a> and <a href="#reference-parameters">referece (<code>&</code>) parameters</a></td>
+                    <td><a href="#const-qualifier">Const</a> parameters</td>
+                </tr>
+                <tr>
+                    <td>Result of the <a href="#special-operators">field (<code>[</code><code>]</code>)</a> and <a href="#special-operators">subscription (<code>.</code>)</a> operators</td>
+                    <td>Result of <a href="#operators">arithmetic</a>, <a href="#operators">logical</a>, <a href="#operators">binary</a>, <a href="#special-operators">ternary</a> and <a href="#operators">comparison</a> operators</td>
+                </tr>
+                <tr>
+                    <td>Non-const <a href="#variables">varibales</a></td>
+                    <td><a href="#const-qualifier">Const</a> variables</td>
+                </tr>
+                <tr>
+                    <td><a href="#temporary-variables">Temporary variables</a></td>
+                    <td><a href="#enums">Enum</a> elements</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Result of <a href="#return-statement-and-function-calls">function calls</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Result of <a href="#constructors">constructors</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Result of <a href="#type-comparisons">type comparisons</a></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><a href="#literals">Literals</a></td>
+                </tr>
+            </table>
+            <p>
+                Right values can be used anywhere left values can.<br>
+                Only left values can be passed to reference parameters or used as destination of assignment operators.
+            </p>
+            <p>
+                Left and right values are also called l-values and r-values.
+            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -2098,10 +2114,10 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Type comparison                                                 -->
+            <!-- Type comparisons                                                -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="type-comparison">Type comparison</h3>
+            <h3 id="type-comparisons">Type comparisons</h3>
 
 
 
