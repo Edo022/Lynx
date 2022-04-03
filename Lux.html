@@ -1895,7 +1895,7 @@
             <h2 id="const-qualifier">Const qualifier</h2>
             <p>
                 The <code><t->const</t-></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
-                Reference const parameters are not allowed, as well as const functions and const struct members.<br>
+                Reference const parameters are not allowed, as well as const functions, const struct members and const tuple elements.<br>
             </p>
             <p>
                 As opposed to GLSL, const symbols can be initialized using non-const expressions.<br>
@@ -2003,7 +2003,53 @@
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
             <h2 id="left-and-right-values">Left and right values</h2>
-
+            <p>
+                Values can be left or right values.<br>
+                <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
+                Any other value is a <b>right value</b>.
+            </p>
+            <table>
+                <tr>
+                    <th>Left values</th>
+                    <th>Right values</th>
+                </tr>
+                <tr>
+                    <td>Non-const parameters and referece (<code>&</code>) parameters</td>
+                    <td>Const parameters</td>
+                </tr>
+                <tr>
+                    <td>Result of the field (<code>[</code><code>]</code>) and subscription (<code>.</code>) operators</td>
+                    <td>Result of arithmetic, logical, binary, ternary and comparison operators</td>
+                </tr>
+                <tr>
+                    <td>Non-const varibales</td>
+                    <td>Const variables</td>
+                </tr>
+                <tr>
+                    <td>Temporary variables</td>
+                    <td>Enum elements</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Result of function calls</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Result of constructors</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Result of type comparisons</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Literals</td>
+                </tr>
+            </table>
+            <p>
+                Right values can be used anywhere left values can.<br>
+                Only left values can be passed to reference parameters or used as destination of assignment operators.
+            </p>
 
 
 
