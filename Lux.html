@@ -82,8 +82,8 @@
                     <indexd->Typeof and baseof specifiers</indexd->
                     <indexd->Unnamed types</indexd->
                 </index->
-                <index-><indexh->Literals</indexh->
-                    <indexd->Implicit literals</indexd->
+                <index-><indexh->Inline values</indexh->
+                    <indexd->Literals</indexd->
                     <indexd->Constructors</indexd->
                 </index->
                 <index-><indexh->Variables</indexh->
@@ -909,7 +909,7 @@
             <p>
                 Empty structs are allowed.<br>
                 Member access is explained in <a href="#special-operators">Special operators</a>.<br>
-                Struct initializer values are explained in <a href="#constructors">Constructors</a> and <a href="#implicit-literals">Implicit Literals</a>.
+                Struct initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
             <syntax->
                 <left->
@@ -968,13 +968,13 @@
             <p>
                 Array declarations are identical to normal types, but <code>[</code><code>]</code> tokens follow the type, optionally enclosing an expression to specify the number of elements.<br>
                 Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
-                If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be an array <a href="#constructors">constructor</a> or <a href="#implicit-constructors">implicit literal</a>.
+                If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be an array <a href="#constructors">constructor</a>.
             </p>
             <p>
                 There are no dynamic arrays.<br>
                 Arrays cannot have 0 elements.<br>
                 Element access is explained in <a href="#special-operators">Special operators</a>.<br>
-                Array initializer values are explained in <a href="#constructors">Constructors</a> and <a href="#implicit-literals">Implicit Literals</a>.
+                Array initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
 
             <syntax->
@@ -1020,7 +1020,7 @@
             <p>
                 The type of two tuples can only differ by the type and the order of their elements. If those are identical, the tuples have the same type.<br>
                 Element access is explained in <a href="#special-operators">Special operators</a>.<br>
-                Tuple initializer values are explained in <a href="#constructors">Constructors</a> and <a href="#implicit-literals">Implicit Literals</a>.
+                Tuple initializer values are explained in <a href="#constructors">Constructors</a>.
             </p>
             <p>
                 Tuples cannot have 0 elements.
@@ -1453,33 +1453,63 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Literals                                                        -->
+            <!-- Inline values                                                   -->
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
-            <h2 id="literals">Literals</h2>
+            <h2 id="inline-vales">Inline values</h2>
+            <p>
+                Inline values are <a href="#right-and-left-values">r-values</a> that are explicitly created and used in a single <a href="#runtime-statements">runtime statement</a>.<br>
+                They can be <a href="#literals">Literals</a> or <a href="#constructors">Constructors</a>.
+            </p>
 
 
             <!--------------------------------------------------------------------->
-            <!-- Implicit literals                                               -->
+            <!-- Literals                                                        -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="implicit-literals">Implicit literals</h3>
+            <h3 id="literals">Literals</h3>
             <p>
-                <b>Implicit literals</b> are used to <b>create <a href="#left-and-right-values">r-values</a></b>. The type of the value is determined by the way they are represented in the source code.<br>
-                Implicit literals can be used in place of any expression of compatible type. Their value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
+                <b>Literals</b> are used to <b>create</b> compile time known <b><a href="#left-and-right-values">r-values</a></b>.<br>
+                The type of the value is determined by the way it is represented in the source code, and it can only be of <code><t->uint</t-></code>, <code><t->double</t-></code> or <code><t->bool</t-></code> type.<br>
+                Literals can be used in place of any expression of compatible type. Their value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
             </p>
             <p>
+                Base prefixes can be used to specify the numerical base of the value.<br>
+                The decimal prefix is optional.<br>
+                Hexadecimal literals are case insensitive, leading zeroes and trailing decimal zeroes are ignored.<br>
+                Unary <a href="#operators"><code>+</code></a> and <a href="#operators"><code>-</code></a> operators are not part of the literal.
             </p>
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        <c->/* <a href="#primitive-types"><c->Primitive types</c-></a> */</c->  <elm-></elm->
-                        <c->/* <a href="#structs"><c->Structs</c-></a> */</c->          <elm-></elm->
-                        <c->/* <a href="#arrays"><c->Arrays</c-></a> */</c->          <elm-></elm->
-                    </scroll-></code->
-                </fill->
-            </syntax->
+            <p>
+                Literals are not sequences of tokens like other language components, but a category of tokens.<br>
+                Regex syntax is used to describe their pattern:
+            </p>
+            <table>
+                <tr>
+                    <th>Type/Base</th>
+                    <th>Hexadecimal (hex)</th>
+                    <th>Decimal (dex)</th>
+                    <th>Octal (oct)</th>
+                    <th>Binary (bin)</th>
+                </tr>
+                <tr>
+                    <th><t->uint</t-></th>
+                    <td class="center"><code>0x([0-9a-z]+)</code></td>
+                    <td class="center"><code>0d?([0-9]+)</code></td>
+                    <td class="center"><code>0o([0-7]+)</code></td>
+                    <td class="center"><code>0b([01]+)</code></td>
+                </tr>
+                <tr>
+                    <th><t->double</t-></th>
+                    <td class="center"><code>0x([0-9a-z]+)\.([0-9a-z]+)</code></td>
+                    <td class="center"><code>0d?([0-9]+)\.([0-9]+)</code></td>
+                    <td class="center"><code>0o([0-7]+)\.([0-7]+)</code></td>
+                    <td class="center"><code>0b([01]+)\.([01]+)</code></td>
+                </tr>
+                <tr>
+                    <th><t->bool</t-></th>
+                    <td class="center" colspan="4"><code>true|false</code></td>
+                </tr>
+            </table>
             <example->
                 <fill->
                     <label- onclick="copy_code(this)">1</label->
@@ -1502,7 +1532,7 @@
             <p>
                 The values used to create the r-value are also implicitly converted.<br>
                 Flattening constructors is not allowed.<br>
-                <a href="typeof-and-baseof-specifiers"><code><w->typeof</w-></code></a> and <a href="typeof-and-baseof-specifiers"><code><w->baseof</w-></code></a> can be used as type.
+                <a href="typeof-and-baseof-specifiers"><code><w->typeof</w-></code></a> and <a href="typeof-and-baseof-specifiers"><code><w->baseof</w-></code></a> can be used as types.
             </p>
 
             <syntax->
@@ -1511,7 +1541,7 @@
                     <code-><scroll->
                         <c->/* <a href="#primitive-types"><c->Primitive types</c-></a> and <a href="#enums"><c->enums</c-></a> */</c->  <elm-><t->T<sup>type</sup></t-></elm->(<elm->T<t-><sup>r</sup></t-></elm->)
                         <c->/* <a href="#structs"><c->Structs</c-></a> */</c->                    <elm-><t->T<sup>type</sup></t-></elm->(<elm-><elm-><t->member type 0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->member type n<sup>r</sup></t-></elm-></elm->)
-                        <c->/* <a href="#arrays"><c->Arrays</c-></a> */</c->                     <elm-><t->T<sup>type</sup></t-></elm->[<elm-><t->u32<sup>r</sup></t-></elm->](<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
+                        <c->/* <a href="#arrays"><c->Arrays</c-></a> */</c->                     <elm-><t->T<sup>type</sup></t-></elm->[<elm-><t->u32<sup>r</sup></t-></elm->](<elm-><elm-><t->T<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->T<sup>r</sup></t-></elm-></elm->)
                         <c->/* <a href="#tuples"><c->Tuples</c-></a> */</c->                     (<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->)(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
                     </scroll-></code->
                 </fill->
