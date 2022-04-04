@@ -46,15 +46,12 @@ function fix_syntax_heights(){
             for(var j = 0; j < children2.length; j++){
                 if(children2[j].tagName == 'RIGHT-') {
                     right = children2[j];
-                    console.log("a");
                     break;
                 }
             }
             var max = Math.max(left.clientHeight, right.clientHeight);
             left.style.height = "" + max + "px";
             right.style.height = "" + max + "px";
-            // left.getElementsByTagName("CODE-")[0].style.minHeight = "100%";
-            // right.getElementsByTagName("CODE-")[0].style.minHeight = "100%";
         }
     }
 }

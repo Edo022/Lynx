@@ -7,9 +7,7 @@ function decodeHTML(html) {
 }
 
 function copy_code(lable) {
-    console.log(lable);
     var children = lable.parentNode.childNodes;
-    console.log("copied");
     for(var i = 0; i < children.length; i++){
         if(children[i].tagName == "CODE-") {
             var output_text = decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""));
@@ -30,6 +28,5 @@ document.addEventListener("DOMContentLoaded", function() {
     var children = document.getElementsByTagName("LABEL-");
     for(var i = 0; i < children.length; i++){
         children[i].addEventListener("click", function(){ copy_code(this); })
-        console.log(children[i]);
     }
 });
