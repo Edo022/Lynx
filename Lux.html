@@ -209,7 +209,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <c->// Single line comment</c->
 
@@ -221,10 +221,10 @@
             </example->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">2</label->
+                    <label->2</label->
                     <code-><scroll->
                         <c->/* Multi line /* Anorhter comment */ comment */
-                        // Ok                             // ^ Error, unexpected token "comment"</c->
+                        // Ok                             </c-><ce->// ^ Error, unexpected token "comment"</ce->
                     </scroll-></code->
                 </fill->
             </example->
@@ -255,14 +255,14 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <c->// Ok</c->
                         <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->
                         <k->#include</k-> <s->"./file.ilsh"</s->
                         <k->#include</k-> <s->"file.ilsh"</s->
 
-                        <c->// Error</c->
+                        <ce->// Error</ce->
                         <c->//#include ./file.ilsh</c->
                         <c->//#include "./non_existent_file"</c->
                         <c->//#include ""</c->
@@ -317,7 +317,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <c->// single line comment</c->\
                         <c->on two lines</c->
@@ -345,13 +345,13 @@
             </example->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">2</label->
+                    <label->2</label->
                     <code-><scroll->
-                        <c->// Error, unexpected token "\"
-                            //void ma\\
+                        <ce->// Error, unexpected token "\"</ce->
+                        <c->//void ma\\
 
-                            //in(){}
-                            // Error,  unexpected token "in"</c->
+                            //in(){}</c->
+                            <ce->// Error,  unexpected token "in"</ce->
                         </scroll-></code->
                 </fill->
             </example->
@@ -532,7 +532,7 @@
 
             <div class="table-1-container">
                 <div class="table-container table-1-left-container"><table class="table-1-left">
-                    <tr style="height: 80px;"><th class="medium">Container scope</th></tr>
+                    <tr style="height: 80px;"><th class="medium">Scope/Can contain</th></tr>
                     <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#modules">Module           </a></th></tr>
                     <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#scopes-and-symbols">Namespace        </a></th></tr>
                     <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#enums">             Enum             </a></th></tr>
@@ -640,7 +640,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <c->// Module scope</c->
                         <c->// Local name: module</c->
@@ -676,10 +676,10 @@
             <p>Symbols can be declared anywhere in the scope, except for variables, which have to be declared before they are used in expressions.</p>
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->void</t-> <f->main</f->(){
-                            <c->//var.n = 8;     // Error</c->
+                            <c->//var.n = 8;     </c-><ce->// Error</ce->
                             <t->s</t-> var = (<k->16</k->); <c->   // Ok</c->
                         }
                         <w->struct</w-> s { <t->int</t-> n; }
@@ -713,7 +713,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <w->namespace</w-> a {
                             <t->int</t-> n = <k->4</k->;
@@ -835,7 +835,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <w->enum</w-> <t->e</t-> : <t->int</t-> {
                             a, b;              <c->// Ok, a = 0, b = 1</c->
@@ -847,12 +847,12 @@
             </example->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">2</label->
+                    <label->2</label->
                     <code-><scroll->
                         <w->enum</w-> <t->c</t-> : <t->double</t-> {
                             pi = <k->3.14159</k->;      <c->// Ok</c->
                             e  = <k->2.71828</k->;      <c->// Ok</c->
-                            <c->//phi;             // Error, uninitialized non-integral enum value</c->
+                            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
                         }
 
                         <t->void</t-> <f->main</f->(){
@@ -872,7 +872,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
                             pi  = <k->3.14159</k->;
@@ -882,7 +882,7 @@
 
                         <t->void</t-> <f->main</f->(){
                             <t->c</t-> a = <k->c::phi</k->;      <c->// Ok</c->
-                            <c->//c b = 1.61803;   // Error, cannot convert from double to strict enum</c->
+                            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
                             <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
                     </scroll-></code->
@@ -929,19 +929,19 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <w->struct</w-> <t->idk</t-> {
                             <t->uint</t-> a, b;        <c->// Ok</c->
                             <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
-                            <c->//double const d; // Error, struct members cannot be const</c->
+                            <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
                         }
                         <t->void</t-> <f->main</f->(){
                             <t->idk</t-> var;
 
                             var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
                             var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
-                            <c->//var.b = var.c[0];     // Error, var.c is uninitialized</c->
+                            <c->//var.b = var.c[0];     </c-><ce->// Error, var.c is uninitialized</ce->
                         }
                     </scroll-></code->
                 </fill->
@@ -989,7 +989,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
                             <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
@@ -1037,7 +1037,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         (<t->int</t->, <t->int</t->) <f->func</f->((<t->uint</t->, <t->bool</t->, <t->float</t->) <a->a</a->, <t->uint</t-> <a->b</a->){
                             <w->return</w-> (<k->0</k->, a[<k->1</k->] ? a[<k->0</k->] : b * a[<k->2</k->]);
@@ -1230,13 +1230,13 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->bool</t-> <f->fun</f->(<t->uint</t-> <a->a</a->) { <k->return</k-> !a; }
 
                         <t->void</t-> <f->main</f->(){
                             <w->struct</w-> { <t->uint</t-> n; } var = (<k->0</k->);
-                            <c->//fun(var);                    // Error, structs cannot be converted</c->
+                            <c->//fun(var);                    </c-><ce->// Error, structs cannot be converted</ce->
                             <t->int</t->      a = <f->fun</f->(<k->0</k->);           <c->// Ok, fun::a = 2,          main::a = 1</c->
                             <t->float</t->[<k->2</k->] b = <f->fun</f->(<k->-1</k->);          <c->// Ok, fun::a = 4294967263, main::b = (0.0, 0.0)</c->
                             b = (<k->5</k->, <k->7</k->);                    <c->// Ok, main::b = (5.0, 7.0). Converted from tuple</c->
@@ -1273,7 +1273,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <t->auto</t-> <f->func</f->(){
                             <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
@@ -1290,7 +1290,7 @@
             </example->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">2</label->
+                    <label->2</label->
                     <code-><scroll->
                         <t->auto</t->[<k->4</k->] a = <k->1</k->;          <c->// a has type int[4] and value (1, 1, 1, 1)</c->
                         <t->auto</t->[<k->2</k->] <t->const</t-> b = !<k->a</k->;   <c->// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</c->
@@ -1336,7 +1336,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
@@ -1403,7 +1403,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <w->strict enum</w-> : <t->bool</t-> {
                             on = <k->true</k->;
@@ -1418,7 +1418,7 @@
             </example->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">2</label->
+                    <label->2</label->
                     <code-><scroll->
                         <w->struct</w-> {
                             <t->uint</t-> a, b;
@@ -1458,7 +1458,7 @@
             <sep-2-></sep-2->
             <h2 id="inline-vales">Inline values</h2>
             <p>
-                Inline values are <a href="#right-and-left-values">r-values</a> that are explicitly created and used in a single <a href="#runtime-statements">runtime statement</a>.<br>
+                Inline values are <a href="#right-and-left-values">r-values</a> that are explicitly created and used within a single <a href="#runtime-statements">runtime statement</a>.<br>
                 They can be <a href="#literals">Literals</a> or <a href="#constructors">Constructors</a>.
             </p>
 
@@ -1483,25 +1483,25 @@
                 Literals are not sequences of tokens like other language components, but a category of tokens.<br>
                 Regex syntax is used to describe their pattern:
             </p>
-            <table>
+            <div class="table-container"><table>
                 <tr>
                     <th>Type/Base</th>
                     <th>Hexadecimal (hex)</th>
-                    <th>Decimal (dex)</th>
+                    <th>Decimal (dec)</th>
                     <th>Octal (oct)</th>
                     <th>Binary (bin)</th>
                 </tr>
                 <tr>
                     <th><t->uint</t-></th>
                     <td class="center"><code>0x([0-9a-z]+)</code></td>
-                    <td class="center"><code>0d?([0-9]+)</code></td>
+                    <td class="center"><code>(0d)?([0-9]+)</code></td>
                     <td class="center"><code>0o([0-7]+)</code></td>
                     <td class="center"><code>0b([01]+)</code></td>
                 </tr>
                 <tr>
                     <th><t->double</t-></th>
                     <td class="center"><code>0x([0-9a-z]+)\.([0-9a-z]+)</code></td>
-                    <td class="center"><code>0d?([0-9]+)\.([0-9]+)</code></td>
+                    <td class="center"><code>(0d)?([0-9]+)\.([0-9]+)</code></td>
                     <td class="center"><code>0o([0-7]+)\.([0-7]+)</code></td>
                     <td class="center"><code>0b([01]+)\.([01]+)</code></td>
                 </tr>
@@ -1509,14 +1509,22 @@
                     <th><t->bool</t-></th>
                     <td class="center" colspan="4"><code>true|false</code></td>
                 </tr>
-            </table>
+            </table></div>
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
+                        <t->int</t-> n = <k->4</k->;
+                        <t->bool</t-> b =<k-> true</k->;
+                        <t->float</t-> f = <k->0x0d.Aab4</k->;
+                        <c->float f = 0o97;     </c-><ce->// Error, invalid octal literal</ce->
                     </scroll-></code->
                 </fill->
             </example->
+            <p>
+                There are no literal suffixes and no <code><t->float</t-></code> or <code><t->int</t-></code> literals.<br>
+                To create inline values of specific types, <a href="#constructors">Constructors</a> are used.
+            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -1548,7 +1556,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <w->struct</w-> s {
                             <t->int</t-> a;
@@ -1597,17 +1605,17 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
                         <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
                         <t->bool</t-> var$;                 <c->// Ok, var$ has undefined value</c->
-                        <c->//b var_2 = var$;          // Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</c->
+                        <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
 
-                        <c->//double variable;         // Error, the identifier "variable" is already declared</c->
-                        <c->//double foo               // Error, ';' is not optional</c->
-                        <c->//b $var;                  // Error, invalid identifier</c->
-                        <c->//b 2var;                  // Error, invalid identifier</c->
+                        <c->//double variable;         </c-><ce->// Error, the identifier "variable" is already declared</ce->
+                        <c->//double foo               </c-><ce->// Error, ';' is not optional</ce->
+                        <c->//b $var;                  </c-><ce->// Error, invalid identifier</ce->
+                        <c->//b 2var;                  </c-><ce->// Error, invalid identifier</ce->
                     </scroll-></code->
                 </fill->
             </example->
@@ -1642,11 +1650,11 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
                             $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
-                            <c->//$2 = $1;          // Error, $1 has undefined type</c->
+                            <c->//$2 = $1;          </c-><ce->// Error, $1 has undefined type</ce->
 
                             <t->uint3</t-> vec = { <k->0</k->, <k->1</k->, <k->2</k-> };
                             $2 = <k->true</k->;          <c->// Ok, $2 has type b and value true</c->
@@ -1654,21 +1662,21 @@
                         }
 
                         <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
-                            <c->//uint var = $2;    // Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</c->
+                            <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</ce->
                         }
 
-                        <c->//uint var = $9;        // Error, temporary variables cannot be used outside of functions</c->
+                        <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
                     </scroll-></code->
                 </fill->
             </example->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">2</label->
+                    <label->2</label->
                     <code-><scroll->
                         <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
                             <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
                             <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
-                            <c->//ref = $0;                 // Error, cannot determine the type of $0</c->
+                            <c->//ref = $0;                 </c-><ce->// Error, cannot determine the type of $0</ce->
                             $0 = ref;                   <c->// Ok, $0 has type uint2 and the same value as ref</c->
 
                             <w->if</w->(arg) $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
@@ -1724,7 +1732,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
 
@@ -1758,7 +1766,7 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
                             arg1 = <k->0</k->;     <c->// c_doesn't modify main::a, but the local argument in which its value was copied</c->
@@ -1768,10 +1776,10 @@
                         <t->void</t-> <f->main</f->(){
                             <t->uint</t-> a, b;
                             <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
-                            <c->//fun1(a, 5); // Error, cannot pass literals to reference parameters</c->
+                            <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
                         }
 
-                        <c->//void fun2(const int &arg1){} // Error, references cannot be const</c->
+                        <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
                     </scroll-></code->
                 </fill->
             </example->
@@ -1826,16 +1834,16 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
                         <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
 
                         <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
-                        <c->//uint empty_function_4() {}           // Error, non-void functions must return a value</c->
+                        <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
 
                         <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
-                        <c->//void f() { }                         // Error, f is already defined</c->
+                        <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
 
                         <t->void</t-> <f->main</f->(){
                             <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
@@ -1889,7 +1897,7 @@
             </p>
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
                             return a + b + c;
@@ -1901,7 +1909,7 @@
                         <t->void</t-> <f->main</f->(){
                             <f->add</f->(<k->0</k->, <k->1</k->, <k->0</k->);        <c->// Generates uint add(uint a, uint b, int c)</c->
                             <f->add</f->(<k->1.0</k->, <k->0.4</k->, <k->0.2</k->);  <c->// Generates float add(float a, float b, int c)</c->
-                            <c->//add(1, 0.4, 1);    // Error, no match for function "add(int a, float b, int c)"</c->
+                            <c->//add(1, 0.4, 1);    </c-><ce->// Error, no match for function "add(int a, float b, int c)"</ce->
 
                             <f->add2</f->(<k->0</k->, <k->1</k->);          <c->// Generates uint add2(uint a, uint b)</c->
                             <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
@@ -1921,7 +1929,7 @@
             </p>
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
                             floating_point, integral, other;
@@ -1961,7 +1969,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
                             floating_point, integral, other;
@@ -1983,7 +1991,7 @@
                             <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id::integral</c->
                             <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id::floating_point</c->
                             <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id::other</c->
-                            <c->//get_id&lt;double&gt;((0.4)); // Error, cannot convert "(double)" tuple to "double"</c->
+                            <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
                         }
                     </scroll-></code->
                 </fill->
@@ -2028,22 +2036,22 @@
 
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)"></label->
+                    <label-></label->
                     <code-><scroll->
                         <w->struct</w-> <t->s</t-> {
                             <t->uint</t-> a;            <c->// Ok, non-const member</c->
-                            <c->//uint const b;    // Error, struct members cannot be const</c->
+                            <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
                         }
                         <t->s const</t-> var;           <c->// Ok, const global variable</c->
 
-                        <c->//double const fun(){}              // Error, functions cannot be const</c->
-                        <c->//double fun(double const &arg){}   // Error, references cannot be const</c->
+                        <c->//double const fun(){}              </c-><ce->// Error, functions cannot be const</ce->
+                        <c->//double fun(double const &arg){}   </c-><ce->// Error, references cannot be const</ce->
 
                         <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
-                            <c->//uint const a;                 // Error, uninitialized const</c->
+                            <c->//uint const a;                 </c-><ce->// Error, uninitialized const</ce->
                             <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
                             <t->uint const</t-> b = arg, c;          <c->// Ok</c->
-                            <c->//a = 2;                        // Error, cannot assign values to const variables</c->
+                            <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
                             c = <k->a</k-> + b;                      <c->// Ok</c->
                         }
                     </scroll-></code->
@@ -2085,7 +2093,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label- onclick="copy_code(this)">1</label->
+                    <label->1</label->
                     <code-><scroll->
                         <w->namespace</w-> n {
                             <t->void</t-> <f->f</f->(){}
@@ -2144,7 +2152,7 @@
                 <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
                 Any other value is a <b>right value</b>.
             </p>
-            <table>
+            <div class="table-container"><table>
                 <tr>
                     <th>Left values</th>
                     <th>Right values</th>
@@ -2181,7 +2189,7 @@
                     <td></td>
                     <td><a href="#literals">Literals</a></td>
                 </tr>
-            </table>
+            </table></div>
             <p>
                 Left values can be used anywhere right values can.<br>
                 Only left values can be passed to reference parameters or used as destination of assignment operators.

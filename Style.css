@@ -324,11 +324,11 @@ body {
             syntax- > left- > label-::before, syntax- > fill- > label-::before {
                 content: "Syntax ";
             }
-            example- > fill- > label-::after {
+            syntax- > left- > label-::after, syntax- > right- > label-::after, syntax- > fill- > label-::after, example- > fill- > label-::after {
                 content: " □";
                 text-shadow: -0.3ch -0.3ch;
             }
-            example- > fill- > label-:active, example- > fill- > label-:active::after {
+            syntax- > left- > label-:active, syntax- > right- > label-:active, syntax- > fill- > label-:active, example- > fill- > label-:active {
                 color: var(--fg-lable-active);
             }
 
