@@ -7,6 +7,7 @@
         --wide-line-h:        3.5ch;
         --code-line-h:        2.5ch;
 
+        --font-size-small:    14px;
         --font-size-medium:   16px;
         --font-size-mono:     14px;
         --font-size-code:     13px;
@@ -83,10 +84,11 @@ p, syntax-, example-, table-container {
 
 
 /* Utility */
-.right  { text-align: right;  }
+.right  { text-align: right;  }     .small  { font-size: var(--font-size-small);  }
 .left   { text-align: left;   }     .medium { font-size: var(--font-size-medium); }
 .center { text-align: center; }     .large  { font-size: var(--font-size-large);  }
-.nowrap { white-space: nowrap; }
+
+.nowrap { white-space: nowrap; }    .wrap { white-space: normal; }
 
 
 

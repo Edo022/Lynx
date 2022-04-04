@@ -410,9 +410,9 @@
                             <a href="#auto-specifier">              <code><w->auto</w-></code></a>
                             <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a>
                             <a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a>
-                            <a href="#type-groups">                 <code><w->typegroup</w-></code></a>
                             <a href="#const-qualifier">             <code><t->const</t-></code></a>
                             <a href="#symbol-aliases">              <code><w->alias</w-></code></a>
+                            <a href="#modules">                     <code><w->import</w-></code></a>
                         </td>
                         <td class="center" colspan=2>
                             <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -743,7 +743,7 @@
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="primitive-types">Primitive types</h3>
-            <p>Lux features <b>7 primitive types</b>, which can be used to define more complex types such as structs, arrays and enums.</p>
+            <p>Lux features <b>6 primitive types</b>, which can be used to define more complex types such as structs, arrays and enums.</p>
             <p>
                 //TODO GL_EXT_shader_explicit_arithmetic_types_int64
                 Those types are always present and they act as if they were declared in the module scope.<br>
@@ -757,27 +757,34 @@
                     <th>Value type  </th>
                 </tr>
                 <tr>
-                    <td><code><t->uint</t-></code></td>
+                    <td class="center"><code><t->uint</t-></code></td>
                     <td class="center">4</td>
-                    <td>Unsigned integral number</td>
+                    <td rowspan="2">Unsigned integral number</td>
                 </tr>
                 <tr>
-                    <td><code><t->int</t-></code></td>
-                    <td class="center">4</td>
-                    <td>Signed integral number</td>
-                </tr>
-                <tr>
-                    <td><code><t->float</t-></code></td>
-                    <td class="center">4</td>
-                    <td>Floating point number</td>
-                </tr>
-                <tr>
-                    <td><code><t->double</t-></code></td>
+                    <td class="center"><code><t->ulong</t-></code></td>
                     <td class="center">8</td>
-                    <td>Floating point number</td>
                 </tr>
                 <tr>
-                    <td><code><t->bool</t-></code></td>
+                    <td class="center"><code><t->int</t-></code></td>
+                    <td class="center">4</td>
+                    <td rowspan="2">Signed integral number</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->long</t-></code></td>
+                    <td class="center">8</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->float</t-></code></td>
+                    <td class="center">4</td>
+                    <td rowspan="2">Floating point number</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->double</t-></code></td>
+                    <td class="center">8</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->bool</t-></code></td>
                     <td class="center">4</td>
                     <td>Boolean value. <code><k->true</k-></code> or <code><k->false</k-></code></td>
                 </tr>
@@ -788,14 +795,13 @@
             </p>
             <p>
                 All primitives types are convertible to each other. This is explained in detail in <a href="#implicit-conversions">Implicit conversions</a>.<br>
-                There are no 64 bit integers, characters or strings.
+                There are no characters, strings, matrices or vectors. The latter 2 are <a href="#symbol-aliases">aliases</a> of <a href="#arrays">array</a> types. See <a href="#standard-modules">Standard Modules</a>.
             </p>
             <p>
-                The <code><t->void</t-></code> type is a special type. It can only be used to decleare functions that don't return any value.
+                The <code><t->void</t-></code> type is a special type. It is exclusively used to declare functions that don't return any value.<br>
             </p>
             <p>
                 See
-                <a href="#values">Values</a>,
                 <a href="#literals">Literals</a>
             </p>
 
@@ -1064,112 +1070,102 @@
             <p>
                 <b>Implicit conversions</b> are performed when an <b>expression</b> of the <b>incorrect type</b> is used in place of the expected one.<br>
                 This includes anything whose syntax requires an expression.<br>
-                In function overloads and templates, the actual type of the value always takes precedence over conversions.
+                Conversions are not allowed in <a href="#template-functions">template function</a> calls.
             </p>
             <p>
                 Primitive types are all implicitly convertible between them.<br>
-                The conversions follow these rules:
+                The result of conversions follow these rules:
             </p>
             <div class="table-container"><table>
-                <thead><tr>
-                    <th>Expression type</th>
-                    <th>Expected type</th>
-                    <th>Behaviour</th>
-                </tr></thead>
-                <tbody>
-
-                    <!-- uint ---------------------------------------------------------------------->
-                    <tr>
-                        <td rowspan="3"><code><t->uint</t-></code></td>
-                        <td><code><t->int</t-></code></td>
-                        <td class="wide-lines">Values over <code>limits::int::<k->max</k-></code> overflow to <code>limits::int::<k->min</k-> + <k->n</k-> - <k->1</k-></code></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->float</t-></code> <code><t->double</t-></code></td>
-                        <td>No changes</td>
-                    </tr>
-                    <tr>
-                        <td><code><t->bool</t-></code></td>
-                        <td class="wide-lines"><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
-                    </tr>
-
-                    <!-- int ----------------------------------------------------------------------->
-                    <tr>
-                        <td rowspan="3"><code><t->int</t-></code></td>
-                        <td><code><t->uint</t-></code></td>
-                        <td class="wide-lines">Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->float</t-></code> <code><t->double</t-></code></td>
-                        <td>No changes</td>
-                    </tr>
-                    <tr>
-                        <td><code><t->bool</t-></code></td>
-                        <td class="wide-lines"><code><k->1</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
-                    </tr>
-
-                    <!-- float --------------------------------------------------------------------->
-                    <tr>
-                        <td rowspan="4"><code><t->float</t-></code></td>
-                        <td><code><t->uint</t-></code></td>
-                        <td class="wide-lines">The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
-                        If the value is not between <code>limits::uint::<k->min</k-></code> and <code>limits::uint::<k->max</k-></code>, the result is <b>undefined</b></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->int</t-></code></td>
-                        <td class="wide-lines">The decimal part is truncated.<br>
-                        If the value is not between <code>limits::int::<k->min</k-></code> and <code>limits::int::<k->max</k-></code>, the result is <b>undefined</b></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->double</t-></code></td>
-                        <td>No changes</td>
-                    </tr>
-                    <tr>
-                        <td><code><t->bool</t-></code></td>
-                        <td class="wide-lines"><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
-                    </tr>
-
-                    <!-- double -------------------------------------------------------------------->
-                    <tr>
-                        <td rowspan="4"><code><t->double</t-></code></td>
-                        <td><code><t->uint</t-></code></td>
-                        <td class="wide-lines">The decimal part is truncated. Negative values underflow to <code>limits::uint::<k->max</k-> + <k->n</k-> + <k->1</k-></code>.<br>
-                        If the value is not between <code>limits::uint::<k->min</k-></code> and <code>limits::uint::<k->max</k-></code>, the result is <b>undefined</b></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->int</t-></code></td>
-                        <td class="wide-lines">The decimal part is truncated.<br>
-                        If the value is not between <code>limits::int::<k->min</k-></code> and <code>limits::int::<k->max</k-></code>, the result is <b>undefined</b></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->float</t-></code></td>
-                        <td>The result is approximated using the maximum precision available</td>
-                    </tr>
-                    <tr>
-                        <td><code><t->bool</t-></code></td>
-                        <td class="wide-lines"><code><k->1.0</k-></code> is evaluated as <code><k->true</k-></code>, any other value as <code><k->false</k-></code></td>
-                    </tr>
-
-                    <!-- bool ---------------------------------------------------------------------->
-                    <tr>
-                        <td rowspan="2"><code><t->bool</t-></code></td>
-                        <td><code><t->uint</t-></code> <code><t->int</t-></code></td>
-                        <td class="wide-lines"><code><k->true</k-></code> is evaluated as <code><k->1</k-></code>, <code><k->false</k-></code> as <code><k->0</k-></code></td>
-                    </tr>
-                    <tr>
-                        <td><code><t->float</t-></code> <code><t->double</t-></code></td>
-                        <td class="wide-lines"><code><k->true</k-></code> is evaluated as <code><k->1.0</k-></code>, <code><k->false</k-></code> as <code><k->0.0</k-></code></td>
-                    </tr>
-                </tbody>
+                <tr>
+                    <th>From/To</th>
+                    <th><t->uint</t-></th>
+                    <th><t->int</t-></th>
+                    <th><t->ulong</t-></th>
+                    <th><t->long</t-></th>
+                    <th><t->float</t-></th>
+                    <th><t->double</t-></th>
+                    <th><t->bool</t-></th>
+                </tr>
+                <tr>
+                    <th><t->uint</t-></th>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">Overflows to limits::int::<k->min</k-> + n - <k->1</k-> when n &gt; limits::int::<k->max</k-></td>
+                    <td class="center wrap" colspan="2">No changes</td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-></td>
+                    <td class="center wrap" style="border-bottom-width: 0;">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-></td>
+                    <td class="center wrap" rowspan="4"><k->true</k-> when n == <k->1</k->, <k->false</k-> otherwise</td>
+                </tr>
+                <tr>
+                    <th><t->int</t-></th>
+                    <td class="center wrap">Overflows to limits::uint::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">Overflows to limits::ulong::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k-></td>
+                    <td style="border-top-width: 0; background-color: var(--bg-table-even);"></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-> or n &lt; limits::float::<k->min_precise_int</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-> or n &lt; limits::double::<k->min_precise_int</k-></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->ulong</t-></th>
+                    <td class="center wrap">No changes. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-></td>
+                    <td class="center wrap">Overflows to limits::int::<k->min</k-> + n - <k->1</k-> when n &gt; limits::int::<k->max</k->. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">Overflows to limits::long::<k->min</k-> + n - <k->1</k-></code> when n &gt; limits::long::<k->max</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->long</t-></th>
+                    <td class="center wrap">Overflows to limits::uint::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k->. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-> or n &lt; -limits::uint::<k->max</k-></td>
+                    <td class="center wrap">No changes. <i>Undefined</i> when n &gt; limits::int::<k->max</k-> or n &lt; limits::int::<k->min</k-></td>
+                    <td class="center wrap">Overflows to limits::ulong::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-> or n &lt; limits::float::<k->min_precise_int</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-> or n &lt; limits::double::<k->min_precise_int</k-></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->float</t-></th>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-></td>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::int::<k->max</k-></td>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::ulong::<k->max</k-></td>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::long::<k->max</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap" rowspan="2"><k->true</k-> when n == <k->1.0</k->, <k->false</k-> otherwise</td>
+                </tr>
+                <tr>
+                    <th><t->double</t-></th>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes. <i>Undefined</i> when n &gt; limits::float::<k->max</k-></td>
+                    <td class="center wrap">-</td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->bool</t-></th>
+                    <td class="center wrap" colspan="4"><k->1</k-> when n == <k->true</k->, <k->0</k-> when n == <k->false</k-></td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap" colspan="2"><k->1.0</k-> when n == <k->true</k->, <k->0.0</k-> when n == <k->false</k-></td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">-</td>
+                </tr>
             </table></div>
             <p>
                 Additional conversions for non-primitive types are described as follows:
             </p>
             <div class="table-container"><table>
                 <tr>
-                    <th>Expression type  </th>
-                    <th>Expected type    </th>
-                    <th>Behaviour        </th>
+                    <th>From      </th>
+                    <th>To        </th>
+                    <th>Behaviour </th>
                 </tr>
 
                 <!-- Element to array ---------------------------------------------------------->
@@ -1471,7 +1467,7 @@
             <h3 id="literals">Literals</h3>
             <p>
                 <b>Literals</b> are used to <b>create</b> compile time known <b><a href="#left-and-right-values">r-values</a></b>.<br>
-                The type of the value is determined by the way it is represented in the source code, and it can only be of <code><t->uint</t-></code>, <code><t->double</t-></code> or <code><t->bool</t-></code> type.<br>
+                The type of the value is determined by the way it is represented in the source code, and it can only be of <code><t->ulong</t-></code>, <code><t->double</t-></code> or <code><t->bool</t-></code> type.<br>
                 Literals can be used in place of any expression of compatible type. Their value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
             </p>
             <p>
@@ -1493,7 +1489,7 @@
                     <th>Binary (bin)</th>
                 </tr>
                 <tr>
-                    <th><t->uint</t-></th>
+                    <th><t->ulong</t-></th>
                     <td class="center"><code>0x([0-9a-z]+)</code></td>
                     <td class="center"><code>(0d)?([0-9]+)</code></td>
                     <td class="center"><code>0o([0-7]+)</code></td>
@@ -1513,17 +1509,33 @@
             </table></div>
             <example->
                 <fill->
-                    <label->1</label->
+                    <label-></label->
                     <code-><scroll->
-                        <t->int</t-> n = <k->4</k->;
-                        <t->bool</t-> b =<k-> true</k->;
-                        <t->float</t-> f = <k->0x0d.Aab4</k->;
-                        <c->float f = 0o97;     </c-><ce->// Error, invalid octal literal</ce->
+                        <t->int</t-> n = <k->4</k->;            <c->// Ok</c->
+                        <t->bool</t-> b =<k-> true</k->;        <c->// Ok</c->
+                        <t->float</t-> f = <k->0x0d.aAb4</k->;  <c->// Ok</c->
+                        <c->float f = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
+                        <c->float f = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
+                        <c->float f = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
                     </scroll-></code->
                 </fill->
             </example->
             <p>
-                There are no literal suffixes and no <code><t->float</t-></code> or <code><t->int</t-></code> literals.<br>
+                The <code>_</code> character can be used anywhere after the first character of non-<code><t->bool</t-></code> literals to separate digits and improve readability.
+            </p>
+            <example->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <t->int</t-> n = <k->395_935</k->;             <c->// Ok</c->
+                        <t->int</t-> n = <k->654_3_21___</k->;         <c->// Ok, doesn't make sense but it is allowed</c->
+                        <t->int</t-> n = <k->0x_32_A4_FF_E2</k->;      <c->// Ok</c->
+                        <c->//int n = _123_456;</c->          <ce->// Error, undeclared identifier "_123_456".</ce->
+                    </scroll-></code->
+                </fill->
+            </example->
+            <p>
+                There are no literal suffixes and no <code><t->float</t-></code>, <code><t->uint</t-></code> or <code><t->int</t-></code> literals.<br>
                 To create inline values of specific types, <a href="#constructors">Constructors</a> are used.
             </p>
 
