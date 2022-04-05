@@ -399,7 +399,7 @@
                     </tr>
                     <tr>
                         <td>Literal</td>
-                        <td class="center" colspan=4>Any sequence of <code>alphanumeric characters</code> and <code>.</code> that starts with a decimal digit</td>
+                        <td class="center" colspan=4>Any sequence of <code>alphanumeric characters</code>, <code>.</code> and <code>_</code> that starts with a decimal digit</td>
                     </tr>
                     <tr>
                         <td>Keyword</td>
@@ -426,6 +426,7 @@
                             <a href="#then-statement">               <code><w->then</w-></code></a>
                             <a href="#else-statement">               <code><w->else</w-></code></a>
                             <a href="#return-statement">             <code><w->return</w-></code></a>
+                            <a href="#template-functions">           <code><w->when</w-></code></a>
                         </td>
                     </tr>
                     <tr>
@@ -978,7 +979,6 @@
                 If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be an array <a href="#constructors">constructor</a>.
             </p>
             <p>
-                There are no dynamic arrays.<br>
                 Arrays cannot have 0 elements.<br>
                 Element access is explained in <a href="#special-operators">Special operators</a>.<br>
                 Array initializer values are explained in <a href="#constructors">Constructors</a>.
@@ -1005,6 +1005,9 @@
                     </scroll-></code->
                 </fill->
             </example->
+            <p>
+                There are no dynamic arrays.
+            </p>
             <p>
                 See
                 <a href="#primitive-types">Primitive types</a>,
@@ -1056,10 +1059,6 @@
                     </scroll-></code->
                 </fill->
             </example->
-            <p>
-                See
-                //TODO
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -1192,7 +1191,7 @@
                 </tr>
                 <tr>
                     <td class="center">
-                        <template->with(U == struct_t)</template-><br>
+                        <template->when(type_info::is_struct(U))</template-><br>
                         <code><t->U</t-></code>
                     </td>
                 </tr>
@@ -1205,7 +1204,7 @@
                 <!-- Array to array and array to bool ------------------------------------------>
                 <tr>
                     <td class="center" rowspan="2">
-                        <template->with(T != struct_t && T != tuple_t)</template-><br>
+                        <template->when(!type_info::is_struct(T) && !type_info::is_tuple(T))</template-><br>
                         <code><t->T[n]</t-></code>
                     </td>
                     <td class="center"><code><t->U[n]</t-></code></td>
@@ -1264,8 +1263,7 @@
                 There is no <code><t->auto</t-></code> constructor.
             </p>
             <p>
-                <code><t->auto</t-></code> arrays and <code><t->const</t-></code> <code><t->auto</t-></code> symbols are allowed.
-                //TODO auto functions that depend on an argument value
+                <code><t->const</t-></code> <code><t->auto</t-></code> symbols are allowed.//TODO auto functions that depend on an argument value
             </p>
 
             <example->
@@ -1277,8 +1275,8 @@
                         }
 
                         <t->auto</t-> <f->main</f->(){
-                            <t->auto</t-> a = <k->2</k->;         <c->// a has type uint</c->
-                            <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type float</c->
+                            <t->auto</t-> a = <k->2</k->;         <c->// a has type ulong</c->
+                            <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type double</c->
                             <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
                             <c->// No return statement, main has type void</c->
                         }
@@ -1289,11 +1287,14 @@
                 <fill->
                     <label->2</label->
                     <code-><scroll->
-                        <t->auto</t->[<k->4</k->] a = <k->1</k->;          <c->// a has type int[4] and value (1, 1, 1, 1)</c->
-                        <t->auto</t->[<k->2</k->] <t->const</t-> b = !<k->a</k->;   <c->// b has type bool[4][2] and value ((0, 0, 0, 0), (0, 0, 0, 0))</c->
+                        <t->auto</t-> a = int[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
+                        <t->auto</t-> <t->const</t-> b = !<k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
                     </scroll-></code->
                 </fill->
             </example->
+            <p>
+                If the return type of an <code><t->auto</t-></code> function depends on parameters or variables, these must have compile time known value.
+            </p>
             <p>
                 See
                 <a href="#functions">Functions</a>,
@@ -1319,7 +1320,6 @@
             <p>
                 The <code><t->typeof</t-></code> and <code><t->baseof</t-></code> specifiers can be used as constructors.<br>
                 Circular dependencies are a semantic error.
-                //TODO
             </p>
 
             <syntax->
@@ -1333,7 +1333,7 @@
             </syntax->
             <example->
                 <fill->
-                    <label-></label->
+                    <label->1</label->
                     <code-><scroll->
                         <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
@@ -1342,6 +1342,15 @@
                             <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
                             <t->baseof</t->(<k->a</k->) c = <k->a</k->[<k->0</k->];     <c->// c has type int</c->
                         }
+                    </scroll-></code->
+                </fill->
+            </example->
+            <example->
+                <fill->
+                    <label->2</label->
+                    <code-><scroll->
+                        <c->//typeof(b) a;</c->  <ce->//Error, circular dependency</ce->
+                        <c->//typeof(a) b;</c->  <ce->//Error, circular dependency</ce->
                     </scroll-></code->
                 </fill->
             </example->
@@ -1490,17 +1499,17 @@
                 </tr>
                 <tr>
                     <th><t->ulong</t-></th>
-                    <td class="center"><code>0x([0-9a-z]+)</code></td>
-                    <td class="center"><code>(0d)?([0-9]+)</code></td>
-                    <td class="center"><code>0o([0-7]+)</code></td>
-                    <td class="center"><code>0b([01]+)</code></td>
+                    <td class="center"><code>0x([0-9a-z_]+)</code></td>
+                    <td class="center"><code>(0d)?([0-9][0-9_]+)</code></td>
+                    <td class="center"><code>0o([0-7_]+)</code></td>
+                    <td class="center"><code>0b([01_]+)</code></td>
                 </tr>
                 <tr>
                     <th><t->double</t-></th>
-                    <td class="center"><code>0x([0-9a-z]+)\.([0-9a-z]+)</code></td>
-                    <td class="center"><code>(0d)?([0-9]+)\.([0-9]+)</code></td>
-                    <td class="center"><code>0o([0-7]+)\.([0-7]+)</code></td>
-                    <td class="center"><code>0b([01]+)\.([01]+)</code></td>
+                    <td class="center"><code>0x([0-9a-z_]+)\.([0-9a-z_]+)</code></td>
+                    <td class="center"><code>(0d)?([0-9][0-9_]*)\.([0-9_]+)</code></td>
+                    <td class="center"><code>0o([0-7_]+)\.([0-7_]+)</code></td>
+                    <td class="center"><code>0b([01_]+)\.([01_]+)</code></td>
                 </tr>
                 <tr>
                     <th><t->bool</t-></th>
@@ -1521,7 +1530,8 @@
                 </fill->
             </example->
             <p>
-                The <code>_</code> character can be used anywhere after the first character of non-<code><t->bool</t-></code> literals to separate digits and improve readability.
+                The <code>_</code> character can be used anywhere after the base prefix of non-<code><t->bool</t-></code> literals to separate digits and improve readability.<br>
+                Decimal literals cannot start with <code>_</code>.
             </p>
             <example->
                 <fill->
@@ -1560,7 +1570,7 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <c->/* <a href="#primitive-types"><c->Primitive types</c-></a> and <a href="#enums"><c->enums</c-></a> */</c->  <elm-><t->T<sup>type</sup></t-></elm->(<elm->T<t-><sup>r</sup></t-></elm->)
+                        <c->/* <a href="#primitive-types"><c->Primitive types</c-></a> and <a href="#enums"><c->enums</c-></a> */</c->  <elm-><t->T<sup>type</sup></t-></elm->(<elm-><t->T<sup>r</sup></t-></elm->)
                         <c->/* <a href="#structs"><c->Structs</c-></a> */</c->                    <elm-><t->T<sup>type</sup></t-></elm->(<elm-><elm-><t->member type 0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->member type n<sup>r</sup></t-></elm-></elm->)
                         <c->/* <a href="#arrays"><c->Arrays</c-></a> */</c->                     <elm-><t->T<sup>type</sup></t-></elm->[<elm-><t->u32<sup>r</sup></t-></elm->](<elm-><elm-><t->T<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->T<sup>r</sup></t-></elm-></elm->)
                         <c->/* <a href="#tuples"><c->Tuples</c-></a> */</c->                     (<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->)(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
@@ -1596,8 +1606,8 @@
             <h2 id="variables">Variables</h2>
             <p>
                 <b>Variables</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
-                Differently from other symbols, each variable <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.
-                //TODO multiple declarations;
+                Differently from other symbols, each variable <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.<br>
+                Multiple variables of the same type can be declared in one instruction.
             </p>
             <p>
                 A variable declaration consists of the type, the name and an optional <code>=</code> followed by an expression of a compatible type that is used to inizialize it.<br>
@@ -1607,14 +1617,20 @@
             </p>
 
             <syntax->
-                <fill->
-                    <label->1</label->
+                <left->
+                    <label- class="nobefore">Declaration syntax</label->
                     <code-><scroll->
-                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
-                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;
-                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->;  <c->// See <a href="#const-qualifier"><c->Const qualifier</c-></a></c->
+                        <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm2-><elm->varaible 0</elm->, <elm->...</elm->, <elm->varaible n</elm-></elm2->;
                     </scroll-></code->
-                </fill->
+                </left->
+                <right->
+                    <label->Variable syntax</label->
+                    <code-><scroll->
+                        <elm->name<sup>id</sup></elm->
+                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
+                        const<space></space><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
+                    </scroll-></code->
+                </right->
             </syntax->
             <example->
                 <fill->
@@ -1622,7 +1638,7 @@
                     <code-><scroll->
                         <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
                         <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
-                        <t->bool</t-> var$;                 <c->// Ok, var$ has undefined value</c->
+                        <t->bool</t-> var$, var3 = nya;     <c->// Ok, var$ has undefined value, var2 has value true</c->
                         <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
 
                         <c->//double variable;         </c-><ce->// Error, the identifier "variable" is already declared</ce->
@@ -1632,6 +1648,9 @@
                     </scroll-></code->
                 </fill->
             </example->
+            <p>
+                There are no pointers or reference variables.
+            </p>
             <p>
                 See
                 <a href="#types">Types</a>,
@@ -2416,7 +2435,7 @@
 
 
 
-
+            //TODO UPDATE TEMPLATE SYNTAX
 
             <div class="table-container"><table>
                 <thead><tr>
@@ -2428,6 +2447,7 @@
                     <th class="left">Category</th>
                 </tr></thead>
                 <tbody>
+                    <!-- 1 -->
                     <tr>
                         <td class="center" >1</td>
                         <td class="center">
@@ -2438,13 +2458,13 @@
                         <td class="left">Grouping</td>
                         <td class="left" rowspan=5>Other</td>
                     </tr>
-                    <!-- -->
+                    <!-- 2 -->
                         <tr>
                             <td class="center" rowspan=6>2</td>
                             <td class="center" rowspan=2>
                                 <template->-</template-><br>
                                 <elm-><code>[</code><code>]</code></elm-><br>
-                                <template->with(T == struct_t)</template-><br>
+                                <template->when(type_info::is_struct(T))</template-><br>
                             </td>
                             <td class="center nowrap"><elm-><t->T[]</t-><sup>r</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]</td>
                             <td class="center"><code><t->T<sup>l</sup></t-></code></td>
@@ -2458,7 +2478,7 @@
                             <td class="center" rowspan=2>
                                 <template->-</template-><br>
                                 <code>.</code><br>
-                                <template->with(T == struct_t)</template-><br>
+                                <template->when(type_info::is_struct(T))</template-><br>
                             </td>
                             <td class="center nowrap"><elm-><t->T[]<sup>r</sup></t-></elm->.<elm->member<sup>id</sup></elm-></td>
                             <td class="center"><code><t->T<sup>l</sup></t-></code></td>
@@ -2470,7 +2490,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>++</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->++</td>
@@ -2480,18 +2500,18 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>--</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm->--</td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Postfix decrement</td>
                         </tr>
-                    <!-- -->
+                    <!-- 3 -->
                         <tr>
                             <td class="center" rowspan=6>3</td>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>++</code>
                             </td>
                             <td class="center nowrap">++<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2500,7 +2520,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>--</code>
                             </td>
                             <td class="center nowrap">--<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2509,7 +2529,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>+</code>
                             </td>
                             <td class="center nowrap">+<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2518,7 +2538,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>-</code>
                             </td>
                             <td class="center nowrap">-<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2527,7 +2547,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T == int_t)</template-><br>
+                                <template->when(type_info::is_integral(T) || T == bool)</template-><br>
                                 <code>~</code>
                             </td>
                             <td class="center nowrap">~<elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2542,11 +2562,11 @@
                             <td class="left">Logical NOT</td>
                             <td class="left">Logical</td>
                         </tr>
-                    <!-- -->
+                    <!-- 4 -->
                         <tr>
                             <td class="center" rowspan=3>4</td>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>*</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &#42; <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2556,7 +2576,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>/</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> / <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2565,18 +2585,18 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>%</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> % <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Modulo</td>
                         </tr>
-                    <!-- -->
+                    <!-- 5 -->
                         <tr>
                             <td class="center" rowspan=2>5</td>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>+</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> + <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2585,18 +2605,18 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>-</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> - <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Subtraction</td>
                         </tr>
-                    <!-- -->
+                    <!-- 6 -->
                         <tr>
                             <td class="center" rowspan=2>6</td>
                             <td class="center">
-                                <template->with(T == int_t)</template-><br>
+                                <template->when(type_info::is_integral(T) || T == bool)</template-><br>
                                 <code>&lt;&lt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt;&lt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
@@ -2606,18 +2626,18 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T == int_t)</template-><br>
+                                <template->when(type_info::is_integral(T) || T == bool)</template-><br>
                                 <code>&gt;&gt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt;&gt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Right bit shift</td>
                         </tr>
-                    <!-- -->
+                    <!-- 7 -->
                         <tr>
                             <td class="center" rowspan=4>7</td>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>&lt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt; <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2627,7 +2647,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>&lt;=</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &lt;= <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2636,7 +2656,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>&gt;</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt; <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2645,18 +2665,18 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>&gt;=</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> &gt;= <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Greater or equal than</td>
                         </tr>
-                    <!-- -->
+                    <!-- 8 -->
                         <tr>
                             <td class="center" rowspan=4>8</td>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>==</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> == <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2665,7 +2685,7 @@
                         </tr>
                         <tr>
                             <td class="center">
-                                <template->with(T != struct_t)</template-><br>
+                                <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>!=</code>
                             </td>
                             <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> != <elm-><t->T<sup>r</sup></t-></elm-></td>
@@ -2684,73 +2704,78 @@
                             <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
                             <td class="left">Inexistence</td>
                         </tr>
-                    <tr>
-                        <td class="center">9</td>
-                        <td class="center">
-                            <template->with(T != int_t)</template-><br>
-                            <code>&</code>
-                        </td>
-                        <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> & <elm-><t->T<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
-                        <td class="left">Bitwise AND</td>
-                        <td class="left" rowspan=3>Binary</td>
-                    </tr>
-                    <tr>
-                        <td class="center">10</td>
-                        <td class="center">
-                            <template->with(T != int_t)</template-><br>
-                            <code>^</code>
-                        </td>
-                        <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> ^ <elm-><t->T<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
-                        <td class="left">Bitwise XOR</td>
-                    </tr>
-                    <tr>
-                        <td class="center">11</td>
-                        <td class="center">
-                            <template->with(T != int_t)</template-><br>
-                            <code>|</code>
-                        </td>
-                        <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> | <elm-><t->T<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
-                        <td class="left">Bitwise OR</td>
-                    </tr>
-                    <tr>
-                        <td class="center">12</td>
-                        <td class="center"><code>&&</code></td>
-                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> && <elm-><t->bool<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
-                        <td class="left">Logical AND</td>
-                        <td class="left" rowspan=3>Logical</td>
-                    </tr>
-                    <tr>
-                        <td class="center">13</td>
-                        <td class="center"><code>^^</code></td>
-                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> ^^ <elm-><t->bool<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
-                        <td class="left">Logical XOR</td>
-                    </tr>
-                    <tr>
-                        <td class="center">14</td>
-                        <td class="center"><code>||</code></td>
-                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> || <elm-><t->bool<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
-                        <td class="left">Logical OR</td>
-                    </tr>
-                    <tr>
-                        <td class="center">15</td>
-                        <td class="center"><elm-><code>?</code><code>:</code></elm-></td>
-                        <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> ? <elm-><t->T<sup>r</sup></t-></elm-> : <elm-><t->T<sup>r</sup></t-></elm-></td>
-                        <td class="center"><code><t->T<sup>r</sup></t-></code></td>
-                        <td class="left">Selection operator</td>
-                        <td class="left">Other</td>
-                    </tr>
+                    <!-- 9 -->
+                        <tr>
+                            <td class="center">9</td>
+                            <td class="center">
+                                <template->when(type_info::is_integral(T) || T == bool)</template-><br>
+                                <code>&</code>
+                            </td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> & <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
+                            <td class="left">Bitwise AND</td>
+                            <td class="left" rowspan=3>Binary</td>
+                        </tr>
+                    <!-- 10 -->
+                        <tr>
+                            <td class="center">10</td>
+                            <td class="center">
+                                <template->when(type_info::is_integral(T) || T == bool)</template-><br>
+                                <code>^</code>
+                            </td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> ^ <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
+                            <td class="left">Bitwise XOR</td>
+                        </tr>
+                    <!-- 11 -->
+                        <tr>
+                            <td class="center">11</td>
+                            <td class="center">
+                                <template->when(type_info::is_integral(T) || T == bool)</template-><br>
+                                <code>|</code>
+                            </td>
+                            <td class="center nowrap"><elm-><t->T<sup>r</sup></t-></elm-> | <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
+                            <td class="left">Bitwise OR</td>
+                        </tr>
+                    <!-- 12 -->
+                        <tr>
+                            <td class="center">12</td>
+                            <td class="center"><code>&&</code></td>
+                            <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> && <elm-><t->bool<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
+                            <td class="left">Logical AND</td>
+                            <td class="left" rowspan=3>Logical</td>
+                        </tr>
+                    <!-- 13 -->
+                        <tr>
+                            <td class="center">13</td>
+                            <td class="center"><code>^^</code></td>
+                            <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> ^^ <elm-><t->bool<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
+                            <td class="left">Logical XOR</td>
+                        </tr>
+                    <!-- 14 -->
+                        <tr>
+                            <td class="center">14</td>
+                            <td class="center"><code>||</code></td>
+                            <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> || <elm-><t->bool<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->bool<sup>r</sup></t-></code></td>
+                            <td class="left">Logical OR</td>
+                        </tr>
+                    <!-- 15 -->
+                        <tr>
+                            <td class="center">15</td>
+                            <td class="center"><elm-><code>?</code><code>:</code></elm-></td>
+                            <td class="center nowrap"><elm-><t->bool<sup>r</sup></t-></elm-> ? <elm-><t->T<sup>r</sup></t-></elm-> : <elm-><t->T<sup>r</sup></t-></elm-></td>
+                            <td class="center"><code><t->T<sup>r</sup></t-></code></td>
+                            <td class="left">Selection operator</td>
+                            <td class="left">Other</td>
+                        </tr>
                 </tbody>
             </table></div>
 
             Operators cannot be used as value. Only their members can
-
-            //TODO add with keyword
 
             //TODO add typographical conventions
             //TODO <sup>r</sup> = rvalue
