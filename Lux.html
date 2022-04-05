@@ -1060,7 +1060,7 @@
             <p>
                 <b>Implicit conversions</b> are performed when an <b>expression</b> of the <b>incorrect type</b> is used in place of the expected one.<br>
                 This includes anything whose syntax requires an expression.<br>
-                Conversions are not allowed in <a href="#template-functions">template function</a> calls.
+                Conversions are not allowed in <a href="#template-functions">template function</a> calls and inizializer values of <a href="auto-specifier">auto</a> symbols.
             </p>
             <p>
                 Primitive types are all implicitly convertible between them.<br>
@@ -2561,7 +2561,7 @@
             <!-- Assinment opeatos                                               -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
-            <h3 id="assignment-operations">Assignment operators</h3>
+            <h3 id="assignment-operators">Assignment operators</h3>
             <p>
 
             </p>
@@ -2634,7 +2634,7 @@
                                 <template->when(!type_info::is_struct(T))</template-><br>
                                 <code>%=</code>
                             </td>
-                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> %= <elm-><t->u32<sup>r</sup></t-></elm-></td>
+                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> %= <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Modulus assignment</td>
                             <fake-td></fake-td>
@@ -2645,7 +2645,7 @@
                                 <template->when(type_info::is_integral(T) || T == bool)</template-><br>
                                 <code>&=</code>
                             </td>
-                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> &= <elm-><t->uint<sup>r</sup></t-></elm-></td>
+                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> &= <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Bitwise AND assignment</td>
                             <fake-td></fake-td>
@@ -2656,7 +2656,7 @@
                                 <template->when(type_info::is_integral(T) || T == bool)</template-><br>
                                 <code>^=</code>
                             </td>
-                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> ^= <elm-><t->uint<sup>r</sup></t-></elm-></td>
+                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> ^= <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Bitwise XOR assignment</td>
                             <fake-td></fake-td>
@@ -2667,7 +2667,7 @@
                                 <template->when(type_info::is_integral(T) || T == bool)</template-><br>
                                 <code>|=</code>
                             </td>
-                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> |= <elm-><t->uint<sup>r</sup></t-></elm-></td>
+                            <td class="center"><elm-><t->T<sup>l</sup></t-></elm-> |= <elm-><t->T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Bitwise OR assignment</td>
                             <fake-td></fake-td>
