@@ -11,7 +11,9 @@
         --font-size-medium:   16px;
         --font-size-mono:     14px;
         --font-size-code:     13px;
-        --font-size-large:    22px;/*
+        --font-size-large:    22px;
+        --font-size-x-large:  32px;
+        --font-size-xx-large: 46px;/*
     }
 
     Sizes { */
@@ -78,9 +80,16 @@ s-  { color: #db966e; }                      /* String          */
     padding: 0;
     scrollbar-width: thin;
 }
-p, syntax-, example-, table-container {
+p, syntax-, example-, table-container, h1, h2, h3{
     margin:  var(--def-margin) 0 var(--def-margin) 0;
 }
+ul {
+    margin-left: 2ch;
+}
+h1, h2, h3 { font-weight: bold; }
+h1 { font-size: var(--font-size-xx-large); }
+h2 { font-size: var(--font-size-x-large);  }
+h3 { font-size: var(--font-size-large);    }
 
 
 /* Utility */
@@ -508,7 +517,8 @@ code {
 }
 template- {
     color: var(--fg-hidden);
-    white-space:nowrap;
+    /* white-space: nowrap; */
+    white-space: normal;
     font-size: var(--font-size-code);
 }
 sup {
