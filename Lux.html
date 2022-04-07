@@ -88,7 +88,8 @@
                     <indexd->Literals</indexd->
                     <indexd->Constructors</indexd->
                 </index->
-                <index-><indexh->Variables</indexh->
+                <index-><indexh->Stored values</indexh->
+                    <indexd->Variables</indexd->
                     <indexd->Temporary variables</indexd->
                 </index->
                 <index-><indexh->Functions</indexh->
@@ -1175,6 +1176,10 @@
                 </tr>
             </table></div>
             <p>
+                The special <code><t->double</t-></code> literals <code><k->inf</k-></code> and <code><k->nan</k-></code> are correctly converted between <code><t->float</t-></code> and <code><t->double</t-></code>.<br>
+                Converting them to other types has <b>undefined</b> result.
+            </p>
+            <p>
                 Additional conversions for non-primitive types are described as follows:
             </p>
             <div class="table-container"><table>
@@ -1257,6 +1262,49 @@
                     </scroll-></code->
                 </fill->
             </example->
+            <p>
+                When values of different primitive types are used with <a href="#operators">operators</a> which require values of the same type, implicit conversions are performed in orer to avoid data loss.<br>
+                Which values are converted depends on the rank of their type.<br>
+                All the types with low rank are converted to the type of highest rank.
+            </p>
+            <p>
+                In assignment operators, the result is converted to the type of the first operand.
+            </p>
+            <div class="table-container"><table>
+                <tr>
+                    <th>Type</th>
+                    <th>Rank</th>
+                </tr>
+                <tr>
+                    <td class="center">bool</td>
+                    <td class="center">1</td>
+                </tr>
+                <tr>
+                    <td class="center">int</td>
+                    <td class="center">2</td>
+                </tr>
+                <tr>
+                    <td class="center">uint</td>
+                    <td class="center">3</td>
+                </tr>
+                <tr>
+                    <td class="center">long</td>
+                    <td class="center">4</td>
+                </tr>
+                <tr>
+                    <td class="center">ulong</td>
+                    <td class="center">5</td>
+                </tr>
+                <tr>
+                    <td class="center">float</td>
+                    <td class="center">6</td>
+                </tr>
+                <tr>
+                    <td class="center">double</td>
+                    <td class="center">7</td>
+                </tr>
+            </table></div>
+
             <p>
                 See
                 <a href="#arrays">Arrays</a>,
@@ -1515,40 +1563,61 @@
                     <th>Binary (bin)</th>
                 </tr>
                 <tr>
-                    <th><t->ulong</t-></th>
+                    <th rowspan="2"><t->ulong</t-></th>
                     <td class="center"><code>0x([0-9a-z_]+)</code></td>
                     <td class="center"><code>(0d)?([0-9][0-9_]+)</code></td>
                     <td class="center"><code>0o([0-7_]+)</code></td>
                     <td class="center"><code>0b([01_]+)</code></td>
                 </tr>
                 <tr>
-                    <th><t->double</t-></th>
+                    <fake-td></fake-td>
+                    <td class="center" colspan="4"><code>inf|nan</code></td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th rowspan="2"><t->double</t-></th>
                     <td class="center"><code>0x([0-9a-z_]+)\.([0-9a-z_]+)</code></td>
                     <td class="center"><code>(0d)?([0-9][0-9_]*)\.([0-9_]+)</code></td>
                     <td class="center"><code>0o([0-7_]+)\.([0-7_]+)</code></td>
                     <td class="center"><code>0b([01_]+)\.([01_]+)</code></td>
                 </tr>
                 <tr>
+                    <fake-td></fake-td>
+                    <td class="center" colspan="4"><code>inf|nan</code></td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
                     <th><t->bool</t-></th>
                     <td class="center" colspan="4"><code>true|false</code></td>
                 </tr>
             </table></div>
+            <p>
+                The special double literals <code><k->inf</k-></code> and <code><k->nan</k-></code> are correctly converted between <code><k->float</k-></code> and <code><k->double</k-></code>.<br>
+                Converting them to other types has <b>undefined</b> result. See <a href="#implicit-conversions">Implicit conversions</a>.<br>
+                Operations with those literals are explained in <a href="#operators">Operators</a>.
+            </p>
             <example->
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <t->int</t-> n = <k->4</k->;            <c->// Ok</c->
-                        <t->bool</t-> b =<k-> true</k->;        <c->// Ok</c->
-                        <t->float</t-> f = <k->0x0d.aAb4</k->;  <c->// Ok</c->
-                        <c->float f = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
-                        <c->float f = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
-                        <c->float f = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
+                        <t->int</t-> n = <k->4</k->;             <c->// Ok</c->
+                        <t->bool</t-> b =<k-> true</k->;         <c->// Ok</c->
+                        <t->float</t-> f1 = <k->0x0d.aAb4</k->;  <c->// Ok</c->
+                        <t->float</t-> f2 = <k->inf</k->;        <c->// Ok</c->
+                        <t->float</t-> f3 = <k->nan</k->;        <c->// Ok</c->
+                        <c->float f4 = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
+                        <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
+                        <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
                     </scroll-></code->
                 </fill->
             </example->
             <p>
-                The <code>_</code> character can be used anywhere after the base prefix of non-<code><t->bool</t-></code> literals to separate digits and improve readability.<br>
-                Decimal literals cannot start with <code>_</code>.
+                The <code>_</code> character can be used anywhere after the base prefix of numerical literals to separate digits and improve readability.<br>
+                Decimal literals without base prefix cannot start with <code>_</code>.
             </p>
             <example->
                 <fill->
@@ -1617,20 +1686,29 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Variables                                                       -->
+            <!-- Stored values                                                   -->
             <!--------------------------------------------------------------------->
             <sep-2-></sep-2->
-            <h2 id="variables">Variables</h2>
+            <h2 id="stored-values">Stored values</h2>
             <p>
-                <b>Variables</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
-                Differently from other symbols, each variable <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.<br>
-                Multiple variables of the same type can be declared in one instruction.
+                <b>Stored values</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
             </p>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Variables                                                       -->
+            <!--------------------------------------------------------------------->
+            <sep-3-></sep-3->
+            <h3 id="variables">Variables</h3>
             <p>
-                A variable declaration consists of the type, the name and an optional <code>=</code> followed by an expression of a compatible type that is used to inizialize it.<br>
+                A <b>variable declaration</b> consists of the <b>type</b>, the <b>name</b> and an optional <code>=</code> followed by an <b>expression</b> of a compatible type that is used to inizialize it.<br>
                 If an initializer expression is not specified, the value of the variable is undefined.<br>
                 Evaluating an expression that can result in an undefined value is considered a logical error and will stop the compilation process.<br>
                 Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
+            </b>
+            <p>
+                Differently from other symbols, each stored value <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.<br>
+                Multiple variables of the same type can be declared in one instruction.
             </p>
 
             <syntax->
@@ -2267,7 +2345,7 @@
                 <li>Special operators</li>
             </ul>
             <p style="margin-bottom: 20px;">
-                All common and assignment operators, excluding <code>=:</code> and <code>!:</code>, can be used to operate on whole <a href="#arrays">arrays</a>.
+                All common and assignment operators, excluding <a href="#common-operators"><code>=:</code></a> and <a href="#common-operators"><code>!:</code></a>, can be used to operate on whole <a href="#arrays">arrays</a>.
             </p>
             <ul>
                 <li>
@@ -2285,6 +2363,48 @@
                     The return value is an array of the same length of the first operand containing the results of the operations.
                 </li>
             </ul>
+            <p>
+                Only certain operations between <a href="literals"><code><k->inf</k-></code></a> values and <a href="#primitive-types">primitive types</a> are allowed:
+            </p>
+            <div class="table-container"><table>
+                <tr>
+                    <th>Operation</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->?T<sup>r</sup></t-></code> / <code><k->+inf</k-></code></td>
+                    <td class="center" rowspan="2"><code><k->0</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->?T<sup>r</sup></t-></code> / <code><k->-inf</k-></code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->+inf</k-></code> * <code><k->+inf</k-></code></td>
+                    <td class="center" rowspan="2"><code><k->+inf</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->-inf</k-></code> * <code><k->-inf</k-></code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->-inf</k-></code> * <code><k->+inf</k-></code></td>
+                    <td class="center" rowspan="2"><code><k->-inf</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->-inf</k-></code> * <code><k->+inf</k-></code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->+inf</k-></code> + <code><k->+inf</k-></code></td>
+                    <td class="center"><code><k->+inf</k-></code></td>
+                </tr>
+            </table></div>
+            <p>
+                <a href="#literals"><code><k->inf</k-></code></a> and <a href="#literals"><code><k->nan</k-></code></a> can be assigned to floating point <a href="left-and-right-values">l-values</a> using the <a href="#assignment-operators">direct assignment operator</a> (<code>=</code>).<br>
+                Additionally, <a href="#literals"><code><k->inf</k-></code></a> and <a href="#literals"><code><k->nan</k-></code></a> values can be compared to other floats with the <a href="#common-operators"><code>==</code></a> and <a href="#common-operators"><code>!=</code></a> operators or searched with <a href="#common-operators"><code>=:</code></a> or <a href="#common-operators"><code>!:</code></a>.<br>
+                Any other operation with these values has <b>undefined</b> result.
+            </p>
             <p>
                 <a href="typeof-and-baseof-specifiers">Typeof</a>, <a href="typeof-and-baseof-specifiers">baseof</a>, the <a href="#scopes-and-symbols">scope token</a> (<code>::</code>) and the expression separator (<code>,</code>) are not operators.<br>
                 There is no operator overloading.
@@ -2311,7 +2431,7 @@
                     with the exception of <code>==</code>, <code>!=</code>, <code>=:</code> and <code>!:</code> which can be used with any type, including <a href="#structs">structs</a> and <a href="#typenames">typenames</a>.
                 </li>
                 <li>
-                    Logical operators can only be used with bools.
+                    Logical operators can only be used with <a href="#primitive-types">bools</a>.
                 </li>
             </ul>
             <p></p>
@@ -2571,6 +2691,41 @@
                         </tr>
                 </tbody>
             </table></div>
+
+            <sep-3-><sep-3->
+            <h4>Arithmetic</h4>
+            <p>
+                Increment and decrement operators increment and decrement the value of the operand by <code><k->1</k-></code>.<br>
+                Prefix operators return the value of the operand after the operation, postfix operators return the value of the operand before the operation.<br>
+                Incrementing or decrementing a <code><t->bool</t-></code> has the same effect of converting its value to <code><t->int</t-></code>, performing the operation and converting it back to <code><t->bool</t-></code>.<br>
+                Increment and decrement are the only common operators which modify the original value.
+            </p>
+            <p>
+                The inversion operator inverts the sign of the operand.<br>
+                Inverting a <code><t->bool</t-></code> has no effect.<br>
+                The promotion operator has no effect and only exists for completeness.
+            </p>
+            <p>
+                Multiplication, division, addition, subtraction and modulus operators perform their corresponding operations between two operators.<br>
+                Using these operators with <code><t->bool</t-></code> values has the same effect of converting their value to <code><t->int</t-></code>, performing the operation and converting them back to <code><t->bool</t-></code>.<br>
+                Dividing any value by <code><k->0</k-></code> or using the modulus operator with <code><k->0</k-></code> as second operand have <b>undefined</b> result.
+            </p>
+
+            <sep-3-></sep-3->
+            <h4>Binary</h4>
+            <p>
+                //TODO
+            </p>
+
+            <sep-3-></sep-3->
+            <h4>Logical</h4>
+            <p>
+                //TODO
+            </p>
+
+
+            <sep-3-></sep-3->
+            <h4>Relational</h4>
             <p>
                 //TODO
             </p>
@@ -2582,9 +2737,15 @@
             <sep-3-></sep-3->
             <h3 id="assignment-operators">Assignment operators</h3>
             <p>
-                <b>Assignment operators</b> are used to <b>assign values</b> to <a href="#left-and-right-values">l-value</a> symbols.<br>
-                The types they can be used with are the same of their corresponding common operator.<br>
-                <code>=</code> can be used with any type.
+                <b>Assignment operators</b> are used to <b>change the value</b> of <a href="#left-and-right-values">l-value</a> symbols.<br>
+                The original set to the result of the operation.
+            </p>
+            <p>
+                The direct assignment (<code>=</code>) changes the value of the first operand to the one of the second operand.<br>
+                It can be used with type, including typenames and composite types. <a href="#structs">Structs</a> must be of the same exact type to be assigned.
+            </p>
+            <p>
+                The result of the other assignment operators and the types they can be used with are the same as their corresponding <a href="#common-operators">common operators</a>.<br>
             </p>
             <div class="table-container"><table>
                 <thead><tr>
@@ -2687,9 +2848,6 @@
                         </tr>
                 </tbody>
             </table></div>
-            <p>
-                //TODO
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -3068,12 +3226,12 @@
     Referencing the same element more than once in a left value is a semantic error. If it happens during runtime, it has undefined behaviour.
 </p>
 
-<h5>Syntax</h5>
+<h4>Syntax</h4>
 <pre><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(uint) expression</span>]</pre>
 <pre><span class="syntax-elm">symbol identifier</span>[<span class="syntax-elm">(uint) expression</span>]<span class="syntax-elm">...</span></pre>
 <pre><span class="syntax-elm">symbol identifier</span>.<span class="syntax-elm">named identifier</span><span class="syntax-elm">...</span></pre>
 
-<h5>Example</h5>
+<h4>Example</h4>
 ```c
 void main() { //TODO multidimensional arrays
     uint arr1[5];

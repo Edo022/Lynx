@@ -86,10 +86,11 @@ p, syntax-, example-, table-container, h1, h2, h3{
 ul {
     margin-left: 2ch;
 }
-h1, h2, h3 { font-weight: bold; }
+h1, h2, h3, h4 { font-weight: bold; }
 h1 { font-size: var(--font-size-xx-large); }
 h2 { font-size: var(--font-size-x-large);  }
 h3 { font-size: var(--font-size-large);    }
+h4 { font-size: var(--font-size-medium);   }
 
 
 /* Utility */
@@ -405,35 +406,28 @@ body {
 
     /* Horizontal separators
     { */
-        sep-1- {
+        sep-1-, sep-2-, sep-3-, sep-4- {
             display: block;
-            background-color: var(--fg-separator);
-            border-radius: 10px;
-
-            margin: 20ch 0 20ch 0;
             min-width: 100%;
             max-width: 100%;
+            border-radius: var(--code-decoration-r);
+        }
+        sep-1- {
+            background-color: var(--fg-separator);
+            margin: 20ch 0 20ch 0;
             min-height: 2px;
             max-height: 2px;
         }
         sep-2- {
-            display: block;
             background-color: var(--fg-separator);
-            border-radius: 10px;
-
             margin: 8ch 0 8ch 0;
-            min-width: 100%;
-            max-width: 100%;
             min-height: 1px;
             max-height: 1px;
         }
         sep-3- {
             display: block;
             background-color: transparent;
-
             margin-top: 8ch;
-            min-width: 100%;
-            max-width: 100%;
             max-height: 0;
         }/*
     }
