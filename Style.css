@@ -34,14 +34,14 @@
         --bg-code:          #1f262d;
         --bg-pre:           #12161c;
         --bg-elm:           #12161c;
-        --bg-table-odd:     #161a20;
-        --bg-table-even:    #13161b;
-        --bg-table-header:  #1b1f24;
+        --bg-table-odd:     hsl(216, 19%, 9%);
+        --bg-table-even:    hsl(218, 17%, 8%);
+        --bg-table-header:  hsl(213, 14%, 14%);
 
         --fg-link:          #50aaff;
         --fg-separator:     #282d33;
         --fg-text:          #bebebe;
-        --fg-lable-active:  #7e7e7e;
+        --fg-lable-active:  #7d7d7d;
         --fg-hidden:        #555555;
         --fg-elm-border:    #353d46;
         --fg-elm2-border:   #5889b9;

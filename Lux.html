@@ -108,6 +108,7 @@
                     <indexd->Common operators</indexd->
                     <indexd->Assignment operators</indexd->
                     <indexd->Special operators</indexd->
+                    <indexd->Arithmetic exceptions</indexd->
                     <indexd->Array operations</indexd->
                 </index->
                 <index-><indexh->Selection</indexh->
@@ -1095,6 +1096,161 @@
             </p>
             <div class="table-container"><table>
                 <tr>
+                    <th>From</th>
+                    <th>Range / To</th>
+                    <th><t->uint</t-></th>
+                    <th><t->int</t-></th>
+                    <th><t->ulong</t-></th>
+                    <th><t->long</t-></th>
+                    <th><t->float</t-></th>
+                    <th><t->double</t-></th>
+                    <th><t->bool</t-></th>
+                </tr>
+                <tr>
+                    <th rowspan="5"><t->uint</t-></th>
+                    <th class="nowrap small">&lt;= limits::int::<k->max</k-></th>
+                    <td class="center wrap" rowspan="5">-</td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap" rowspan="5">No changes</td>
+                    <td class="center wrap" rowspan="5">No changes</td>
+                    <td class="center wrap" rowspan="3">No changes</td>
+                    <td class="center wrap" rowspan="4">No changes</td>
+                    <td class="center wrap"><k->false</k-></td>
+                </tr>
+                <tr>
+                    <fake-td></fake-td>
+                    <th class="nowrap small"><k->0</k-></th>
+                    <fake-td></fake-td>
+                    <td class="center wrap" rowspan="4">Overflows to limits::int::<k->min</k-> + n - <k->1</k-></td>
+
+                    <td class="center wrap">No changes</td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap" rowspan="5"><k->true</k-> when n == <k->1</k->, <k->false</k-> otherwise</td>
+                    <td class="center wrap" rowspan="4"><k->true</k-></td>
+                </tr>
+                <tr>
+                    <fake-td></fake-td>
+                    <th class="nowrap small">&gt; limits::int::<k->max</k-></th>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+
+                    <td class="center wrap">No changes</td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes</td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <fake-td></fake-td>
+                    <th class="nowrap small">&gt; limits::float::<k->max_precise_int</k-></th>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+
+                    <td class="center wrap">No changes</td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap" rowspan="4"><k->true</k-> when n == <k->1</k->, <k->false</k-> otherwise</td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <fake-td></fake-td>
+                    <th class="nowrap small">&gt; limits::double::<k->max_precise_int</k-></th>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+
+                    <td class="center wrap">No changes</td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap">Values lose precision</td>
+                    <td class="center wrap" rowspan="4"><k->true</k-> when n == <k->1</k->, <k->false</k-> otherwise</td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->int</t-></th>
+                    <th class="nowrap small">Value</th>
+                    <td class="center wrap">Overflows to limits::uint::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">Overflows to limits::ulong::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k-></td>
+                    <td></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-> or n &lt; limits::float::<k->min_precise_int</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-> or n &lt; limits::double::<k->min_precise_int</k-></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->ulong</t-></th>
+                    <th class="nowrap small">Value</th>
+                    <td class="center wrap">No changes. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-></td>
+                    <td class="center wrap">Overflows to limits::int::<k->min</k-> + n - <k->1</k-> when n &gt; limits::int::<k->max</k->. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">Overflows to limits::long::<k->min</k-> + n - <k->1</k-></code> when n &gt; limits::long::<k->max</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->long</t-></th>
+                    <th class="nowrap small">Value</th>
+                    <td class="center wrap">Overflows to limits::uint::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k->. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-> or n &lt; -limits::uint::<k->max</k-></td>
+                    <td class="center wrap">No changes. <i>Undefined</i> when n &gt; limits::int::<k->max</k-> or n &lt; limits::int::<k->min</k-></td>
+                    <td class="center wrap">Overflows to limits::ulong::<k->max</k-> + n + <k->1</k-> when n &lt; <k->0</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::float::<k->max_precise_int</k-> or n &lt; limits::float::<k->min_precise_int</k-></td>
+                    <td class="center wrap">No changes. Values lose precision when n &gt; limits::double::<k->max_precise_int</k-> or n &lt; limits::double::<k->min_precise_int</k-></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th><t->float</t-></th>
+                    <th class="nowrap small">Value</th>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::uint::<k->max</k-></td>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::int::<k->max</k-></td>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::ulong::<k->max</k-></td>
+                    <td class="center wrap" rowspan="2">Rounded to the closest integer smaller than n. <i>Undefined</i> when n &gt; limits::long::<k->max</k-></td>
+                    <td class="center wrap">-</td>
+                    <td class="center wrap">No changes</td>
+                    <td class="center wrap" rowspan="2"><k->true</k-> when n == <k->1.0</k->, <k->false</k-> otherwise</td>
+                </tr>
+                <tr>
+                    <th><t->double</t-></th>
+                    <th class="nowrap small">Value</th>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap">No changes. <i>Undefined</i> when n &gt; limits::float::<k->max</k-></td>
+                    <td class="center wrap">-</td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <th rowspan="2"><t->bool</t-></th>
+                    <th class="nowrap small"><k->false</k-></th>
+                    <td class="center wrap" colspan="4"><k->1</k-></td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap" colspan="2"><k->1.0</k-></td>
+                    <fake-td></fake-td>
+                    <td class="center wrap" rowspan="2">-</td>
+                </tr>
+                <tr>
+                    <fake-td></fake-td>
+                    <th class="nowrap small"><k->true</k-></th>
+                    <td class="center wrap" colspan="4"><k->0</k-> </k-></td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                    <td class="center wrap" colspan="2"><k->0.0</k-></td>
+                    <fake-td></fake-td>
+                    <fake-td></fake-td>
+                </tr>
+            </table></div>
+
+
+            <div class="table-container"><table>
+                <tr>
                     <th>From/To</th>
                     <th><t->uint</t-></th>
                     <th><t->int</t-></th>
@@ -1304,6 +1460,7 @@
                     <td class="center">7</td>
                 </tr>
             </table></div>
+            //TODO add example
 
             <p>
                 See
@@ -2344,67 +2501,6 @@
                 <li>Assignment operators</li>
                 <li>Special operators</li>
             </ul>
-            <p style="margin-bottom: 20px;">
-                All common and assignment operators, excluding <a href="#common-operators"><code>=:</code></a> and <a href="#common-operators"><code>!:</code></a>, can be used to operate on whole <a href="#arrays">arrays</a>.
-            </p>
-            <ul>
-                <li>
-                    When arrays are used with unary operators, the operation is performed on all the elements of the array and the return value is an array of the same length,
-                    containing the results of the operations.
-                </li>
-                <li>
-                    When arrays are used as both the first and second operand of binary operators, the arrays must have identical length.
-                    The operation is performed between each element of the first operand and the respective element of the second operand,
-                    and the return value is an array of the same length containing the results of the operations.
-                </li>
-                <li>
-                    When an array is used as the first operand of binary operators and a value of its base type is used as the second operand,
-                    the operation is performed between each element of the first operand and the value of second operand.
-                    The return value is an array of the same length of the first operand containing the results of the operations.
-                </li>
-            </ul>
-            <p>
-                Only certain operations between <a href="literals"><code><k->inf</k-></code></a> values and <a href="#primitive-types">primitive types</a> are allowed:
-            </p>
-            <div class="table-container"><table>
-                <tr>
-                    <th>Operation</th>
-                    <th>Result</th>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->?T<sup>r</sup></t-></code> / <code><k->+inf</k-></code></td>
-                    <td class="center" rowspan="2"><code><k->0</k-></code></td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->?T<sup>r</sup></t-></code> / <code><k->-inf</k-></code></td>
-                    <fake-td></fake-td>
-                </tr>
-                <tr>
-                    <td class="center"><code><k->+inf</k-></code> * <code><k->+inf</k-></code></td>
-                    <td class="center" rowspan="2"><code><k->+inf</k-></code></td>
-                </tr>
-                <tr>
-                    <td class="center"><code><k->-inf</k-></code> * <code><k->-inf</k-></code></td>
-                    <fake-td></fake-td>
-                </tr>
-                <tr>
-                    <td class="center"><code><k->-inf</k-></code> * <code><k->+inf</k-></code></td>
-                    <td class="center" rowspan="2"><code><k->-inf</k-></code></td>
-                </tr>
-                <tr>
-                    <td class="center"><code><k->-inf</k-></code> * <code><k->+inf</k-></code></td>
-                    <fake-td></fake-td>
-                </tr>
-                <tr>
-                    <td class="center"><code><k->+inf</k-></code> + <code><k->+inf</k-></code></td>
-                    <td class="center"><code><k->+inf</k-></code></td>
-                </tr>
-            </table></div>
-            <p>
-                <a href="#literals"><code><k->inf</k-></code></a> and <a href="#literals"><code><k->nan</k-></code></a> can be assigned to floating point <a href="left-and-right-values">l-values</a> using the <a href="#assignment-operators">direct assignment operator</a> (<code>=</code>).<br>
-                Additionally, <a href="#literals"><code><k->inf</k-></code></a> and <a href="#literals"><code><k->nan</k-></code></a> values can be compared to other floats with the <a href="#common-operators"><code>==</code></a> and <a href="#common-operators"><code>!=</code></a> operators or searched with <a href="#common-operators"><code>=:</code></a> or <a href="#common-operators"><code>!:</code></a>.<br>
-                Any other operation with these values has <b>undefined</b> result.
-            </p>
             <p>
                 <a href="typeof-and-baseof-specifiers">Typeof</a>, <a href="typeof-and-baseof-specifiers">baseof</a>, the <a href="#scopes-and-symbols">scope token</a> (<code>::</code>) and the expression separator (<code>,</code>) are not operators.<br>
                 There is no operator overloading.
@@ -2984,10 +3080,136 @@
 
 
             <!--------------------------------------------------------------------->
+            <!-- Arithmetic exceptions                                           -->
+            <!--------------------------------------------------------------------->
+            <sep-3-></sep-3->
+            <h3 id="arithmetic-exceptions">Arithmetic exceptions</h3>
+            <p>
+                Only <b>certain</b> <a href="#primitive-types">floating point</a> <b>operations</b> that generate or use <b>special double literals</b> have <b>defined</b> result.<br>
+                Their result is the same as in real arithmetic operations:
+            </p>
+            <div class="table-container"><table>
+                <tr>
+                    <th>Operation</th>
+                    <th>Result</th>
+                </tr>
+                <!-- +*-, +*-/ -->
+                <tr>
+                    <td class="center"><code>±n</code> + <code><k->±inf</k-></code></td>
+                    <td class="center" rowspan="3"><code><k->±inf</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code>±n</code> - <code><k->±inf</k-></code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code>±n</code> * <code><k->±inf</k-></code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±n</k-></code> / <code><k->±inf</k-></code></td>
+                    <td class="center"><code><k->0</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±inf</k-></code> + <code>±n</code></td>
+                    <td class="center" rowspan="4"><code><k->±inf</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±inf</k-></code> - <code>±n</code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±inf</k-></code> * <code>±n</code></td>
+                    <fake-td></fake-td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±inf</k-></code> / <code>±n</code></td>
+                    <fake-td></fake-td>
+                </tr>
+
+                <!-- 2 infs -->
+                <tr>
+                    <td class="center"><code><k->+inf</k-></code> + <code><k->+inf</k-></code></td>
+                    <td class="center"><code><k->+inf</k-></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±inf</k-></code> * <code><k->±inf</k-></code></td>
+                    <td class="center"><code><k->±inf</k-></code></td>
+                </tr>
+                <tr>
+                    <th>Operation (special cases)</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->0</k-></code> * <code><k->±inf</k-></code></td>
+                    <td class="center"><code><b>undefined</b></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code><k->±inf</k-></code> * <code><k->0</k-></code></td>
+                    <td class="center"><code><b>undefined</b></code></td>
+                </tr>
+            </table></div>
+            <p>
+                Where <code>n</code> is any different non-<code><k->nan</k-></code>, non-<code><k->inf</k-></code> <a href="#primitive-types">floating point</a> value.
+            </p>
+            <p>
+                All the above operations behave in the same way when performed through their corresponding <a href="#assignment-operators">assignment operators</a> (<code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>).<br>
+                Direct assignments and all existence and equality operators (<code>=</code>, <code>==</code>, <code>!=</code>, <code>=:</code>, <code>!:</code>) are fully supported
+                and can be used between <code><k->inf</k-></code>, <code><k->nan</k-></code> and any other floating point value.<br>
+                Any remaining operation with special floating point values has <b>undefined</b> result.<br>
+                Converting special values to non-floating point types also has <b>undefined</b> result.
+            </p>
+            <p>
+                Some <b>special cases</b> of <b>integral operations</b> have <b>undefined</b> result:
+            </p>
+            </table></div>
+            <div class="table-container"><table>
+                <tr>
+                    <th>Operation (special cases)</th>
+                    <th>Result</th>
+                </tr>
+                <tr>
+                    <td class="center"><code>n</code> / <code><k->0</k-></code></td>
+                    <td class="center"><code><b>undefined</b></code></td>
+                </tr>
+                <tr>
+                    <td class="center"><code>n</code> % <code><k->0</k-></code></td>
+                    <td class="center"><code><b>undefined</b></code></td>
+                </tr>
+            </table></div>
+            <p>
+                Where <code>n</code> is any non-<code><k->0</k-></code> <a href="#primitive-types">integral</a> value.
+            </p>
+            <p>
+                Undefined results don't stop the program execution and are not detected in any way.
+            </p>
+
+
+            <!--------------------------------------------------------------------->
             <!-- Array operations                                                -->
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="array-operations">Array operations</h3>
+            <p>
+                All <a href="#common-operators">common</a> and <a href="#assignment-operators">assignment</a> operators, excluding <a href="#common-operators"><code>=:</code></a> and <a href="#common-operators"><code>!:</code></a>, can be used to operate on whole <a href="#arrays">arrays</a>.
+            </p>
+            <p>
+                When arrays are used with unary operators, the operation is performed on all the elements of the array and the return value is an array of the same length,
+                containing the results of the operations.
+            </p>
+            //TODO add corresponding loop
+            <p>
+                When arrays are used as both the first and second operand of binary operators, the arrays must have identical length.
+                The operation is performed between each element of the first operand and the respective element of the second operand,
+                and the return value is an array of the same length containing the results of the operations.
+            </p>
+            //TODO add corresponding loop
+            <p>
+                When an array is used as the first operand of binary operators and a value of its base type is used as the second operand,
+                the operation is performed between each element of the first operand and the value of second operand.
+                The return value is an array of the same length of the first operand containing the results of the operations.
+            </p>
+            //TODO add corresponding loop
 
 
 
