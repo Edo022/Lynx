@@ -7,6 +7,8 @@
         --wide-line-h:        3.5ch;
         --code-line-h:        2.5ch;
 
+        --font-size-xx-small: 8px;
+        --font-size-x-small:  12px;
         --font-size-small:    14px;
         --font-size-medium:   16px;
         --font-size-mono:     14px;
@@ -30,75 +32,102 @@
     }
 
     Color { */
-        --bg:               #0d1117;
+        --bg:               hsl(216, 28%, 7%);
         --bg-code:          #1f262d;
         --bg-pre:           #12161c;
         --bg-elm:           #12161c;
-        --bg-table-odd:     hsl(216, 19%, 9%);
-        --bg-table-even:    hsl(218, 17%, 8%);
-        --bg-table-header:  hsl(213, 14%, 14%);
+        --bg-table-odd:     hsl(216, 28%, 8.6%);
+        --bg-table-even:    hsl(216, 28%, 8.0%);
+        --bg-table-header:  hsl(213, 20%, 12%);
 
         --fg-link:          #50aaff;
         --fg-separator:     #282d33;
         --fg-text:          #bebebe;
         --fg-lable-active:  #7d7d7d;
         --fg-hidden:        #555555;
-        --fg-elm-border:    #353d46;
-        --fg-elm2-border:   #5889b9;
 
-        --bd-table-cell:    #1a1d20;
-        --bd-table-header:  #21262c;/*
+        --bd-elm:           hsl(212, 14%, 20%);
+        --bd-elm2:          hsl(210, 41%, 54%);
+        --bd-code:          hsl(212, 14%, 24%);
+        --bd-table-cell:    hsl(213, 9%, 10%);
+        --bd-table-header:  hsl(213, 9%, 15%);/*
     } */
 }
 
 
-/* Syntax highlight */
-c-  { color: #6d757e; font-weight: 300; }    /* Comment         */
-ce- { color: #d14141; font-weight: 300; }    /* Error comment   */
-cw- { color: #bbb23b; font-weight: 300; }    /* Warning comment */
-k-  { color: #85b4e0; }                      /* Constant        */
-t-  { color: #3884dc; }                      /* Type            */
-f-  { color: #e6e6b3; }                      /* Function        */
-a-  { color: #2fc5d0; }                      /* Argument        */
-w-  { color: #cc94d1; }                      /* Keyword         */
-s-  { color: #db966e; }                      /* String          */
+/* Syntax highlight { */
+    c-  { color: #6d757e; font-weight: 300; }    /* Comment         */
+    ce- { color: #d14141; font-weight: 300; }    /* Error comment   */
+    cw- { color: #bbb23b; font-weight: 300; }    /* Warning comment */
+    k-  { color: #85b4e0; }                      /* Constant        */
+    t-  { color: #3884dc; }                      /* Type            */
+    f-  { color: #e6e6b3; }                      /* Function        */
+    a-  { color: #2fc5d0; }                      /* Argument        */
+    w-  { color: #cc94d1; }                      /* Keyword         */
+    s-  { color: #db966e; }                      /* String          *//*
+} */
 
 
-/* Hide scrollbar */
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-}
-.hide-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
+/* Hide scrollbar { */
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .hide-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }/*
+} */
 
 
-/* Default */
-* {
-    margin:  0;
-    padding: 0;
-    scrollbar-width: thin;
-}
-p, syntax-, example-, table-container, h1, h2, h3{
-    margin:  var(--def-margin) 0 var(--def-margin) 0;
-}
-ul {
-    margin-left: 2ch;
-}
-h1, h2, h3, h4 { font-weight: bold; }
-h1 { font-size: var(--font-size-xx-large); }
-h2 { font-size: var(--font-size-x-large);  }
-h3 { font-size: var(--font-size-large);    }
-h4 { font-size: var(--font-size-medium);   }
+/* Default { */
+    * {
+        margin:  0;
+        padding: 0;
+        scrollbar-width: thin;
+    }
+    p, syntax-, example-, table-container, h1, h2, h3{
+        margin:  var(--def-margin) 0 var(--def-margin) 0;
+    }
+    ul {
+        margin-left: 2ch;
+    }
+    h1, h2, h3, h4 { font-weight: bold; }
+    h1 { font-size: var(--font-size-xx-large); }
+    h2 { font-size: var(--font-size-x-large);  }
+    h3 { font-size: var(--font-size-large);    }
+    h4 { font-size: var(--font-size-medium);   }/*
+} */
 
 
-/* Utility */
-.right  { text-align: right;  }     .small  { font-size: var(--font-size-small);  }
-.left   { text-align: left;   }     .medium { font-size: var(--font-size-medium); }
-.center { text-align: center; }     .large  { font-size: var(--font-size-large);  }
+/* Utility { */
+    .right    { text-align: right  !important; }
+    .left     { text-align: left   !important; }
+    .center   { text-align: center !important; }
 
-.nowrap { white-space: nowrap; }    .wrap { white-space: normal; }
+    .xx-large { font-size: var(--font-size-xx-large) !important; }
+    .x-large  { font-size: var(--font-size-x-large)  !important; }
+    .small    { font-size: var(--font-size-small)    !important; }
+    .medium   { font-size: var(--font-size-medium)   !important; }
+    .large    { font-size: var(--font-size-large)    !important; }
+    .xx-small { font-size: var(--font-size-xx-small) !important; }
+    .x-small  { font-size: var(--font-size-x-small)  !important; }
+
+    .nowrap { white-space: nowrap !important; }
+    .wrap   { white-space: normal !important; }
+    .nobefore::before { content: "" !important; }
+    .noafter::after   { content: "" !important; }/*
+} */
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -316,7 +345,7 @@ body {
                 display: block;
                 position: relative;
                 background-color: var(--bg-pre);
-                border-color: var(--fg-elm-border);
+                border-color: var(--bd-code);
                 border-style: solid;
                 z-index: 2;
                 white-space: nowrap;
@@ -352,7 +381,7 @@ body {
                 border-style: solid;
                 white-space: pre;
                 overflow: hidden;
-                border-color: var(--fg-elm-border);
+                border-color: var(--bd-code);
 
                 border-width: 1px;
                 border-radius: 0 var(--code-decoration-r) var(--code-decoration-r) var(--code-decoration-r) ;
@@ -376,7 +405,7 @@ body {
                 }/*
             } */
 
-            syntax- > right- > label-, syntax- > right- > code- { border-color: var(--fg-elm2-border); }
+            syntax- > right- > label-, syntax- > right- > code- { border-color: var(--bd-elm2); }
 
 
             /* Stop selection in both*/
@@ -446,7 +475,7 @@ div.table-container {
     margin-bottom: 30px;
 }
 table {
-    border: 0px solid var(--bd-table-cell);
+    border: 0px solid var(--bd-table-header);
     border-width: 0 1px 1px 0;
     border-collapse: separate;
     border-spacing: 0px;
@@ -462,27 +491,51 @@ table tr th {
     line-height: var(--wide-line-h);
 }
 th, td {
-    border: 0px solid var(--bd-table-header);
     border-width: 1px 0 0 1px;
+    border-style: solid;
     padding:10px 20px 10px 20px
 }
 th {
+    border-color: var(--bd-table-header);
     font-size: var(--font-size-large);
     background-color: var(--bg-table-header)
 }
-table tr:nth-child(even) {
-    background-color: var(--bg-table-even);
+td {
+    border-color: var(--bd-table-cell);
 }
-table tr:nth-child(odd) {
-    background-color: var(--bg-table-odd);
+table tr:nth-child(even) { background-color: var(--bg-table-even); }
+table tr:nth-child(odd)  { background-color: var(--bg-table-odd);  }
+table tr.even { background-color: var(--bg-table-even); }
+table tr.odd  { background-color: var(--bg-table-odd);  }
+
+
+
+
+
+range-val- {
+    display: inline-block;
+    font-size: var(--font-size-small);
+    line-height: 1.5ch;
 }
+range-var- {
+    display: inline;
+    white-space: pre;
+    font-size: var(--font-size-x-small);
+    font-weight: normal;
+    color: var(--fg-hidden);
+}
+
+
+
+
+
 
 
 
 elm-, elm2- {
     display: inline-block;
     font-family: monospace, monospace;
-    border: 1px solid var(--fg-elm-border);
+    border: 1px solid var(--bd-elm);
     border-radius: var(--code-decoration-r);
     padding: 0 4px 0 4px;
     margin: 4px 2px 4px 2px;
@@ -491,11 +544,12 @@ elm-, elm2- {
     white-space: nowrap;
 }
 elm2- {
-    border-color: var(--fg-elm2-border);
+    border-color: var(--bd-elm2);
 }
 .hidden, space-, nl- {
     color: var(--fg-hidden);
     white-space: nowrap;
+    font-weight: normal;
 }
 space-, nl- { display: inline; }
 space-::before { content: "·"; }
@@ -532,8 +586,3 @@ a:hover, a:visited, a:link {
 a:hover {
     text-decoration: underline;
 }
-
-
-
-.nobefore::before { content: ""; }
-.noafter::after { content: ""; }
