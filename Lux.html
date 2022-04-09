@@ -759,7 +759,7 @@
             <h3 id="primitive-types">Primitive types</h3>
             <p>Lux features <b>7 primitive types</b>, which can be used to define more complex types such as structs, arrays, enums and tuples.</p>
             <p>
-                Those types are always present and they act as if they were declared in the module scope.<br>
+                Those types are always defined and they act as if they were declared in the module scope.<br>
                 Primitive types are <b>not keywords</b> and can be shadowed like any other symbol.
                 <br>//TODO GL_EXT_shader_explicit_arithmetic_types_int64
             </p>
@@ -806,6 +806,9 @@
             <p>
                 As in most programming languages, the boolean <code><k->true</k-></code> and <code><k->false</k-></code> values correspond to the integral literals <code><k->1</k-></code> and <code><k->0</k-></code>. They can be used interchangeably.<br>
                 Unsigned integers cannot represent negative numbers, but the maximum value is twice as high as their signed counterpart.
+            </p>
+            <p>
+                //TODO memory representation and float standard
             </p>
             <p>
                 All primitives types are convertible to each other. This is explained in detail in <a href="#implicit-conversions">Implicit conversions</a>.<br>
@@ -1063,7 +1066,6 @@
                     </scroll-></code->
                 </fill->
             </syntax->
-
             <example->
                 <fill->
                     <label-></label->
@@ -1086,7 +1088,46 @@
             <sep-3-></sep-3->
             <h3 id="typenames">Typenames</h3>
             <p>
+                <b>Typenames</b> are special types that can <b>store</b> other <b>types</b>.<br>
+                Typename values can be used anywhere where a type is required.
             </p>
+            <p>
+                All typename values must be known at compile time.<br>
+                <code><t->typename</t-></code> is a valid value for typename types.<br>
+                Typename constructors are allowed, as well as typename struct elements, typename tuple elements and typename arrays.
+            </p>
+            <example->
+                <fill->
+                    <label->1</label->
+                    <code-><scroll->
+                        <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
+                        <t->t1</t-> t2 = <t->int</t->;              <c->// Ok</c->
+
+                        <t->t2</t-> <f->main</f->(){
+                            <w->return</w-> <t->t2</t->(<k->6</k->);         <c->// Ok</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
+            <example->
+                <fill->
+                    <label->2</label->
+                    <code-><scroll->
+                        <w->struct</w-> s {
+                            <t->typename</t-> t; <c->// Ok</c->
+                            <t->uint</t-> n;
+                        }
+
+                        <t->void</t-> <f->main</f->(<t->bool</t-> <a->b</a->){
+                            <t->s</t-> var;                                     <c->// Ok</c->
+                            var.<t->t</t-> = <t->float</t->;                             <c->// Ok</c->
+                            (<t->typename</t->, <t->int</t->) tuple = (var.<t->t</t->, var.<t->t</t->(<k->5</k->)); <c->// Ok</c->
+                            tuple[<k->0</k->] n;                                <c->// Ok</c->
+                            <c->//typename[2](int, float)[b] var;</c-><ce->          // Error, the type depends on a runtime value</ce->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
             <!--------------------------------------------------------------------->
@@ -1660,7 +1701,8 @@
             <p>
                 The <b><code><t->typeof</t-></code></b> and <b><code><t->baseof</t-></code></b> specifiers are used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b>expression</b> that is passed to them.<br>
                 <code><t->typeof</t-></code> returns the type of the expression, <code><t->baseof</t-></code> returns its base type.<br>
-                Using them on the <code><t->void</t-></code> type returns <code><t->void</t-></code>.
+                Using <code><t->typeof</t-></code> on a type returns <code><t->typename</t-></code>.
+                //TODO make them typename functions
             </p>
             <p>
                 <code><t->baseof</t-></code> can only be used on <a href="#arrays">arrays</a>, <a href="#enums">enums</a> and <a href="#primitive-types">primitive types</a>.<br>
@@ -2622,7 +2664,7 @@
             <ul>
                 <li>Common operators<ul>
                     <li>Arithmetic operators</li>
-                    <li>Binary operators</li>
+                    <li>Bitwise operators</li>
                     <li>Logical operators</li>
                     <li>Relational operators</li>
                 </ul></li>
@@ -2682,24 +2724,8 @@
                 //TODO
             </p>
             <p>
-                <b>Common operators</b> include operators to perform value and type <b>comparisons</b>, <b>arithmetic operations</b>, <b>bit manipulation</b> and <b>logical operations</b>.<br>
+                <b>Common operators</b> include operators to perform <b>comparisons</b>, <b>arithmetic operations</b>, <b>bit manipulation</b> and <b>logical operations</b>.<br>
             </p>
-            <ul>
-                <li>
-                    Arithmetic operators can be used with any <a href="#primitive-types">primitive type</a> or non-strict <a href="#enums">enum</a>.<br>
-                </li>
-                <li>
-                    Binary operators can be used with <a href="#primitive-types">integral types</a>, non-strict <a href="#enums">enums</a> and <a href="#primitive-types">bools</a>.<br>
-                </li>
-                <li>
-                    Relational operators can be used with <a href="#primitive-types">integral types</a>, non-strict <a href="#enums">enums</a> and <a href="#primitive-types">bools</a>,
-                    with the exception of <code>==</code>, <code>!=</code>, <code>=:</code> and <code>!:</code> which can be used with any type, including <a href="#structs">structs</a> and <a href="#typenames">typenames</a>.
-                </li>
-                <li>
-                    Logical operators can only be used with <a href="#primitive-types">bools</a>.
-                </li>
-            </ul>
-            <p></p>
             <div class="table-container"><table>
                 <thead><tr>
                     <th class="center">Precedence</th>
@@ -2765,7 +2791,7 @@
                             <td class="center nowrap">~<elm-><t->?T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Bitwise NOT</td>
-                            <td class="left">Binary</td>
+                            <td class="left">Bitwise</td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
@@ -2824,7 +2850,7 @@
                             <td class="center nowrap"><elm-><t->?T<sup>r</sup></t-></elm-> &lt;&lt; <elm-><t->uint<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><code><t->T<sup>r</sup></code><t-></code></td>
                             <td class="left">Left bit shift</td>
-                            <td class="left" rowspan=2>Binary</td>
+                            <td class="left" rowspan=2>Bitwise</td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
@@ -2907,7 +2933,7 @@
                             <td class="center nowrap"><elm-><t->?T<sup>r</sup></t-></elm-> & <elm-><t->?T<sup>r</sup></t-></elm-></td>
                             <td class="center"><code><t->T<sup>r</sup></t-></code></td>
                             <td class="left">Bitwise AND</td>
-                            <td class="left" rowspan=3>Binary</td>
+                            <td class="left" rowspan=3>Bitwise</td>
                         </tr>
                     <!-- 10 -->
                         <tr>
@@ -2960,39 +2986,177 @@
             <sep-3-><sep-3->
             <h4>Arithmetic</h4>
             <p>
-                Increment and decrement operators increment and decrement the value of the operand by <code><k->1</k-></code>.<br>
+                Arithmetic operators can be used on any <a href="#primitive-types">primitive type</a> or <a href="#enums">enum</a>.
+            </p>
+            <p>
+                <code>++</code>, <code>--</code>.<br>
+                Increment and decrement operators add and subtract <code><k->1</k-></code> to the value of the operand.<br>
                 Prefix operators return the value of the operand after the operation, postfix operators return the value of the operand before the operation.<br>
                 Incrementing or decrementing a <code><t->bool</t-></code> has the same effect of converting its value to <code><t->int</t-></code>, performing the operation and converting it back to <code><t->bool</t-></code>.<br>
                 Increment and decrement are the only common operators which modify the original value.
             </p>
             <p>
+                <code>-</code>, <code>+</code>.<br>
+                The promotion operator has no effect and only exists for completeness.<br>
                 The inversion operator inverts the sign of the operand.<br>
-                Inverting a <code><t->bool</t-></code> has no effect.<br>
-                The promotion operator has no effect and only exists for completeness.
+                Inverting a <code><t->bool</t-></code> has no effect.
             </p>
             <p>
-                Multiplication, division, addition, subtraction and modulus operators perform their corresponding operations between two operators.<br>
+                <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code>.<br>
+                Addition, subtraction, multiplication, division and modulus operators perform their corresponding operations between two operators.<br>
                 Using these operators with <code><t->bool</t-></code> values has the same effect of converting their value to <code><t->int</t-></code>, performing the operation and converting them back to <code><t->bool</t-></code>.<br>
-                Dividing any value by <code><k->0</k-></code> or using the modulus operator with <code><k->0</k-></code> as second operand have <b>undefined</b> result.
-            </p>
-
-            <sep-3-></sep-3->
-            <h4>Binary</h4>
-            <p>
-                //TODO
+                <br>
+                Differently from GLSL and C++, the result of the modulus operator has the same sign of the result of the division.<br>
+                Using <code><k->0</k-></code> as second operand of in division or modulus operator with <a href="#primitive-types">integral types</a> has <b>undefined</b> result.
             </p>
 
             <sep-3-></sep-3->
             <h4>Logical</h4>
             <p>
-                //TODO
+                Logical operators can only be used on <code><t->bool</t-></code> types.
+            </p>
+            <p>
+                <code>!</code>, <code>&&</code>, <code>||</code>, <code>^^</code>.<br>
+                NOT returns the inverse of the value.<br>
+                AND, OR and XOR perform their corresponding operations between two values.<br>
+                <div style="min-width: 100%; display: flex;">
+                    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
+                        <div class="table-container"><table>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>A || B</th>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                        </table></div>
+                        <div class="table-container"><table>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>A && B</th>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                        </table></div>
+                    </div>
+                    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
+                        <div class="table-container"><table>
+                            <tr>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>A ^^ B</th>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                        </table></div>
+                        <div class="table-container"><table>
+                            <tr>
+                                <th colspan="2">A</th>
+                                <fake-td></fake-td>
+                                <th>!A</th>
+                            </tr>
+                            <tr>
+                                <td class="center" colspan="2"><code><k->true</k-></code></td>
+                                <fake-td></fake-td>
+                                <td class="center"><code><k->false</k-></code></td>
+                            </tr>
+                            <tr>
+                                <td class="center" colspan="2"><code><k->false</k-></code></td>
+                                <fake-td></fake-td>
+                                <td class="center"><code><k->true</k-></code></td>
+                            </tr>
+                        </table></div>
+                    </div>
+                </div>
             </p>
 
+            <sep-3-></sep-3->
+            <h4>Bitwise</h4>
+            <p>
+                Bitwise operators can be used on any <a href="#primitive-types">primitive type</a> or <a href="#enums">enum</a>.
+            </p>
+            <p>
+                <code>&lt;&lt;</code>, <code>&gt;&gt;</code>.<br>
+                Bit shift operators shift the bits of the value of the left operand by the value of the right operand.<br>
+                The right operand is converted to <code><t->uint</t-></code>. Discarded bits are set to <code><k->0</k-></code>.<br>
+                Shifting non-<code><t->bool</t-></code> types by <code><f->sizeof</f->(<t->type</t->) * <k->8</k-></code> or more causes <b>undefined behaviour</b>.<br>
+                Shifting <code><t->bool</t-></code> values is equivalent to setting them to <code><k->false</k-></code>.<br>
+            </p>
+            <p>
+                <code>~</code>, <code>&</code>, <code>|</code>, <code>^</code>.<br>
+                These operators are equivalent to their corresponding logical operators, but the operation is performed between each bit of the two operands.<br>
+                The types of the operand must have the same size.<br>
+                Using types of different size is a semantic error.
+            </p>
 
             <sep-3-></sep-3->
             <h4>Relational</h4>
             <p>
-                //TODO
+                Relational operators can be used on any <a href="#primitive-types">primitive type</a> or <a href="#enums">enum</a>,
+                with the exception of <code>==</code>, <code>!=</code>, <code>=:</code> and <code>!:</code> which can be used with any type, including <a href="#structs">structs</a> and <a href="#typenames">typenames</a>.
+            </p>
+            <p>
+                <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>.<br>
+
+            </p>
+            <p>
+                <code>=:</code>, <code>!:</code>.<br>
+
             </p>
 
 
@@ -3003,7 +3167,7 @@
             <h3 id="assignment-operators">Assignment operators</h3>
             <p>
                 <b>Assignment operators</b> are used to <b>change the value</b> of <a href="#left-and-right-values">l-value</a> symbols.<br>
-                The original set to the result of the operation.
+                The original value is set to the result of the operation.
             </p>
             <p>
                 The direct assignment (<code>=</code>) changes the value of the first operand to the one of the second operand.<br>
@@ -3327,8 +3491,9 @@
             </p>
             <p>
                 All the above operations behave in the same way when performed through their corresponding <a href="#assignment-operators">assignment operators</a> (<code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code>).<br>
-                Direct assignments and any relational operator (<code>=</code>, <code>==</code>, <code>!=</code>, <code>=:</code>, <code>!:</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>) are fully supported
-                and can be used between <code><k->inf</k-></code> and any other non-<code><k->nan</k-></code> floating point value.<br>
+                Direct assignments, relational operators and binary operators
+                    (<code>=</code>, <code>==</code>, <code>!=</code>, <code>=:</code>, <code>!:</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>~</code>, <code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&</code>, <code>|</code>, <code>^</code>)
+                    are fully supported and can be used with <code><k->inf</k-></code> and any other non-<code><k->nan</k-></code> floating point value, according to the required types of each operator.<br>
                 Any remaining operation with special floating point values has <b>undefined</b> result.
             </p>
             <p>
@@ -3440,6 +3605,9 @@
             <!--------------------------------------------------------------------->
             <sep-3-></sep-3->
             <h3 id="continue-and-break-statements">Continue and break statements</h3>
+            <p>
+                //TODO break 2; continue 40;
+            </p>
 
 
             <!--------------------------------------------------------------------->

@@ -1,0 +1,21 @@
+-o <file>          [binary] SPIRV output
+-oe <file>         [source] GLSL output
+-ot <file>         [] Syntax tree output
+-oo <file>         [] Optimized syntax tree output
+
+
+ogni espressione è formata da operatori ed operandi
+ogni espressione ha un operatore speciale che contiene tutta l'espressione e la rende un operando
+
+
+
+la fase della compilazione in cui si determina cosa è compile time funziona in questo modo:
+
+per ogni funzione:
+    per ogni statement:
+        se è un if:
+            compile time se la condizione è un'espressione compile time
+            compile time: si valuta l'espressione e l'if o l'else viene escluso dal codice
+            runtime:      //TODO
+
+per-ogni-funzione(main)-o <file>
