@@ -366,7 +366,7 @@ body {
                 content: "Syntax ";
             }
             syntax- > left- > label-::after, syntax- > right- > label-::after, syntax- > fill- > label-::after, example- > fill- > label-::after {
-                content: " □";
+                content: " \00a0□";
                 text-shadow: -0.3ch -0.3ch;
             }
             syntax- > left- > label-:active, syntax- > right- > label-:active, syntax- > fill- > label-:active, example- > fill- > label-:active {

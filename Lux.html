@@ -141,7 +141,10 @@
                 <indexd->Compiler optimizations</indexd->
             </index->
             <index-><indexh->Standard modules</indexh->
-                <indexd->idk</indexd->
+                <indexd->limits</indexd->
+                <indexd->math</indexd->
+                <indexd->bits</indexd->
+                <indexd->types</indexd->
             </index->
             <indexd->Quick reference tabs</indexd->
             <indexd->Complete examples</indexd->
@@ -1560,7 +1563,7 @@
                 </tr>
                 <tr>
                     <td class="center">
-                        <template->when(type_info::is_struct(U))</template-><br>
+                        <template->when(types::is_struct(U))</template-><br>
                         <code><t->U</t-></code>
                     </td>
                 </tr>
@@ -1573,7 +1576,7 @@
                 <!-- Array to array and array to bool ------------------------------------------>
                 <tr>
                     <td class="center" rowspan="2">
-                        <template->when(!type_info::is_struct(T) && !type_info::is_tuple(T))</template-><br>
+                        <template->when(!types::is_struct(T) && !types::is_tuple(T))</template-><br>
                         <code><t->T[n]</t-></code>
                     </td>
                     <td class="center"><code><t->U[n]</t-></code></td>
@@ -1593,7 +1596,8 @@
                 All the types with low rank are converted to the type of highest rank.
             </p>
             <p>
-                In assignment operators, the result is converted to the type of the first operand.
+                The only exceptions are the bitwise OR, XOR and AND, where no implicit conversions are performed and the result has the same type of the first operand.<br>
+                In assignment operators, the result is converted back to the type of the first operand.
             </p>
             <div class="table-container"><table>
                 <tr>
@@ -3028,24 +3032,24 @@
                                 <th>A || B</th>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                         </table></div>
                         <div class="table-container"><table>
@@ -3055,24 +3059,24 @@
                                 <th>A && B</th>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                         </table></div>
                     </div>
@@ -3084,24 +3088,24 @@
                                 <th>A ^^ B</th>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center"><code><k->false</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                         </table></div>
                         <div class="table-container"><table>
@@ -3111,14 +3115,14 @@
                                 <th>!A</th>
                             </tr>
                             <tr>
-                                <td class="center" colspan="2"><code><k->true</k-></code></td>
+                                <td class="center" colspan="2"><code><k->1</k-></code></td>
                                 <fake-td></fake-td>
-                                <td class="center"><code><k->false</k-></code></td>
+                                <td class="center"><code><k->0</k-></code></td>
                             </tr>
                             <tr>
-                                <td class="center" colspan="2"><code><k->false</k-></code></td>
+                                <td class="center" colspan="2"><code><k->0</k-></code></td>
                                 <fake-td></fake-td>
-                                <td class="center"><code><k->true</k-></code></td>
+                                <td class="center"><code><k->1</k-></code></td>
                             </tr>
                         </table></div>
                     </div>
@@ -3129,6 +3133,8 @@
             <h4>Bitwise</h4>
             <p>
                 Bitwise operators can be used on any <a href="#primitive-types">primitive type</a> or <a href="#enums">enum</a>.
+                //TODO convert floats to int without changing the bit value
+                //TODO floatBitsToInt intBitsToFloat
             </p>
             <p>
                 <code>&lt;&lt;</code>, <code>&gt;&gt;</code>.<br>
@@ -3139,9 +3145,11 @@
             </p>
             <p>
                 <code>~</code>, <code>&</code>, <code>|</code>, <code>^</code>.<br>
-                These operators are equivalent to their corresponding logical operators, but the operation is performed between each bit of the two operands.<br>
+                The bitwise NOT performs the logical NOT operation on every bit of the operand.<br>
+                Bitwise AND, OR and XOR operators are equivalent to their corresponding logical operators, but the operation is performed between each bit of the two operands.<br>
                 The types of the operand must have the same size.<br>
-                Using types of different size is a semantic error.
+                <b><a href="#implicit-conversions">Implicit conversions</a> don't apply</b> on these operators. The return type has the same type of the first opeand.
+                //TODO this is different than c++ and  glsl
             </p>
 
             <sep-3-></sep-3->
@@ -3152,12 +3160,53 @@
             </p>
             <p>
                 <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>.<br>
-
+                The equality operator returns <code><k->true</k-></code> if the operands have the same value.<br>
+                The inequality operator returns <code><k->true</k-></code> if the operands have different values.<br>
+                The other operators return <code><k->true</k-></code> if the first operand is less than, greater than, less or equal than or greater or equal than the second operand, respectively.
             </p>
             <p>
                 <code>=:</code>, <code>!:</code>.<br>
-
+                The existence operator returns <code><k->true</k-></code> if the first operand has the value of one of the elements of the second operand.<br>
+                The inexistence operator returns <code><k->true</k-></code> if all the elements of the second operand are different than the value of the first operand.<br>
+                The second operand must be an array with a base type that is the same as the type of the first operand or can be implicitly converted to it.
             </p>
+            <p>
+                Their return value is the same as if they were declared in the following way:
+            </p>
+            <div style="min-width: 100%; display: flex;">
+                <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
+                    <example- style="margin: 0;">
+                        <fill->
+                            <label- class="nobefore">Existence</label->
+                            <code-><scroll->
+                                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) {
+                                    <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
+                                        <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
+                                    }
+                                    <w->return</w-> <k->false</k->;
+                                }
+                            </scroll-></code->
+                        </fill->
+                    </example->
+                </div>
+                <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
+                    <example- style="margin: 0;">
+                        <fill->
+                            <label- class="nobefore">Inexistence</label->
+                            <code-><scroll->
+                                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) {
+                                    <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
+                                        <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
+                                    }
+                                    <w->return</w-> <k->true</k->;
+                                }
+                            </scroll-></code->
+                        </fill->
+                    </example->
+                </div>
+            </div>
+
+
 
 
             <!--------------------------------------------------------------------->
@@ -3314,7 +3363,7 @@
                             </td>
                             <td class="center nowrap">
                                 <elm-><t->?T</t-><sup>l</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]<br>
-                                <template->when(type_info::is_array(T) || type_info::is_tuple(T))</template->
+                                <template->when(types::is_array(T) || types::is_tuple(T))</template->
                             </td>
                             <td class="center"><code><t->element type<sup>l</sup></t-></code></td>
                             <td class="left" rowspan=4>Subscription</td>
@@ -3325,7 +3374,7 @@
                             <fake-td></fake-td>
                             <td class="center nowrap">
                                 <elm-><t->?T</t-><sup>r</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]<br>
-                                <template->when(type_info::is_array(T) || type_info::is_tuple(T))</template->
+                                <template->when(types::is_array(T) || types::is_tuple(T))</template->
                             </td>
                             <td class="center"><code><t->element type<sup>r</sup></t-></code></td>
                             <fake-td></fake-td>
@@ -3336,7 +3385,7 @@
                             <fake-td></fake-td>
                             <td class="center nowrap">
                                 <elm-><t->?T</t-><sup>l</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]<br>
-                                <template->when(type_info::is_struct(T))</template->
+                                <template->when(types::is_struct(T))</template->
                         </td>
                             <td class="center"><code><t->member type<sup>l</sup></t-></code></td>
                             <fake-td></fake-td>
@@ -3347,7 +3396,7 @@
                             <fake-td></fake-td>
                             <td class="center nowrap">
                                 <elm-><t->?T</t-><sup>r</sup></elm->[<elm-><t->uint</t-><sup>r</sup></elm->]<br>
-                                <template->when(type_info::is_struct(T))</template->
+                                <template->when(types::is_struct(T))</template->
                         </td>
                             <td class="center"><code><t->member type<sup>r</sup></t-></code></td>
                             <fake-td></fake-td>
@@ -3358,7 +3407,7 @@
                             <td class="center" rowspan=4><code>.</code></td>
                             <td class="center nowrap">
                                 <elm-><t->?T<sup>l</sup></t-></elm->.<elm->member<sup>id</sup></elm-><br>
-                                <template->when(type_info::is_array(T))</template-><br>
+                                <template->when(types::is_array(T))</template-><br>
                             </td>
                             <td class="center"><code><t->element type<sup>l</sup></t-></code></td>
                             <td class="left" rowspan=4>Member access</td>
@@ -3369,7 +3418,7 @@
                             <fake-td></fake-td>
                             <td class="center nowrap">
                                 <elm-><t->?T<sup>r</sup></t-></elm->.<elm->member<sup>id</sup></elm-><br>
-                                <template->when(type_info::is_array(T))</template-><br>
+                                <template->when(types::is_array(T))</template-><br>
                             </td>
                             <td class="center"><code><t->element type<sup>r</sup></t-></code></td>
                             <fake-td></fake-td>
@@ -3380,7 +3429,7 @@
                             <fake-td></fake-td>
                             <td class="center nowrap">
                                 <elm-><t->?T<sup>l</sup></t-></elm->.<elm->member<sup>id</sup></elm-><br>
-                                <template->when(type_info::is_struct(T))</template-><br>
+                                <template->when(types::is_struct(T))</template-><br>
                             </td>
                             <td class="center"><code><t->member type<sup>l</sup></t-></code></td>
                             <fake-td></fake-td>
@@ -3391,7 +3440,7 @@
                             <fake-td></fake-td>
                             <td class="center nowrap">
                                 <elm-><t->?T<sup>r</sup></t-></elm->.<elm->member<sup>id</sup></elm-><br>
-                                <template->when(type_info::is_struct(T))</template-><br>
+                                <template->when(types::is_struct(T))</template-><br>
                             </td>
                             <td class="center"><code><t->member type<sup>r</sup></t-></code></td>
                             <fake-td></fake-td>

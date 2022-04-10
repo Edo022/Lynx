@@ -19,3 +19,12 @@ per ogni funzione:
             runtime:      //TODO
 
 per-ogni-funzione(main)-o <file>
+
+
+
+
+
+
+const evaluation
+    full code unwrapping
+    const optimizaion
