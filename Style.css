@@ -14,8 +14,9 @@
         --font-size-mono:     14px;
         --font-size-code:     13px;
         --font-size-large:    22px;
-        --font-size-x-large:  32px;
-        --font-size-xx-large: 46px;/*
+        --font-size-x-large:  28px;
+        --font-size-xx-large: 36px;
+        --font-size-xxx-large: 48px;/*
     }
 
     Sizes { */
@@ -90,12 +91,7 @@
     }
     ul {
         margin-left: 2ch;
-    }
-    h1, h2, h3, h4 { font-weight: bold; }
-    h1 { font-size: var(--font-size-xx-large); }
-    h2 { font-size: var(--font-size-x-large);  }
-    h3 { font-size: var(--font-size-large);    }
-    h4 { font-size: var(--font-size-medium);   }/*
+    } /*
 } */
 
 
@@ -443,23 +439,35 @@ body {
         }
         sep-1- {
             background-color: var(--fg-separator);
-            margin: 20ch 0 20ch 0;
+            margin: 256px 0 256px 0;
             min-height: 2px;
             max-height: 2px;
         }
         sep-2- {
             background-color: var(--fg-separator);
-            margin: 8ch 0 8ch 0;
+            margin: 128px 0 128px 0;
             min-height: 1px;
             max-height: 1px;
         }
         sep-3- {
-            display: block;
             background-color: transparent;
-            margin-top: 8ch;
+            margin: 64px 0 64px 0;
+            min-height: 0;
+            max-height: 0;
+        }
+        sep-4- {
+            background-color: transparent;
+            margin: 32px 0 32px 0;
+            min-height: 0;
             max-height: 0;
         }/*
-    }
+    }*/
+
+    .h1, .h2, .h3, .h4 { font-weight: bold; display: block; }
+    .h1 { font-size: var(--font-size-xxx-large); }
+    .h2 { font-size: var(--font-size-xx-large);  }
+    .h3 { font-size: var(--font-size-x-large);   }
+    .h4 { font-size: var(--font-size-large);     }/*
 } */
 
 

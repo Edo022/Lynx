@@ -1,3 +1,11 @@
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+
+
+
 
 // Remove HTML indentation from pre blocks and add the line number
 function format(s){
@@ -71,18 +79,35 @@ function fix_elm_height(){
 
 
 // Indent and enumerate index elements
-var index_indent = "4ch";
+var index_indent = "3ch";
 function format_index_elm(elm, depth, last){
     var children = elm.children;
     for(var i = 0; i < children.length; i++){
         var c = children[i];
         if(c.tagName == "INDEXD-" || c.tagName == "INDEXH-") {
+            var id = c.innerHTML;
+            if(id.length == 0) continue;
+            var name = capitalize(id).replaceAll('-', ' ');
+            var num = (c.tagName == "INDEXH-" ? last : last + i + ".");
+
+            // Fix index
             c.innerHTML =
                 "<a style=\"display: inline-block; padding: 0 1ch 0 1ch;\" " +
-                "href=\"#" + c.innerHTML.toLocaleLowerCase().replaceAll(' ', '-') + "\">" + (c.tagName == "INDEXH-" ? last : last + i + ".") + " " + c.innerHTML + "</a>"
+                "href=\"#" + id + "\">" + num + " " + c.innerHTML + "</a>"
             ;
             c.style.paddingLeft = "calc(" + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
             c.style.maxWidth = "calc(100% - " + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
+
+            //Fix header
+            console.info("loaded " + id);
+            var depth2 = (c.tagName == "INDEXH-" ? depth : depth + 1);
+            var header = document.getElementById(id);
+
+            header.insertAdjacentHTML("beforebegin", "<sep-" + depth2 + "-></sep-" + depth2 + "->");
+            header.insertAdjacentHTML("afterend", "<sep-3-></sep-3->");
+            header.innerHTML = "" + num + " " + name;
+            if(depth == 0) header.outerHTML += "<sep-3-></sep-3->";
+            header.classList.add("h" + depth2);
         }
         else if(c.tagName == "INDEX-") {
             format_index_elm(c, depth + 1, last + i + ".");
@@ -93,6 +118,8 @@ function format_index(){
     var children = document.getElementsByTagName("INDEX-");
     format_index_elm(children[0], 0, "");
 }
+
+
 
 
 
