@@ -129,4 +129,11 @@ document.addEventListener("DOMContentLoaded", function() {
     format_code();
     fix_elm_height();
     fix_syntax_heights();
+
+    // This scrolls to the correct header, which is the same the browser already scrolled to.
+    // Apparently, JS is loaded after scrolling to it and adding new HTML elements messes everything up,
+    // so JS has to scroll again after the new elements are loaded.
+    // Anything else refuses to work
+    var header = window.location.href;
+    window.location.replace(header);
 });

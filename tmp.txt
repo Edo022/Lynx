@@ -25,6 +25,42 @@ per-ogni-funzione(main)-o <file>
 
 
 
-const evaluation
-    full code unwrapping
-    const optimizaion
+
+
+
+
+
+
+Preprocessing
+    Conditionals evaluation
+    File inclusion
+    Macro expansion
+
+Compilation
+    Tokenization
+    Syntax analysis
+        Syntax tree creation
+        Syntax errors output
+    Semantic analysis
+        Final symbol names assignment
+        Hash tables creation
+        Symbol tables creation
+        Symbol indexing
+        Template instantiation
+        Semantic errors output
+
+    const evaluation
+        Code unwrapping
+        Constness errors output
+        Const optimizaion
+
+    Optimizations
+        TODO
+
+    Translation
+        GLSL/C++ output
+        SPIRV/binary output
+
+    Language-specific optimizations
+        TODO
+
