@@ -93,7 +93,7 @@ function format_index_elm(elm, depth, last){
             // Fix index
             c.innerHTML =
                 "<a style=\"display: inline-block; padding: 0 1ch 0 1ch;\" " +
-                "href=\"#" + id + "\">" + num + " " + c.innerHTML + "</a>"
+                "href=\"#" + id + "\">" + num + " " + name + "</a>"
             ;
             c.style.paddingLeft = "calc(" + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
             c.style.maxWidth = "calc(100% - " + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
