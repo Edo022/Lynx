@@ -451,13 +451,13 @@ body {
         }
         sep-3- {
             background-color: transparent;
-            margin: 64px 0 64px 0;
+            margin: 128px 0 128px 0;
             min-height: 0;
             max-height: 0;
         }
         sep-4- {
             background-color: transparent;
-            margin: 32px 0 32px 0;
+            margin: 64px 0 64px 0;
             min-height: 0;
             max-height: 0;
         }/*

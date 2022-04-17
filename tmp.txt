@@ -1,28 +1,15 @@
--o <file>          [binary] SPIRV output
--oe <file>         [source] GLSL output
--ot <file>         [] Syntax tree output
--oo <file>         [] Optimized syntax tree output
+-o <file>           SPIRV output path.
+-oe <file>          GLSL output path.
+-ot <file>          Syntax tree output path.
+-os <file>          Semantic tree output path.
 
+-f                  Full build. All the source files are preprocessed and compiled, including the core modules and the standard modules.
 
-ogni espressione è formata da operatori ed operandi
-ogni espressione ha un operatore speciale che contiene tutta l'espressione e la rende un operando
-
-
-
-la fase della compilazione in cui si determina cosa è compile time funziona in questo modo:
-
-per ogni funzione:
-    per ogni statement:
-        se è un if:
-            compile time se la condizione è un'espressione compile time
-            compile time: si valuta l'espressione e l'if o l'else viene escluso dal codice
-            runtime:      //TODO
-
-per-ogni-funzione(main)-o <file>
-
-
-
-
+-O0                 No optimizations. Any semantic element and statement is left as it is.
+-O1                 //TODO
+-O2                 //TODO
+-O3                 //TODO
+-Of                 Complete optimization. Includes standard modules and context dependant optimizations. Requires -f.
 
 
 
@@ -33,7 +20,7 @@ per-ogni-funzione(main)-o <file>
 
 Preprocessing
     Conditionals evaluation
-    File inclusion
+    File inclusion                                                  +
     Macro expansion
 
 Compilation
@@ -42,17 +29,20 @@ Compilation
         Syntax tree creation
         Syntax errors output
     Semantic analysis
-        Final symbol names assignment
-        Hash tables creation
-        Symbol tables creation
-        Symbol indexing
         Template instantiation
+        Symbol tables creation
+        Final symbol names assignment
+        Symbol indexing
+        Semantic tree creation
         Semantic errors output
 
-    const evaluation
+    Const evaluation
         Code unwrapping
         Constness errors output
         Const optimizaion
+
+    Static analysis
+        Logical errors output
 
     Optimizations
         TODO

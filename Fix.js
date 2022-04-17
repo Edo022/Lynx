@@ -86,7 +86,10 @@ function format_index_elm(elm, depth, last){
         var c = children[i];
         if(c.tagName == "INDEXD-" || c.tagName == "INDEXH-") {
             var id = c.innerHTML;
-            if(id.length == 0) continue;
+            if(id.length == 0) {
+                c.style.minHeight = "2em";
+                continue;
+            }
             var name = capitalize(id).replaceAll('-', ' ');
             var num = (c.tagName == "INDEXH-" ? last : last + i + ".");
 
@@ -104,9 +107,8 @@ function format_index_elm(elm, depth, last){
             var header = document.getElementById(id);
 
             header.insertAdjacentHTML("beforebegin", "<sep-" + depth2 + "-></sep-" + depth2 + "->");
-            header.insertAdjacentHTML("afterend", "<sep-3-></sep-3->");
             header.innerHTML = "" + num + " " + name;
-            if(depth == 0) header.outerHTML += "<sep-3-></sep-3->";
+            if(depth == 0) header.insertAdjacentHTML("afterend", "<sep-3-></sep-3->");
             header.classList.add("h" + depth2);
         }
         else if(c.tagName == "INDEX-") {
