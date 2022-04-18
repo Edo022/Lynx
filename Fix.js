@@ -126,7 +126,7 @@ function format_index(){
 
 
 
-document.addEventListener("DOMContentLoaded", function() {
+function initFix() {
     format_index();
     format_code();
     fix_elm_height();
@@ -138,4 +138,4 @@ document.addEventListener("DOMContentLoaded", function() {
     // Anything else refuses to work
     var header = window.location.href;
     window.location.replace(header);
-});
+};

@@ -171,7 +171,7 @@ function init_slider(){
 
 
 
-window.onload = function (){
+function initSlider() {
     // Save slider element in global variable
     slider = document.getElementById("main-slider");
 

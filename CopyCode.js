@@ -24,9 +24,9 @@ function copy_code(lable) {
 }
 
 
-document.addEventListener("DOMContentLoaded", function() {
+function initCopyCode() {
     var children = document.getElementsByTagName("LABEL-");
     for(var i = 0; i < children.length; i++){
         children[i].addEventListener("click", function(){ copy_code(this); })
     }
-});
+};

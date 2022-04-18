@@ -77,7 +77,7 @@
             </index->
 
             <index-><indexh->language</indexh->
-                <index-><indexh->language-components</indexh->
+                <index-><indexh->language-concepts</indexh->
                     <indexd->character-set</indexd->
                     <index-><indexh->tokens</indexh->
                         <indexd->keywords-and-punctuation-tokens</indexd->
@@ -89,6 +89,8 @@
                         <indexd->scopes</indexd->
                         <indexd->name-resolution</indexd->
                     </index->
+                    <indexd->undefined-values</indexd->
+                    <indexd->undefined-behaviour</indexd->
                 </index->
                 <indexd->namespaces</indexd->
                 <index-><indexh->types</indexh->
@@ -105,7 +107,7 @@
                     </index->
                     <index-><indexh->special-types</indexh->
                         <indexd->void</indexd->
-                        <indexd->typenames</indexd->
+                        <indexd->typename</indexd->
                     </index->
                     <indexd->implicit-conversions</indexd->
                     <indexd->auto-specifier</indexd->
@@ -118,8 +120,7 @@
                         <indexd->constructors</indexd->
                     </index->
                     <index-><indexh->stored-values</indexh->
-                        <indexd->variables</indexd->
-                        <indexd->temporary-variables</indexd->
+                        <indexd->variables</indexd-> <indexd->temporary-variables</indexd->
                     </index->
                     <indexd->left-and-right-values</indexd->
                 </index->
@@ -414,9 +415,9 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Language components                                             -->
+            <!-- Language concepts                                               -->
             <!--------------------------------------------------------------------->
-            <h1 id="language-components"></h1>
+            <h1 id="language-concepts"></h1>
 
 
 
@@ -529,15 +530,15 @@
                     </tr>
                     <tr>
                         <td>Literal</td>
-                        <td class="left" colspan=5>Any sequence of characters with pattern <code><ce->[</ce-><s->0</s-><ce->-</ce-><s->9</s-><ce->][</ce-><s->a</s-><ce->-</ce-><s->zA</s-><ce->-</ce-><s->Z</s-><s->_</s-><ce->]*(\</ce-><s->.</s-><ce->[</ce-><s->a</s-><ce->-</ce-><s->zA</s-><ce->-</ce-><s->Z</s-><s->_</s-><ce->]*<ce->)?</ce-></code></td>
+                        <td class="left" colspan=5>Any sequence of characters with pattern <code><sr->[</sr-><s->0</s-><sr->-</sr-><s->9</s-><sr->][</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sr->]*(\</sr-><s->.</s-><sr->[</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sr->]*<sr->)?</sr-></code></td>
                     </tr>
                     <tr>
                         <td>Alphanumeric identifier</td>
-                        <td class="left" colspan=5>Any sequence of characters with pattern <code><ce->[</ce-><s->a</s-><ce->-</ce-><s->zA</s-><ce->-</ce-><s->Z_</s-><ce->][</ce-><s->a</s-><ce->-</ce-><s->zA</s-><ce->-</ce-><s->Z_0</s-><ce->-</ce-><s->9</s-><ce->]*</ce-></code> that isn't a keyword</td>
+                        <td class="left" colspan=5>Any sequence of characters with pattern <code><sr->[</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sr->][</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sr->]*</sr-></code> that isn't a keyword</td>
                     </tr>
                     <tr>
                         <td>Symbolic identifier</td>
-                        <td class="left" colspan=5>Any sequence of characters with pattern <code><ce->[</ce-><s->!$%&()*+</s-><ce->\</ce-><s->-/:&lt;=&gt;?@^`|~;{}</s-><ce->\</ce-><s->[</s-><ce->\</ce-><s->]</s-><ce->\</ce-><s->.</s-><ce->]+</ce-></code> that isn't a punctuation token</td>
+                        <td class="left" colspan=5>Any sequence of characters with pattern <code><sr->[</sr-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sr->]+</sr-></code> that isn't a punctuation token</td>
                     </tr>
                 </tbody>
             </table></div>
@@ -631,10 +632,10 @@
             <!--------------------------------------------------------------------->
             <h1 id="identifiers"></h1>
             <p>
-                <b>Identifiers</b> are used to name and reference symbols.<br>
+                <b>Identifiers</b> are used to <b>name and reference symbols</b>.<br>
                 An identifier can be
-                alphanumeric (<code><ce->[</ce-><s->a</s-><ce->-</ce-><s->zA</s-><ce->-</ce-><s->Z_</s-><ce->][</ce-><s->a</s-><ce->-</ce-><s->zA</s-><ce->-</ce-><s->Z_0</s-><ce->-</ce-><s->9</s-><ce->]*</ce-></code>)
-                or symbolic (<code><ce->[</ce-><s->!$%&()*+</s-><ce->\</ce-><s->-/:&lt;=&gt;?@^`|~;{}</s-><ce->\</ce-><s->[</s-><ce->\</ce-><s->]</s-><ce->\</ce-><s->.</s-><ce->]+</ce-></code>).
+                alphanumeric (<code><sr->[</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sr->][</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sr->]*</sr-></code>)
+                or symbolic (<code><sr->[</sr-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sr->]+</sr-></code>).
             </p>
             <p>
                 All identifiers must be unique to their scope.<br>
@@ -661,7 +662,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="symbols"></h1>
             <p>
-                Certain semantic elements can be referenced to retrieve their value or obtain additional informations. These elements are called <b>symbols</b>.<br>
+                Certain <b>semantic elements</b> can be <b>referenced</b> to retrieve their value or obtain additional informations. These elements are called <b>symbols</b>.<br>
                 Symbols are referenced through their <a href="#name-resolution">name</a>.<br>
                 <a href="#unnamed-types">Unnamed types</a> are also symbols.
             </p>
@@ -850,6 +851,36 @@
 
 
             <!--------------------------------------------------------------------->
+            <!-- Undefined values                                                -->
+            <!--------------------------------------------------------------------->
+            <h1 id="undefined-values"></h1>
+            <p>
+                <b>Any unknown value</b> of any type is an <b>undefined value</b>.<br>
+                The language can generate undefined values for a variety of reasons.<br>
+                Such values are usually the result of errors that occurred during the execution of a function and don't contain any useful information.<br>
+                Uninitialized variables also have undefined value.
+            </p>
+            <p>
+                Generating undefined values doesn't stop the execution and is not signaled in any way, nor is it detectable.<br>
+                The shader is responsible for preventing or discarding undefined values.
+            </p>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Undefined behaviour                                             -->
+            <!--------------------------------------------------------------------->
+            <h1 id="undefined-behaviour"></h1>
+            <p>
+                Certain actions cause undefined behaviour.<br>
+                <b>Undefined behaviour</b> means that the <b>code compiles with no erros</b>, but the <b>runtime behaviour is unknown</b> and anything could happen.<br>
+                The shader could work just fine, your hard disk could get erased or the Sun could implode. No one knows.
+            </p>
+            <p>
+                As with undefined values, the shader is responsible for preventing undefined behaviours.
+            </p>
+
+
+            <!--------------------------------------------------------------------->
             <!-- Namespaces                                                      -->
             <!--------------------------------------------------------------------->
             <h1 id="namespaces"></h1>
@@ -876,8 +907,11 @@
                         <w->namespace</w-> a {
                             <t->int</t-> n = <k->4</k->;
                         }
+                        <w->namespace</w-> {
+                            <t->int</t-> n = <k->4</k->;
+                        }
 
-                        <t->int</t-> n2 = a::<k->n</k->;
+                        <t->int</t-> n2 = a.<k->n</k->;
                     </scroll-></code->
                 </fill->
             </example->
@@ -908,9 +942,8 @@
             <h1 id="primitive-types"></h1>
             <p>Lux features <b>7 primitive types</b>, which can be used to define more complex types such as structs, arrays, enums and tuples.</p>
             <p>
-                Those types are always defined and they act as if they were declared in the module scope.<br>
+                These types are always defined and they act as if they were declared in the <a href="#core-module">core module</a>.<br>
                 Primitive types are <b>not keywords</b> and can be shadowed like any other symbol.
-                <br>//TODO GL_EXT_shader_explicit_arithmetic_types_int64
             </p>
             <p>The primitive types are:</p>
             <div class="table-container"><table>
@@ -949,16 +982,9 @@
                 <tr>
                     <td class="center"><code><t->bool</t-></code></td>
                     <td class="center">4</td>
-                    <td>Boolean value. <code><k->true</k-></code> or <code><k->false</k-></code></td>
+                    <td>Boolean value</td>
                 </tr>
             </table></div>
-            <p>
-                As in most programming languages, the boolean <code><k->true</k-></code> and <code><k->false</k-></code> values correspond to the integral literals <code><k->1</k-></code> and <code><k->0</k-></code>. They can be used interchangeably.<br>
-                Unsigned integers cannot represent negative numbers, but the maximum value is twice as high as their signed counterpart.
-            </p>
-            <p>
-                //TODO memory representation and float standard
-            </p>
             <p>
                 All primitives types are convertible to each other. This is explained in detail in <a href="#implicit-conversions">Implicit conversions</a>.<br>
             </p>
@@ -972,18 +998,95 @@
             <!-- Integral types                                                  -->
             <!--------------------------------------------------------------------->
             <h1 id="integral-types"></h1>
+            <p>
+                <code><t->int</t-></code>, <code><t->uint</t-></code>, <code><t->long</t-></code>, <code><t->ulong</t-></code>.<br>
+                <b>Integral types</b> are used to <b>represent integers</b>.<br>
+                Unsigned integers cannot represent negative numbers, but the maximum value is twice as high as their signed counterpart.
+            </p>
+            <p>
+                All signed integral types use the Two's Complement to represent negative numbers.<br>
+                Positive numbers and <code><k->0</k-></code> use the corresponding binary value in both signed and unsigned integral types.
+            </p>
+            <example->
+                <fill->
+                    <code- style="border-top-left-radius: var(--code-decoration-r);"><scroll->
+                                                        <c->  1              31</c->
+                                                        <c->sign           value</c->
+                                                        <c->├┬───────────────┴──────────────┐</c->  <t->int</t->
+                                                        <sr->┕</sr-><s->┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                                                                         <c->32</c->
+                                                                       <c->value</c->
+                                                        <c->┌────────────────┴──────────────┐</c->  <t->uint</t->
+                                                        <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                        <c->  1                              63</c->
+                        <c->sign                           value</c->
+                        <c->├┬───────────────────────────────┴──────────────────────────────┐</c->  <t->long</t->
+                        <sr->┕</sr-><s->┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                                                         <c->64</c->
+                                                       <c->value</c->
+                        <c->┌────────────────────────────────┴──────────────────────────────┐</c->  <t->ulong</t->
+                        <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                    </scroll-></code->
+                </fill->
+            </example->
+            <p>
+                //TODO GL_EXT_shader_explicit_arithmetic_types_int64
+            </p>
 
 
             <!--------------------------------------------------------------------->
             <!-- Floating point types                                            -->
             <!--------------------------------------------------------------------->
             <h1 id="floating-point-types"></h1>
+            <p>
+                <code><t->float</t-></code>, <code><t->double</t-></code>.<br>
+                <b>Floating point types</b> are used to <b>approximate real numbers</b>.<br>
+            </p>
+            <p>
+                Both floating point types are encoded according to the IEEE 754 Standard.<br>
+                Positive and negative <code><k->inf</k-></code>, <code><k->nan</k-></code> and signed <code><k->0</k-></code> are all supported.<br>
+                <code><k->+0</k-></code> and <code><k->-0</k-></code> are equal.
+            </p>
+            <example->
+                <fill->
+                    <code- style="border-top-left-radius: var(--code-decoration-r);"><scroll->
+                                                        <c-> 1      8          23</c->
+                                                        <c->sign exponent   mantissa</c->
+                                                        <c->├┬───┴──┬───────────┴───────────┐</c->  <t->float</t->
+                                                        <sr->┕</sr-><sg->┷┷┷┷┷┷┷</sg-><s->┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                                                        <c->00000000000000000000000000000000</c->   <k->+0.0</k->
+                                                        <c->10000000000000000000000000000000</c->   <k->-0.0</k->
+                                                        <c->01111111100000000000000000000000</c->   <k->+inf</k->
+                                                        <c->11111111100000000000000000000000</c->   <k->-inf</k->
+                                                        <c->011111111&lt;─────── not 0 ───────&gt;</c->   <k->nan</k->
+                                                        <c->111111111&lt;─────── not 0 ───────&gt;</c->   <k->nan</k->
+
+                        <c-> 1      11                           52</c->
+                        <c->sign  exponent                    mantissa</c->
+                        <c->├┬────┴────┬──────────────────────────┴─────────────────────────┐</c->  <t->double</t->
+                        <sr->┕</sr-><sg->┷┷┷┷┷┷┷┷┷┷</sg-><s->┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                        <c->0000000000000000000000000000000000000000000000000000000000000000</c->   <k->+0.0</k->
+                        <c->1000000000000000000000000000000000000000000000000000000000000000</c->   <k->-0.0</k->
+                        <c->0111111110000000000000000000000000000000000000000000000000000000</c->   <k->+inf</k->
+                        <c->1111111110000000000000000000000000000000000000000000000000000000</c->   <k->-inf</k->
+                        <c->011111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->   <k->nan</k->
+                        <c->111111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->   <k->nan</k->
+                    </scroll-></code->
+                </fill->
+            </example->
+            <p>
+                <code><k->inf</k-></code> values are generated as required by the standard.<br>
+                <code><k->nan</k-></code> values are not generated for consistency and performance reasons.
+            </p>
 
 
             <!--------------------------------------------------------------------->
             <!-- Bool type                                                       -->
             <!--------------------------------------------------------------------->
             <h1 id="bool-type"></h1>
+            <p>
+
+            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -1041,7 +1144,7 @@
                         }
 
                         <t->void</t-> <f->main</f->(){
-                            <t->c</t-> a = <k->c::pi</k->;       <c->// Ok</c->
+                            <t->c</t-> a = <k->c.pi</k->;       <c->// Ok</c->
                             <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
                             <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
@@ -1066,7 +1169,7 @@
                         }
 
                         <t->void</t-> <f->main</f->(){
-                            <t->c</t-> a = <k->c::phi</k->;      <c->// Ok</c->
+                            <t->c</t-> a = <k->c.phi</k->;      <c->// Ok</c->
                             <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
                             <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
@@ -1257,9 +1360,9 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Typenaes                                                        -->
+            <!-- Typename                                                         -->
             <!--------------------------------------------------------------------->
-            <h1 id="typenames"></h1>
+            <h1 id="typename"></h1>
             <p>
                 <b>Typenames</b> are special types that can <b>store</b> other <b>types</b>.<br>
                 Typename values can be used anywhere where a type is required.
@@ -1315,6 +1418,7 @@
             <p>
                 Primitive types are all implicitly convertible between them.<br>
                 The result of conversions follow these rules:
+                //TODO FIX NEGATIVE VALUE TO UNSIGNED
             </p>
             <div class="table-container"><table>
                 <!-- integer -->
@@ -1331,10 +1435,10 @@
 
                     <tr class="even">
                         <th rowspan="13"><t->uint</t-><br><br><t->int</t-><br><br><t->ulong</t-><br><br><t->long</t-></th>
-                        <th><range-val->== <k->-9223372036854775808</k-><br><range-var->limits::long::min</range-var-></range-val-></th>
-                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to n % limits::uint::<k->max</k-></td>
+                        <th><range-val->== <k->-9223372036854775808</k-><br><range-var->limits.long.min</range-var-></range-val-></th>
+                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to n % limits.uint.<k->max</k-></td>
                         <td class="center wrap conv-cell-n" rowspan="3">Undefined</td>
-                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to n % limits::ulong::<k->max</k-></td>
+                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to n % limits.ulong.<k->max</k-></td>
                         <td class="center wrap conv-cell-y" rowspan="11">Correct result</td>
                         <td class="center wrap conv-cell-m" rowspan="4">Conversions are not symmetric</td>
                         <td class="center wrap conv-cell-m" rowspan="2">Conversions are not symmetric</td>
@@ -1342,7 +1446,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&lt; <k->-9007199254740992</k-><br><range-var->limits::double::min_precise_int</range-var-></range-val-></th>
+                        <th><range-val->&lt; <k->-9007199254740992</k-><br><range-var->limits.double.min_precise_int</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1353,7 +1457,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&lt; <k->-2147483648</k-><br><range-var->limits::int::min</range-var-></range-val-></th>
+                        <th><range-val->&lt; <k->-2147483648</k-><br><range-var->limits.int.min</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1364,7 +1468,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&lt; <k->-16777216</k-><br><range-var->limits::float::min_precise_int</range-var-></range-val-></th>
+                        <th><range-val->&lt; <k->-16777216</k-><br><range-var->limits.float.min_precise_int</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <td class="center wrap conv-cell-y" rowspan="5">Correct result</td>
                         <fake-td></fake-td>
@@ -1408,7 +1512,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+16777216</k-><br><range-var->limits::float::max_precise_int</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+16777216</k-><br><range-var->limits.float.max_precise_int</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1419,7 +1523,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+2147483647</k-><br><range-var->limits::int::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+2147483647</k-><br><range-var->limits.int.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <td class="center wrap conv-cell-n" rowspan="5">Undefined</td>
                         <fake-td></fake-td>
@@ -1430,8 +1534,8 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+4294967295</k-><br><range-var->limits::uint::max</range-var-></range-val-></th>
-                        <td class="center wrap conv-cell-m" rowspan="4">Overflows to n % limits::uint::<k->max</k-></td>
+                        <th><range-val->&gt; <k->+4294967295</k-><br><range-var->limits.uint.max</range-var-></range-val-></th>
+                        <td class="center wrap conv-cell-m" rowspan="4">Overflows to n % limits.uint.<k->max</k-></td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1441,7 +1545,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+9007199254740992</k-><br><range-var->limits::double::max_precise_int</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+9007199254740992</k-><br><range-var->limits.double.max_precise_int</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1452,7 +1556,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+9223372036854775807</k-><br><range-var->limits::long::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+9223372036854775807</k-><br><range-var->limits.long.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1463,7 +1567,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->== <k->+18446744073709551615</k-><br><range-var->limits::ulong::max</range-var-></range-val-></th>
+                        <th><range-val->== <k->+18446744073709551615</k-><br><range-var->limits.ulong.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1499,7 +1603,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->== <k->-1.7976931348623157081e+308</k-><br><range-var->limits::double::min</range-var-></range-val-></th>
+                        <th><range-val->== <k->-1.7976931348623157081e+308</k-><br><range-var->limits.double.min</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1510,7 +1614,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&lt; <k->-3.4028234663852885981e+38</k-><br><range-var->limits::float::min</range-var-></range-val-></th>
+                        <th><range-val->&lt; <k->-3.4028234663852885981e+38</k-><br><range-var->limits.float.min</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1521,7 +1625,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&lt; <k->-9223372036854775808.0</k-><br><range-var->limits::long::min</range-var-></range-val-></th>
+                        <th><range-val->&lt; <k->-9223372036854775808.0</k-><br><range-var->limits.long.min</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1532,7 +1636,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&lt; <k->-2147483648.0</k-><br><range-var->limits::int::min</range-var-></range-val-></th>
+                        <th><range-val->&lt; <k->-2147483648.0</k-><br><range-var->limits.int.min</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1576,7 +1680,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+2147483647.0</k-><br><range-var->limits::int::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+2147483647.0</k-><br><range-var->limits.int.max</range-var-></range-val-></th>
                         <td class="center wrap conv-cell-n" rowspan="8">Undefined</td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1587,7 +1691,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+4294967297.0</k-><br><range-var->limits::uint::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+4294967297.0</k-><br><range-var->limits.uint.max</range-var-></range-val-></th>
                         <td class="center wrap conv-cell-n" rowspan="7">Undefined</td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1598,7 +1702,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+9223372036854775807.0</k-><br><range-var->limits::long::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+9223372036854775807.0</k-><br><range-var->limits.long.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1609,7 +1713,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+18446744073709551615.0</k-><br><range-var->limits::ulong::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+18446744073709551615.0</k-><br><range-var->limits.ulong.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <td class="center wrap conv-cell-n" rowspan="5">Undefined</td>
@@ -1620,7 +1724,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->&gt; <k->+3.4028234663852885981e+38</k-><br><range-var->limits::float::max</range-var-></range-val-></th>
+                        <th><range-val->&gt; <k->+3.4028234663852885981e+38</k-><br><range-var->limits.float.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1631,7 +1735,7 @@
                     </tr>
                     <tr class="even">
                         <fake-td></fake-td>
-                        <th><range-val->== <k->+1.7976931348623157081e+308</k-><br><range-var->limits::double::max</range-var-></range-val-></th>
+                        <th><range-val->== <k->+1.7976931348623157081e+308</k-><br><range-var->limits.double.max</range-var-></range-val-></th>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -1732,7 +1836,7 @@
                 </tr>
                 <tr>
                     <td class="center">
-                        <template->when(types::is_struct(U))</template-><br>
+                        <template->when(types.is_struct(U))</template-><br>
                         <code><t->U</t-></code>
                     </td>
                 </tr>
@@ -1745,7 +1849,7 @@
                 <!-- Array to array and array to bool ------------------------------------------>
                 <tr>
                     <td class="center" rowspan="2">
-                        <template->when(!types::is_struct(T) && !types::is_tuple(T))</template-><br>
+                        <template->when(!types.is_struct(T) && !types.is_tuple(T))</template-><br>
                         <code><t->T[n]</t-></code>
                     </td>
                     <td class="center"><code><t->U[n]</t-></code></td>
@@ -1979,7 +2083,7 @@
                         } grasses;
 
                         <t->void</t-> <f->main</f->(){
-                            module::grasses = <t->typeof</t->(grasses)::<k->on</k->;
+                            module.grasses = <t->typeof</t->(grasses).<k->on</k->;
                         }
                     </scroll-></code->
                 </fill->
@@ -2002,8 +2106,8 @@
                             <t->auto</t-> var = fun();
 
                             <c->// Both are allowed</c->
-                            var.c = <t->typeof</t->(var.c)::<k->idk1</k->;
-                            var.c = <t->typeof</t->(<t->typeof</t->(<f->fun</f->)::c)::<k->idk2</k->;
+                            var.c = <t->typeof</t->(var.c).<k->idk1</k->;
+                            var.c = <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
 
                             <t->typeof</t->(var.a) a = <k->0</k->;
                         }
@@ -2052,7 +2156,7 @@
                 Unary <a href="#common-operators"><code>+</code></a> and <a href="#common-operators"><code>-</code></a> operators are not part of the literal.
             </p>
             <p>
-                Literals are not sequences of tokens like other language components, but a category of tokens.<br>
+                Literals are not sequences of tokens like other semantic elements, but a category of tokens.<br>
                 Regex syntax is used to describe their pattern:
             </p>
             <div class="table-container"><table>
@@ -2175,7 +2279,7 @@
 
                         <t->void</t-> <f->main</f->(){
                             <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
-                            <t->int</t-> n = <t->baseof</t->(<f->f</f->::b[<k->0</k->])(<k->8</k->);
+                            <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->);
                         }
                     </scroll-></code->
                 </fill->
@@ -2281,7 +2385,7 @@
                         }
 
                         <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
-                            <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2::$2 has nothing to do with fun1::$2</ce->
+                            <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2.$2 has nothing to do with fun1.$2</ce->
                         }
 
                         <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
@@ -2449,8 +2553,8 @@
                     <label-></label->
                     <code-><scroll->
                         <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
-                            arg1 = <k->0</k->;     <c->// c_doesn't modify main::a, but the local argument in which its value was copied</c->
-                            arg2 = <k->0</k->;     <c->// c_modifies main::b</c->
+                            arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
+                            arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
                         }
 
                         <t->void</t-> <f->main</f->(){
@@ -2614,20 +2718,20 @@
 
                         <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
                         <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
-                            <w->return</w-> type_id::<k->integral</k->;
+                            <w->return</w-> type_id.<k->integral</k->;
                         }
                         <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
-                            <w->return</w-> type_id::<k->floating_point</k->;
+                            <w->return</w-> type_id.<k->floating_point</k->;
                         }
                         <w->default</w-> {
-                            <w->return</w-> type_id::<k->other</k->;
+                            <w->return</w-> type_id.<k->other</k->;
                         }
 
 
                         <t->void</t-> <f->main</f->(){
-                            <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id::integral</c->
-                            <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id::floating_point</c->
-                            <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id::other</c->
+                            <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id.integral</c->
+                            <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id.floating_point</c->
+                            <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -2654,20 +2758,20 @@
 
                         <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
                         <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
-                            <w->return</w-> type_id::<k->integral</k->;
+                            <w->return</w-> type_id.<k->integral</k->;
                         }
                         <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
-                            <w->return</w-> type_id::<k->floating_point</k->;
+                            <w->return</w-> type_id.<k->floating_point</k->;
                         }
                         <w->default</w-> {
-                            <w->return</w-> type_id::<k->other</k->;
+                            <w->return</w-> type_id.<k->other</k->;
                         }
 
 
                         <t->void</t-> <f->main</f->(){
-                            <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id::integral</c->
-                            <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id::floating_point</c->
-                            <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id::other</c->
+                            <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id.integral</c->
+                            <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id.floating_point</c->
+                            <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id.other</c->
                             <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
                         }
                     </scroll-></code->
@@ -2772,13 +2876,13 @@
                         <w->namespace</w-> n {
                             <t->void</t-> <f->f</f->(){}
                         }
-                        <w->alias</w-> n2 = n;        <c->// Ok, n2 = module::n</c->
-                        <w->alias</w-> f2 = n2::<f->f</f->;    <c->// Ok, f2 = (module::n2)::f = module::n::f</c->
-                        <w->alias</w-> f3 = n2::<f->f2</f->;   <c->// Ok, f2 = (module::n2)::(module::f2) = module::n::f</c->
+                        <w->alias</w-> n2 = n;        <c->// Ok, n2 = module.n</c->
+                        <w->alias</w-> f2 = n2.<f->f</f->;    <c->// Ok, f2 = (module.n2).f = module.n.f</c->
+                        <w->alias</w-> f3 = n2.<f->f2</f->;   <c->// Ok, f2 = (module.n2).(module.f2) = module.n.f</c->
 
                         <t->void</t-> <f->main</f->(){
-                            <f->f2</f->();            <c->// Ok, calls n::f()</c->
-                            <f->f3</f->();            <c->// Ok, calls n::f()</c->
+                            <f->f2</f->();            <c->// Ok, calls n.f()</c->
+                            <f->f3</f->();            <c->// Ok, calls n.f()</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -3942,9 +4046,9 @@
             <!--
             //TODO
             //module.x module.y module.z
-            module::pos.x
-            module::pos.y
-            module::pos.z
+            module.pos.x
+            module.pos.y
+            module.pos.z
             ^ coordinates in current workspace
 
 
@@ -3982,6 +4086,14 @@
 
     <!-- Functionalities -->
     <script src="CopyCode.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            initSlider();
+            initFix();
+            initCopyCode();
+        });
+    </script>
 </body>
 </html>
 
@@ -3992,5 +4104,9 @@
 
 
 <!--
-//TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
-//TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+    //TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+    //TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+-->
+
+<!--
+-->

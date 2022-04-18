@@ -54,3 +54,15 @@ Compilation
     Language-specific optimizations
         TODO
 
+
+
+
+
+
+
+
+
+
+
+
+distinguere *already declared* e *name conflict*
