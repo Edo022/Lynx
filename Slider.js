@@ -8,7 +8,7 @@
 
 
 // Save slider element
-var slider;
+let slider;
 
 // Updates the maximum and minimum values of the slider. Used in browser zoom and window resize
 function update_range(){
@@ -25,7 +25,7 @@ function getBackgroundSize(elem) {
     //             - CSS background-size
     //             - element's width and height
     //       * Extracts background URL
-    var computedStyle = getComputedStyle(elem),
+    let computedStyle = getComputedStyle(elem),
         image = new Image(),
         src = computedStyle.backgroundImage.replace(/url\((['"])?(.*?)\1\)/gi, '$2'),
         cssSize = computedStyle.backgroundSize,
@@ -77,7 +77,7 @@ function getBackgroundSize(elem) {
         }
     } else {
         // If not 'cover' or 'contain', loop through the values
-        for(var i = cssSize.length; i--;) {
+        for(let i = cssSize.length; i--;) {
             // Check if values are in pixels or in percentage
             if (cssSize[i].indexOf('px') > -1) {
                 // If in pixels, just remove the 'px' to get the value
@@ -118,7 +118,7 @@ function update_logo_width(value){
     document.getElementsByTagName("LOGO-TOP-")[0].style.width = "calc(" +
         "100% - " + value + "px - var(--slider-w) - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-w") +
     ")";
-    var logo = document.getElementsByTagName("LOGO-")[0];
+    let logo = document.getElementsByTagName("LOGO-")[0];
     logo.style.backgroundPositionX = "calc(" +
         "calc(" +
             "calc(100vw - var(--main-padding-r)) / 2 + " +
@@ -156,8 +156,8 @@ function _onresize() {
 
 function init_slider_first_time(){
     window.localStorage.setItem("slider-set", "set");
-    var min = document.getElementById("CALC-SLIDER-MIN").clientWidth;
-    var max = document.getElementById("CALC-VW"        ).clientWidth - document.getElementById("CALC-SLIDER-MAX").clientWidth;
+    let min = document.getElementById("CALC-SLIDER-MIN").clientWidth;
+    let max = document.getElementById("CALC-VW"        ).clientWidth - document.getElementById("CALC-SLIDER-MAX").clientWidth;
     window.localStorage.setItem("slider-value", (min + max) / 2);
 }
 // Set slider value after page refresh and initialize it if needed
@@ -176,7 +176,7 @@ function initSlider() {
     slider = document.getElementById("main-slider");
 
     // Calculate the minimum value of the slider
-    var min = document.createElement('div');
+    let min = document.createElement('div');
     min.style.position = "fixed";
     min.id = "CALC-SLIDER-MIN";
     min.style.minWidth = "calc(var(--main-padding-l))";
@@ -184,7 +184,7 @@ function initSlider() {
     document.body.appendChild(min);
 
     // Calculate the maximum value of the slider (starts from the right)
-    var max = document.createElement('div');
+    let max = document.createElement('div');
     max.style.position = "fixed";
     max.id = "CALC-SLIDER-MAX";
     max.style.minWidth = "calc(var(--main-padding-r) * 2 + var(--slider-w))";
@@ -192,7 +192,7 @@ function initSlider() {
     document.body.appendChild(max);
 
     // Calculate the workspace width in pixels
-    var vw = document.createElement('div');
+    let vw = document.createElement('div');
     vw.style.position = "fixed";
     vw.style.minWidth = "100vw";
     vw.style.maxWidth = "100vw";

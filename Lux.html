@@ -39,11 +39,11 @@
         }.table-1-left {
             border-radius: 10px 0 0 10px;
             word-spacing: var(--word-spacing);
-        }.table-1-y {
-            background-color: #0a7a003a;
-        }.table-1-n {
-            background-color: #7a00003a;
         }
+        .table-1-y { background-color: #0a7a003a; }
+        .table-1-n { background-color: #7a00003a; }
+        .table-1-y::before { content: "Yes "; }
+        .table-1-n::before { content: "No ";  }
 
 
 
@@ -87,10 +87,15 @@
                     <index-><indexh->semantic-elements</indexh->
                         <indexd->symbols</indexd->
                         <indexd->scopes</indexd->
-                        <indexd->name-resolution</indexd->
+                    </index->
+                    <index-><indexh->name-resolution</indexh->
+                        <indexd->indices</indexd->
+                        <indexd->generated-functions</indexd->
+                        <indexd->name-shadowing</indexd->
                     </index->
                     <indexd->undefined-values</indexd->
                     <indexd->undefined-behaviour</indexd->
+                    <indexd->compile-time-values</indexd->
                 </index->
                 <indexd->namespaces</indexd->
                 <index-><indexh->types</indexh->
@@ -707,70 +712,93 @@
 
             <div class="table-1-container">
                 <div class="table-container table-1-left-container"><table class="table-1-left">
-                    <tr style="height: 80px;"><th class="medium">Scope/Can contain</th></tr>
-                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#modules">           Module   </a></th></tr>
-                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#scopes-and-symbols">Namespace</a></th></tr>
-                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#enums">             Enum     </a></th></tr>
-                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#structs">           Struct   </a></th></tr>
-                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#functions">         Function </a></th></tr>
-                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#statements">        Statement</a></th></tr>
+                    <tr style="height: 80px;"><th class="medium">Scope / Can contain</th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#modules">       Module       </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#namespaces">    Namespace    </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#enums">         Enum         </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#structs">       Struct       </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#functions">     Function     </a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed scope</a></th></tr>
+                    <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#statements">    Statement    </a></th></tr>
                 </table></div>
                 <div class="table-container table-1-right-container"><table class="table-1-right">
                     <tr style="height: 80px;">
-                        <td><a style="color: var(--fg-text)" href="#variables">     Variable    </a></td>
-                        <td><a style="color: var(--fg-text)" href="#statements">    Statement   </a></td>
-                        <td><a style="color: var(--fg-text)" href="#structs">       Struct      </a></td>
-                        <td><a style="color: var(--fg-text)" href="#enums">         Enum        </a></td>
-                        <td><a style="color: var(--fg-text)" href="#namespaces">    Namespace   </a></td>
-                        <td><a style="color: var(--fg-text)" href="#symbol-aliases">Symbol alias</a></td>
+                        <td><a style="color: var(--fg-text)" href="#namespaces">    Namespace       </a></td>
+                        <td><a style="color: var(--fg-text)" href="#enums">         Enum            </a></td>
+                        <td><a style="color: var(--fg-text)" href="#structs">       Struct          </a></td>
+                        <td><a style="color: var(--fg-text)" href="#structs">       Function        </a></td>
+                        <td><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed<br>scope</a></td>
+                        <td><a style="color: var(--fg-text)" href="#statements">    Statement       </a></td>
+                        <td><a style="color: var(--fg-text)" href="#variables">     Variable        </a></td>
+                        <td><a style="color: var(--fg-text)" href="#symbol-aliases">Symbol alias    </a></td>
                     </tr>
                     <tr style="height: 80px;">
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-n">No</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
                     </tr>
                     <tr style="height: 80px;">
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-n">No</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y nobefore" colspan="2">Inherited from the enclosing scope</td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y nobefore" colspan="2">Inherited from the enclosing scope</td>
                     </tr>
                     <tr style="height: 80px;">
-                        <td class="table-1-n">No</td>
-                        <td class="table-1-n">No</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y"></td>
                     </tr>
                     <tr style="height: 80px;">
-                        <td class="table-1-n">No</td>
-                        <td class="table-1-n">No</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y"></td>
                     </tr>
                     <tr style="height: 80px;">
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
                     </tr>
                     <tr style="height: 80px;">
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
-                        <td class="table-1-y">Yes</td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                    </tr>
+                    <tr style="height: 80px;">
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-n"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
+                        <td class="table-1-y"></td>
                     </tr>
                 </table></div>
             </div>
@@ -783,7 +811,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="name-resolution"></h1>
             <p>
-                Symbols are referenced through their <b>name</b>.<br>
+                Symbols are referenced through their name.<br>
                 A <b>name</b> is the list of all the identifiers of the <b>enclosing scopes</b> and the identifier of the <b>symbol</b> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
                 The name can start from any of the enclosing scopes.<br>
                 If the enclosing scopes are omitted, the symbol identifier is searched in the current scope.
@@ -792,6 +820,7 @@
                 Names that start from the module scope are called complete names.<br>
                 Names that omit the enclosing scopes are called local names.<br>
                 Other names are called relative names.
+                //TODO arrays, templates
             </p>
             <example->
                 <fill->
@@ -823,8 +852,67 @@
                     </scroll-></code->
                 </fill->
             </example->
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Indices                                                         -->
+            <!--------------------------------------------------------------------->
+            <h1 id="indices"></h1>
             <p>
-                The same identifier can be used to declare symbols in different scopes.<br>
+                <b>Elements</b> of <b><a href="#structs">structs</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced through their <b>index</b>.<br>
+                The index must be a <a href="#compile-time-values">compile time value</a>.
+            </p>
+            <p>
+                Struct and tuple indices are part of the name name resolution.<br>
+                <a href="#arrays">Array</a> elements are retrieved using the scubrscipt operator, which is not part of the name resolution but a function that can be called during runtime.
+            </p>
+            <example->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <k->struct</k-> s {
+                            <t->double</t-> a;
+                            <t->float</t->  b;
+                        }
+
+                        <t->void</t-> <f->main</f->(){
+                            (<t->int</t->, <t->float</t->) var1;
+                            <k->var1</k->[<k->0</k->] <f->=</f-> <k->2</k->;                    <c->// Complete name: module.main.var1[0]</c->
+                            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->] <f->=</f-> <k->3</k->;          <c->// Complete name: module.main.var1[1]</c->
+
+                            <t->s</t-> var2;
+                            <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
+                            <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Generated functions                                             -->
+            <!--------------------------------------------------------------------->
+            <h1 id="generated-functions"></h1>
+            <p>
+                <b>Functions</b> generated by <a href="#template-functions">template functions</a> are referenced using their name, followed by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the types for which the function was instantiated.
+                //FIXME <> overlap the operators
+            </p>
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...</t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;
+                    </scroll-></code->
+                </fill->
+            </syntax->
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Name shadowing                                                  -->
+            <!--------------------------------------------------------------------->
+            <h1 id="name-shadowing"></h1>
+            <p>
+                The same <b>identifier</b> can be used to declare <b>multiple symbols</b> in different scopes.<br>
                 When the scopes are one inside another and the identifier is used in relative or local names from one of the inner scopes, the innermost symbol takes precedence over the others.<br>
                 This is known as <b>name shadowing</b>.
             </p>
@@ -850,6 +938,8 @@
             </example->
 
 
+
+
             <!--------------------------------------------------------------------->
             <!-- Undefined values                                                -->
             <!--------------------------------------------------------------------->
@@ -866,6 +956,8 @@
             </p>
 
 
+
+
             <!--------------------------------------------------------------------->
             <!-- Undefined behaviour                                             -->
             <!--------------------------------------------------------------------->
@@ -878,6 +970,19 @@
             <p>
                 As with undefined values, the shader is responsible for preventing undefined behaviours.
             </p>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Compile time values                                             -->
+            <!--------------------------------------------------------------------->
+            <h1 id="compile-time-values"></h1>
+            <p>
+                //TODO
+            </p>
+
+
 
 
             <!--------------------------------------------------------------------->
@@ -3986,6 +4091,9 @@
 
 
 
+
+
+
             <!--------------------------------------------------------------------->
             <!-- Standard modules                                                -->
             <!--------------------------------------------------------------------->
@@ -3993,7 +4101,7 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Limits                                                -->
+            <!-- Limits                                                          -->
             <!--------------------------------------------------------------------->
             <h1 id="limits-module"></h1>
 
