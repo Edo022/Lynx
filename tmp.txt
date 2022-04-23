@@ -1,64 +1,138 @@
--o <file>           SPIRV output path.
--oe <file>          GLSL output path.
--ot <file>          Syntax tree output path.
--os <file>          Semantic tree output path.
-
--f                  Full build. All the source files are preprocessed and compiled, including the core modules and the standard modules.
-
--O0                 No optimizations. Any semantic element and statement is left as it is.
--O1                 //TODO
--O2                 //TODO
--O3                 //TODO
--Of                 Complete optimization. Includes standard modules and context dependant optimizations. Requires -f.
 
 
+
+Syntax: <option> <path/to/file>
+-o                              Outputs executable       [ Default file path: <source>.bin  ]
+--output-syntax                 Outputs syntactic tree   [ Default file path: <source>.txt  ]
+--output-semantic               Outputs semantic tree    [ Default file path: <source>.txt  ]
+--output-1                      Outputs Layer 1          [ Default file path: <source>.txt  ]
+--output-0                      Outputs Layer 0          [ Default file path: <source>.txt  ]
+--output-glsl                   Outputs GLSL code        [ Default file path: <source>.comp ]
+--output-cpp                    Outputs C++ code         [ Default file path: <source>.cpp  ]
+--output-asm                    Outputs Assembly code    [ Default file path: <source>.asm  ]
 
 
 
 
+Syntax: <option>
+-O0                             No optimizations
+-O1                             Equivalent to //TODO
+-O2                             Equivalent to //TODO
+-O3                             Equivalent to --o-rewrite --o-values
+-Of                             Complete optimization. Includes standard modules and context dependant optimizations. Requires -f
+
+--o-rewrite                     Rewrites inefficient functions
+--o-values                      Replaces compile time values with literals or constants
+--o-unused-functions            Removes unused functions
+--o-unused-vvalues              Removes unused values
 
 
 
 
--           ,───────┐   ,───────┐
--       ┌─  │ Umbra │   │  Lux  │       High level languages of the engine
--       │   └───────ʼ   └───────ʼ
--       │       └─────┬─────┘
--       │             │
--       │   ┌───────────────────┐
--       │   │    Syntax tree    │       Abstract representation of the program
--       │   └───────────────────┘
--    pc │             │
--       │   ┌───────────────────┐
--       │   │      Layer 1      │
--       │   └───────────────────┘
--       │             │
--       │   ┌───────────────────┐
--       │   │      Layer 0      │
--       │   └───────────────────┘
--       │             │
--       │       ┌─────┴─────┐
--       │   ,───────┐   ,───────┐
--       ├─  │  C++  │   │  GLSL │  ─┐
--       │   └───────ʼ   └───────ʼ   │
--       │       │           │       │
--       │   ,───────┐       │       │
--   g++ │   │  Asm  │       │       │ glslangValidator
--       │   └───────ʼ       │       │
--       │       │           │       │
--       │   ┌───────┐   ┌───────┐   │
--       └─  │  BIN  │   │ SPIRV │  ─┘
--           └───────┘   └───────┘
+Syntax: <option>
+-g0                             No debug informations
+-g1                             Equivalent to //TODO
+-g2                             Equivalent to //TODO
+-g3                             Equivalent to //TODO
+
+--g-//TODO
 
 
 
 
+Syntax: <option>
+-f                              Full build. All the source files are preprocessed and compiled, including the core module and the standard modules
+--max-iterations-optimization   Maximum number of iterations for compile time optimizations         [ Default value: 16777216 ]
+--max-iterations-value          Maximum number of iterations for compile time values definition     [ Default value: 16777216 ]
+--max-depth-optimization        Maximum function depth for compilt time optimizations               [ Default value: 16777216 ]
+--max-depth-value               Maximum function depth for compile time values definition           [ Default value: 16777216 ]
+
+
+
+
+
+
+
+
+.                ╭─                                                                                                 │
+.                │ ╭───────────────╮╮╮ ╭───────────────╮╮╮               ╭───────────────╮╮╮ ╭───────────────╮╮╮    │    High level languages - Photon Engine
+.                │ │  Engine .ubr  │││ │  Source .ubr  │││               │  Source .lux  │││ │  Engine .lux  │││    │
+.                │ ╰───────┬───────╯╯╯ ╰──────┬─┬──────╯╯╯               ╰─────┬─┬─┬─────╯╯╯ ╰──────┬─┬──────╯╯╯    │
+.                │         │                  │ ╰──────────────╮ ╭─────────────╯ │ │                │ │             │
+.                │         │                  ├────────────────│─│───────────────╯ │                │ │             │
+.                │         ├──────────────────│────────────────│─│─────────────────│────────────────╯ │             │
+.                │      pc │               pc ╰╮               │ │            pc ╭─╯              pc ╭╯             │
+.                │ ╭───────┴───────╮╮╮ ╭───────┴───────╮╮╮     │ │       ╭───────┴───────╮╮╮ ╭───────┴───────╮╮╮    │    Precompiled binaries
+.                │ │ Engine .pcubr │││ │ Source .pcubr │││     │ │       │ Source .pclux │││ │ Engine .pclux │││    │
+.                │ ╰───────┬───────╯╯╯ ╰───────┬───────╯╯╯     │ │       ╰──────┬─┬──────╯╯╯ ╰───────┬───────╯╯╯    │
+.                │         ╰───────────────────┼───────────────┴─┴──────────────┴─│──────────────────╯              │
+.   COMPILE TIME │                          pc │                              pc ╭╯                                 │
+.                │                     ╭───────┴───────╮                 ╭───────┴───────╮╮╮                        │    Individual source file containing all the code
+.                │                     │     .ubr      │                 │     .lux      │││                        │    One per module
+.                │                     ╰───────┬───────╯                 ╰───────┬───────╯╯╯                        │
+.                │     ╭───────────────────────┴─────────────────────────────────┴───────────────────────╮          │
+.                │  pc │                                                                              pc │          │
+.                │ ╭───┴───╮ ╭─────────────╮╮╮ ╭─────────────╮╮╮ ╭─────────────╮╮╮ ╭─────────────╮╮╮ ╭───┴───╮╮╮    │    Output languages
+.                │ │ .cpp  │ │ Engine .hpp │││ │ Vulkan .hpp │││ │   C++ .hpp  │││ │ Engine .cpp │││ │ .comp │││    │    Inline GLSL and inline C++ blocks are pasted
+.                │ ╰───┬───╯ ╰─────┬─┬─────╯╯╯ ╰─────┬─┬─────╯╯╯ ╰─────┬─┬─────╯╯╯ ╰──────┬──────╯╯╯ ╰───┬───╯╯╯    │
+.                │     │           │ ╰───────────────│─┴───────────────│─┴────────────────┤ g++          │          │
+.                │     ├───────────┴─────────────────┴─────────────────╯           ╭──────┴──────╮╮╮     │          │
+.                │     │                                                           │  Engine .o  │││     │          │
+.                │     │                                                           ╰──────┬──────╯╯╯     │          │
+.                ╰─    ╰──┬───────────────────────────────────────────────────────────────╯              │          │
+.                ╭─   g++ │                                                             glslangValidator │          │
+.                │ ╭──────┴──────╮ ╭───────────────╮                               ╭───────────────╮ ╭───┴───╮╮╮    │    Output binaries
+.                │ │     BIN     │ │    libc++     │                               │ Vulkan driver │ │ SPIRV │││    │    Used in runtime
+.                │ ╰──────┬──────╯ ╰───────┬───────╯                               ╰───────┬───────╯ ╰───┬───╯╯╯    │
+.                │        ╰────────────────┴─────────────────────┬─────────────────────────┴─────────────╯          │
+.                │                                               │                                                  │
+.                │                                               │                                                  │
+.       RUNTIME  │                                               │                                                  │
+.                │ ╭─────────────────────────────────────────────┴─────────────────────────────────────────────╮    │
+.                │ │                                                                                           │    │
+.                │ │                                        APPLICATION                                        │    │
+.                │ │                                                                                           │    │
+.                │ ╰───────────────────────────────────────────────────────────────────────────────────────────╯    │
+.                ╰─                                                                                                 │
+
+
+
+
+
+
+
+
+
+
+.       │   g++ │       g++  │                                │         │
+.       │   ╭───────╮ ╭─────────────╮╮╮                       │         │
+. -oa   │   │ .asm  │ │ Photon .asm │││                       │         │
+.       │   ╰───────╯ ╰─────────────╯╯╯                       │         │
+
+
+
+
+.       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Abstract representation of the syntactic elements
+. -oy   │   │   Syntactic tree  │             │   Syntactic tree  │││   │
+.       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │
+.       │          pc │                              pc │               │
+.       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Abstract representation of the program logic
+. -oe   │   │   Semantic tree   │             │   Semantic tree   │││   │
+.       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │
+.       │          pc │                              pc │               │
+.       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Removes templates, namespaces, tuples, typeof, baseof, aliases
+. -o1   │   │      Layer 1      │             │      Layer 1      │││   │   Translates the names of symbols
+.       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │
+.       │          pc │                              pc │               │
+.       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Removes typenames, enums, =:, !:, for loops, once, then, while-else, match
+. -o0   │   │      Layer 0      │             │      Layer 0      │││   │
+.       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │
 
 
 
 Preprocessing
     Conditionals evaluation
-    File inclusion                                                  +
+    File inclusion      +
     Macro expansion
 
 Compilation
@@ -103,4 +177,4 @@ Compilation
 
 
 
-distinguere *already declared* e *name conflict*
+*already declared* and *name conflict* are different
