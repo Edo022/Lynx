@@ -80,8 +80,9 @@
                 <index-><indexh->language-concepts</indexh->
                     <indexd->character-set</indexd->
                     <index-><indexh->tokens</indexh->
-                        <indexd->keywords-and-punctuation-tokens</indexd->
+                        <indexd->keywords</indexd->
                         <indexd->literal-tokens</indexd->
+                        <indexd->syntax-specific-tokens</indexd->
                         <indexd->identifiers</indexd->
                     </index->
                     <index-><indexh->semantic-elements</indexh->
@@ -132,8 +133,9 @@
                 <index-><indexh->functions</indexh->
                     <indexd->function-definitions</indexd->
                     <indexd->reference-parameters</indexd->
-                    <indexd->return-statement-and-function-calls</indexd->
-                    <indexd->template-functions</indexd->
+                    <indexd->function-calls</indexd->
+                    <indexd->unnamed-scopes</indexd->
+                    <indexd->function-templates</indexd->
                     <indexd->the-main-function</indexd->
                 </index->
                 <indexd->const-qualifier</indexd->
@@ -149,6 +151,10 @@
                         <indexd->continue-and-break-statements</indexd->
                         <indexd->once-statement</indexd->
                         <indexd->then-statement</indexd->
+                    </index->
+                    <index-><indexh->non-local-flow-control</indexh->
+                        <indexd->return-statement</indexd->
+                        <indexd->defer-statement</indexd->
                     </index->
                     <indexd->else-statement</indexd->
                 </index->
@@ -485,8 +491,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Keyword</td>
-                        <td>One of</td>
+                        <td rowspan="2">Keyword</td>
+                        <td rowspan="2">One of</td>
                         <td class="center" colspan=2>
                             <a href="#namespaces">                  <code><w->namespace</w-></code></a>
                             <a href="#enums">                       <code><w->enum</w-></code></a>
@@ -497,7 +503,8 @@
                             <a href="#const-qualifier">             <code><t->const</t-></code></a>
                             <a href="#symbol-aliases">              <code><w->alias</w-></code></a>
                             <a href="#modules">                     <code><w->import</w-></code></a>
-                            <a href="#template-functions">          <code><w->when</w-></code></a>
+                            <a href="#function-templates">          <code><w->template</w-></code></a>
+                            <a href="#function-templates">          <code><w->when</w-></code></a>
                         </td>
                         <td class="center" colspan=2>
                             <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -511,39 +518,52 @@
                             <a href="#then-statement">               <code><w->then</w-></code></a>
                             <a href="#else-statement">               <code><w->else</w-></code></a>
                             <a href="#return-statement">             <code><w->return</w-></code></a>
+                            <a href="#defer-statement">              <code><w->defer</w-></code></a>
                         </td>
                     </tr>
                     <tr>
-                        <td>Punctuation token</td>
-                        <td>One of</td>
+                        <fake-td></fake-td>
+                        <fake-td></fake-td>
                         <td class="center wide-lines" width="20%">
                             <elm-><code>(</code><code>)</code></elm->
                             <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
-                            <a href="#arrays">            <elm-><code>[</code><code>]</code></elm-></a>
                         </td>
                         <td class="center" width="20%">
                             <code>,</code>
                             <code>;</code>
                             <a href="#scopes-and-symbols"><code>.</code></a>
                         </td>
-                        <td class="center" width="20%">
-                            <a href="#reference-parameters"><code>&</code></a>
-                            <a href="#template-functions"><code>?</code></a>
-                            <a href="#temporary-variables"><code>$</code></a>
-                        </td>
-                        <td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>
+                        <td class="center" width="40%" colspan="2"><a href="#for-loops"><code>:</code></a></td>
                     </tr>
                     <tr>
                         <td>Literal</td>
-                        <td class="left" colspan=5>Any sequence of characters with pattern <code><sr->[</sr-><s->0</s-><sr->-</sr-><s->9</s-><sr->][</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sr->]*(\</sr-><s->.</s-><sr->[</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sr->]*<sr->)?</sr-></code></td>
+                        <td class="left" colspan=5>
+                            Any sequence of characters with pattern
+                            <code><sg->[</sg-><s->0</s-><sr->-</sr-><s->9</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->(</sg-><sr->\</sr-><s->.</s-><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->)</sg-><sr->?</sr-></code>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Alphanumeric identifier</td>
-                        <td class="left" colspan=5>Any sequence of characters with pattern <code><sr->[</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sr->][</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sr->]*</sr-></code> that isn't a keyword</td>
+                        <td>Syntax specific token</td>
+                        <td>One of</td>
+                        <td class="center" colspan="2">
+                            <a href="#temporary-variables"><code>$</code></a>
+                            <a href="#function-templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a>
+                            <a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a>
+                        </td>
+                        <td class="center" colspan="2">
+                            <a href="#reference-parameters"><code>&</code></a>
+                            <a href="#function-templates"><code>?</code></a>
+                        </td>
                     </tr>
                     <tr>
-                        <td>Symbolic identifier</td>
-                        <td class="left" colspan=5>Any sequence of characters with pattern <code><sr->[</sr-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sr->]+</sr-></code> that isn't a punctuation token</td>
+                        <td>Identifier</td>
+                        <td class="left" colspan=5>
+                            Any sequence of characters with pattern
+                            <code><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sg->]</sg-><sr->*</sr-></code>
+                            or
+                            <code><sg->[</sg-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sg->]</sg-><sr->+</sr-></code>
+                            that isn't a keyword
+                        </td>
                     </tr>
                 </tbody>
             </table></div>
@@ -551,12 +571,12 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- keywords and punctuation tokens                                 -->
+            <!-- keywords                                                        -->
             <!--------------------------------------------------------------------->
-            <h1 id="keywords-and-punctuation-tokens"></h1>
+            <h1 id="keywords"></h1>
             <p>
                 <b>Keywords</b> are <b>built-in tokens</b> that perform hard coded actions or have <b>special meaning</b>.<br>
-                The language defines a total of 21 keywords.<br>
+                The language defines a total of 21 alphanumeric keywords and 13 symbolic keywrods.<br>
                 Their usage is detailedly explained in their respective sections.
             </p>
             <ul>
@@ -571,7 +591,7 @@
                     <li><a href="#const-qualifier">             <code><t->const</t-></code></a>     - Declares a symbol as const                            </li>
                     <li><a href="#symbol-aliases">              <code><w->alias</w-></code></a>     - Creates an alias of a symbol                          </li>
                     <li><a href="#modules">                     <code><w->import</w-></code></a>    - Imports a module                                      </li>
-                    <li><a href="#template-functions">          <code><w->when</w-></code></a>      - Specifies a constraint for the generation of functions</li>
+                    <li><a href="#function-templates">          <code><w->when</w-></code></a>      - Specifies a constraint for the generation of functions</li>
                 </ul><br>
                 <li>Flow control keywords</li>
                 <ul>
@@ -586,38 +606,26 @@
                     <li><a href="#then-statement">               <code><w->then</w-></code></a>     - Runs the code if the immediatly preceeding loop ran all the iterations                </li>
                     <li><a href="#else-statement">               <code><w->else</w-></code></a>     - Runs the code if the condition of the immediatly preceeding for, while or if was false</li>
                     <li><a href="#return-statement">             <code><w->return</w-></code></a>   - Returns the execution to the caller function                                          </li>
-                </ul>
-            </ul>
-            <br><p>
-                <b>Punctuation tokens</b> are exactly like <b>keywords</b>, but their <b>name</b> is a <b>special character</b>.<br>
-                The language defines a total of 13 punctuation tokens.
-            </p>
-            <ul>
+                </ul><br>
                 <li>Containers</li>
                 <ul>
-                    <li><elm-><code>(</code><code>)</code></elm->                                    - Groups an expression, or encloses a list of parameters</li>
-                    <li><a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>  - Declares a new scope                                  </li>
-                    <li><a href="#arrays">            <elm-><code>[</code><code>]</code></elm-></a>  - Declares an array, or accesses the elements of an array (see <a href="#name-resolution">name resolution</a>)</li>
+                    <li><elm-><code>(</code><code>)</code></elm->                       - Groups an expression, or encloses a list of parameters</li>
+                    <li><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a> - Declares a new scope</li>
+                    <li><a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a> - Declares an array, or accesses the elements of an array (see <a href="#name-resolution">name resolution</a>)</li>
                 </ul><br>
                 <li>Separators</li>
                 <ul>
-                    <li><code>,</code>                                                               - Separates 2 or more expressions                       </li>
-                    <li><code>;</code>                                                               - Defined the end of an instruction                     </li>
+                    <li><code>,</code>                                                  - Separates 2 or more expressions</li>
+                    <li><code><a href="#statements" style="color: var(--fg-text);">;</a></code>- Defines the end of a statement</li>
                 </ul><br>
-                <li>Modifiers</li>
+                <li>Other</li>
                 <ul>
-                    <li><a href="#scopes-and-symbols"><code>.</code></a>                             - Accesses the elements of a scope (see <a href="#name-resolution">name resolution</a>)</li>
-                    <li><a href="#reference-parameters"><code>&</code></a>                           - Declares a function parameter as reference            </li>
-                    <li><a href="#template-functions"><code>?</code></a>                             - Declares a type as template                           </li>
-                    <li><a href="#temporary-variables"><code>$</code></a>                            - Accesses a temporary variable (see <a href="#name-resolution">name resolution</a>)</li>
-                </ul><br>
-                <li>Loops</li>
-                <ul>
-                    <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>  - Part of the for each loop syntax                      </li>
+                    <li><a href="#name-resolution"><code>.</code></a>                   - Part of the name resolution</li>
+                    <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>  - Part of the for each loop syntax</li>
                 </ul>
             </ul>
             <p>
-                Keywords and punctuation tokens cannot be shadowed like <a href="#identifiers">identifiers</a>.<br>
+                Keywords cannot be shadowed like <a href="#identifiers">identifiers</a>.<br>
                 Attempting to do so generates a syntactic error.
             </p>
 
@@ -630,6 +638,39 @@
                 <b>Literals</b> are a <b>special type</b> of <b>token</b>, as they can contain both alphanumeric characters and <code>.</code>.<br>
                 Their usage and syntax are explained in <a href="#literals">Literals</a>.
             </p>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Syntax specific tokens                                          -->
+            <!--------------------------------------------------------------------->
+            <h1 id="syntax-specific-tokens"></h1>
+            <p>
+                <b>Syntax specific tokens</b> are tokens that only have meaning when <b>combined</b> with other <b>keywords</b>.<br>
+                Identifiers can use the same token.<br>
+                When active, they always have precedence over identifiers.
+            </p>
+            <ul>
+                <li>
+                    <a href="#reference-parameters"><code>&</code></a> - Declares a function parameter as reference.<br>
+                    When used before a function parameter name.<br><br>
+                </li>
+                <li>
+                    <a href="#function-templates"><code>?</code></a>   - Abbreviated template syntax.<br>
+                    When used before the type of a function parameter.<br><br>
+                </li>
+                <li>
+                    <a href="#temporary-variables"><code>$</code></a>  - Accesses a temporary variable<br>
+                    When used before a <a href="#literals"><code><t->ulong</t-></code> literal</a>.<br><br>
+                </li>
+                <li>
+                    <a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a>  - States that the corresponding array type of a symbol must be used.<br>
+                    When used after the type of a declaration or the name of a <a href="#constructors">constructor</a>.<br><br>
+                </li>
+                <li>
+                    <elm-><code>&lt;</code><code>&gt;</code></elm->  - Part of a <a href="#templates">template declaration</a>, or part of the the <a href="#name-resolution">name resolution</a> of <a href="#generated-functions">generated functions</a>.<br>
+                    When used after the <code><w->template</w-></code> keyword or after the name of a template function.
+                </li>
+            </ul>
 
 
             <!--------------------------------------------------------------------->
@@ -688,8 +729,8 @@
                     <li><a href="#enums">Enums</a></li>
                     <li><a href="#enums">Enum elements</a></li>
                     <li><a href="#functions">Functions</a></li>
-                    <li><a href="#template-functions">Template functions</a></li>
-                    <li><a href="#template-functions">Generated functions</a></li>
+                    <li><a href="#function-templates">Function templates</a></li>
+                    <li><a href="#function-templates">Generated functions</a></li>
                     <li><a href="#functions">Function parameters</a></li>
                     <li><a href="#arrays">Array elements</a></li>
                 </ul>
@@ -820,7 +861,6 @@
                 Names that start from the module scope are called complete names.<br>
                 Names that omit the enclosing scopes are called local names.<br>
                 Other names are called relative names.
-                //TODO arrays, templates
             </p>
             <example->
                 <fill->
@@ -859,12 +899,12 @@
             <!--------------------------------------------------------------------->
             <h1 id="indices"></h1>
             <p>
-                <b>Elements</b> of <b><a href="#structs">structs</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced through their <b>index</b>.<br>
+                <b>Elements</b> of <b><a href="#structs">structs</a></b>, <b><a href="#enums">enums</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced through their <b>index</b>.<br>
                 The index must be a <a href="#compile-time-values">compile time value</a>.
             </p>
             <p>
                 Struct and tuple indices are part of the name name resolution.<br>
-                <a href="#arrays">Array</a> elements are retrieved using the scubrscipt operator, which is not part of the name resolution but a function that can be called during runtime.
+                <a href="#arrays">Array</a> elements are accessed using the <a href="#special-operators">scubrscipt operator</a>, which is not part of the name resolution but a function that can be called during runtime.
             </p>
             <example->
                 <fill->
@@ -874,15 +914,20 @@
                             <t->double</t-> a;
                             <t->float</t->  b;
                         }
+                        <k->enum</k-> e {
+                            a, b;
+                        }
 
                         <t->void</t-> <f->main</f->(){
                             (<t->int</t->, <t->float</t->) var1;
-                            <k->var1</k->[<k->0</k->] <f->=</f-> <k->2</k->;                    <c->// Complete name: module.main.var1[0]</c->
-                            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->] <f->=</f-> <k->3</k->;          <c->// Complete name: module.main.var1[1]</c->
+                            <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
+                            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
 
                             <t->s</t-> var2;
                             <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
                             <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
+
+                            <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -894,8 +939,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="generated-functions"></h1>
             <p>
-                <b>Functions</b> generated by <a href="#template-functions">template functions</a> are referenced using their name, followed by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the types for which the function was instantiated.
-                //FIXME <> overlaps with the operators
+                <b>Functions</b> generated by <a href="#function-templates">function templates</a> are referenced using their name, followed by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the types for which the function was instantiated.
             </p>
             <syntax->
                 <fill->
@@ -905,6 +949,17 @@
                     </scroll-></code->
                 </fill->
             </syntax->
+            <example->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <w->template</w-> &lt;<t->typename</t-> t&gt; <f->add</f->(<t->t</t-> <a->a</a->, <t->t</t-> <a->b</a->) { <k->return</k-> a <f->+</f-> b; }
+                        <t->void</t-> <f->main</f->(){
+                            <t->typeof</t->(<f->add</f->&lt;<t->int</t->&gt;); <c->// Returns int</c->
+                        }
+                    </scroll-></code->
+                </fill->
+            </example->
 
 
             <!--------------------------------------------------------------------->
@@ -1518,7 +1573,7 @@
             <p>
                 <b>Implicit conversions</b> are performed when an <b>expression</b> of the <b>incorrect type</b> is used in place of the expected one.<br>
                 This includes anything whose syntax requires an expression.<br>
-                Conversions are not allowed in <a href="#template-functions">template function</a> calls and inizializer values of <a href="auto-specifier">auto</a> symbols.
+                Conversions are not allowed in <a href="#function-templates">function template</a> calls and inizializer values of <a href="auto-specifier">auto</a> symbols.
             </p>
             <p>
                 Primitive types are all implicitly convertible between them.<br>
@@ -2557,7 +2612,7 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td>Result of <a href="#return-statement-and-function-calls">function calls</a></td>
+                    <td>Result of <a href="#function-calls">function calls</a></td>
                 </tr>
                 <tr>
                     <td></td>
@@ -2681,33 +2736,18 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Return statement and function calls                             -->
+            <!-- Function calls                                                  -->
             <!--------------------------------------------------------------------->
-            <h1 id="return-statement-and-function-calls"></h1>
-            <p>
-                The <b><code><w->return</w-></code></b> statement skips all remaining statements in the function and <b>returns</b> the <b>code execution</b> to the <b>caller function</b>.<br>
-                Non-void functions can return a value of the same type as the function.<br>
-            </p>
-
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;
-                        return;
-                    </scroll-></code->
-                </fill->
-            </syntax->
-
+            <h1 id="function-calls"></h1>
             <p>
                 <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
                 A function call must provide an argument for each parameter of the function.<br>
                 Reference parameters (<a href="#reference-parameters"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
             </p>
             <p>
-                All non-<code><t->void</t-></code> functions return an <a href="#left-and-right-values">r-value</a>.<br>
-                The return value can be used in expressions or be ignored.<br>
-                Calls to <code><t->void</t-></code> functions cannot be used in expressions.
+                The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>
+                //TODO templates
+                //TODO functions are called with *function reference* and a list of parameters. not just their name
             </p>
 
             <syntax->
@@ -2740,15 +2780,28 @@
                     </scroll-></code->
                 </fill->
             </example->
+            //TODO update example
 
 
             <!--------------------------------------------------------------------->
-            <!-- Template functions                                              -->
+            <!-- Unnamed scopes                                                  -->
             <!--------------------------------------------------------------------->
-            <h1 id="template-functions"></h1>
+            <h1 id="unnamed-scopes"></h1>
             <p>
-                <b>Template functions</b> are the basis of generic programming.<br>
+                //TODO
+            </p>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Function templates                                              -->
+            <!--------------------------------------------------------------------->
+            <h1 id="function-templates"></h1>
+            <p>
+                <b>Function templates</b> are the basis of generic programming.<br>
                 They are used to <b>generate functions</b> based on the types passed to function calls.<br>
+                //TODO UPDATE SYNTAX
+                //TODO MOVE TO TEMPLATES
+                //TODO ADD STRUCT TEMPLATES
             </p>
 
             <syntax->
@@ -2775,7 +2828,7 @@
             </syntax->
 
             <p>
-                Any function with one or more generic type parameters is considered a template function.<br>
+                Any function with one or more generic type parameters is considered a function template.<br>
                 Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> token.<br>
                 Parameters declared using the same type identifier will always have the same type in any generated function.
             </p>
@@ -3006,11 +3059,15 @@
             <h1 id="statements"></h1>
             <p>
                 <b>Statements</b> are the <b>instructions</b> that are <b>executed during runtime</b>.<br>
-                They determine the behaviour of the shader, its execution time and <a href="#compiler-optimizations">compiler optimizations</a>.
+                They determine the behaviour of the shader, its execution time and <a href="#compiler-optimizations">compiler optimizations</a>.<br>
+                The <code>;</code> token defines the end of a statement.
             </p>
             <p>
-                A statement can be an expression, a <a href="#selection">selection directive</a> or an <a href="#iteration">iteration construct</a>.<br>
-                Any sequence of <a href="#left-and-right-values">values</a> and <a href="#operators">operators</a> is considered an expression.
+                A statement can be an expression or a flow control <a href="#keywords">keyword</a>.<br>
+                Any sequence of tokens entirely composed of <a href="#left-and-right-values">values</a> and <a href="#function-calls">function calls</a> is considered an expression.
+            </p>
+            <p>
+                Statements can only be used within <a href="#functions">functions</a> and <a href="#unnamed-scopes">unnames scopes</a>.
             </p>
 
 
@@ -3073,6 +3130,50 @@
             <!-- Then statement                                                  -->
             <!--------------------------------------------------------------------->
             <h1 id="then-statement"></h1>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Non local flow control                                          -->
+            <!--------------------------------------------------------------------->
+            <h1 id="non-local-flow-control"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Return statement                                                -->
+            <!--------------------------------------------------------------------->
+            <h1 id="return-statement"></h1>
+            <p>
+                The <b><code><w->return</w-></code></b> statement skips all remaining statements in the function and <b>returns</b> the <b>code execution</b> to the <b>caller function</b>.<br>
+                Multiple return statements are allowed, but their value must be implicitly convertible to the type of the function.
+            </p>
+            <p>
+                All execution paths of non-<code><t->void</t-></code> functions must return a value.<br>
+                The return value can then be used by the caller function or be ignored.<br>
+                Calls to <code><t->void</t-></code> functions cannot be used in expressions.
+            </p>
+            <p>
+                There is no default return value.
+            </p>
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;     <c->// Non-void functions</c->
+                        return;           <c->// Void functions</c->
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <p>
+                //TODO EXAMPLE
+            </p>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Defer statement                                                 -->
+            <!--------------------------------------------------------------------->
+            <h1 id="defer-statement"></h1>
 
 
 
