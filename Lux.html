@@ -47,9 +47,6 @@
 
 
 
-        /* .conv-cell-y { background-color: hsla(115, 14%, 12%, 100%); }
-        .conv-cell-m { background-color: hsla(64,  14%, 12%, 100%); }
-        .conv-cell-n { background-color: hsla(0,   14%, 12%, 100%); } */
         .conv-cell-y { border-left: 2px solid hsla(115, 50%, 20%, 100%); }
         .conv-cell-m { border-left: 2px solid hsla(64,  50%, 20%, 100%); }
         .conv-cell-n { border-left: 2px solid hsla(0,   50%, 20%, 100%); }
@@ -57,9 +54,16 @@
 </head>
 <body onresize="_onresize()">
     <!--------------------------------------------------------------------->
+    <!-- Mask                                                            -->
+    <!--------------------------------------------------------------------->
+    <div style="min-width: 100vw; min-height: 100vh; background-color: var(--bg); position: fixed; z-index: 999999;" id="main-mask"></div>
+
+
+    <!--------------------------------------------------------------------->
     <!-- Slider                                                          -->
     <!--------------------------------------------------------------------->
     <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
+    <!-- !                           ^ not a random value                                            -->
 
 
     <!--------------------------------------------------------------------->
@@ -91,7 +95,7 @@
                     </index->
                     <index-><indexh->name-resolution</indexh->
                         <indexd->indices</indexd->
-                        <indexd->generated-functions</indexd->
+                        <indexd->generated-symbols</indexd->
                         <indexd->name-shadowing</indexd->
                     </index->
                     <indexd->undefined-values</indexd->
@@ -135,8 +139,13 @@
                     <indexd->reference-parameters</indexd->
                     <indexd->function-calls</indexd->
                     <indexd->unnamed-scopes</indexd->
-                    <indexd->function-templates</indexd->
                     <indexd->the-main-function</indexd->
+                </index->
+                <index-><indexh->templates</indexh->
+                    <indexd->function-templates</indexd->
+                    <indexd->struct-templates</indexd->
+                    <indexd->abbreviated-template-syntax</indexd->
+                    <indexd->template-constraints</indexd->
                 </index->
                 <indexd->const-qualifier</indexd->
                 <indexd->symbol-aliases</indexd->
@@ -225,8 +234,8 @@
             <!--------------------------------------------------------------------->
             <h1 id="preprocessor"></h1>
             <p>
-                The <b>preprocessing</b> phase is done <b>before compiling</b> the code.<br>
-                It removes comments and evaluates preprocessor directives and line continuation tokens.
+                The <b>preprocessing</b> phase <b>precedes</b> the code <b>compilation</b>.<br>
+                It removes <a href="#comments">comments</a> and evaluates preprocessor directives and <a href="#line-continuation-token">line continuation tokens</a>.
             </p>
             <p>
                 <b>Preprocessor directives</b> are special instructions that allow the <b>code</b> to be <b>programmatically modified</b>.<br>
@@ -243,7 +252,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="comments"></h1>
             <p>
-                <b>Comments</b> are <b>portions of code</b> that are <b>purposely ignored</b>.<br>
+                <b>Comments</b> are <b>portions of code</b> that are <b>intentionally ignored</b>.<br>
                 They can be used to provide informations or temporarily exclude lines of code.<br>
                 Comments are allowed to contain any sequence of unicode characters of any length.<br>
             </p>
@@ -292,10 +301,18 @@
             <!--------------------------------------------------------------------->
             <h1 id="include-statement"></h1>
             <p>
-                <b>Include statements</b> are used to <b>paste code</b> from other files.<br>
+                The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
                 Any existent file can be included, regardless of its contents or extension.<br>
-                The path to the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters, dots and slashes. //TODO <br>
+                The path of the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters and one of <code>.</code> <code>/</code> <code>-</code> <code>_</code>. //TODO <br>
                 Both absolute and relative paths are supported.
+            </p>
+            <p>
+                <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards are supported.<br>
+                Glob patterns that don't match any file are allowed and have no effect.
+            </p>
+            <p>
+                <a href="#standard-modules">Standard modules</a> are included using the <code>&lt;</code><code>&gt;</code> characters.<br>
+                The <a href="#core-module">core module</a> cannot be included.
             </p>
             <syntax->
                 <fill->
@@ -304,6 +321,7 @@
                         #include<space-></space->"<elm->absolute/path/to/file</elm->"<nl-></nl->
                         #include<space-></space->"./<elm->relative/path/to/file</elm->"<nl-></nl->
                         #include<space-></space->"<elm->relative/path/to/file</elm->"<nl-></nl->
+                        #include<space-></space->&lt;<elm->standard module name</elm->&gt;<nl-></nl->
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -311,15 +329,15 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <c->// Ok</c->
-                        <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->
-                        <k->#include</k-> <s->"./file.ilsh"</s->
-                        <k->#include</k-> <s->"file.ilsh"</s->
+                        <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->   <c->// Ok, absolute path</c->
+                        <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
+                        <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
+                        <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
+                        <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
 
-                        <ce->// Error</ce->
-                        <c->//#include ./file.ilsh</c->
-                        <c->//#include "./non_existent_file"</c->
-                        <c->//#include ""</c->
+                        <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
+                        <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
+                        <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
                     </scroll-></code->
                 </fill->
             </example->
@@ -350,7 +368,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="line-continuation-token"></h1>
             <p>
-                The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line comments, preprocessor directives and multi character tokens to be written across multiple lines.<br>
+                The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line <a href="#comments">comments</a>, preprocessor directives and multi character <a href="#tokens">tokens</a> to be written across multiple lines.<br>
                 It consists of a <code>\</code> immediatly followed by a newline character.
             </p>
             <p>
@@ -438,9 +456,9 @@
             <!--------------------------------------------------------------------->
             <h1 id="character-set"></h1>
             <p>
-                After the preprocessing phase, only a <b>small number</b> of <b>characters</b> are left.<br>
-                These characters <b>compose the tokens</b> that are used in the compilation phase.<br>
-                Any unknown character generates a compile time error.
+                After the <a href="#preprocessor">preprocessing phase</a>, only a <b>small number</b> of <b>characters</b> are left.<br>
+                These characters <b>compose the <a href="#tokens">tokens</a></b> that are used in the compilation phase.<br>
+                Any unknown character generates a syntactic error. //TODO LINK
             </p>
             <p>
                 The allowed characters are:
@@ -456,7 +474,7 @@
                 <code>space</code> <code>tab</code> <code>newline</code>
             </p>
             <p>
-                String literals can contain any unicode character. They are converted to allowed characters during the compilation phase.<br>
+                String <a href="#literals">literals</a> can contain any unicode character. They are converted to allowed characters during the compilation phase.<br>
                 Carriage return characters are ignored.
             </p>
 
@@ -472,12 +490,12 @@
                 Any semantic element is made of one or more tokens.
             </p>
             <p>
-                A token ends when a character that isn't part of its pattern is encountered. Tokens can also be divided by any number of whitespace characters, newlines, tabs and comments.<br>
+                A token ends when a character that isn't present in its pattern is encountered. Tokens can also be divided by any number of whitespace characters, newlines, and <a href="#comments">comments</a>.<br>
                 Longer tokens always take precedence over shorter ones.<br>
-                Tokens that aren't defined or part of the language generate a compile time error.
+                Tokens that aren't defined or part of the language generate a compile time error. //TODO LINK
             </p>
             <p>
-                All tokens are case sensitive, with the only exception of hexadecimal literals.<br>
+                All tokens are case sensitive, with the only exception of hexadecimal <a href="#literals">literals</a>.<br>
                 Newlines and whitespace characters are not tokens.
             </p>
 
@@ -486,14 +504,13 @@
                 <thead>
                     <tr>
                         <th>Type</th>
-                        <th style="text-align: center;" colspan=5>Pattern</th>
+                        <th style="text-align: center;" colspan="4">Pattern</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td rowspan="2">Keyword</td>
-                        <td rowspan="2">One of</td>
-                        <td class="center" colspan=2>
+                        <td style="line-height: 80px;" class="nowrap" rowspan="2"><a href="#keywords">Keyword</a></td>
+                        <td class="center" colspan="2">
                             <a href="#namespaces">                  <code><w->namespace</w-></code></a>
                             <a href="#enums">                       <code><w->enum</w-></code></a>
                             <a href="#structs">                     <code><w->struct</w-></code></a>
@@ -503,10 +520,10 @@
                             <a href="#const-qualifier">             <code><t->const</t-></code></a>
                             <a href="#symbol-aliases">              <code><w->alias</w-></code></a>
                             <a href="#modules">                     <code><w->import</w-></code></a>
-                            <a href="#function-templates">          <code><w->template</w-></code></a>
-                            <a href="#function-templates">          <code><w->when</w-></code></a>
+                            <a href="#templates">                   <code><w->template</w-></code></a>
+                            <a href="#templates">                   <code><w->when</w-></code></a>
                         </td>
-                        <td class="center" colspan=2>
+                        <td class="center" colspan="2">
                             <a href="#if-statement">                 <code><w->if</w-></code></a>
                             <a href="#match-statement">              <code><w->match</w-></code></a>
                             <a href="#for-loops">                    <code><w->for</w-></code></a>
@@ -524,45 +541,44 @@
                     <tr>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
-                        <td class="center wide-lines" width="20%">
+                        <td class="center wide-lines" width="50%" colspan="2">
                             <elm-><code>(</code><code>)</code></elm->
                             <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
+                            <a href="#for-loops"><code>:</code></a>
                         </td>
-                        <td class="center" width="20%">
-                            <code>,</code>
-                            <code>;</code>
+                        <td class="center" width="50%" colspan="2">
+                            <a href="#statements"><code>,</code></a>
+                            <a href="#statements"><code>;</code></a>
                             <a href="#scopes-and-symbols"><code>.</code></a>
                         </td>
-                        <td class="center" width="40%" colspan="2"><a href="#for-loops"><code>:</code></a></td>
                     </tr>
                     <tr>
-                        <td>Literal</td>
-                        <td class="left" colspan=5>
+                        <td style="line-height: 80px;" class="nowrap"><a href="#literals">Literal</a></td>
+                        <td class="left" colspan="4">
                             Any sequence of characters with pattern
                             <code><sg->[</sg-><s->0</s-><sr->-</sr-><s->9</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->(</sg-><sr->\</sr-><s->.</s-><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->)</sg-><sr->?</sr-></code>
                         </td>
                     </tr>
                     <tr>
-                        <td>Syntax specific token</td>
-                        <td>One of</td>
+                        <td style="line-height: 80px;" class="nowrap"><a href="#syntax-specific-tokens">Syntax specific token</a></td>
                         <td class="center" colspan="2">
                             <a href="#temporary-variables"><code>$</code></a>
-                            <a href="#function-templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a>
+                            <a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a>
                             <a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a>
                         </td>
                         <td class="center" colspan="2">
                             <a href="#reference-parameters"><code>&</code></a>
-                            <a href="#function-templates"><code>?</code></a>
+                            <a href="#abbreviated-template-syntax"><code>?</code></a>
                         </td>
                     </tr>
                     <tr>
-                        <td>Identifier</td>
-                        <td class="left" colspan=5>
+                        <td style="line-height: 80px;" class="nowrap"><a href="#identifiers">Identifier</a></td>
+                        <td class="left" colspan="5">
                             Any sequence of characters with pattern
                             <code><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sg->]</sg-><sr->*</sr-></code>
                             or
                             <code><sg->[</sg-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sg->]</sg-><sr->+</sr-></code>
-                            that isn't a keyword
+                            that isn't a <a href="#keywords">keyword</a>
                         </td>
                     </tr>
                 </tbody>
@@ -575,58 +591,60 @@
             <!--------------------------------------------------------------------->
             <h1 id="keywords"></h1>
             <p>
-                <b>Keywords</b> are <b>built-in tokens</b> that perform hard coded actions or have <b>special meaning</b>.<br>
+                <b>Keywords</b> are <b>built-in <a href="#tpkens">tokens</a></b> that perform hard coded actions or have <b>special meaning</b>.<br>
                 The language defines a total of 21 alphanumeric keywords and 13 symbolic keywrods.<br>
                 Their usage is detailedly explained in their respective sections.
             </p>
             <ul>
                 <li>Semantic keywords</li>
                 <ul>
-                    <li><a href="#namespaces">                  <code><w->namespace</w-></code></a> - Declares a namespace                                  </li>
-                    <li><a href="#enums">                       <code><w->enum</w-></code></a>      - Declares an enum                                      </li>
-                    <li><a href="#structs">                     <code><w->struct</w-></code></a>    - Declares a struct                                     </li>
-                    <li><a href="#auto-specifier">              <code><t->auto</t-></code></a>      - Automatic type                                        </li>
-                    <li><a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a>    - Retrieves the type of a symbol                        </li>
-                    <li><a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a>    - Retrieves the base type of a symbol                   </li>
-                    <li><a href="#const-qualifier">             <code><t->const</t-></code></a>     - Declares a symbol as const                            </li>
-                    <li><a href="#symbol-aliases">              <code><w->alias</w-></code></a>     - Creates an alias of a symbol                          </li>
-                    <li><a href="#modules">                     <code><w->import</w-></code></a>    - Imports a module                                      </li>
-                    <li><a href="#function-templates">          <code><w->when</w-></code></a>      - Specifies a constraint for the generation of functions</li>
+                    <li><a href="#namespaces">                  <code><w->namespace</w-></code></a> - Declares a <a href="#namespaces">namespace</a>                                           </li>
+                    <li><a href="#enums">                       <code><w->enum</w-></code></a>      - Declares an <a href="#enums">enum</a>                                                    </li>
+                    <li><a href="#structs">                     <code><w->struct</w-></code></a>    - Declares a <a href="#structs">struct</a>                                                 </li>
+                    <li><a href="#auto-specifier">              <code><t->auto</t-></code></a>      - Automatic <a href="#types">type</a>                                                      </li>
+                    <li><a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a>    - Retrieves the <a href="#types">type</a> of a <a href="#symbols">symbol</a>               </li>
+                    <li><a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a>    - Retrieves the <a href="#primitive-types">base type</a> of a <a href="#symbols">symbol</a></li>
+                    <li><a href="#const-qualifier">             <code><t->const</t-></code></a>     - Declares a <a href="#symbols">symbol</a> as <a href="#const-specifier">const</a>         </li>
+                    <li><a href="#symbol-aliases">              <code><w->alias</w-></code></a>     - Creates an <a href="#aliases">alias</a> of a <a href="#symbols">symbol</a>               </li>
+                    <li><a href="#modules">                     <code><w->import</w-></code></a>    - Imports a <a href="#modules">module</a>                                                  </li>
+                    <li><a href="#templates">                   <code><w->template</w-></code></a>  - Declares a <a href="#templates">template</a>                                             </li>
+                    <li><a href="#templates">                   <code><w->when</w-></code></a>      - Specifies a <a href="#template-constraints">template constraint</a>                      </li>
                 </ul><br>
                 <li>Flow control keywords</li>
                 <ul>
-                    <li><a href="#if-statement">                 <code><w->if</w-></code></a>       - Changes execution path based on one condition                                         </li>
-                    <li><a href="#match-statement">              <code><w->match</w-></code></a>    - Changes execution path based on multiple conditions                                   </li>
-                    <li><a href="#for-loops">                    <code><w->for</w-></code></a>      - Runs the code an arbitrary number of times                                            </li>
-                    <li><a href="#while-loops">                  <code><w->while</w-></code></a>    - Runs the code until a condition is no longer true                                     </li>
-                    <li><a href="#while-loops">                  <code><w->do</w-></code></a>       - Used with while to check the condition after having ran the code                      </li>
-                    <li><a href="#continue-and-break-statements"><code><w->continue</w-></code></a> - Skips an arbitrary number of iterations                                               </li>
-                    <li><a href="#continue-and-break-statements"><code><w->break</w-></code></a>    - Exits an arbitrary number of innermost loops                                          </li>
-                    <li><a href="#once-statement">               <code><w->once</w-></code></a>     - Runs the code only in the first iteration of a loop                                   </li>
-                    <li><a href="#then-statement">               <code><w->then</w-></code></a>     - Runs the code if the immediatly preceeding loop ran all the iterations                </li>
-                    <li><a href="#else-statement">               <code><w->else</w-></code></a>     - Runs the code if the condition of the immediatly preceeding for, while or if was false</li>
-                    <li><a href="#return-statement">             <code><w->return</w-></code></a>   - Returns the execution to the caller function                                          </li>
+                    <li><a href="#if-statement">                 <code><w->if</w-></code></a>       - Changes execution path based on one <a href="#bool-type">condition</a>                                                    </li>
+                    <li><a href="#match-statement">              <code><w->match</w-></code></a>    - Changes execution path based on multiple <a href="#bool-type">conditions</a>                                              </li>
+                    <li><a href="#for-loops">                    <code><w->for</w-></code></a>      - Runs the code an arbitrary number of times                                                                                </li>
+                    <li><a href="#while-loops">                  <code><w->while</w-></code></a>    - Runs the code until a condition is no longer true                                                                         </li>
+                    <li><a href="#while-loops">                  <code><w->do</w-></code></a>       - Used with <a href="#while-loops">while</a> to check the <a href="#bool-type">condition</a> after having ran the code      </li>
+                    <li><a href="#continue-and-break-statements"><code><w->continue</w-></code></a> - Skips an arbitrary number of iterations                                                                                   </li>
+                    <li><a href="#continue-and-break-statements"><code><w->break</w-></code></a>    - Exits an arbitrary number of innermost <a href="#iteration">loops</a>                                                     </li>
+                    <li><a href="#once-statement">               <code><w->once</w-></code></a>     - Runs the code only in the first iteration of a <a href="#iteration">loop</a>                                              </li>
+                    <li><a href="#then-statement">               <code><w->then</w-></code></a>     - Runs the code if the immediatly preceeding <a href="#iteration">loop</a> ran all the iterations                           </li>
+                    <li><a href="#else-statement">               <code><w->else</w-></code></a>     - Runs the code if the <a href="#bool-type">condition</a> of the immediatly preceeding <a href="#for-loops">for</a>, <a href="#while-loops">while</a> or <a href="#if-statement">if</a> was <code><k->false</k-></code></li>
+                    <li><a href="#return-statement">             <code><w->return</w-></code></a>   - Returns the execution to the <a href="#functions">caller function-calls</a>                                               </li>
+                    <li><a href="#defer-statement">              <code><w->defer</w-></code></a>    - Runs the code right before the first <a href="#return-statement"><code><w->return</w-></code></a> statement is encountered</li>
                 </ul><br>
                 <li>Containers</li>
                 <ul>
-                    <li><elm-><code>(</code><code>)</code></elm->                       - Groups an expression, or encloses a list of parameters</li>
-                    <li><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a> - Declares a new scope</li>
-                    <li><a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a> - Declares an array, or accesses the elements of an array (see <a href="#name-resolution">name resolution</a>)</li>
+                    <li><elm-><code>(</code><code>)</code></elm->                       - Groups an <a href="#statements">expression, or encloses a list of <a href="#function-parameters">parameters</a></li>
+                    <li><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a> - Declares a new <a href="#scopes">scope</a></li>
+                    <li><a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a> - Declares an <a href="#arrays">array</a>, or accesses the elements of an <a href="#arrays">array</a> (see <a href="#name-resolution">name resolution</a>)</li>
                 </ul><br>
                 <li>Separators</li>
                 <ul>
-                    <li><code>,</code>                                                  - Separates 2 or more expressions</li>
-                    <li><code><a href="#statements" style="color: var(--fg-text);">;</a></code>- Defines the end of a statement</li>
+                    <li><a href="#statements"><code>,</code></a>- Separates 2 or more <a href="#statements">expressions</a></li>
+                    <li><a href="#statements"><code>;</code></a>- Defines the end of a <a href="#statements">statement</a></li>
                 </ul><br>
                 <li>Other</li>
                 <ul>
-                    <li><a href="#name-resolution"><code>.</code></a>                   - Part of the name resolution</li>
-                    <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>  - Part of the for each loop syntax</li>
+                    <li><a href="#name-resolution"><code>.</code></a>- Part of the <a href="#name-resolution">name resolution</a></li>
+                    <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>- Part of the <a href="#for-loops">for each</a> loop syntax</li>
                 </ul>
             </ul>
             <p>
-                Keywords cannot be shadowed like <a href="#identifiers">identifiers</a>.<br>
-                Attempting to do so generates a syntactic error.
+                <a href="#keywords">Keywords</a> cannot be <a href="#name-shadowing">shadowed</a> like <a href="#identifiers">identifiers</a>.<br>
+                Attempting to do so generates a syntactic error. //TODO LINK
             </p>
 
 
@@ -635,7 +653,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="literal-tokens"></h1>
             <p>
-                <b>Literals</b> are a <b>special type</b> of <b>token</b>, as they can contain both alphanumeric characters and <code>.</code>.<br>
+                <b>Literals</b> are a <b>special type</b> of <a href="#tokens"><b>token</b></a>, as they can contain both alphanumeric characters and <code>.</code>.<br>
                 Their usage and syntax are explained in <a href="#literals">Literals</a>.
             </p>
 
@@ -645,30 +663,30 @@
             <!--------------------------------------------------------------------->
             <h1 id="syntax-specific-tokens"></h1>
             <p>
-                <b>Syntax specific tokens</b> are tokens that only have meaning when <b>combined</b> with other <b>keywords</b>.<br>
-                Identifiers can use the same token.<br>
-                When active, they always have precedence over identifiers.
+                <b>Syntax specific tokens</b> are <a href="#tokens">tokens</a> that only have meaning when <b>combined</b> with other <a href="#keywords"><b>keywords</b></a>.<br>
+                <a href="#identifiers">Identifiers</a> can use the same <a href="#tokens">token</a>.<br>
+                When active, they always take precedence over <a href="#identifiers">identifiers</a>.
             </p>
             <ul>
                 <li>
-                    <a href="#reference-parameters"><code>&</code></a> - Declares a function parameter as reference.<br>
-                    When used before a function parameter name.<br><br>
+                    <a href="#reference-parameters"><code>&</code></a> - Declares a <a href="#functions">function parameter</a> as <a href="#reference-parameters">reference</a>.<br>
+                    When used before a <a href="#functions">function parameter</a> name.<br><br>
                 </li>
                 <li>
-                    <a href="#function-templates"><code>?</code></a>   - Abbreviated template syntax.<br>
-                    When used before the type of a function parameter.<br><br>
+                    <a href="#templates"><code>?</code></a> - <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.<br>
+                    When used before the <a href="#types">type</a> of a <a href="#functions">function parameter</a>.<br><br>
                 </li>
                 <li>
-                    <a href="#temporary-variables"><code>$</code></a>  - Accesses a temporary variable<br>
-                    When used before a <a href="#literals"><code><t->ulong</t-></code> literal</a>.<br><br>
+                    <a href="#temporary-variables"><code>$</code></a> - References a <a href="#temporary-variables">temporary variable</a><br>
+                    When used before a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>.<br><br>
                 </li>
                 <li>
-                    <a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a>  - States that the corresponding array type of a symbol must be used.<br>
-                    When used after the type of a declaration or the name of a <a href="#constructors">constructor</a>.<br><br>
+                    <a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a> - States that the corresponding <a href="#arrays">array</a> of a <a href="#types">type</a> must be used.<br>
+                    When used after the <a href="#types">type</a> of a declaration or the name of a <a href="#constructors">constructor</a>.<br><br>
                 </li>
                 <li>
                     <elm-><code>&lt;</code><code>&gt;</code></elm->  - Part of a <a href="#templates">template declaration</a>, or part of the the <a href="#name-resolution">name resolution</a> of <a href="#generated-functions">generated functions</a>.<br>
-                    When used after the <code><w->template</w-></code> keyword or after the name of a template function.
+                    When used after the <a href="#templates"><code><w->template</w-></code></a> keyword or after the name of a <a href="#function-templates">function template</a>.
                 </li>
             </ul>
 
@@ -678,15 +696,15 @@
             <!--------------------------------------------------------------------->
             <h1 id="identifiers"></h1>
             <p>
-                <b>Identifiers</b> are used to <b>name and reference symbols</b>.<br>
+                <b>Identifiers</b> are used to <b>name and reference <a href="#symbols">symbols</a></b>.<br>
                 An identifier can be
-                alphanumeric (<code><sr->[</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sr->][</sr-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sr->]*</sr-></code>)
-                or symbolic (<code><sr->[</sr-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sr->]+</sr-></code>).
+                alphanumeric (<code><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sg->]</sg-><sr->*</sr-></code>)
+                or symbolic (<code><sg->[</sg-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sg->]</sg-><sr->+</sr-></code>).
             </p>
             <p>
-                All identifiers must be unique to their scope.<br>
-                Declaring more than one symbol with the same identifier in the same scope is a semantic error.<br>
-                Name shadowing is explained in <a href="#name-resolution">Name resolution</a>.
+                All identifiers must be unique to their <a href="#scopes">scope</a>.<br>
+                Declaring more than one <a href="#symbols">symbol</a> with the same identifier in the same <a href="#scopes">scope</a> is a semantic error.<br> //TODO LINK
+                Identifiers can be shadowed. This is explained in <a href="#name-shadowing">Name shadowing</a>.
             </p>
 
 
@@ -697,7 +715,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="semantic-elements"></h1>
             <p>
-                <b>Semantic elements</b> are <b>sequences</b> of one or more <b>tokens</b> that follow specific patterns defined by the syntax of the language.<br>
+                <b>Semantic elements</b> are <b>sequences</b> of one or more <a href="#tokens"><b>tokens</b> that follow specific patterns defined by the syntax of the language.<br>
                 They define the contents and interface of the <a href="#modules">module</a>.
             </p>
 
@@ -744,11 +762,12 @@
             <!--------------------------------------------------------------------->
             <h1 id="scopes"></h1>
             <p>
-                <b>Scopes</b> define which <b>symbols</b> the code can <b>reference</b> and their local, relative and complete names.<br>
-                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. The only exception is the <b>module scope</b> which contains all the symbols and scopes declared in the module. It can be referenced using the <code>module</code> identifier.<br>
+                <b>Scopes</b> define which <a href="#symbols"><b>symbols</b></a> the code can <b>reference</b> and their local, relative and complete <a href="#name-resolution">names</a>.<br>
+                Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. The only exception is the <b><a href="#modules">module</a> scope</b> which contains
+                all the <a href="#symbols">symbols</a> and scopes declared in the <a href="#modules">module</a>. It can be referenced using the <code>module</code> identifier.<br>
             </p>
             <p>
-                Each scope can only contain certain types of symbols:
+                Each scope can only contain certain types of <a href="#symbols">symbols</a>:
             </p>
 
             <div class="table-1-container">
@@ -767,7 +786,7 @@
                         <td><a style="color: var(--fg-text)" href="#namespaces">    Namespace       </a></td>
                         <td><a style="color: var(--fg-text)" href="#enums">         Enum            </a></td>
                         <td><a style="color: var(--fg-text)" href="#structs">       Struct          </a></td>
-                        <td><a style="color: var(--fg-text)" href="#structs">       Function        </a></td>
+                        <td><a style="color: var(--fg-text)" href="#functions">     Function        </a></td>
                         <td><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed<br>scope</a></td>
                         <td><a style="color: var(--fg-text)" href="#statements">    Statement       </a></td>
                         <td><a style="color: var(--fg-text)" href="#variables">     Variable        </a></td>
@@ -852,14 +871,15 @@
             <!--------------------------------------------------------------------->
             <h1 id="name-resolution"></h1>
             <p>
-                Symbols are referenced through their name.<br>
-                A <b>name</b> is the list of all the identifiers of the <b>enclosing scopes</b> and the identifier of the <b>symbol</b> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
-                The name can start from any of the enclosing scopes.<br>
-                If the enclosing scopes are omitted, the symbol identifier is searched in the current scope.
+                <a href="#symbols">Symbols</a> are referenced through their name.<br>
+                A <b>name</b> is the list of all the <a href="#identifiers">identifiers</a> of the <b>enclosing <a href="#scopes">scopes</a></b>
+                and the <a href="#identifiers">identifier</a> of the <a href="#symbols"><b>symbol</b></a> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
+                The name can start from any of the enclosing <a href="#scopes">scopes</a>.<br>
+                If the enclosing <a href="#scopes">scopes</a> are omitted, the <a href="#symbols">symbol</a> <a href="#identifiers">identifier</a> is searched in the current <a href="#scopes">scope</a>.
             </p>
             <p>
-                Names that start from the module scope are called complete names.<br>
-                Names that omit the enclosing scopes are called local names.<br>
+                Names that start from the <a href="#modules">module</a> <a href="#scopes">scope</a> are called complete names.<br>
+                Names that omit the enclosing <a href="#scopes">scopes</a> are called local names.<br>
                 Other names are called relative names.
             </p>
             <example->
@@ -903,8 +923,8 @@
                 The index must be a <a href="#compile-time-values">compile time value</a>.
             </p>
             <p>
-                Struct and tuple indices are part of the name name resolution.<br>
-                <a href="#arrays">Array</a> elements are accessed using the <a href="#special-operators">scubrscipt operator</a>, which is not part of the name resolution but a function that can be called during runtime.
+                <a href="#structs">Struct</a> and <a href="#tuples">tuple</a> indices are part of the <a href="#name-resolution">name resolution</a>.<br>
+                <a href="#arrays">Array</a> elements are accessed using the <a href="#special-operators">scubrscipt operator</a>, which is not part of the <a href="#name-resolution">name resolution</a> but a function that can be called during runtime.
             </p>
             <example->
                 <fill->
@@ -935,27 +955,44 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Generated functions                                             -->
+            <!-- Generated symbols                                               -->
             <!--------------------------------------------------------------------->
-            <h1 id="generated-functions"></h1>
+            <h1 id="generated-symbols"></h1>
             <p>
-                <b>Functions</b> generated by <a href="#function-templates">function templates</a> are referenced using their name, followed by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the types for which the function was instantiated.
+                <a href="#functions"><b>Functions</b></a> and <a href="#structs">structs</a> generated by <a href="#templates">templates</a> are referenced using their <a href="#name-resolution">name</a>,
+                followed by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the types for which the <a href="#symbols">symbol</a> was instantiated.
             </p>
             <syntax->
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...</t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;
+                        <table>
+                            <tr>
+                                <td>
+                                    <elm->name<sup>id</sup></elm-><span>&lt;</span><elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...</t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm-><span>&gt;</span>
+                                </td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
+
             <example->
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <w->template</w-> &lt;<t->typename</t-> t&gt; <f->add</f->(<t->t</t-> <a->a</a->, <t->t</t-> <a->b</a->) { <k->return</k-> a <f->+</f-> b; }
+                        <w->template</w-> &lt;<t->t</t->&gt; <f->f</f->(<t->t</t-> <a->a</a->, <t->t</t-> <a->b</a->) {
+                            <k->return</k-> a;
+                        }
+                        <w->template</w-> &lt;<t->t</t->, <t->u</t->&gt; <w->struct</w-> s {
+                            <t->t</t-> a;
+                            <t->t</t-> b;
+                        }
+
                         <t->void</t-> <f->main</f->(){
-                            <t->typeof</t->(<f->add</f->&lt;<t->int</t->&gt;); <c->// Returns int</c->
+                            <t->s</t->&lt;<t->int</t->, <t->double</t->&gt; var;
+                            s.a <f->=</f-> <f->f</f->&lt;<t->int</t->&gt(<k->0</k->);
+                            s.b <f->=</f-> <f->f</f->&gt;<t->double</t->&gt;(<k->1</k->);
                         }
                     </scroll-></code->
                 </fill->
@@ -967,12 +1004,13 @@
             <!--------------------------------------------------------------------->
             <h1 id="name-shadowing"></h1>
             <p>
-                The same <b>identifier</b> can be used to declare <b>multiple symbols</b> in different scopes.<br>
-                When the scopes are one inside another and the identifier is used in relative or local names from one of the inner scopes, the innermost symbol takes precedence over the others.<br>
+                The same <a href="#identifiers"><b>identifier</b></a> can be used to declare <b>multiple <a href="#symbols">symbols</a></b> in different <a href="#scopes">scopes</a>.<br>
+                When the <a href="#scopes">scopes</a> are one inside another and the <a href="#identifiers">identifier</a> is used in relative or local <a href="#name-resolution">names</a>
+                from one of the inner <a href="#scopes">scopes</a>, the innermost <a href="#symbols">symbol</a> takes precedence over the others.<br>
                 This is known as <b>name shadowing</b>.
             </p>
             <p>
-                Absolute names cannot be shadowed
+                <a href="#name-resolution">Absolute names</a> cannot be shadowed
             </p>
             <example->
                 <fill->
@@ -1002,12 +1040,12 @@
             <p>
                 <b>Any unknown value</b> of any type is an <b>undefined value</b>.<br>
                 The language can generate undefined values for a variety of reasons.<br>
-                Such values are usually the result of errors that occurred during the execution of a function and don't contain any useful information.<br>
-                Uninitialized variables also have undefined value.
+                Such values are usually the result of errors that occurred during the execution of a <a href="#functions">function</a> and don't contain any useful information.<br>
+                Uninitialized <a href="#variables">variables</a> also have undefined value.
             </p>
             <p>
                 Generating undefined values doesn't stop the execution and is not signaled in any way, nor is it detectable.<br>
-                The shader is responsible for preventing or discarding undefined values.
+                The <a href="#modules">module</a> is responsible for preventing, discarding or documenting undefined values.
             </p>
 
 
@@ -1019,11 +1057,11 @@
             <h1 id="undefined-behaviour"></h1>
             <p>
                 Certain actions cause undefined behaviour.<br>
-                <b>Undefined behaviour</b> means that the <b>code compiles with no erros</b>, but the <b>runtime behaviour is unknown</b> and anything could happen.<br>
-                The shader could work just fine, your hard disk could get erased or the Sun could implode. No one knows.
+                <b>Undefined behaviour</b> means that the <b>code <a href="#compilation">compiles</a> with no erros</b>, but the <b>runtime behaviour is unknown</b> and anything could happen.<br>
+                The <a href="#modules">module</a> could work just fine, or it could break and never run again. No one knows.
             </p>
             <p>
-                As with undefined values, the shader is responsible for preventing undefined behaviours.
+                As with <a href="#undefined-values">undefined values</a>, the <a href="#modules">module</a> is responsible for preventing or documenting undefined behaviours.
             </p>
 
 
@@ -1034,7 +1072,20 @@
             <!--------------------------------------------------------------------->
             <h1 id="compile-time-values"></h1>
             <p>
-                //TODO
+                <b>Compile time values</b> are values that can be <b>calculated</b> during the <a href="#compilation"><b>compilation</b></a> phase.<br>
+                Whether a value can be calculated or not depends on precise rules:
+            </p>
+            <ul>
+                <li>It cannot depend on <a href="#functions">parameters</a> of the <a href="#the-main-function"><f->main</f-> function</a></li>
+                <li>It cannot depend on </li>
+            </ul>
+            <p>
+                A value <code>a</code> is said to depend on a value <code>b</code> if <code>b</code> is used in one of the preceeding function calls where <code>a</code> is passed as argument of a <a href="#reference-parameters">reference parameter</a>.
+
+            </p>
+            <p>
+                Known special cases that generate constant values, such as <code>n <f->*</f-> <k->0</k-></code> or <code>n <f->-</f-> n</code>,
+                are used by the compiler to <a href="#value-precomputation">optimize</a> the code, but for consistency reasons, they have no relevance in determining if a value is compile time or not.
             </p>
 
 
@@ -1245,7 +1296,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="bool-type"></h1>
             <p>
-
+                //TODO bools are used for conditions
             </p>
 
 
@@ -2793,6 +2844,29 @@
 
 
             <!--------------------------------------------------------------------->
+            <!-- The main function                                               -->
+            <!--------------------------------------------------------------------->
+            <h1 id="the-main-function"></h1>
+            <p>
+                The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
+                Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
+            </p>
+            <p>
+                The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
+                The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
+                It can also be called by other functions or itself, but it cannot be a template.<br>
+            </p>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Templates                                                       -->
+            <!--------------------------------------------------------------------->
+            <h1 id="templates"></h1>
+
+
+            <!--------------------------------------------------------------------->
             <!-- Function templates                                              -->
             <!--------------------------------------------------------------------->
             <h1 id="function-templates"></h1>
@@ -2938,18 +3012,21 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- The main function                                               -->
+            <!-- Struct templates                                                -->
             <!--------------------------------------------------------------------->
-            <h1 id="the-main-function"></h1>
-            <p>
-                The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
-                Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
-            </p>
-            <p>
-                The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
-                The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
-                It can also be called by other functions or itself, but it cannot be a template.<br>
-            </p>
+            <h1 id="struct-templates"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Abbreviated template syntax                                     -->
+            <!--------------------------------------------------------------------->
+            <h1 id="abbreviated-template-syntax"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Template constraints                                            -->
+            <!--------------------------------------------------------------------->
+            <h1 id="template-constraints"></h1>
 
 
 
@@ -3362,7 +3439,7 @@
                             <td class="center"><code>++</code></td>
                             <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<a->n</a->) <f->++</f-></code></td>
                             <td class="left">Postfix increment</td>
-                            <td class="left" rowspan=6>Arithmetic</td>
+                            <td class="left" rowspan="6">Arithmetic</td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
@@ -3373,7 +3450,7 @@
                         </tr>
                     <!-- 3 -->
                         <tr>
-                            <td class="center" rowspan=6>3</td>
+                            <td class="center" rowspan="6">3</td>
                             <td class="center"><code>++</code></td>
                             <td class="center nowrap"><code><t->T</t-> <f->++</f-> (?<t->T</t-> &<a->n</a->)</code></td>
                             <td class="left">Prefix increment</td>
@@ -3416,11 +3493,11 @@
                         </tr>
                     <!-- 4 -->
                         <tr>
-                            <td class="center" rowspan=3>4</td>
+                            <td class="center" rowspan="3">4</td>
                             <td class="center"><code>*</code></td>
                             <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->*</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Multiplication</td>
-                            <td class="left" rowspan=5>Arithmetic</td>
+                            <td class="left" rowspan="5">Arithmetic</td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
@@ -3438,7 +3515,7 @@
                         </tr>
                     <!-- 5 -->
                         <tr>
-                            <td class="center" rowspan=2>5</td>
+                            <td class="center" rowspan="2">5</td>
                             <td class="center"><code>+</code></td>
                             <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->+</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Addition</td>
@@ -3453,11 +3530,11 @@
                         </tr>
                     <!-- 6 -->
                         <tr>
-                            <td class="center" rowspan=2>6</td>
+                            <td class="center" rowspan="2">6</td>
                             <td class="center"><code>&lt;&lt;</code></td>
                             <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&lt;&lt;</f-> (<t->uint</t-> <a->b</a->)</code></td>
                             <td class="left">Left bit shift</td>
-                            <td class="left" rowspan=2>Bitwise</td>
+                            <td class="left" rowspan="2">Bitwise</td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
@@ -3468,11 +3545,11 @@
                         </tr>
                     <!-- 7 -->
                         <tr>
-                            <td class="center" rowspan=4>7</td>
+                            <td class="center" rowspan="4">7</td>
                             <td class="center"><code>&lt;</code></td>
                             <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&lt;</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Less than</td>
-                            <td class="left" rowspan=8>Relational</td>
+                            <td class="left" rowspan="8">Relational</td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
@@ -3497,7 +3574,7 @@
                         </tr>
                     <!-- 8 -->
                         <tr>
-                            <td class="center" rowspan=4>8</td>
+                            <td class="center" rowspan="4">8</td>
                             <td class="center"><code>==</code></td>
                             <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->==</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Equality</td>
@@ -3530,7 +3607,7 @@
                             <td class="center"><code>&</code></td>
                             <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Bitwise AND</td>
-                            <td class="left" rowspan=3>Bitwise</td>
+                            <td class="left" rowspan="3">Bitwise</td>
                         </tr>
                     <!-- 10 -->
                         <tr>
@@ -3554,7 +3631,7 @@
                             <td class="center"><code>&&</code></td>
                             <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->&&</f-> (<t->bool</t-> <a->b</a->)</code></td>
                             <td class="left">Logical AND</td>
-                            <td class="left" rowspan=3>Logical</td>
+                            <td class="left" rowspan="3">Logical</td>
                         </tr>
                     <!-- 13 -->
                         <tr>
@@ -3919,7 +3996,7 @@
                             <td class="center"><elm-><code>(</code><code>)</code></elm-></td>
                             <td class="center nowrap"><code><t->T</t-> <f->(</f-> (?<t->T</t-> <a->n</a->) <f->)</f-></code></td>
                             <td class="left">Grouping</td>
-                            <td class="left" rowspan=10>Other</td>
+                            <td class="left" rowspan="10">Other</td>
                         </tr>
                     <!-- 15 -->
                         <tr>

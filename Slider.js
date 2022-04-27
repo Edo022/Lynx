@@ -66,7 +66,7 @@ function getBackgroundSize(elem) {
             computedDim[0] = elemDim[0];
             computedDim[1] = 'auto';
         } else {
-            // elem's ratio is greater than or equal to img ratio
+            // Elem's ratio is greater than or equal to img ratio
             if(elemDim[0] / elemDim[1] >= ratio) {
                 computedDim[0] = 'auto';
                 computedDim[1] = elemDim[1];
@@ -84,26 +84,26 @@ function getBackgroundSize(elem) {
                 computedDim[i] = cssSize[i].replace('px', '');
             } else if (cssSize[i].indexOf('%') > -1) {
                 // If percentage, get percentage of elem's dimension
-                // and assign it to the computed dimension
+                // And assign it to the computed dimension
                 computedDim[i] = elemDim[i] * (cssSize[i].replace('%', '') / 100);
             }
         }
     }
     // If both values are set to auto, return image's
-    // original width and height
+    // Original width and height
     if(computedDim[0] === 'auto' && computedDim[1] === 'auto') {
         computedDim[0] = image.width;
         computedDim[1] = image.height;
     } else {
         // Depending on whether width or height is auto,
-        // calculate the value in pixels of auto.
-        // ratio in here is just getting proportions.
+        // Calculate the value in pixels of auto.
+        // Ratio in here is just getting proportions.
         ratio = computedDim[0] === 'auto' ? image.height / computedDim[1] : image.width / computedDim[0];
         computedDim[0] = computedDim[0] === 'auto' ? image.width / ratio : computedDim[0];
         computedDim[1] = computedDim[1] === 'auto' ? image.height / ratio : computedDim[1];
     }
     // Finally, return an object with the width and height of the
-    // background image.
+    // Background image.
     return {
         width: computedDim[0],
         height: computedDim[1]

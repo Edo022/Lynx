@@ -103,15 +103,6 @@ Syntax: <option>
 
 
 
-
-.       │   g++ │       g++  │                                │         │
-.       │   ╭───────╮ ╭─────────────╮╮╮                       │         │
-. -oa   │   │ .asm  │ │ Photon .asm │││                       │         │
-.       │   ╰───────╯ ╰─────────────╯╯╯                       │         │
-
-
-
-
 .       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Abstract representation of the syntactic elements
 . -oy   │   │   Syntactic tree  │             │   Syntactic tree  │││   │
 .       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │

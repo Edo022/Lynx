@@ -9,7 +9,7 @@ function capitalize(string) {
 
 // Remove HTML indentation from pre blocks and add the line number
 function format(s){
-    // find shortest indentation
+    // Find shortest indentation
     let min;
     s = s.split('\n');
     for(let i = 0; i < s.length; i++){
@@ -19,14 +19,14 @@ function format(s){
             min = spaces;
         }
     }
-    // remove indentation
+    // Remove indentation
     for(let i = 0; i < s.length; i++){
         let line = s[i];
-        s[i] = (i == 0 || i == s.length - 1) ? "" : "<span class=\"hidden\">" + (("0" + i).slice(-2)) + "&nbsp&nbsp;</span>";
+        s[i] = (i == 0 || i == s.length - 1) ? "" : "<span class=\"hidden\">" +(("0" + i).slice(-2)) + '&nbsp&nbsp;</span>';
         s[i] += line.substring(min, line.length);
     }
 
-    // join and return all lines
+    // Join and return all lines
     return s.join("\n");
 }
 
@@ -34,10 +34,13 @@ function format(s){
 
 // Fix code indentation because apparently HTML5+CSS3 can't do that
 function format_code() {
-    let children = document.getElementsByTagName("SCROLL-");
+    let children = document.getElementsByTagName("EXAMPLE-");
     for(let i = 0; i < children.length; i++){
-        children[i].innerHTML = format(children[i].innerHTML) + "\n";
-        // Add trailing newline to fix CSS's bugged max-height  ^
+        let children2 = children[i].getElementsByTagName("SCROLL-");
+        for(let j = 0; j < children2.length; ++j){
+            children2[j].innerHTML = format(children2[j].innerHTML) + "\n";
+            // Add trailing newline to fix CSS's bugged max-height  ^
+        }
     }
 }
 
@@ -95,7 +98,7 @@ function format_index_elm(elm, depth, last){
 
             // Fix index
             c.innerHTML =
-                "<a style=\"display: inline-block; padding: 0 1ch 0 1ch;\" " +
+                "<a style=\"display: inline-block; padding: 0 1ch 0 1ch; color: var(--fg-link);\" " +
                 "href=\"#" + id + "\">" + num + " " + name + "</a>"
             ;
             c.style.paddingLeft = "calc(" + index_indent + " * " + (depth - (c.tagName == "INDEXH-")) + ")";
@@ -124,13 +127,54 @@ function format_index(){
 
 
 
+// Create syntax path arrows with svg elements
+function format_arrows(){
+    var arrow_d = 3;
+
+
+    // Format elements
+    var children =
+        Array.from(document.getElementsByTagName('MERGE-UP-'))
+        .concat(Array.from(document.getElementsByTagName('MERGE-MID-')))
+        .concat(Array.from(document.getElementsByTagName('MERGE-DOWN-')))
+    ;
+    for(var i = 0; i < children.length; ++i) {
+        var w = children[i].clientWidth;
+        var h = children[i].clientHeight * 2;
+        var t = (children[i].tagName == 'MERGE-MID-') ? 0 : ((children[i].tagName == 'MERGE-UP-') ? 1 : -1);
+        children[i].innerHTML =
+            '<svg width="' + w + '" height="' + h + '"' + ((t == 1) ? (', style="margin-top: ' + (-h / 2) + 'px;"') : '') + '>' +
+                '<path d="M0,' + (h * (0.25 + 0.5 * (t == 1))) +
+                ' l' + (w * 0.10) + ',0 c' + (w * 0.40) + ',0 0,' + (h * 0.5 * -t) + ' ' + (w * 0.40) + ',' + (h * 0.5 * -t) + ' l' + (w * 0.10) + ',0' +
+                ' l' + (arrow_d * -1) + ',' + (arrow_d * -1) + ' m' + (arrow_d * 1) + ',' + (arrow_d * 1) + ' l' + (arrow_d * -1) + ',' + (arrow_d * 1) + '' +
+                '"style="stroke: var(--fg-arrow); stroke-width: 1px; fill: none;"/>' +
+            '</svg>'
+        ;
+    }
+
+
+    // Wrap lines in divs to control the line height
+    // The div is styled from CSS
+    children = document.getElementsByTagName('SYNTAX-');
+    for(var i = 0; i < children.length; ++i) {
+        var children2 = children[i].getElementsByTagName('TD');
+        for(var j = 0; j < children2.length; ++j){
+            children2[j].innerHTML = '<div>' + children2[j].innerHTML + '</div>';
+        }
+    }
+}
+
+
 
 
 function initFix() {
+    // Front end moment
     format_index();
     format_code();
+    format_arrows();
     fix_elm_height();
     fix_syntax_heights();
+
 
     // This scrolls to the correct header, which is the same the browser already scrolled to.
     // Apparently, JS is loaded after scrolling to it and adding new HTML elements messes everything up,
@@ -138,4 +182,9 @@ function initFix() {
     // Anything else refuses to work
     let header = window.location.href;
     window.location.replace(header);
+
+
+    // The id="main-mask" div is used to hide the page before js is done moving stuff around as anything else just doesn't work
+    // This line removes it from the body so that the user can see the page and think it loaded flawlessly
+    document.body.removeChild(document.getElementById('main-mask'));
 };

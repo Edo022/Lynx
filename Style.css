@@ -6,6 +6,8 @@
         --line-h:             2.6ch;
         --wide-line-h:        3.5ch;
         --code-line-h:        2.5ch;
+        --syntax-line-h:      5ch;
+        --syntax-arrow-w:     8ch;
 
         --font-size-xx-small: 8px;
         --font-size-x-small:  12px;
@@ -42,10 +44,12 @@
         --bg-table-header:  hsl(213, 20%, 12%);
 
         --fg-link:          hsl(209, 100%, 66%);
+        --fg-soft-link:     hsl(209, 60%, 80%);
         --fg-separator:     hsl(213, 12%, 18%);
         --fg-text:          hsl(0, 0%, 75%);
         --fg-lable-active:  hsl(0, 0%, 49%);
         --fg-hidden:        hsl(0, 0%, 33%);
+        --fg-arrow:         hsl(0, 0%, 80%);
 
         --bd-elm:           hsl(212, 14%, 20%);
         --bd-elm2:          hsl(210, 41%, 54%);
@@ -591,8 +595,46 @@ sup::after  { content: ")"; }
 
 a:hover, a:visited, a:link {
     text-decoration: none;
-    color: var(--fg-link);
+    color: var(--fg-soft-link);
 }
 a:hover {
     text-decoration: underline;
+}
+
+
+
+
+
+
+syntax- table, syntax- table tr, syntax- table tr > td {
+    background-color: transparent !important;
+    border: 0px solid transparent !important;
+    border-radius: 0px;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    white-space: normal;
+}
+syntax- table tr > td > div {
+    display: flex;
+    min-width: fit-content;
+    max-width: 100%;
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+    overflow: visible;
+}
+syntax- table tr > td > div > * {
+    align-self: center;
+}
+
+
+merge-down-, merge-up-, merge-mid- {
+    display: inline-block;
+    overflow-y: visible;
+    margin-right: calc(0px - var(--syntax-arrow-w));
+
+    min-width: var(--syntax-arrow-w);
+    max-width: var(--syntax-arrow-w);
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
 }

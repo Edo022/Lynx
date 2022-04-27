@@ -81,7 +81,7 @@
 <script>
     //TODO move to .js file
     function dedent(s){
-        // find shortest indentation
+        // Find shortest indentation
         var min;
         s = s.split('\n');
         for(var i = 0; i < s.length; i++){
@@ -91,13 +91,13 @@
                 min = spaces;
             }
         }
-        // remove indentation
+        // Remove indentation
         for(var i = 0; i < s.length; i++){
             var line = s[i];
             s[i] = line.substring(min, line.length); //TODO REMOVE
         }
 
-        // join and return all lines
+        // Join and return all lines
         return s.join("\n");
     }
 
