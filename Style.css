@@ -6,8 +6,9 @@
         --line-h:             2.6ch;
         --wide-line-h:        3.5ch;
         --code-line-h:        2.5ch;
-        --syntax-line-h:      5ch;
-        --syntax-arrow-w:     8ch;
+        --syntax-line-h:      4ch;
+        --syntax-arrow-w:     3ch;
+        --syntax-arrow-margin:10px; /* must be in pixels as it is used by js */
 
         --font-size-xx-small: 8px;
         --font-size-x-small:  12px;
@@ -18,7 +19,7 @@
         --font-size-large:    22px;
         --font-size-x-large:  28px;
         --font-size-xx-large: 36px;
-        --font-size-xxx-large: 48px;/*
+        --font-size-xxx-large:48px;/*
     }
 
     Sizes { */
@@ -44,15 +45,16 @@
         --bg-table-header:  hsl(213, 20%, 12%);
 
         --fg-link:          hsl(209, 100%, 66%);
-        --fg-soft-link:     hsl(209, 60%, 80%);
+        --fg-soft-link:     hsl(212, 36%, 79%);
         --fg-separator:     hsl(213, 12%, 18%);
         --fg-text:          hsl(0, 0%, 75%);
         --fg-lable-active:  hsl(0, 0%, 49%);
         --fg-hidden:        hsl(0, 0%, 33%);
-        --fg-arrow:         hsl(0, 0%, 80%);
+        --fg-arrow:         hsl(212, 7%, 46%);
 
         --bd-elm:           hsl(212, 14%, 20%);
         --bd-elm2:          hsl(210, 41%, 54%);
+        --bd-elm3:          hsl(281, 41%, 54%);
         --bd-code:          hsl(212, 14%, 24%);
         --bd-table-cell:    hsl(213, 9%, 10%);
         --bd-table-header:  hsl(213, 9%, 15%);/*
@@ -546,7 +548,7 @@ range-var- {
 
 
 
-elm-, elm2- {
+elm-, elm2-, elm3- {
     display: inline-block;
     font-family: monospace, monospace;
     border: 1px solid var(--bd-elm);
@@ -559,6 +561,9 @@ elm-, elm2- {
 }
 elm2- {
     border-color: var(--bd-elm2);
+}
+elm3- {
+    border-color: var(--bd-elm3);
 }
 .hidden, space-, nl- {
     color: var(--fg-hidden);
@@ -609,6 +614,7 @@ a:hover {
 syntax- table, syntax- table tr, syntax- table tr > td {
     background-color: transparent !important;
     border: 0px solid transparent !important;
+
     border-radius: 0px;
     padding: 0;
     margin: 0;
@@ -616,25 +622,59 @@ syntax- table, syntax- table tr, syntax- table tr > td {
     white-space: normal;
 }
 syntax- table tr > td > div {
-    display: flex;
+    display: inline-flex;   /* Inline is required to align the elements */
+    vertical-align: middle; /* This fixes inline-flex not aligning to mid by default */
+    overflow: visible;
+    align-items: center;
+
     min-width: fit-content;
     max-width: 100%;
+    width: 100%;
     min-height: var(--syntax-line-h);
     max-height: var(--syntax-line-h);
+}
+syntax- table {
+    min-width: fit-content;
+    max-width: fit-content;
+}
+syntax- table td {
     overflow: visible;
 }
-syntax- table tr > td > div > * {
-    align-self: center;
+svg {
+    overflow: visible;
 }
 
 
-merge-down-, merge-up-, merge-mid- {
-    display: inline-block;
-    overflow-y: visible;
-    margin-right: calc(0px - var(--syntax-arrow-w));
 
-    min-width: var(--syntax-arrow-w);
-    max-width: var(--syntax-arrow-w);
+branch-b-,  branch-t-,  branch-c-, loop-start-, loop-end-, loop-connector-,
+branch-br-, branch-tr-, branch-cr-,
+branch-bl-, branch-tl-, branch-cl- {
+    display: inline-block;
+    overflow: visible;
+    margin-left:  var(--syntax-arrow-margin);
+    margin-right: calc(0px - var(--syntax-arrow-w) - var(--syntax-arrow-margin));
+
+    min-width:  var(--syntax-arrow-w);
+    max-width:  calc(100% - 2 * var(--syntax-arrow-margin));
+    /**/width:  calc(100% - 2 * var(--syntax-arrow-margin));
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+}
+loop-connector- {
+    margin-left: 0;
+    min-width: 100%;
+    max-width: 100%;
+}
+branch-end- {
+    display: inline-block;
+    align-self: center;
+    overflow: visible;
+    padding-left:  var(--syntax-arrow-margin);
+    padding-right: var(--syntax-arrow-margin);
+
+    min-width:  var(--syntax-arrow-w);
+    max-width:  calc(100% - 2 * var(--syntax-arrow-margin));
+    /**/width:  calc(100% - 2 * var(--syntax-arrow-margin));
     min-height: var(--syntax-line-h);
     max-height: var(--syntax-line-h);
 }

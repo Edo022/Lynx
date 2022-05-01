@@ -1,4 +1,11 @@
 <!DOCTYPE html>
+
+
+
+<!-- This code was writte by a sentient being -->
+
+
+
 <html>
 <head>
     <!-- HTML boilerplate -->
@@ -94,8 +101,6 @@
                         <indexd->scopes</indexd->
                     </index->
                     <index-><indexh->name-resolution</indexh->
-                        <indexd->indices</indexd->
-                        <indexd->generated-symbols</indexd->
                         <indexd->name-shadowing</indexd->
                     </index->
                     <indexd->undefined-values</indexd->
@@ -107,7 +112,7 @@
                     <index-><indexh->primitive-types</indexh->
                         <indexd->integral-types</indexd->
                         <indexd->floating-point-types</indexd->
-                        <indexd->bool-type</indexd->
+                        <indexd->boolean-type</indexd->
                         <indexd->enums</indexd->
                     </index->
                     <index-><indexh->aggregate-types</indexh->
@@ -119,6 +124,7 @@
                         <indexd->void</indexd->
                         <indexd->typename</indexd->
                     </index->
+                    <indexd->element-indexing</indexd->
                     <indexd->implicit-conversions</indexd->
                     <indexd->auto-specifier</indexd->
                     <indexd->typeof-and-baseof-specifiers</indexd->
@@ -194,8 +200,19 @@
                 <indexd->math-module</indexd->
                 <indexd->bits-module</indexd->
                 <indexd->types-module</indexd->
+                <indexd->memory-module</indexd->
             </index->
-            <indexd->quick-reference-tabs</indexd->
+            <index-><indexh->quick-reference-tabs</indexh->
+                <index-><indexh->syntaxes</indexh->
+                    <indexd->symbol-declarations</indexd->
+                    <indexd->symbol-referencing</indexd->
+                </index->
+                <index-><indexh->undefined-behaviours</indexh->
+                    <indexd->conversions</indexd->
+                    <indexd->core-module-operators</indexd->
+                    <indexd->math-module-functions</indexd->
+                </index->
+            </index->
             <indexd->complete-examples</indexd->
         <indexh-></indexh->
     </index->
@@ -266,8 +283,26 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        //<elm->Comment string</elm-><nl-></nl->
-                        /*<elm->Comment string</elm->*/
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>//</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->comment string</elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><nl-></nl-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>/*</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->comment string</elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>*/</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -304,11 +339,14 @@
                 The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
                 Any existent file can be included, regardless of its contents or extension.<br>
                 The path of the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters and one of <code>.</code> <code>/</code> <code>-</code> <code>_</code>. //TODO <br>
-                Both absolute and relative paths are supported.
             </p>
             <p>
-                <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards are supported.<br>
-                Glob patterns that don't match any file are allowed and have no effect.
+                Absolute paths, relative paths and Glob patterns are all supported.<br>
+                <code>~</code> is not recognized as the home directory but interpeted as an invalid character.<br>
+            </p>
+            <p>
+                Glob patterns that don't match any file are allowed and have no effect.<br>
+                <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards are supported.
             </p>
             <p>
                 <a href="#standard-modules">Standard modules</a> are included using the <code>&lt;</code><code>&gt;</code> characters.<br>
@@ -318,10 +356,34 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        #include<space-></space->"<elm->absolute/path/to/file</elm->"<nl-></nl->
-                        #include<space-></space->"./<elm->relative/path/to/file</elm->"<nl-></nl->
-                        #include<space-></space->"<elm->relative/path/to/file</elm->"<nl-></nl->
-                        #include<space-></space->&lt;<elm->standard module name</elm->&gt;<nl-></nl->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>#include</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><space-></space-></code></td>
+                                <td><branch-c-></branch-c-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><code>"</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td class="center"><elm->path/to/file</elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>"</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>&lt;</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td class="center"><elm->module name</elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>&gt;</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -379,7 +441,15 @@
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        \<nl-></nl->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>\</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><nl-></nl-></code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -633,13 +703,13 @@
                 </ul><br>
                 <li>Separators</li>
                 <ul>
-                    <li><a href="#statements"><code>,</code></a>- Separates 2 or more <a href="#statements">expressions</a></li>
-                    <li><a href="#statements"><code>;</code></a>- Defines the end of a <a href="#statements">statement</a></li>
+                    <li><a href="#statements"><code>,</code></a> - Separates 2 or more <a href="#statements">expressions</a></li>
+                    <li><a href="#statements"><code>;</code></a> - Defines the end of a <a href="#statements">statement</a></li>
                 </ul><br>
                 <li>Other</li>
                 <ul>
-                    <li><a href="#name-resolution"><code>.</code></a>- Part of the <a href="#name-resolution">name resolution</a></li>
-                    <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td>- Part of the <a href="#for-loops">for each</a> loop syntax</li>
+                    <li><a href="#name-resolution"><code>.</code></a> - Part of the <a href="#name-resolution">name resolution</a></li>
+                    <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td> - Part of the <a href="#for-loops">for each</a> loop syntax</li>
                 </ul>
             </ul>
             <p>
@@ -872,16 +942,48 @@
             <h1 id="name-resolution"></h1>
             <p>
                 <a href="#symbols">Symbols</a> are referenced through their name.<br>
-                A <b>name</b> is the list of all the <a href="#identifiers">identifiers</a> of the <b>enclosing <a href="#scopes">scopes</a></b>
-                and the <a href="#identifiers">identifier</a> of the <a href="#symbols"><b>symbol</b></a> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
-                The name can start from any of the enclosing <a href="#scopes">scopes</a>.<br>
-                If the enclosing <a href="#scopes">scopes</a> are omitted, the <a href="#symbols">symbol</a> <a href="#identifiers">identifier</a> is searched in the current <a href="#scopes">scope</a>.
+                A <b>name</b> is the list of all the <a href="#symbol-referencing">referencing syntaxes</a> used to refer to the <b>enclosing <a href="#scopes">scopes</a></b>
+                and the <a href="#symbols"><b>symbol</b></a> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
+                The <a href="#symbol-referencing">referencing syntax</a> depends on the type of semantic element the <a href="#symbols">symbol</a> is declared as.
+                They are described in the corresponding sections of each semantic element and summarized in the <a href="#symbol-referencing">Symbol referencing</a> section.
             </p>
             <p>
-                Names that start from the <a href="#modules">module</a> <a href="#scopes">scope</a> are called complete names.<br>
-                Names that omit the enclosing <a href="#scopes">scopes</a> are called local names.<br>
+                The name can start from any of the enclosing <a href="#scopes">scopes</a>.<br>
+                If the enclosing <a href="#scopes">scopes</a> are omitted, the <a href="#symbols">symbol</a> <a href="#identifiers">identifier</a> is searched in the current <a href="#scopes">scope</a>.<br>
+                Names that start from the <a href="#modules">module</a> <a href="#scopes">scope</a> are called complete names.
+                Names that omit the enclosing <a href="#scopes">scopes</a> are called local names.
                 Other names are called relative names.
             </p>
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><a href="#symbol-referencing"><elm- style="color: var(--fg-text)">referencing syntax</elm-></a></td>
+                                <td><branch-tr-></branch-tr-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>.</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
             <example->
                 <fill->
                     <label-></label->
@@ -908,91 +1010,6 @@
                             <c->// No relative names</c->
                             <c->// Local name: n</c->
                             <t->uint</t-> n;
-                        }
-                    </scroll-></code->
-                </fill->
-            </example->
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Indices                                                         -->
-            <!--------------------------------------------------------------------->
-            <h1 id="indices"></h1>
-            <p>
-                <b>Elements</b> of <b><a href="#structs">structs</a></b>, <b><a href="#enums">enums</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced through their <b>index</b>.<br>
-                The index must be a <a href="#compile-time-values">compile time value</a>.
-            </p>
-            <p>
-                <a href="#structs">Struct</a> and <a href="#tuples">tuple</a> indices are part of the <a href="#name-resolution">name resolution</a>.<br>
-                <a href="#arrays">Array</a> elements are accessed using the <a href="#special-operators">scubrscipt operator</a>, which is not part of the <a href="#name-resolution">name resolution</a> but a function that can be called during runtime.
-            </p>
-            <example->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        <k->struct</k-> s {
-                            <t->double</t-> a;
-                            <t->float</t->  b;
-                        }
-                        <k->enum</k-> e {
-                            a, b;
-                        }
-
-                        <t->void</t-> <f->main</f->(){
-                            (<t->int</t->, <t->float</t->) var1;
-                            <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
-                            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
-
-                            <t->s</t-> var2;
-                            <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
-                            <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
-
-                            <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
-                        }
-                    </scroll-></code->
-                </fill->
-            </example->
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Generated symbols                                               -->
-            <!--------------------------------------------------------------------->
-            <h1 id="generated-symbols"></h1>
-            <p>
-                <a href="#functions"><b>Functions</b></a> and <a href="#structs">structs</a> generated by <a href="#templates">templates</a> are referenced using their <a href="#name-resolution">name</a>,
-                followed by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the types for which the <a href="#symbols">symbol</a> was instantiated.
-            </p>
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        <table>
-                            <tr>
-                                <td>
-                                    <elm->name<sup>id</sup></elm-><span>&lt;</span><elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...</t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm-><span>&gt;</span>
-                                </td>
-                            </tr>
-                        </table>
-                    </scroll-></code->
-                </fill->
-            </syntax->
-
-            <example->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        <w->template</w-> &lt;<t->t</t->&gt; <f->f</f->(<t->t</t-> <a->a</a->, <t->t</t-> <a->b</a->) {
-                            <k->return</k-> a;
-                        }
-                        <w->template</w-> &lt;<t->t</t->, <t->u</t->&gt; <w->struct</w-> s {
-                            <t->t</t-> a;
-                            <t->t</t-> b;
-                        }
-
-                        <t->void</t-> <f->main</f->(){
-                            <t->s</t->&lt;<t->int</t->, <t->double</t->&gt; var;
-                            s.a <f->=</f-> <f->f</f->&lt;<t->int</t->&gt(<k->0</k->);
-                            s.b <f->=</f-> <f->f</f->&gt;<t->double</t->&gt;(<k->1</k->);
                         }
                     </scroll-></code->
                 </fill->
@@ -1038,7 +1055,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="undefined-values"></h1>
             <p>
-                <b>Any unknown value</b> of any type is an <b>undefined value</b>.<br>
+                <b>Any unknown value</b> of any <a href="#types">type</a> is an <b>undefined value</b>.<br>
                 The language can generate undefined values for a variety of reasons.<br>
                 Such values are usually the result of errors that occurred during the execution of a <a href="#functions">function</a> and don't contain any useful information.<br>
                 Uninitialized <a href="#variables">variables</a> also have undefined value.
@@ -1087,6 +1104,9 @@
                 Known special cases that generate constant values, such as <code>n <f->*</f-> <k->0</k-></code> or <code>n <f->-</f-> n</code>,
                 are used by the compiler to <a href="#value-precomputation">optimize</a> the code, but for consistency reasons, they have no relevance in determining if a value is compile time or not.
             </p>
+            <p>
+                //TODO
+            </p>
 
 
 
@@ -1096,21 +1116,60 @@
             <!--------------------------------------------------------------------->
             <h1 id="namespaces"></h1>
             <p>
-                <b>Namespaces</b> are used to create <b>named scopes</b> which can contain
-                <a href="#variables">variables</a>, <a href="#functions">functions</a>, <a href="#structs">structs</a>, <a href="#enums">enums</a> and <a href="#symbol-aliases">symbol aliases</a>.<br>
+                <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b>.<br>
                 They don't affect the runtime behaviour and can be declared in any scope.<br>
                 Unnamed namespaces are allowed.
             </p>
-
             <syntax->
                 <fill->
-                    <label-></label->
+                    <label- class="nobefore">Declaration syntax</label->
                     <code-><scroll->
-                        namespace<space-></space-><elm->name<sup>id</sup></elm-> { <elm->...</elm-> }
-                        namespace { <elm->...</elm-> }
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><w->namespace</w-></code></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>{</code></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm3->symbol declaration</elm3-></td>
+                                <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                                <td><code>}</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Referencing syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+
             <example->
                 <fill->
                     <label-></label->
@@ -1135,12 +1194,12 @@
             <!--------------------------------------------------------------------->
             <h1 id="types"></h1>
             <p>
-                <b>Data types</b> define how <b>values</b> are <b>interpreted</b> during runtime and how they can be used within expressions.<br>
+                <b>Data types</b> define how <b><a href="#values">values</a></b> are <b>interpreted</b> during runtime and how they can be used within <a href="#statements">expressions</a>.<br>
             </p>
             <p>
-                The Lux language is statically typed.<br>
-                Every value has an associated type, regardless of it being a <a href="#left-and-right-values">right</a> or a <a href="#left-and-right-values">left value</a>.<br>
-                The type of each value must be known at compile time, as there are no runtime type informations.
+                Both languages are statically types.<br>
+                Every <a href="#values">value</a> has an associated type, regardless of it being a <a href="#left-and-right-values">right</a> or a <a href="#left-and-right-values">left value</a>.<br>
+                The type of each <a href="#values">value</a> must be known at compile time, as there are no runtime type informations.
             </p>
             <p>
                 There are no classes, strings, characters, matrices or vectors. The latter 2 are <a href="#symbol-aliases">aliases</a> of <a href="#arrays">array</a> types. See <a href="#standard-modules">Standard Modules</a>.
@@ -1151,10 +1210,10 @@
             <!-- Primitive types                                                 -->
             <!--------------------------------------------------------------------->
             <h1 id="primitive-types"></h1>
-            <p>Lux features <b>7 primitive types</b>, which can be used to define more complex types such as structs, arrays, enums and tuples.</p>
+            <p>Lux and Umbra feature <b>7 primitive types</b>, which can be used to define more complex types such as <a href="#structs">structs</a>, <a href="#arrays">arrays</a> and <a href="#tuples">tuples</a>.</p>
             <p>
                 These types are always defined and they act as if they were declared in the <a href="#core-module">core module</a>.<br>
-                Primitive types are <b>not keywords</b> and can be shadowed like any other symbol.
+                Primitive types are <b>not <a href="#keywords">keywords</a></b> and can be <a href="#name-shadowing">shadowed</a> like any other <a href="#symbols">symbol</a>.
             </p>
             <p>The primitive types are:</p>
             <div class="table-container"><table>
@@ -1198,10 +1257,6 @@
             </table></div>
             <p>
                 All primitives types are convertible to each other. This is explained in detail in <a href="#implicit-conversions">Implicit conversions</a>.<br>
-            </p>
-            <p>
-                See
-                <a href="#literals">Literals</a>
             </p>
 
 
@@ -1292,11 +1347,29 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Bool type                                                       -->
+            <!-- Boolean type                                                    -->
             <!--------------------------------------------------------------------->
-            <h1 id="bool-type"></h1>
+            <h1 id="boolean-type"></h1>
             <p>
-                //TODO bools are used for conditions
+                <code><t->bool</t-></code>.<br>
+                The <b>Boolean type</b> is used to <b>represend conditions</b>.<br>
+                Its value can be <code><k->true</k-></code> or <code><k->false</k-></code>.
+            </p>
+            <example->
+                <fill->
+                    <code- style="border-top-left-radius: var(--code-decoration-r);"><scroll->
+                                       <c->32</c->
+                                      <c->value</c->
+                        <c->┌───────────────┴───────────────┐</c->  <t->bool</t->
+                        <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
+                        <c->00000000000000000000000000000001</c->   <k->true</k->
+                        <c->00000000000000000000000000000000</c->   <k->false</k->
+                    </scroll-></code->
+                </fill->
+            </example->
+            <p>
+                Booleans purposely waste 31 bits for performance reasons.<br>
+                Smaller types require additional bitwise operations and expensive conversions between the CPU and GPU data.
             </p>
 
 
@@ -1305,31 +1378,136 @@
             <!--------------------------------------------------------------------->
             <h1 id="enums"></h1>
             <p>
-                <b>Enums</b> are used to <b>name</b> and <b>group</b> literal <b>constants</b> of the same type.<br>
-                The base type of the enum can be specified after its name and it must be one of the primitive types.<br>
-                Elements are declared in the same way as variables, but neither the type nor the const qualifier are specified explicitly.<br>
-                The initializer values are implicitly converted to the base type of the enum.
+                <b>Enums</b> are used to <b>group named <a href="#literals">literals</a></b> of the same <a href="#types">type</a>.<br>
+                The base <a href="#types">type</a> of the enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>.<br>
+                Elements are declared in the same way as <a href="#variables">variables</a>, but neither the <a href="#types">type nor the <a href="#const-qualifier">const qualifier</a> are specified explicitly.<br>
+                The initializer values are implicitly converted to the base <a href="#types">type</a> of the enum.
             </p>
             <syntax->
                 <left->
                     <label-></label->
                     <code-><scroll->
-                        enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
-                        strict enum<space-></space-><elm->name<sup>id</sup></elm-> : <elm-><t->T<sup>type</sup></t-> </elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> }
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>}</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>enum</code></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>:</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>{</code></td>
+                                <td><loop-end-></loop-end-><branch-tr-></branch-tr-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm2->element declaration</elm2-></td>
+                                <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>;</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><code>strict</code></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </left->
                 <right->
-                    <label->Element syntax</label->
+                    <label->Element declaration syntax</label->
                     <code-><scroll->
-                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>=</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>r</sup></t-></elm-></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </right->
             </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Referencing syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
             <p>
-                Elements of integral enums which are not initizlied will have the value of the preceeding element + 1, or 0 if they are the first.<br>
-                Elements of boolean and floating point enums must always be initialized.<br>
-                Multiple elements can have the same value, but each element can only be declared once.<br>
-                Enums with no elements are not allowed.
+                Elements of integral enums which are not initialized have the <a href="#values">value</a> of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
+                Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
+                Multiple elements can have the same <a href="#values">value</a>, but each element can only be declared once.<br>
+                Empty enums, <a href="#unnamed-types">unnamed enums</a> and trailing element <code>;</code> are allowed.
             </p>
 
             <example->
@@ -1339,7 +1517,7 @@
                         <w->enum</w-> <t->e</t-> : <t->int</t-> {
                             a, b;              <c->// Ok, a = 0, b = 1</c->
                             c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
-                            d, e = 0;          <c->// Ok, d = -266249, e = 0</c->
+                            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
                         }
                     </scroll-></code->
                 </fill->
@@ -1355,7 +1533,7 @@
                         }
 
                         <t->void</t-> <f->main</f->(){
-                            <t->c</t-> a = <k->c.pi</k->;       <c->// Ok</c->
+                            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
                             <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
                             <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
@@ -1364,11 +1542,10 @@
             </example->
 
             <p>
-                By default, all enums behave exactly as their base types, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
-                When implicit conversions from other types are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
-                Strict enums only allow values of the same enum, but can still be implicitly converted to other types.
+                By default, all enums behave exactly as their base <a href="#types">types</a>, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
+                When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
+                Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
             </p>
-
             <example->
                 <fill->
                     <label-></label->
@@ -1380,18 +1557,13 @@
                         }
 
                         <t->void</t-> <f->main</f->(){
-                            <t->c</t-> a = <k->c.phi</k->;      <c->// Ok</c->
+                            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
                             <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
                             <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
                         }
                     </scroll-></code->
                 </fill->
             </example->
-            <p>
-                See
-                <a href="#primitive-types">Primitive types</a>,
-                <a href="#implicit-conversions">Implicit conversions</a>
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -1405,30 +1577,110 @@
             <!--------------------------------------------------------------------->
             <h1 id="structs"></h1>
             <p>
-                <b>Structs</b> are used to <b>group values</b> of <b>different types</b>.<br>
-                The members are declared in the same way as variables, and they can be of any type, including enums, arrays and other structures.<br>
+                <b>Structs</b> are used to <b>group named <a href="#values">values</a></b> of <b>different <a href="#types">types</a></b>.<br>
+                The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a> and other structs.<br>
                 They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
-                Like variables, uninitialized members cannot be used within expressions. Struct values must also be fully initialized before they can be used in expressions.
+                As with <a href="#variables">variables</a>, uninitialized members cannot be used within <a href="#statements">expressions</a>. Struct <a href="#values">values</a> must also be fully initialized before they can be used in <a href="#statements">expressions</a>.
             </p>
             <p>
-                Empty structs are allowed.<br>
-                Member access is explained in <a href="#special-operators">Special operators</a>.<br>
-                Struct initializer values are explained in <a href="#constructors">Constructors</a>.
+                Empty structs, <a href="#unnamed-types">unnamed structs</a> and trailing element <code>;</code> are allowed.<br>
+                Struct initializer <a href="#values">values</a> are explained in <a href="#constructors">Constructors</a>.
             </p>
             <syntax->
                 <left->
-                    <label-></label->
+                    <label- class="nobefore">Declaration syntax</label->
                     <code-><scroll->
-                        struct<space-></space-><elm->name<sup>id</sup></elm-> { <elm2-><elm->member 0</elm->; <elm->...</elm->; <elm->member n</elm->;</elm2-> }
-                        struct<space-></space-><elm->name<sup>id</sup></elm-> { }
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>}</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>struct</code></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>{</code></td>
+                                <td><loop-end-></loop-end-><branch-tr-></branch-tr-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm2->member declaration</elm2-></td>
+                                <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>;</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </left->
                 <right->
-                    <label->Member syntax</label->
+                    <label->Member declaration syntax</label->
                     <code-><scroll->
-                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-tr-></branch-tr-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </right->
+            </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Referencing syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
             </syntax->
 
             <example->
@@ -1463,32 +1715,76 @@
             <!--------------------------------------------------------------------->
             <h1 id="arrays"></h1>
             <p>
-                <b>Arrays</b> can <b>aggregate values</b> of the <b>same type</b>.<br>
-                Functions, parameters, right values, variables and struct member can all have array type.<br>
-                Arrays can use any base type, including structs, enums and other arrays.<br>
+                <b>Arrays</b> are used to <b>group unnamed<a href="#values">values</a></b> of the <b>same <a href="#types">type</a></b>.<br>
+                Unlike other <a href="#aggregate-types">aggregate types</a>, they don't need to be declared.<br>
+                Arrays can use any base <a href="#types">type</a>, including <a href="#structs">structs</a>, <a href="#tuples">tuples</a> and other arrays.<br>
                 An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
             </p>
             <p>
-                Array declarations are identical to normal types, but <code>[</code><code>]</code> tokens follow the type, optionally enclosing an expression to specify the number of elements.<br>
-                Arrays can be initialized using any expression of a type that can be implicitly converted.<br>
-                If the <code>[</code><code>]</code> are left empty, the number of elements is determined by the inizializer value, which becomes required and must be an array <a href="#constructors">constructor</a>.
+                Array symbols are declared by <a href="#name-resolution">referencing</a> the base <a href="#types">type</a> and specifying the length in <code>[</code><code>]</code> <a href="#tokens">tokens</a>.<br>
+                In <a href="#variables">variables</a> and <a href="#array-parameters">array parameters</a> the <code>[</code><code>]</code> can be left empty to let the inizializer value determine the length.
+                When this syntax is used, the initializer value becomes required and must be an <a href="#implicit-conversions">implicitly convertible</a> array of the same length and number of dimensions</a>.
             </p>
             <p>
-                Arrays cannot have 0 elements.<br>
-                Element access is explained in <a href="#special-operators">Special operators</a>.<br>
-                Array initializer values are explained in <a href="#constructors">Constructors</a>.
+                Array <a href="#types">types</a> are determined by their lenght, base <a href="#types">type</a> and number of dimensions.<br>
+                The length of each dimension must be known at compile time and cannot be <code><k->0</k-></code>.<br>
+                In Lux, dynamic arrays are not supported. In Umbra, they are provided by the <a href="#array">array</a> standard module.<br>
+                Element access is explained in <a href="#element-indexing">Element indexing</a>.
             </p>
-
             <syntax->
                 <fill->
-                    <label-></label->
+                    <label- class="nobefore">Declaration syntax</label->
                     <code-><scroll->
-                        <elm-><t->T</t-><sup>type</sup></elm->[<elm-><t->uint<sup>r</sup></t-></elm->]<space-></space-><elm->name<sup>id</sup></elm->;
-                        <elm-><t->T</t-><sup>type</sup></elm->[] <elm->name<sup>id</sup></elm-> = <elm-><t->T[]<sup>r</sup></t-></elm->;
+                        <table>
+                            <tr>
+                                <td><c->none</c-></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
-
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Referencing syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm-><t->uint<sup>r</sup></t-></elm-></td>
+                                <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>[</code></td>
+                                <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>]</code></td>
+                                <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
             <example->
                 <fill->
                     <label-></label->
@@ -1500,16 +1796,6 @@
                     </scroll-></code->
                 </fill->
             </example->
-            <p>
-                There are no dynamic arrays.
-            </p>
-            <p>
-                See
-                <a href="#primitive-types">Primitive types</a>,
-                <a href="#enums">Enums</a>,
-                <a href="#implicit-conversions">Implicit conversions</a>,
-                <a href="#constructors">Constructors</a>
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -1517,24 +1803,63 @@
             <!--------------------------------------------------------------------->
             <h1 id="tuples"></h1>
             <p>
-                <b>Tuples</b> are used to <b>group values</b> of <b>different types</b>.<br>
-                The type of a tuple is the list of all the types of its elements. Any sequence of types enclosed in <code>(</code><code>)</code> is interpreted as a tuple type.<br>
-                Differently from <a href="#structs">structs</a>, tuples don't need to be declared before being used and their elements aren't named.<br>
+                <b>Tuples</b> are used to <b>group unnamed <a href="#values">values</a></b> of <b>different <a href="#values">types</a></b>.<br>
+                As with <a href="#arrays">arrays</a>, they don't need to be declared in order to be referenced.<br>
+                Tuples can contain elements of any <a href="#types">type</a>, including <a href="#arrays">arrays</a> and other tuples.<br>
             </p>
             <p>
-                The type of two tuples can only differ by the type and the order of their elements. If those are identical, the tuples have the same type.<br>
-                Element access is explained in <a href="#special-operators">Special operators</a>.<br>
-                Tuple initializer values are explained in <a href="#constructors">Constructors</a>.
+                Any sequence of <a href="#types">types</a> enclosed in <elm-><code>(</code><code>)</code></elm-> tokens is interpreted as a tuple type.<br>
+                The type of a tuple is determined by the <a href="#types">type</a> and order of its elements. If these are identical to another tuple, the tuples have the same type.
             </p>
             <p>
-                Tuples cannot have 0 elements.
+                Tuples cannot have 0 elements.<br>
+                Element access is explained in <a href="#element-indexing">Element indexing</a>.
             </p>
-
             <syntax->
                 <fill->
-                    <label-></label->
+                    <label- class="nobefore">Declaration syntax</label->
                     <code-><scroll->
-                        (<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->) <elm->name<sup>id</sup></elm->;
+                        <table>
+                            <tr>
+                                <td><c->none</c-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Referencing syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>)</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>(</code></td>
+                                <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -1565,8 +1890,11 @@
             <!--------------------------------------------------------------------->
             <h1 id="void"></h1>
             <p>
-                The <code><t->void</t-></code> type is a special type. It is exclusively used to define <a href="#functions">functions</a> that don't return any value.<br>
-                It can't store values like other types, but it can be used as value of <a href="#typenames">typename</a> type symbols.
+                The <code><t->void</t-></code> <a href="#types">type</a> is a special <a href="#types">type</a>. It is exclusively used to define <a href="#functions">functions</a> that don't <a href="#return-statement">return</a> any <a href="#values">value</a>.<br>
+                It cannot store <a href="#values">values</a> like other <a href="#types">types</a>, but it can be used as value of <a href="#typename">typename</a> <a href="#symbols">symbols</a>.
+            </p>
+            <p>
+                Passing <code><t->viod</t-></code> to a <a href="#templates">template</a> parameter is allowed.
             </p>
 
 
@@ -1575,46 +1903,110 @@
             <!--------------------------------------------------------------------->
             <h1 id="typename"></h1>
             <p>
-                <b>Typenames</b> are special types that can <b>store</b> other <b>types</b>.<br>
-                Typename values can be used anywhere where a type is required.
+                <b>Typenames</b> are special <a href="#types">types</a> that can <b>store</b> the <a href="#name-resolution">complete name</a> of any <b><a href="#types">type</a></b> to allow type <a href="#common-operator">comparisons</a>.<br>
+                When a <a href="#types">type</a> is passed to a <a href="#function-definitions">function parameter</a> or anywhere a <code><t->typename</t-></code> <a href="#values">value</a> is required, it is interpreted as a <code><t->typename</t-></code>.<br>
+                <code><t->typename</t-></code> <a href="#constructors">constructors</a> are allowed, as well as <code><t->typename</t-></code> <a href="#structs">struct</a> elements, <code><t->typename</t-></code> <a href="#tuples">tuple</a> elements and <code><t->typename</t-></code> <a href="#arrays">arrays</a>.
             </p>
             <p>
-                All typename values must be known at compile time.<br>
-                <code><t->typename</t-></code> is a valid value for typename types.<br>
-                Typename constructors are allowed, as well as typename struct elements, typename tuple elements and typename arrays.
+                All <code><t->typename</t-></code> values must be known at <a href="#compile-time-values">compile time</a>, and they cannot be used to declare <a href="#symbols">symbols</a> or call <a href="#constructors">constructors</a> (for these, <a href="#templates">templates</a> are used).<br>
+                Passing <code><t->typename</t-></code> to a <a href="#templates">template</a> parameter is allowed.<br>
+                <code><t->typename</t-></code> is a valid <code><t->typename</t-></code> <a href="#values">value</a>.
             </p>
             <example->
                 <fill->
                     <label->1</label->
                     <code-><scroll->
                         <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
-                        <t->t1</t-> t2 = <t->int</t->;              <c->// Ok</c->
+                        <c->t1 t2 = int;</c->              <ce->// Error, typename cannot be used to declare symbols</ce->
 
-                        <t->t2</t-> <f->main</f->(){
-                            <w->return</w-> <t->t2</t->(<k->6</k->);         <c->// Ok</c->
+                        <t->auto</t-> <f->main</f->(){
+                            <w->return</w-> <t->typename</t->(<t->typeof</t->(<f->main</f->)) <f->==</f-> <k->t1</k->;         <c->// Ok, returns false</c->
                         }
                     </scroll-></code->
                 </fill->
             </example->
+
+//TODO
+//TODO
+//TODO FINISH UPDATING TYPES
+//TODO
+//TODO
+//TODO UPDATE ALL SYNTAXES WITH SYNTAX HIGHLIGHTING AND THE PURPLE THING
+//TODO ALL THE WAY DOWN TO TYPES
+//TODO UPDATE SYNTAX-SPECIFIC TOKENS USAGES
+//TODO
+//TODO
+//TODO ADD TYPOGRAPHICAL CONVENTIONS
+//TODO ADD OBJECT STORAGE DURATION/LIFETIME IN LANGUAGE CONCEPTS
+//TODO
+//TODO
+//TODO ADD ALIGNMENT OF TYPES
+//TODO
+//TODO
+            <!--------------------------------------------------------------------->
+            <!-- Element indexing                                                -->
+            <!--------------------------------------------------------------------->
+            <h1 id="element-indexing"></h1>
+            <p>
+                <b>Elements</b> of <b><a href="#structs">structs</a></b>, <b><a href="#enums">enums</a></b> <b><a href="#arrays">arrays</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced
+                and accessed by referencing their parent object or semantic element and specifying the <b>index</b> of the element between <elm-><code>[</code><code>]</code></elm-> tokens.<br>
+                Only <a href="#arrays">arrays</a> can use <a href="#compile-time-values">runtime values</a> as indices. All the other types must use <a href="#compile-time-values">compile time values</a>
+            </p>
+            <p>
+                The return value is an <a href="#left-and-right-values">r-value</a> for <a href="#enums">enums</a> and an <a href="#left-and-right-values">l-value</a> for any other type.
+                In the latter case, modifying the return value also changes the original element.<br>
+            </p>
+            <syntax->
+                <fill->
+                    <label-></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->symbol<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>[</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->u32<sup>r</sup></t-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>]</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
             <example->
                 <fill->
-                    <label->2</label->
+                    <label-></label->
                     <code-><scroll->
-                        <w->struct</w-> s {
-                            <t->typename</t-> t; <c->// Ok</c->
-                            <t->uint</t-> n;
+                        <k->struct</k-> s {
+                            <t->double</t-> a;
+                            <t->float</t->  b;
+                        }
+                        <k->enum</k-> e {
+                            a, b;
                         }
 
-                        <t->void</t-> <f->main</f->(<t->bool</t-> <a->b</a->){
-                            <t->s</t-> var;                                     <c->// Ok</c->
-                            var.<t->t</t-> = <t->float</t->;                             <c->// Ok</c->
-                            (<t->typename</t->, <t->int</t->) tuple = (var.<t->t</t->, var.<t->t</t->(<k->5</k->)); <c->// Ok</c->
-                            tuple[<k->0</k->] n;                                <c->// Ok</c->
-                            <c->//typename[2](int, float)[b] var;</c-><ce->          // Error, the type depends on a runtime value</ce->
+                        <t->void</t-> <f->main</f->(){
+                            (<t->int</t->, <t->float</t->) var1;
+                            <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
+                            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
+
+                            <t->s</t-> var2;
+                            <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
+                            <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
+
+                            <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
                         }
                     </scroll-></code->
                 </fill->
             </example->
+            <p>
+                //TODO add array examples
+                //TODO add compile time errors examples
+            </p>
+
 
 
             <!--------------------------------------------------------------------->
@@ -1622,14 +2014,17 @@
             <!--------------------------------------------------------------------->
             <h1 id="implicit-conversions"></h1>
             <p>
-                <b>Implicit conversions</b> are performed when an <b>expression</b> of the <b>incorrect type</b> is used in place of the expected one.<br>
-                This includes anything whose syntax requires an expression.<br>
-                Conversions are not allowed in <a href="#function-templates">function template</a> calls and inizializer values of <a href="auto-specifier">auto</a> symbols.
+                <b>Implicit conversions</b> are performed when an <b><a href="#statements">expression</a></b> of the <b>incorrect <a href="#types">type</a></b> is used in place of the expected one.<br>
+                This includes anything whose syntax requires an <a href="#statements">expression</a>.<br>
+                Conversions are not allowed in <a href="#function-templates">function template</a> calls and inizializer values of <a href="auto-specifier">auto</a> <a href="#symbols">symbols</a>.
             </p>
             <p>
-                Primitive types are all implicitly convertible between them.<br>
-                The result of conversions follow these rules:
-                //TODO FIX NEGATIVE VALUE TO UNSIGNED
+                <a href="#primitive-types">Primitive types</a> are all implicitly convertible between them.<br>
+                In Lux, some conversions have <a href="#undefined-values">undefined result</a>.<br>
+                In Umbra, the same conversions cause <a href="#undefined-behaviour">undefined behaviour</a>.<br>
+                The result of the conversions follow these rules:
+                //TODO use fedisableexcept(FE_ALL_EXCEPT);
+                //TODO it only works on  floating points. integers throw exceptions anyway
             </p>
             <div class="table-container"><table>
                 <!-- integer -->
@@ -1647,9 +2042,9 @@
                     <tr class="even">
                         <th rowspan="13"><t->uint</t-><br><br><t->int</t-><br><br><t->ulong</t-><br><br><t->long</t-></th>
                         <th><range-val->== <k->-9223372036854775808</k-><br><range-var->limits.long.min</range-var-></range-val-></th>
-                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to n % limits.uint.<k->max</k-></td>
+                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to (-n - <k->1</k->) % (limits.uint.<k->max</k-> - <k->1</k->)</td>
                         <td class="center wrap conv-cell-n" rowspan="3">Undefined</td>
-                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to n % limits.ulong.<k->max</k-></td>
+                        <td class="center wrap conv-cell-m" rowspan="5">Overflows to (-n - <k->1</k->) % (limits.ulong.<k->max</k-> - <k->1</k->)</td>
                         <td class="center wrap conv-cell-y" rowspan="11">Correct result</td>
                         <td class="center wrap conv-cell-m" rowspan="4">Conversions are not symmetric</td>
                         <td class="center wrap conv-cell-m" rowspan="2">Conversions are not symmetric</td>
@@ -1746,7 +2141,7 @@
                     <tr class="even">
                         <fake-td></fake-td>
                         <th><range-val->&gt; <k->+4294967295</k-><br><range-var->limits.uint.max</range-var-></range-val-></th>
-                        <td class="center wrap conv-cell-m" rowspan="4">Overflows to n % limits.uint.<k->max</k-></td>
+                        <td class="center wrap conv-cell-m" rowspan="4">Overflows to n % (limits.uint.<k->max</k-> + <k->1</k->)</td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
                         <fake-td></fake-td>
@@ -2014,7 +2409,11 @@
                     </tr>
             </table></div>
             <p>
-                Additional conversions for non-primitive types are described as follows:
+                Additional conversions for non-<a href="#primitive-types">primitive</a> <a href="#types">types</a> are described as follows:
+            </p>
+            <p>
+                //TODO add function parameter default values
+                //FIXME when the constructor name is not specified, the type required by the syntax or semantic is used
             </p>
             <div class="table-container"><table>
                 <tr>
@@ -2022,51 +2421,20 @@
                     <th>To        </th>
                     <th>Behaviour </th>
                 </tr>
-
-                <!-- Element to array ---------------------------------------------------------->
                 <tr>
-                    <td class="center" rowspan="2"><code><t->T</t-></code></td>
-                    <td class="center"><code><t->T[n]</t-></code></td>
-                    <td rowspan="2">
+                    <td class="center"><code><t->T</t-></code></td>
+                    <td class="center"><code><t->U[]</t-></code></td>
+                    <td>
                         Each element of the result is initialized with the value of the source expression.<br>
-                        <code><t->T</t-></code> must be implicitly convertible to <code><t->U</t-></code>.
+                        <code><t->T</t-></code> must be implicitly convertible to <code><t->U</t-></code>, and the source type must have less dimensions than the destination type.
                     </td>
                 </tr>
                 <tr>
-                    <td class="center"><code><t->U[n]</t-></code></td>
-                </tr>
-
-                <!-- Tuple to tuple, struct or array ------------------------------------------->
-                <tr>
-                    <td class="center" rowspan="3"><code><t->(T0, ..., Tn)</t-></code></td>
-                    <td class="center"><code><t->(U0, ..., Un)</t-></code></td>
-                    <td rowspan="3">
-                        Each element of the result is initialized with the corresponding value of the source tuple.<br>
-                        The type of each element of the source tuple must be implicitly convertible to the type of the destination element.
-                    </td>
-                </tr>
-                <tr>
-                    <td class="center">
-                        <template->when(types.is_struct(U))</template-><br>
-                        <code><t->U</t-></code>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="center">
-                        <code><t->U[n]</t-></code>
-                    </td>
-                </tr>
-
-                <!-- Array to array and array to bool ------------------------------------------>
-                <tr>
-                    <td class="center" rowspan="2">
-                        <template->when(!types.is_struct(T) && !types.is_tuple(T))</template-><br>
-                        <code><t->T[n]</t-></code>
-                    </td>
-                    <td class="center"><code><t->U[n]</t-></code></td>
+                    <td class="center" rowspan="2"><code><t->T[]</t-></code></td>
+                    <td class="center"><code><t->U[]</t-></code></td>
                     <td>
                         Each element of the result is initialized with the corresponding value of the source array.<br>
-                        <code><t->T</t-></code> must be implicitly convertible to <code><t->U</t-></code>.
+                        <code><t->T</t-></code> must be implicitly convertible to <code><t->U</t-></code>, and the arrays must have the same number of elements in each dimension.
                     </td>
                 </tr>
                 <tr>
@@ -2074,57 +2442,6 @@
                     <td>Evaluated as <code><k->true</k-></code> if all the elements of the source array converted to <code><t->bool</t-></code> evaluate as <code><k->true</k-></code>, <code><k->false</k-></code> otherwise</td>
                 </tr>
             </table></div>
-            <p>
-                When values of different primitive types are used with <a href="#operators">operators</a> which require values of the same type, implicit conversions are performed in orer to avoid data loss.<br>
-                Which values are converted depends on the rank of their type.<br>
-                All the types with low rank are converted to the type of highest rank.
-            </p>
-            <p>
-                The only exceptions are the bitwise OR, XOR and AND, where no implicit conversions are performed and the result has the same type of the first operand.<br>
-                In assignment operators, the result is converted back to the type of the first operand.
-            </p>
-            <div class="table-container"><table>
-                <tr>
-                    <th>Type</th>
-                    <th>Rank</th>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->bool</t-></code></td>
-                    <td class="center">1</td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->int</t-></code></td>
-                    <td class="center">2</td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->uint</t-></code></td>
-                    <td class="center">3</td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->long</t-></code></td>
-                    <td class="center">4</td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->ulong</t-></code></td>
-                    <td class="center">5</td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->float</t-></code></td>
-                    <td class="center">6</td>
-                </tr>
-                <tr>
-                    <td class="center"><code><t->double</t-></code></td>
-                    <td class="center">7</td>
-                </tr>
-            </table></div>
-            //TODO add example
-
-            <p>
-                See
-                <a href="#arrays">Arrays</a>,
-                <a href="#constructors">Constructors</a>,
-                <a href="#standard-modules">Standard modules</a>
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -2132,18 +2449,27 @@
             <!--------------------------------------------------------------------->
             <h1 id="auto-specifier"></h1>
             <p>
-                The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b>type</b> when declaring a variable or function.<br>
-                The actual type of the symbol will be the same as the expression used to initialize it.<br>
+                The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#symbols">symbol</a>.<br>
+                The actual <a href="#types">type</a> of the <a href="#symbols">symbol</a> is determined by the initializer value, if its is a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if it is a <a href="#functions">function</a>.<br>
             </p>
             <p>
-                <code><t->auto</t-></code> is not allowed in struct members declarations and function parameters.<br>
-                The type of <code><t->auto</t-></code> functions is determined by their return value.<br>
-                There is no <code><t->auto</t-></code> constructor.
+                <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> members declarations or <a href="#function-definitions">function parameters</a>.<br>
+                <code><t->auto</t-></code> <a href="#constructors">constructors</a> are equivalent to <a href="#constructors">unnamed constructors</a>.
             </p>
-            <p>
-                <code><t->const</t-></code> <code><t->auto</t-></code> symbols are allowed.//TODO auto functions that depend on an argument value
-            </p>
-
+            <syntax->
+                <fill->
+                    <label- class="nobefore">Referencing syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr->
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>auto</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr->
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
             <example->
                 <fill->
                     <label->1</label->
@@ -2165,19 +2491,11 @@
                 <fill->
                     <label->2</label->
                     <code-><scroll->
-                        <t->auto</t-> a = int[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
-                        <t->auto</t-> <t->const</t-> b = !<k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
+                        <t->auto</t-> a <f->=</f-> <t->int</t->[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
+                        <t->auto</t-> <t->const</t-> b <f->=</f-> <f->!</f-><k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
                     </scroll-></code->
                 </fill->
             </example->
-            <p>
-                If the return type of an <code><t->auto</t-></code> function depends on parameters or variables, these must have compile time known value.
-            </p>
-            <p>
-                See
-                <a href="#functions">Functions</a>,
-                <a href="#return-statement">Return statement</a>
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -2185,27 +2503,48 @@
             <!--------------------------------------------------------------------->
             <h1 id="typeof-and-baseof-specifiers"></h1>
             <p>
-                The <b><code><t->typeof</t-></code></b> and <b><code><t->baseof</t-></code></b> specifiers are used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b>expression</b> that is passed to them.<br>
-                <code><t->typeof</t-></code> returns the type of the expression, <code><t->baseof</t-></code> returns its base type.<br>
-                Using <code><t->typeof</t-></code> on a type returns <code><t->typename</t-></code>.
-                //TODO make them typename functions
+                The <b><code><t->typeof</t-></code></b> and <b><code><t->baseof</t-></code></b> specifiers are used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#statements">expression</a></b> that is passed to them.<br>
+                <code><t->typeof</t-></code> returns the <a href="#types">type</a> of the <a href="#statements">expression</a>, whereas <code><t->baseof</t-></code> returns its base <a href="#types">type</a>.<br>
+                Passing a <a href="#types">type</a> to <code><t->typeof</t-></code> returns <code><t->typename</t-></code>.
             </p>
             <p>
                 <code><t->baseof</t-></code> can only be used on <a href="#arrays">arrays</a>, <a href="#enums">enums</a> and <a href="#primitive-types">primitive types</a>.<br>
-                The base type of primitive types is the type itself.<br>
-                The expressions passed to those specifiers are always evaluated at compile time.
+                The base type of <a href="#primitive-types">primitive types</a> is the type itself.<br>
+                The <a href="#values">values</a> passed to these specifiers can be <a href="#compile-time-values">runtime</a>.
             </p>
             <p>
-                The <code><t->typeof</t-></code> and <code><t->baseof</t-></code> specifiers can be used as constructors.<br>
-                Circular dependencies are a semantic error.
+                The <code><t->typeof</t-></code> and <code><t->baseof</t-></code> specifiers can be used as <a href="#constructors">constructors</a>.<br>
+                Circular dependencies are a semantic error. //TODO LINK
             </p>
 
             <syntax->
                 <fill->
-                    <label-></label->
+                    <label- class="nobefore">Referencing syntax</label->
                     <code-><scroll->
-                        typeof(<elm-><t->T</t-><sup>r</sup></elm->)
-                        baseof(<elm-><t->T</t-><sup>r</sup></elm->)
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><t->typeof</t-></code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>(</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T</t-><sup>r</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>)</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><t->baseof</t-></code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>(</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T</t-><sup>r</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>)</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -2232,11 +2571,6 @@
                     </scroll-></code->
                 </fill->
             </example->
-            <p>
-                See
-                <a href="#functions">Functions</a>,
-                <a href="#return-statement">Return statement</a>
-            </p>
 
 
             <!--------------------------------------------------------------------->
@@ -2244,46 +2578,14 @@
             <!--------------------------------------------------------------------->
             <h1 id="unnamed-types"></h1>
             <p>
-                When a type doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the type and the symbol in the same construct.<br>
-                Similarly to the C syntax, the type name is not specified and the definition is used as type of the symbol.
+                When an <a href="#enums">enum</a> or <a href="#structs">struct</a> doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the <a href="#types">type</a> and the <a href="#symbols">symbol</a> in the same construct.<br>
+                Similarly to the C syntax, the <a href="#types">type</a> <a href="#identifiers">identifier</a> is not specified and the definition is used as <a href="#types">type</a> of the <a href="#symbols">symbol</a>.
             </p>
             <p>
-                Any symbol defined inside those types can still be referenced through the <code><t->typeof</t-></code> and <code><t->auto</t-></code> specifiers.<br>
-                Members of unnamed structs can be accessed using the member access operator, like normal structs.<br>
-                Defining an unnamed type without also declaring the symbol is allowed, but it generates a warning as the type and anything declared in it would be unaccessible.
+                Any <a href="#symbols">symbol</a> defined inside these <a href="#types">types</a> can still be referenced through the <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a> and <a href="#typeof-and-baseof-specifiers"><code><t->auto</t-></code></a> specifiers.<br>
+                Elements of <a href="#enums">enums</a> and <a href="#structs">structs</a> can be <a href="#element-indexing">indexed</a> and <a href="#name-resolution">accessed</a> normally.<br>
+                Defining an unnamed type without also declaring the <a href="#symbols">symbol</a> is not allowed.
             </p>
-
-            <syntax->
-                <left->
-                    <label-> - Struct</label->
-                    <code-><scroll->
-                        struct { <elm2-><elm->member 0</elm->; <elm->...</elm->; <elm->member n</elm->;</elm2-> } <elm->symbol definition</elm->;
-                        struct { } <elm->symbol definition</elm->;
-                    </scroll-></code->
-                </left->
-                <right->
-                    <label->Member syntax</label->
-                    <code-><scroll->
-                        <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->;
-                    </scroll-></code->
-                </right->
-            </syntax->
-            <syntax->
-                <left->
-                    <label-> - Enum</label->
-                    <code-><scroll->
-                        enum : <elm-><t->T<sup>type</sup></t-></elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> } <elm->symbol definition</elm->;
-                        strict enum : <elm-><t->T<sup>type</sup></t-></elm-> { <elm2-><elm->element 0</elm->; <elm->...</elm->; <elm->element n</elm->;</elm2-> } <elm->symbol definition</elm->;
-                    </scroll-></code->
-                </left->
-                <right->
-                    <label->Element syntax</label->
-                    <code-><scroll->
-                        <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
-                    </scroll-></code->
-                </right->
-            </syntax->
-
             <example->
                 <fill->
                     <label->1</label->
@@ -2294,7 +2596,7 @@
                         } grasses;
 
                         <t->void</t-> <f->main</f->(){
-                            module.grasses = <t->typeof</t->(grasses).<k->on</k->;
+                            grasses = <t->typeof</t->(grasses).<k->on</k->;
                         }
                     </scroll-></code->
                 </fill->
@@ -2305,31 +2607,26 @@
                     <code-><scroll->
                         <w->struct</w-> {
                             <t->uint</t-> a, b;
-                            <w->enum</w-> : int {
+                            <w->enum</w-> : <t->int</t-> {
                                 idk1;
                                 idk2;
                             } c;
                         } <f->fun</f->(){
-                            <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed struct constructor</c->
+                            <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed constructor of unnamed struct</c->
                         }
 
                         <t->void</t-> <f->main</f->(){
-                            <t->auto</t-> var = fun();
+                            <t->auto</t-> var <f->=</f-> <f->fun</f->();
 
                             <c->// Both are allowed</c->
-                            var.c = <t->typeof</t->(var.c).<k->idk1</k->;
-                            var.c = <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
+                            var.c <f->=</f-> <t->typeof</t->(var.c).<k->idk1</k->;
+                            var.c <f->=</f-> <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
 
-                            <t->typeof</t->(var.a) a = <k->0</k->;
+                            <t->typeof</t->(var.a) a <f->=</f-> <k->0</k->;
                         }
                     </scroll-></code->
                 </fill->
             </example->
-            <p>
-                See
-                <a href="#typeof-and-baseof-specifiers">Typeof and baseof specifiers</a>,
-                <a href="#auto-specifier">Auto specifier</a>
-            </p>
 
 
 
@@ -2466,15 +2763,47 @@
                 Flattening constructors is not allowed.<br>
                 <a href="typeof-and-baseof-specifiers"><code><w->typeof</w-></code></a> and <a href="typeof-and-baseof-specifiers"><code><w->baseof</w-></code></a> can be used as types.
             </p>
+            <p>
+                //FIXME no specific syntax
+                //FIXME constructors are called by referencing the type and listing the elements between () tokens
+            </p>
 
             <syntax->
                 <fill->
                     <label-></label->
                     <code-><scroll->
-                        <c->/* <a href="#primitive-types"><c->Primitive types</c-></a> and <a href="#enums"><c->enums</c-></a> */</c->  <elm-><t->T<sup>type</sup></t-></elm->(<elm-><t->T<sup>r</sup></t-></elm->)
-                        <c->/* <a href="#structs"><c->Structs</c-></a> */</c->                    <elm-><t->T<sup>type</sup></t-></elm->(<elm-><elm-><t->member type 0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->member type n<sup>r</sup></t-></elm-></elm->)
-                        <c->/* <a href="#arrays"><c->Arrays</c-></a> */</c->                     <elm-><t->T<sup>type</sup></t-></elm->[<elm-><t->u32<sup>r</sup></t-></elm->](<elm-><elm-><t->T<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->T<sup>r</sup></t-></elm-></elm->)
-                        <c->/* <a href="#tuples"><c->Tuples</c-></a> */</c->                     (<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->)(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>)</code></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>(</code></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->U<sup>r</sup></t-></elm-></td>
+                                <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
                     </scroll-></code->
                 </fill->
             </syntax->
@@ -2752,11 +3081,11 @@
             <h1 id="reference-parameters"></h1>
             <p>
                 By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
-                If a parameter name is preceeded by a <b><code>&</code></b> token, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
+                If a parameter name is preceeded by a <b><code>&</code></b> <a href="#tokens">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
             </p>
             <p>
                 Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
-                Notice that in this case, the <code>&</code> token is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
+                Notice that in this case, the <code>&</code> <a href="#tokens">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
             </p>
 
             <example->
@@ -2865,12 +3194,76 @@
             <!--------------------------------------------------------------------->
             <h1 id="templates"></h1>
 
+            <p>//TODO</p>
+            <p>//TODO</p>
+            <p>//TODO</p>
+            <p>//TODO</p>
+            <p>//TODO</p>
+                        <p>
+                When values of different primitive types are used with <a href="#operators">operators</a> which require values of the same type, implicit conversions are performed in orer to avoid data loss.<br>
+                Which values are converted depends on the rank of their type.<br>
+                All the types with low rank are converted to the type of highest rank.
+            </p>
+            <p>
+                The only exceptions are the bitwise OR, XOR and AND, where no implicit conversions are performed and the result has the same type of the first operand.<br>
+                In assignment operators, the result is converted back to the type of the first operand.
+            </p>
+            <div class="table-container"><table>
+                <tr>
+                    <th>Type</th>
+                    <th>Rank</th>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->bool</t-></code></td>
+                    <td class="center">1</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->int</t-></code></td>
+                    <td class="center">2</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->uint</t-></code></td>
+                    <td class="center">3</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->long</t-></code></td>
+                    <td class="center">4</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->ulong</t-></code></td>
+                    <td class="center">5</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->float</t-></code></td>
+                    <td class="center">6</td>
+                </tr>
+                <tr>
+                    <td class="center"><code><t->double</t-></code></td>
+                    <td class="center">7</td>
+                </tr>
+            </table></div>
+
+
+
+
+
 
             <!--------------------------------------------------------------------->
             <!-- Function templates                                              -->
             <!--------------------------------------------------------------------->
             <h1 id="function-templates"></h1>
             <p>
+                //TODO
+                //TODO
+                //TODO
+                templates don't allow implicit conversions and any types that don't match the constraints generate a compile time error
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+
+
+
                 <b>Function templates</b> are the basis of generic programming.<br>
                 They are used to <b>generate functions</b> based on the types passed to function calls.<br>
                 //TODO UPDATE SYNTAX
@@ -2903,7 +3296,7 @@
 
             <p>
                 Any function with one or more generic type parameters is considered a function template.<br>
-                Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> token.<br>
+                Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> <a href="#tokens">token</a>.<br>
                 Parameters declared using the same type identifier will always have the same type in any generated function.
             </p>
             <p>
@@ -3018,7 +3411,7 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Abbreviated template syntax                                     -->
+            <!-- Abbreviated template sytntax                                    -->
             <!--------------------------------------------------------------------->
             <h1 id="abbreviated-template-syntax"></h1>
 
@@ -3137,7 +3530,7 @@
             <p>
                 <b>Statements</b> are the <b>instructions</b> that are <b>executed during runtime</b>.<br>
                 They determine the behaviour of the shader, its execution time and <a href="#compiler-optimizations">compiler optimizations</a>.<br>
-                The <code>;</code> token defines the end of a statement.
+                The <code>;</code> <a href="#tokens">token</a> defines the end of a statement.
             </p>
             <p>
                 A statement can be an expression or a flow control <a href="#keywords">keyword</a>.<br>
@@ -3818,7 +4211,7 @@
             <h1 id="relational"></h1>
             <p>
                 Relational operators can be used on any <a href="#primitive-types">primitive type</a> or <a href="#enums">enum</a>,
-                with the exception of <code>==</code>, <code>!=</code>, <code>=:</code> and <code>!:</code> which can be used with any type, including <a href="#structs">structs</a> and <a href="#typenames">typenames</a>.
+                with the exception of <code>==</code>, <code>!=</code>, <code>=:</code> and <code>!:</code> which can be used with any type, including <a href="#structs">structs</a> and <a href="#typename">typenames</a>.
             </p>
             <p>
                 <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>.<br>
@@ -4279,27 +4672,33 @@
 
 
             <!--------------------------------------------------------------------->
-            <!-- Limits                                                          -->
+            <!-- Limits module                                                   -->
             <!--------------------------------------------------------------------->
             <h1 id="limits-module"></h1>
 
 
             <!--------------------------------------------------------------------->
-            <!-- Math                                                            -->
+            <!-- Math module                                                     -->
             <!--------------------------------------------------------------------->
             <h1 id="math-module"></h1>
 
 
             <!--------------------------------------------------------------------->
-            <!-- Bits                                                            -->
+            <!-- Bits module                                                     -->
             <!--------------------------------------------------------------------->
             <h1 id="bits-module"></h1>
 
 
             <!--------------------------------------------------------------------->
-            <!-- Types                                                           -->
+            <!-- Types module                                                    -->
             <!--------------------------------------------------------------------->
             <h1 id="types-module"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Memory module                                                   -->
+            <!--------------------------------------------------------------------->
+            <h1 id="memory-module"></h1>
 
 
 
@@ -4314,15 +4713,434 @@
             <h1 id="quick-reference-tabs"></h1>
 
 
+            <!--------------------------------------------------------------------->
+            <!-- Syntaxes                                                        -->
+            <!--------------------------------------------------------------------->
+            <h1 id="syntaxes"></h1>
 
 
             <!--------------------------------------------------------------------->
-            <!-- Character set                                                   -->
+            <!-- Symbol declarations                                             -->
             <!--------------------------------------------------------------------->
-            <h1 id="character-set"></h1>
+            <h1 id="symbol-declarations"></h1>
             <p>
-
+                This section summarizes all the syntaxes used to declare user-defined symbols.<br>
+                //TODO variables, functions, parameters, templates, aliases
             </p>
+            <syntax->
+                <fill->
+                    <label- class="nobefore"><a href="#namespaces" style="color: var(--fg-text);">Namespaces</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><w->namespace</w-></code></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>{</code></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm3->symbol declaration</elm3-></td>
+                                <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                                <td><code>}</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <syntax->
+                <left->
+                    <label- class="nobefore"><a href="#enums" style="color: var(--fg-text);">Enums</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>}</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code><w->enum</w-></code></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>:</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>{</code></td>
+                                <td><loop-end-></loop-end-><branch-tr-></branch-tr-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm2->element declaration</elm2-></td>
+                                <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>;</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><code><w->strict</w-></code></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Element declaration syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>=</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>r</sup></t-></elm-></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </right->
+            </syntax->
+            <syntax->
+                <left->
+                    <label- class="nobefore"><a href="#structs" style="color: var(--fg-text);">Structs</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>}</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code><w->struct</w-></code></td>
+                                <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>{</code></td>
+                                <td><loop-end-></loop-end-><branch-tr-></branch-tr-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm2->member declaration</elm2-></td>
+                                <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>;</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </left->
+                <right->
+                    <label->Member declaration syntax</label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-tr-></branch-tr-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </right->
+            </syntax->
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Symbol referencing                                              -->
+            <!--------------------------------------------------------------------->
+            <h1 id="symbol-referencing"></h1>
+            <p>
+                This section summarizes all the referencing syntaxes of any type of <a href="#symbols">symbol</a>.<br>
+                The provided syntaxes are to be interpreted as the <a href="#name-resolution">local name</a> a <a href="#symbols">symbol</a> would have if declared as the corresponding semantic element.<br>
+                They are concatenated with <code>.</code> tokens to create names for the <a href="#name-resolution">name resolution</a>.
+                //TODO
+            </p>
+            <syntax->
+                <fill->
+                    <label- class="nobefore"><a href="#primitive-types" style="color: var(--fg-text);">Primitive types</a>, <a href="#enums" style="color: var(--fg-text);">Enums</a>, <a href="#structs" style="color: var(--fg-text);">Structs</a>, <a href="#void" style="color: var(--fg-text);">Void</a>, <a href="#typename" style="color: var(--fg-text);">Typename</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore"><a href="#arrays" style="color: var(--fg-text);">Arrays</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><elm-><t->uint<sup>r</sup></t-></elm-></td>
+                                <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>[</code></td>
+                                <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                                <td><code>]</code></td>
+                                <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore"><a href="#tuples" style="color: var(--fg-text);">Tuples</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>)</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>(</code></td>
+                                <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore"><a href="#variables" style="color: var(--fg-text);">Variables</a>, <a href="#functions" style="color: var(--fg-text);">Functions</a>, <a href="#functions-definitions" style="color: var(--fg-text);">Parameters</a>, <a href="#symbol-aliases" style="color: var(--fg-text);">Symbol aliases</a>, <a href="#templates" style="color: var(--fg-text);">Templates</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+            <syntax->
+                <fill->
+                    <label- class="nobefore"><a href="#struct-templates" style="color: var(--fg-text);">Generated structs</a>, <a href="#function-templates" style="color: var(--fg-text);">Generated functions</a></label->
+                    <code-><scroll->
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><code>&gt;</code></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><elm->name<sup>id</sup></elm-></td>
+                                <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                                <td><code>&lt;</code></td>
+                                <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
+                                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                                <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                                <td><code>,</code></td>
+                                <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td><loop-connector-></loop-connector-></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </scroll-></code->
+                </fill->
+            </syntax->
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Undefined behaviours                                            -->
+            <!--------------------------------------------------------------------->
+            <h1 id="undefined-behaviours"></h1>
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Conversions                                                     -->
+            <!--------------------------------------------------------------------->
+            <h1 id="conversions"></h1>
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Core module operators                                           -->
+            <!--------------------------------------------------------------------->
+            <h1 id="core-module-operators"></h1>
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Math module functions                                           -->
+            <!--------------------------------------------------------------------->
+            <h1 id="math-module-functions"></h1>
+
 
 
 
@@ -4337,20 +5155,8 @@
             module.pos.z
             ^ coordinates in current workspace
 
-
-
-
             sequence function //TODO
             sequence(start, end, step)
-
-
-
-
-            //TODO add typographical conventions
-            //TODO <sup>r</sup> = rvalue
-            //TODO <sup>l</sup> = lvalue
-            //TODO <sup>id</sup> = identifier
-
             -->
 
 
@@ -4390,9 +5196,10 @@
 
 
 <!--
-    //TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
-    //TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+    TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+    TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
 -->
 
 <!--
+    TODO [[likely]] [[unlikely]]
 -->
