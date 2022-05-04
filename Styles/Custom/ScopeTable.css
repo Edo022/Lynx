@@ -1,0 +1,40 @@
+
+
+
+.scope-table-container {
+    white-space: nowrap;
+    padding: 0;
+    margin: 0;
+    min-width: 100%;
+    border-radius: 10px 0 0 0;
+    overflow: hidden;
+    word-spacing: -100vw;
+    text-align: center;
+}.scope-table-right-container {
+    vertical-align: top;
+    overflow-x: scroll;
+    display: inline-block;
+    max-width: calc(100% - 24ch);
+}.scope-table-right {
+    border-radius: 0 10px 10px 0;
+    word-spacing: var(--word-spacing);
+}.scope-table-left-container {
+    vertical-align: top;
+    overflow-x: scroll;
+    display: inline-block;
+    max-width: 24ch;
+    border-bottom-left-radius: 10px;
+}.scope-table-left {
+    border-radius: 10px 0 0 10px;
+    word-spacing: var(--word-spacing);
+}
+.scope-table-y { background-color: #0a7a003a; }
+.scope-table-n { background-color: #7a00003a; }
+.scope-table-y::before { content: "Yes "; }
+.scope-table-n::before { content: "No ";  }
+
+
+
+.conv-cell-y { border-left: 2px solid hsla(115, 50%, 20%, 100%); }
+.conv-cell-m { border-left: 2px solid hsla(64,  50%, 20%, 100%); }
+.conv-cell-n { border-left: 2px solid hsla(0,   50%, 20%, 100%); }

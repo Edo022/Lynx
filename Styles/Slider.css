@@ -1,0 +1,32 @@
+/* Notice: no one is allowed to modify those 3 selectors. */
+/* Getting this to work on chrome took 6 hours of trying random stuff and any changes could break it
+
+
+/*Main slider { */
+    .slider {
+        position: fixed;
+        z-index: -5;
+        margin: 50vh 0 0 calc(var(--main-padding-l));
+        width: calc(100vw - var(--main-padding-r) * 2 - var(--main-padding-l));
+        height: 0;
+        -webkit-appearance: none;
+        appearance: none;
+    }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        cursor: e-resize;
+        background-color: transparent;
+        width: var(--slider-w);
+        height: 100vh;
+        border: none;
+    }
+    .slider::-moz-range-thumb {
+        appearance: none;
+        cursor: e-resize;
+        background-color: transparent;
+        width: var(--slider-w);
+        height: 100vh;
+        border: none;
+    }/*
+} */

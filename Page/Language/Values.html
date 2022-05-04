@@ -1,0 +1,377 @@
+
+
+<!--------------------------------------------------------------------->
+<!-- Values                                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="values"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Inline values                                                   -->
+<!--------------------------------------------------------------------->
+<h1 id="inline-values"></h1>
+<p>
+    Inline values are <a href="#right-and-left-values">r-values</a> that are explicitly created and used within a single <a href="#runtime-statements">runtime statement</a>.<br>
+    They can be <a href="#literals">Literals</a> or <a href="#constructors">Constructors</a>.
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Literals                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="literals"></h1>
+<p>
+    <b>Literals</b> are used to <b>create</b> compile time known <b><a href="#left-and-right-values">r-values</a></b>.<br>
+    The type of the value is determined by the way it is represented in the source code, and it can only be of <code><t->ulong</t-></code>, <code><t->double</t-></code> or <code><t->bool</t-></code> type.<br>
+    Literals can be used in place of any expression of compatible type. Their value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
+</p>
+<p>
+    Base prefixes can be used to specify the numerical base of the value.<br>
+    The decimal prefix is optional.<br>
+    Hexadecimal literals are case insensitive, leading zeroes and trailing decimal zeroes are ignored.<br>
+    Unary <a href="#common-operators"><code>+</code></a> and <a href="#common-operators"><code>-</code></a> operators are not part of the literal.
+</p>
+<p>
+    Literals are not sequences of tokens like other semantic elements, but a category of tokens.<br>
+    Regex syntax is used to describe their pattern:
+</p>
+<div class="table-container"><table>
+    <tr>
+        <th>Type/Base</th>
+        <th>Hexadecimal (hex)</th>
+        <th>Decimal (dec)</th>
+        <th>Octal (oct)</th>
+        <th>Binary (bin)</th>
+    </tr>
+    <tr>
+        <th rowspan="2"><t->ulong</t-></th>
+        <td class="center"><code>0x([0-9a-z_]+)</code></td>
+        <td class="center"><code>(0d)?([0-9][0-9_]+)</code></td>
+        <td class="center"><code>0o([0-7_]+)</code></td>
+        <td class="center"><code>0b([01_]+)</code></td>
+    </tr>
+    <tr>
+        <fake-td></fake-td>
+        <td class="center" colspan="4"><code>inf|nan</code></td>
+        <fake-td></fake-td>
+        <fake-td></fake-td>
+        <fake-td></fake-td>
+    </tr>
+    <tr>
+        <th rowspan="2"><t->double</t-></th>
+        <td class="center"><code>0x([0-9a-z_]+)\.([0-9a-z_]+)</code></td>
+        <td class="center"><code>(0d)?([0-9][0-9_]*)\.([0-9_]+)</code></td>
+        <td class="center"><code>0o([0-7_]+)\.([0-7_]+)</code></td>
+        <td class="center"><code>0b([01_]+)\.([01_]+)</code></td>
+    </tr>
+    <tr>
+        <fake-td></fake-td>
+        <td class="center" colspan="4"><code>inf|nan</code></td>
+        <fake-td></fake-td>
+        <fake-td></fake-td>
+        <fake-td></fake-td>
+    </tr>
+    <tr>
+        <th><t->bool</t-></th>
+        <td class="center" colspan="4"><code>true|false</code></td>
+    </tr>
+</table></div>
+<p>
+    The special double literals <code><k->inf</k-></code> and <code><k->nan</k-></code> are correctly converted between <code><k->float</k-></code> and <code><k->double</k-></code>.<br>
+    Converting them to other types has <b>undefined</b> result. See <a href="#implicit-conversions">Implicit conversions</a>.<br>
+    Operations with those literals are explained in <a href="#standard-operators">Standard operators</a>.
+</p>
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->int</t-> n = <k->4</k->;             <c->// Ok</c->
+            <t->bool</t-> b =<k-> true</k->;         <c->// Ok</c->
+            <t->float</t-> f1 = <k->0x0d.aAb4</k->;  <c->// Ok</c->
+            <t->float</t-> f2 = <k->inf</k->;        <c->// Ok</c->
+            <t->float</t-> f3 = <k->nan</k->;        <c->// Ok</c->
+            <c->float f4 = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
+            <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
+            <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
+        </scroll-></code->
+    </fill->
+</example->
+<p>
+    The <code>_</code> character can be used anywhere after the base prefix of numerical literals to separate digits and improve readability.<br>
+    Decimal literals without base prefix cannot start with <code>_</code>.
+</p>
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->int</t-> n = <k->395_935</k->;             <c->// Ok</c->
+            <t->int</t-> n = <k->654_3_21___</k->;         <c->// Ok, doesn't make sense but it is allowed</c->
+            <t->int</t-> n = <k->0x_32_A4_FF_E2</k->;      <c->// Ok</c->
+            <c->//int n = _123_456;</c->          <ce->// Error, undeclared identifier "_123_456".</ce->
+        </scroll-></code->
+    </fill->
+</example->
+<p>
+    There are no literal suffixes and no <code><t->float</t-></code>, <code><t->uint</t-></code> or <code><t->int</t-></code> literals.<br>
+    To create inline values of specific types, <a href="#constructors">Constructors</a> are used.
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Constructors                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="constructors"></h1>
+<p>
+    <b>Constructors</b> are used to <b>create <a href="#left-and-right-values">r-values</a></b> of the <b>specified type</b>.<br>
+    Their syntax is the same as <a href="#functions">functions</a>, but the name is the type of the returned r-value and the parameters are the expressions used to initiaze it.<br>
+    Constructors can be used in place of any expression of compatible type. Their return value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
+</p>
+<p>
+    The values used to create the r-value are also implicitly converted.<br>
+    Flattening constructors is not allowed.<br>
+    <a href="typeof-and-baseof-specifiers"><code><w->typeof</w-></code></a> and <a href="typeof-and-baseof-specifiers"><code><w->baseof</w-></code></a> can be used as types.
+</p>
+<p>
+    //FIXME no specific syntax
+    //FIXME constructors are called by referencing the type and listing the elements between () tokens
+</p>
+
+<syntax->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <table>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><code>)</code></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>(</code></td>
+                    <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><elm-><t->U<sup>r</sup></t-></elm-></td>
+                    <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>,</code></td>
+                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td></td>
+                </tr>
+            </table>
+        </scroll-></code->
+    </fill->
+</syntax->
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <w->struct</w-> s {
+                <t->int</t-> a;
+                <t->float</t-> b;
+            };
+            <t->void</t-> <f->f</f->(<t->s</t-> <a->a</a->, (<t->int</t->[<k->2</k->], <t->s</t->) <a->b</a->){}
+
+            <t->void</t-> <f->main</f->(){
+                <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
+                <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->);
+            }
+        </scroll-></code->
+    </fill->
+</example->
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Stored values                                                   -->
+<!--------------------------------------------------------------------->
+<h1 id="stored-values"></h1>
+<p>
+    <b>Stored values</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Variables                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="variables"></h1>
+<p>
+    A <b>variable declaration</b> consists of the <b>type</b>, the <b>name</b> and an optional <code>=</code> followed by an <b>expression</b> of a compatible type that is used to inizialize it.<br>
+    If an initializer expression is not specified, the value of the variable is undefined.<br>
+    Evaluating an expression that can result in an undefined value is considered a logical error and will stop the compilation process.<br>
+    Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
+</b>
+<p>
+    Differently from other symbols, each stored value <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.<br>
+    Multiple variables of the same type can be declared in one instruction.
+</p>
+
+<syntax->
+    <left->
+        <label- class="nobefore">Declaration syntax</label->
+        <code-><scroll->
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm2-><elm->varaible 0</elm->, <elm->...</elm->, <elm->varaible n</elm-></elm2->;
+        </scroll-></code->
+    </left->
+    <right->
+        <label->Variable syntax</label->
+        <code-><scroll->
+            <c->/* Undefined value   */</c->  <elm->name<sup>id</sup></elm->
+            <c->/* Inizializer value */</c->  <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
+            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a>   */</c->  const <space></space><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
+        </scroll-></code->
+    </right->
+</syntax->
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
+            <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
+            <t->bool</t-> var$, var3 = nya;     <c->// Ok, var$ has undefined value, var2 has value true</c->
+            <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
+        </scroll-></code->
+    </fill->
+</example->
+<p>
+    There are no pointers or reference variables.
+</p>
+<p>
+    See
+    <a href="#types">Types</a>,
+    <a href="#expressions">Expressions</a>,
+    <a href="#functions">Functions</a>
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Temporary variables                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="temporary-variables"></h1>
+<p>
+    <b>Temporary variables</b> are a special set of identifiers that have <b>dynamic type</b> and don't need to be declared.<br>
+    These identifiers are meant to replace local variables whose only purpose is holding values that don't need to be used more than a few times.<br>
+    A temporary variable is identified by the <code>$</code> character followed by an arbitrary number of decimal digits, which denote its name.<br>
+</p>
+<p>
+    They are always <b>function-level scoped</b> and cannot be used outside of function definitions.<br>
+    There is no limit to the number of temporary variables a function can use.<br>
+</p>
+<p>
+    The type of a temporary variable can only be changed through direct assignments (<a href="#assignments"><code>=</code></a>) and it must be unambiguously determinable in order for the variable to be evaulated.
+    This means that reading the value of a temporary variable after one or more branches that may have assigned it different types is not allowed and will result in a semantic error.<br>
+    Using temporary variables whose type is undefined will also result in a semantic error.
+</p>
+<p>They act as normal variables for anything else.</p>
+
+<example->
+    <fill->
+        <label->1</label->
+        <code-><scroll->
+            <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
+                $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
+                <c->//$2 = $1;          </c-><ce->// Error, $1 has undefined type</ce->
+
+                <t->uint3</t-> vec = { <k->0</k->, <k->1</k->, <k->2</k-> };
+                $2 = <k->true</k->;          <c->// Ok, $2 has type b and value true</c->
+                $2 = <k->vec</k->;           <c->// Ok, $2 has type uint3 and value { 0, 1, 2 }</c->
+            }
+
+            <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
+                <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2.$2 has nothing to do with fun1.$2</ce->
+            }
+
+            <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
+        </scroll-></code->
+    </fill->
+</example->
+<example->
+    <fill->
+        <label->2</label->
+        <code-><scroll->
+            <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
+                <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
+                <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
+                <c->//ref = $0;                 </c-><ce->// Error, cannot determine the type of $0</ce->
+                $0 = ref;                   <c->// Ok, $0 has type uint2 and the same value as ref</c->
+
+                <w->if</w->(arg) $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
+                <w->else</w->    $0 = { <k->2</k->, <k->3</k-> };      <c->// $0 has type uint2</c->
+                ref = <k->$0</k->;                   <c->// Ok, $0 has type uint2</c->
+            }
+        </scroll-></code->
+    </fill->
+</example->
+<p>
+    See
+    <a href="#types">Types</a>,
+    <a href="#selection">Selection</a>,
+    <a href="#functions">Functions</a>,
+    <a href="#expressions">Expressions</a>
+</p>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Left and right values                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="left-and-right-values"></h1>
+<p>
+    Values can either be left values or right values.<br>
+    <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
+    Any other value is a <b>right value</b>.
+</p>
+<div class="table-container"><table>
+    <tr>
+        <th>Left values</th>
+        <th>Right values</th>
+    </tr>
+    <tr>
+        <td>Non-const <a href="#functions">parameters</a> and <a href="#reference-parameters">referece (<code>&</code>) parameters</a></td>
+        <td><a href="#const-qualifier">Const</a> parameters</td>
+    </tr>
+    <tr>
+        <td>Result of the <a href="#special-operators">field (<code>[</code><code>]</code>)</a> and <a href="#special-operators">subscription (<code>.</code>)</a> operators</td>
+        <td>Result of <a href="#common-operators">common</a>, <a href="#assignment-operators">assignment</a>, <a href="#special-operators">grouping</a>, <a href="#special-operators">ternary</a> and <a href="#common-operators">relational</a> operators</td>
+    </tr>
+    <tr>
+        <td>Non-const <a href="#variables">varibales</a></td>
+        <td><a href="#const-qualifier">Const</a> variables</td>
+    </tr>
+    <tr>
+        <td><a href="#temporary-variables">Temporary variables</a></td>
+        <td><a href="#enums">Enum</a> elements</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Result of <a href="#function-calls">function calls</a></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Result of <a href="#constructors">constructors</a></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><a href="#literals">Literals</a></td>
+    </tr>
+</table></div>
+<p>
+    Left values can be used anywhere right values can.<br>
+    Left and right values are also called l-values and r-values.
+</p>

@@ -1,0 +1,153 @@
+
+
+
+/* Syntax highlight { */
+    c-  { color: #6d757e; font-weight: 300; }    /* Comment            */
+    ce- { color: #d14141; font-weight: 300; }    /* Error comment      */
+    cw- { color: #ddcf06; font-weight: 300; }    /* Warning comment    */
+    k-  { color: #85b4e0; }                      /* Constant           */
+    t-  { color: #3884dc; }                      /* Type               */
+    f-  { color: #e6e6b3; }                      /* Function           */
+    a-  { color: #2fc5d0; }                      /* Argument           */
+    w-  { color: #cc94d1; }                      /* Keyword            */
+    sr- { color: #c44e4e; }                      /* String regex token */
+    sg- { color: #c9ca76; }                      /* String regex group */
+    s-  { color: #db966e; }                      /* String
+} */
+
+
+
+
+/* Syntax element containters { */
+    elm-, elm2-, elm3-, elm4-, elm5- {
+        display: inline-block;
+        font-family: monospace, monospace;
+        border: 1px solid;
+        border-radius: var(--code-decoration-r);
+        padding: 2px 8px 2px 8px;
+        margin: 4px 2px 4px 2px;
+        background-color: var(--bg-elm);
+        font-size: var(--font-size-code);
+        white-space: nowrap;
+    }
+    elm-  { border-color: var(--bd-elm);  }
+    elm2- { border-color: var(--bd-elm2); }
+    elm3- { border-color: var(--bd-elm3); }
+    elm4- { border-color: var(--bd-elm4); }
+    elm5- { border-color: var(--bd-elm5); }
+
+    sup {
+        margin-left: 0.5ch;
+        color: var(--fg-text);
+    }
+    sup::before { content: "("; }
+    sup::after  { content: ")"; }
+
+
+    code {
+        white-space: nowrap;
+        border-radius: var(--code-decoration-r);
+        padding: 4px 8px 4px 8px;
+        background-color: var(--bg-code);
+        font-family: monospace, monospace;
+        color: var(--fg-text);
+        font-size: var(--font-size-code);
+    } /*
+} */
+
+
+
+
+/* Syntax elements { */
+    .hidden, space-, nl- {
+        color: var(--fg-hidden);
+        white-space: nowrap;
+        font-weight: normal;
+    }
+    space-, nl- {
+        display: inline;
+    }
+    space-::before { content: "·"; }
+    nl-::before    { content: "↩"; }
+
+
+    template- {
+        color: var(--fg-hidden);
+        /* white-space: nowrap; */
+        white-space: normal;
+        font-size: var(--font-size-code);
+    } /*
+} */
+
+
+
+
+/* Syntax box { */
+    syntax- table, syntax- table tr, syntax- table tr > td {
+        background-color: transparent !important;
+        border: 0px solid transparent !important;
+
+        border-radius: 0px;
+        padding: 0;
+        margin: 0;
+        white-space: normal;
+    }
+    syntax- table tr > td > div {
+        display: inline-flex;   /* Inline is required to align the elements */
+        vertical-align: middle; /* This fixes inline-flex not aligning to mid by default */
+        overflow: visible;
+        align-items: center;
+
+        min-width: 100%;
+        max-width: 100%;
+        min-height: var(--syntax-line-h);
+        max-height: var(--syntax-line-h);
+    }
+    syntax- table tr > td > div > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) {
+        box-sizing: border-box;
+        text-align: center;
+        min-width: 100%;
+        max-width: 100%;
+
+    }
+    syntax- table {
+        min-width: fit-content;
+        max-width: fit-content;
+    }
+    syntax- table td {
+        overflow: visible;
+    }
+    svg {
+        overflow: visible;
+    }
+
+
+
+    b-tr-,   b-tb-,   b-tl-,
+    b-rb-,   b-rl-,   b-rt-,
+    b-bl-,   b-bt-,   b-br-,
+    b-lt-,   b-lr-,   b-lb-,
+    b-trc-,  b-tbc-,  b-tlc-,
+    b-rbc-,  b-rlc-,  b-rtc-,
+    b-blc-,  b-btc-,  b-brc-,
+    b-ltc-,  b-lrc-,  b-lbc-,
+    b-c- {
+        display: inline-block;
+        overflow: visible;
+        margin-left:  var(--syntax-arrow-margin);
+        margin-right: calc(0px - var(--syntax-arrow-margin));
+
+        min-width:  0;
+        max-width:  0;
+        /**/width:  0;
+        min-height: var(--syntax-line-h);
+        max-height: var(--syntax-line-h);
+    }
+    b-e- {
+        display: inline-block;
+        min-width:  calc(var(--syntax-arrow-w) + 2 * var(--syntax-arrow-margin));
+        max-width:  calc(var(--syntax-arrow-w) + 2 * var(--syntax-arrow-margin));
+        min-height: 0;
+        max-height: 0;
+    } /*
+} */

@@ -1,0 +1,176 @@
+
+
+<!--------------------------------------------------------------------->
+<!-- Functions                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="functions"></h1>
+<p>
+    <b>Functions</b> are the <b>main component</b> of the language.<br>
+    They contain the statements that will be executed during run time and manage inputs and outputs of the shader.
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Function definitions                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="function-definitions"></h1> <!-- TODO REMOVE -->
+<p>
+    A <b>function definition</b> consists of its <b>type</b> and <b>name</b> followed by a <b>list of arguments</b> and its statements enclosed in <code>{</code><code>}</code> delimiters.
+</p>
+<p>
+    A function can take an arbitrary number of parameters of any type. Paramters are declared like variables and behave in the same exact way.<br>
+    The expressions used to call the function are called arguments.<br>
+    Each argument must be implicitly convertible to the type of the parameter.<br>
+    Functions are allowed to take no arguments.
+</p>
+<p>
+    There is no function overloading.
+</p>
+
+<syntax->
+    <left->
+        <label-></label->
+        <code-><scroll->
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
+        </scroll-></code->
+    </left->
+    <right->
+        <label->Parameter syntax</label->
+        <code-><scroll->
+            <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
+            <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
+            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm->
+        </scroll-></code->
+    </right->
+</syntax->
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
+
+            <t->void</t-> <f->main</f->(){
+                <t->int</t-> var = <k->0</k->;
+                <f->fun</f->(<k->var</k->);
+            }
+        </scroll-></code->
+    </fill->
+</example->
+<p>
+    See
+    <a href="#runtime-statements">Runtime statements</a>,
+    <a href="#types">Types</a>
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Reference parameters                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="reference-parameters"></h1>
+<p>
+    By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
+    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#tokens">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
+</p>
+<p>
+    Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
+    Notice that in this case, the <code>&</code> <a href="#tokens">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
+</p>
+
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
+                arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
+                arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
+            }
+
+            <t->void</t-> <f->main</f->(){
+                <t->uint</t-> a, b;
+                <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
+                <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
+            }
+
+            <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
+        </scroll-></code->
+    </fill->
+</example->
+
+<p>
+    See
+    <a href="#const-qualifier">Const qualifier</a>,
+    <a href="#literals">Literals</a>
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Function calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="function-calls"></h1>
+<p>
+    <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
+    A function call must provide an argument for each parameter of the function.<br>
+    Reference parameters (<a href="#reference-parameters"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
+</p>
+<p>
+    The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>
+    //TODO templates
+    //TODO functions are called with *function reference* and a list of parameters. not just their name
+</p>
+
+<syntax->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
+            <elm->name<sup>id</sup></elm->()
+        </scroll-></code->
+    </fill->
+</syntax->
+
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
+            <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
+
+            <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
+            <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
+
+            <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+            <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
+
+            <t->void</t-> <f->main</f->(){
+                <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
+                n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
+            }
+        </scroll-></code->
+    </fill->
+</example->
+//TODO update example
+
+
+<!--------------------------------------------------------------------->
+<!-- Unnamed scopes                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="unnamed-scopes"></h1>
+<p>
+    //TODO
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- The main function                                               -->
+<!--------------------------------------------------------------------->
+<h1 id="the-main-function"></h1>
+<p>
+    The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
+    Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
+</p>
+<p>
+    The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
+    The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
+    It can also be called by other functions or itself, but it cannot be a template.<br>
+</p>

@@ -1,0 +1,235 @@
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Templates                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="templates"></h1>
+
+<p>//TODO</p>
+<p>//TODO</p>
+<p>//TODO</p>
+<p>//TODO</p>
+<p>//TODO</p>
+            <p>
+    When values of different primitive types are used with <a href="#standard-operators">standard operators</a> which require values of the same type, implicit conversions are performed in orer to avoid data loss.<br>
+    Which values are converted depends on the rank of their type.<br>
+    All the types with low rank are converted to the type of highest rank.
+</p>
+<p>
+    The only exceptions are the bitwise OR, XOR and AND, where no implicit conversions are performed and the result has the same type of the first operand.<br>
+    In assignment operators, the result is converted back to the type of the first operand.
+</p>
+<div class="table-container"><table>
+    <tr>
+        <th>Type</th>
+        <th>Rank</th>
+    </tr>
+    <tr>
+        <td class="center"><code><t->bool</t-></code></td>
+        <td class="center">1</td>
+    </tr>
+    <tr>
+        <td class="center"><code><t->int</t-></code></td>
+        <td class="center">2</td>
+    </tr>
+    <tr>
+        <td class="center"><code><t->uint</t-></code></td>
+        <td class="center">3</td>
+    </tr>
+    <tr>
+        <td class="center"><code><t->long</t-></code></td>
+        <td class="center">4</td>
+    </tr>
+    <tr>
+        <td class="center"><code><t->ulong</t-></code></td>
+        <td class="center">5</td>
+    </tr>
+    <tr>
+        <td class="center"><code><t->float</t-></code></td>
+        <td class="center">6</td>
+    </tr>
+    <tr>
+        <td class="center"><code><t->double</t-></code></td>
+        <td class="center">7</td>
+    </tr>
+</table></div>
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Function templates                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="function-templates"></h1>
+<p>
+    //TODO
+    //TODO
+    //TODO
+    templates don't allow implicit conversions and any types that don't match the constraints generate a compile time error
+    //TODO
+    //TODO
+    //TODO
+    //TODO
+
+
+
+    <b>Function templates</b> are the basis of generic programming.<br>
+    They are used to <b>generate functions</b> based on the types passed to function calls.<br>
+    //TODO UPDATE SYNTAX
+    //TODO MOVE TO TEMPLATES
+    //TODO ADD STRUCT TEMPLATES
+</p>
+
+<syntax->
+    <left->
+        <label-></label->
+        <code-><scroll->
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
+            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
+        </scroll-></code->
+    </left->
+    <right->
+        <label->Parameter syntax</label->
+        <code-><scroll->
+            <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
+            <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
+            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
+            <c->/* Normal parameters */</c->    ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->
+            <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> ?<elm->type<sup>id</sup></elm-> &<elm->name<sup>id</sup></elm->
+            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      ?<elm->type<sup>id</sup></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
+        </scroll-></code->
+    </right->
+</syntax->
+
+<p>
+    Any function with one or more generic type parameters is considered a function template.<br>
+    Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> <a href="#tokens">token</a>.<br>
+    Parameters declared using the same type identifier will always have the same type in any generated function.
+</p>
+<p>
+    Generic type parameters can be references or const.
+</p>
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+                return a + b + c;
+            }
+            <t->auto</t-> <f->add2</f->(<t->?t</t-> <a->a</a->, <t->?u</t-> <a->b</a->){
+                <w->return</w-> a + b;
+            }
+
+            <t->void</t-> <f->main</f->(){
+                <f->add</f->(<k->0</k->, <k->1</k->, <k->0</k->);        <c->// Generates uint add(uint a, uint b, int c)</c->
+                <f->add</f->(<k->1.0</k->, <k->0.4</k->, <k->0.2</k->);  <c->// Generates float add(float a, float b, int c)</c->
+                <c->//add(1, 0.4, 1);    </c-><ce->// Error, no match for function "add(int a, float b, int c)"</ce->
+
+                <f->add2</f->(<k->0</k->, <k->1</k->);          <c->// Generates uint add2(uint a, uint b)</c->
+                <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
+            }
+        </scroll-></code->
+    </fill->
+</example->
+
+<p>
+    Templates allow multiple definitions.<br>
+    The <code><w->when</w-></code> and <code><w->default</w-></code> keywords are used to assign the correct one to the generated function, depending on the types used in it.
+</p>
+<p>
+    The expression used in the <code><w->when</w-></code> specifier must be known in compile time and cannot depend on the value of variables declared inside one of the function definitions.<br>
+    Calling the function with types that don't match any definition is a semantic error.<br>
+</p>
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
+                floating_point, integral, other;
+            }
+
+            <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+            <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
+                <w->return</w-> type_id.<k->integral</k->;
+            }
+            <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
+                <w->return</w-> type_id.<k->floating_point</k->;
+            }
+            <w->default</w-> {
+                <w->return</w-> type_id.<k->other</k->;
+            }
+
+
+            <t->void</t-> <f->main</f->(){
+                <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id.integral</c->
+                <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id.floating_point</c->
+                <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
+            }
+        </scroll-></code->
+    </fill->
+</example->
+
+<p>
+    Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
+</p>
+<syntax->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->);
+        </scroll-></code->
+    </fill->
+</syntax->
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
+                floating_point, integral, other;
+            }
+
+            <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+            <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
+                <w->return</w-> type_id.<k->integral</k->;
+            }
+            <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
+                <w->return</w-> type_id.<k->floating_point</k->;
+            }
+            <w->default</w-> {
+                <w->return</w-> type_id.<k->other</k->;
+            }
+
+
+            <t->void</t-> <f->main</f->(){
+                <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id.integral</c->
+                <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id.floating_point</c->
+                <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id.other</c->
+                <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
+            }
+        </scroll-></code->
+    </fill->
+</example->
+
+
+<!--------------------------------------------------------------------->
+<!-- Struct templates                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="struct-templates"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Abbreviated template sytntax                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="abbreviated-template-syntax"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Template constraints                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="template-constraints"></h1>
+

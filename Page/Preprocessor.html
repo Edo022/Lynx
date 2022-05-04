@@ -1,0 +1,245 @@
+<h1 id="preprocessor"></h1>
+<p>
+    The <b>preprocessing</b> phase <b>precedes</b> the code <b>compilation</b>.<br>
+    It removes <a href="#comments">comments</a> and evaluates preprocessor directives and <a href="#line-continuation-token">line continuation tokens</a>.
+</p>
+<p>
+    <b>Preprocessor directives</b> are special instructions that allow the <b>code</b> to be <b>programmatically modified</b>.<br>
+    All the preprocessor directives are identified by the <code>#</code> character followed by their name and definition.<br>
+    Each directive spans over a single, complete line of code.<br>
+    Preprocessor directives are always case sensitive.
+</p>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Comments                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="comments"></h1>
+<p>
+    <b>Comments</b> are <b>portions of code</b> that are <b>intentionally ignored</b>.<br>
+    They can be used to provide informations or temporarily exclude lines of code.<br>
+    Comments are allowed to contain any sequence of unicode characters of any length.<br>
+</p>
+<p>
+    Single line comments start with <code>//</code> and end at the first newline character.<br>
+    Multiline comments start with <code>/*</code> and end with <code>*/</code>
+</p>
+<p>Comments cannot be nested.</p>
+
+<syntax->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <table>
+                <tr>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>//</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><elm->comment string</elm-></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code><nl-></nl-></code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                </tr>
+                <tr>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>/*</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><elm->comment string</elm-></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>*/</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                </tr>
+            </table>
+        </scroll-></code->
+    </fill->
+</syntax->
+<example->
+    <fill->
+        <label->1</label->
+        <code-><scroll->
+            <c->// Single line comment</c->
+
+            <c->/* Multi
+            line
+            comment */</c->
+        </scroll-></code->
+    </fill->
+</example->
+<example->
+    <fill->
+        <label->2</label->
+        <code-><scroll->
+            <c->/* Multi line /* Anorhter comment */ comment */
+            // Ok                             </c-><ce->// ^ Error, unexpected token "comment"</ce->
+        </scroll-></code->
+    </fill->
+</example->
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Include statement                                               -->
+<!--------------------------------------------------------------------->
+<h1 id="include-statement"></h1>
+<p>
+    The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
+    Any existent file can be included, regardless of its contents or extension.<br>
+    The path of the included file must be enclosed in <code>"</code><code>"</code> and can only contain alphanumeric characters and one of <code>.</code> <code>/</code> <code>-</code> <code>_</code>. //TODO <br>
+</p>
+<p>
+    Absolute paths, relative paths and Glob patterns are all supported.<br>
+    <code>~</code> is not recognized as the home directory but interpeted as an invalid character.<br>
+</p>
+<p>
+    Glob patterns that don't match any file are allowed and have no effect.<br>
+    <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards are supported.
+</p>
+<p>
+    <a href="#standard-modules">Standard modules</a> are included using the <code>&lt;</code><code>&gt;</code> characters.<br>
+    The <a href="#core-module">core module</a> cannot be included.
+</p>
+<syntax->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <table>
+                <tr>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>#include</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code><space-></space-></code></td>
+                    <td><branch-c-></branch-c-><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                    <td><code>"</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td class="center"><elm->path/to/file</elm-></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>"</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><code>&lt;</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td class="center"><elm->module name</elm-></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>&gt;</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                </tr>
+            </table>
+        </scroll-></code->
+    </fill->
+</syntax->
+<example->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->   <c->// Ok, absolute path</c->
+            <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
+            <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
+            <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
+            <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
+
+            <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
+            <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
+            <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
+        </scroll-></code->
+    </fill->
+</example->
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Macros                                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="macros"></h1>
+//TODO
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Conditionals                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="conditionals"></h1>
+//TODO
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Line continuation token                                         -->
+<!--------------------------------------------------------------------->
+<h1 id="line-continuation-token"></h1>
+<p>
+    The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line <a href="#comments">comments</a>, preprocessor directives and multi character <a href="#tokens">tokens</a> to be written across multiple lines.<br>
+    It consists of a <code>\</code> immediatly followed by a newline character.
+</p>
+<p>
+    Line continuation tokens can be used inside <a href="#comments">comments</a> or other preprocessor directives and cannot be nested.
+</p>
+
+<syntax->
+    <fill->
+        <label-></label->
+        <code-><scroll->
+            <table>
+                <tr>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code>\</code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><code><nl-></nl-></code></td>
+                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                </tr>
+            </table>
+        </scroll-></code->
+    </fill->
+</syntax->
+
+<example->
+    <fill->
+        <label->1</label->
+        <code-><scroll->
+            <c->// single line comment</c->\
+            <c->on two lines</c->
+
+            <c->// #include "path/to/file"</c->
+            <k->#include</k-> <s->"pat</s->\
+            <s->h/to/file</s->\
+            <s->"</s->
+
+            <c->// void function() {
+            //   uint var = 0, b = 0;
+            //   var += b;
+            // }</c->
+            <t->vo</t->\
+            <t->id</t-> <f->fun</f->\
+            <f->ction</f->() {
+            <t->uint</t-> va\
+            r = <k->0</k->, b = <k->0</k->;
+            v\
+            ar +\
+            = <k->b</k->;
+            }
+        </scroll-></code->
+    </fill->
+</example->
+<example->
+    <fill->
+        <label->2</label->
+        <code-><scroll->
+            <ce->// Error, unexpected token "\"</ce->
+            <c->//void ma\\
+
+            //in(){}</c->
+            <ce->// Error,  unexpected token "in"</ce->
+            </scroll-></code->
+    </fill->
+</example->
