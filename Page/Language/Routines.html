@@ -1,6 +1,16 @@
 
 
 <!--------------------------------------------------------------------->
+<!-- Routines                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="routines"></h1>
+<p>
+    //TODO UPADTE DESCRIPTION
+    //TODO UPDATE ALL LINKS TO FUNCTIONS
+</p>
+
+
+<!--------------------------------------------------------------------->
 <!-- Functions                                                       -->
 <!--------------------------------------------------------------------->
 <h1 id="functions"></h1>
@@ -30,33 +40,33 @@
 <syntax->
     <left->
         <label-></label->
-        <code-><scroll->
+        <div>
             <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
             <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
-        </scroll-></code->
+        </div>
     </left->
     <right->
         <label->Parameter syntax</label->
-        <code-><scroll->
+        <div>
             <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
             <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
             <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm->
-        </scroll-></code->
+        </div>
     </right->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
 
             <t->void</t-> <f->main</f->(){
                 <t->int</t-> var = <k->0</k->;
                 <f->fun</f->(<k->var</k->);
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 <p>
     See
     <a href="#runtime-statements">Runtime statements</a>,
@@ -77,10 +87,10 @@
     Notice that in this case, the <code>&</code> <a href="#tokens">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
 </p>
 
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
                 arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
                 arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
@@ -93,9 +103,9 @@
             }
 
             <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 <p>
     See
@@ -122,17 +132,17 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
             <elm->name<sup>id</sup></elm->()
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
 
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
             <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
 
@@ -146,9 +156,9 @@
                 <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
                 n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 //TODO update example
 
 
@@ -174,3 +184,31 @@
     The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
     It can also be called by other functions or itself, but it cannot be a template.<br>
 </p>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operators                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="operators"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator definitions                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-definitions"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-calls"></h1>

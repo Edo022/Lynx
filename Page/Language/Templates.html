@@ -59,11 +59,6 @@
 
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Function templates                                              -->
-<!--------------------------------------------------------------------->
-<h1 id="function-templates"></h1>
 <p>
     //TODO
     //TODO
@@ -86,23 +81,23 @@
 <syntax->
     <left->
         <label-></label->
-        <code-><scroll->
+        <div>
             <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
             <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
             ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
             ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
-        </scroll-></code->
+        </div>
     </left->
     <right->
         <label->Parameter syntax</label->
-        <code-><scroll->
+        <div>
             <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
             <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
             <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
             <c->/* Normal parameters */</c->    ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->
             <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> ?<elm->type<sup>id</sup></elm-> &<elm->name<sup>id</sup></elm->
             <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      ?<elm->type<sup>id</sup></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
-        </scroll-></code->
+        </div>
     </right->
 </syntax->
 
@@ -114,10 +109,10 @@
 <p>
     Generic type parameters can be references or const.
 </p>
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
                 return a + b + c;
             }
@@ -133,9 +128,9 @@
                 <f->add2</f->(<k->0</k->, <k->1</k->);          <c->// Generates uint add2(uint a, uint b)</c->
                 <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 <p>
     Templates allow multiple definitions.<br>
@@ -145,10 +140,10 @@
     The expression used in the <code><w->when</w-></code> specifier must be known in compile time and cannot depend on the value of variables declared inside one of the function definitions.<br>
     Calling the function with types that don't match any definition is a semantic error.<br>
 </p>
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
                 floating_point, integral, other;
             }
@@ -170,9 +165,9 @@
                 <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id.floating_point</c->
                 <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 <p>
     Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
@@ -180,15 +175,15 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->);
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
                 floating_point, integral, other;
             }
@@ -211,15 +206,9 @@
                 <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id.other</c->
                 <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
             }
-        </scroll-></code->
-    </fill->
-</example->
-
-
-<!--------------------------------------------------------------------->
-<!-- Struct templates                                                -->
-<!--------------------------------------------------------------------->
-<h1 id="struct-templates"></h1>
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->

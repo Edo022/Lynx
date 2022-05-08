@@ -1,0 +1,156 @@
+
+
+<!--------------------------------------------------------------------->
+<!-- Statements                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="statements"></h1>
+<p>
+    <b>Statements</b> are the <b>instructions</b> that are <b>executed during runtime</b>.<br>
+    They determine the behaviour of the shader, its execution time and <a href="#compiler-optimizations">compiler optimizations</a>.<br>
+    The <code>;</code> <a href="#tokens">token</a> defines the end of a statement.
+</p>
+<p>
+    A statement can be an expression or a flow control <a href="#keywords">keyword</a>.<br>
+    Any sequence of tokens entirely composed of <a href="#left-and-right-values">values</a> and <a href="#function-calls">function calls</a> is considered an expression.
+</p>
+<p>
+    Statements can only be used within <a href="#functions">functions</a> and <a href="#unnamed-scopes">unnames scopes</a>.
+</p>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Selection                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="selection"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- If statement                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="if-statement"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Match statement                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="match-statement"></h1>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Iteration                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="iteration"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- For loops                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="for-loops"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- While loops                                                     -->
+<!--------------------------------------------------------------------->
+<h1 id="while-loops"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Continue and break statements                                   -->
+<!--------------------------------------------------------------------->
+<h1 id="continue-and-break-statements"></h1>
+<p>
+    //TODO break 2; continue 40;
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Once statement                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="once-statement"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Then statement                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="then-statement"></h1>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Non local flow control                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="non-local-flow-control"></h1>
+
+
+<!--------------------------------------------------------------------->
+<!-- Return statement                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="return-statement"></h1>
+<p>
+    The <b><code><w->return</w-></code></b> statement skips all remaining statements in the function and <b>returns</b> the <b>code execution</b> to the <b>caller function</b>.<br>
+    Multiple return statements are allowed, but their value must be implicitly convertible to the type of the function.
+</p>
+<p>
+    All execution paths of non-<code><t->void</t-></code> functions must return a value.<br>
+    The return value can then be used by the caller function or be ignored.<br>
+    Calls to <code><t->void</t-></code> functions cannot be used in expressions.
+</p>
+<p>
+    There is no default return value.
+</p>
+<syntax->
+    <fill->
+        <label-></label->
+        <div>
+            return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;     <c->// Non-void functions</c->
+            return;           <c->// Void functions</c->
+        </div>
+    </fill->
+</syntax->
+<p>
+    //TODO EXAMPLE
+</p>
+
+
+<!--------------------------------------------------------------------->
+<!-- Defer statement                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="defer-statement"></h1>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Else statement                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="else-statement"></h1>
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Reflection                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="reflection"></h1>
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Inline GLSL                                                     -->
+<!--------------------------------------------------------------------->
+<h1 id="inline-glsl"></h1>
+

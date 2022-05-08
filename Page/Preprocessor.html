@@ -31,7 +31,7 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -52,30 +52,30 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example 1</label2->
+        <div>
             <c->// Single line comment</c->
 
             <c->/* Multi
             line
             comment */</c->
-        </scroll-></code->
-    </fill->
-</example->
-<example->
-    <fill->
-        <label->2</label->
-        <code-><scroll->
+        </div>
+    </fill2->
+</example2->
+<example2->
+    <fill2->
+        <label2->Example 2</label2->
+        <div>
             <c->/* Multi line /* Anorhter comment */ comment */
             // Ok                             </c-><ce->// ^ Error, unexpected token "comment"</ce->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 
@@ -104,7 +104,7 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -133,13 +133,13 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->   <c->// Ok, absolute path</c->
             <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
             <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
@@ -149,9 +149,9 @@
             <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
             <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
             <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 
@@ -189,7 +189,7 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -199,14 +199,14 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
 
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example 1</label2->
+        <div>
             <c->// single line comment</c->\
             <c->on two lines</c->
 
@@ -228,18 +228,18 @@
             ar +\
             = <k->b</k->;
             }
-        </scroll-></code->
-    </fill->
-</example->
-<example->
-    <fill->
-        <label->2</label->
-        <code-><scroll->
+        </div>
+    </fill2->
+</example2->
+<example2->
+    <fill2->
+        <label2->Example 2</label2->
+        <div>
             <ce->// Error, unexpected token "\"</ce->
             <c->//void ma\\
 
             //in(){}</c->
             <ce->// Error,  unexpected token "in"</ce->
-            </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->

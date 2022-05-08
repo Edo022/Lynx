@@ -83,8 +83,7 @@
             #include "./Page/Language/Namespaces.html"
             #include "./Page/Language/Types.html"
             #include "./Page/Language/Values.html"
-            #include "./Page/Language/Functions.html"
-            #include "./Page/Language/Operators.html"
+            #include "./Page/Language/Routines.html"
             #include "./Page/Language/Templates.html"
 
 
@@ -107,10 +106,10 @@
                 Const variables cannot have undefined value.
             </p>
 
-            <example->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
+            <example2->
+                <fill2->
+                    <label2-></label2->
+                    <div>
                         <w->struct</w-> <t->s</t-> {
                             <t->uint</t-> a;            <c->// Ok, non-const member</c->
                             <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
@@ -127,9 +126,9 @@
                             <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
                             c = <k->a</k-> + b;                      <c->// Ok</c->
                         }
-                    </scroll-></code->
-                </fill->
-            </example->
+                    </div>
+                </fill2->
+            </example2->
             <p>
                 See
                 <a href="#compiler-optimizations">Compiler optimizations</a>
@@ -158,15 +157,15 @@
             <syntax->
                 <fill->
                     <label-></label->
-                    <code-><scroll->
+                    <div>
                         alias <elm->name<sup>id</sup></elm-> = <elm->symbol<sup>id</sup></elm->;
-                    </scroll-></code->
+                    </div>
                 </fill->
             </syntax->
-            <example->
-                <fill->
-                    <label->1</label->
-                    <code-><scroll->
+            <example2->
+                <fill2->
+                    <label2->Example 1</label2->
+                    <div>
                         <w->namespace</w-> n {
                             <t->void</t-> <f->f</f->(){}
                         }
@@ -178,172 +177,15 @@
                             <f->f2</f->();            <c->// Ok, calls n.f()</c->
                             <f->f3</f->();            <c->// Ok, calls n.f()</c->
                         }
-                    </scroll-></code->
-                </fill->
-            </example->
+                    </div>
+                </fill2->
+            </example2->
 
 
 
 
 
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Statements                                                      -->
-            <!--------------------------------------------------------------------->
-            <h1 id="statements"></h1>
-            <p>
-                <b>Statements</b> are the <b>instructions</b> that are <b>executed during runtime</b>.<br>
-                They determine the behaviour of the shader, its execution time and <a href="#compiler-optimizations">compiler optimizations</a>.<br>
-                The <code>;</code> <a href="#tokens">token</a> defines the end of a statement.
-            </p>
-            <p>
-                A statement can be an expression or a flow control <a href="#keywords">keyword</a>.<br>
-                Any sequence of tokens entirely composed of <a href="#left-and-right-values">values</a> and <a href="#function-calls">function calls</a> is considered an expression.
-            </p>
-            <p>
-                Statements can only be used within <a href="#functions">functions</a> and <a href="#unnamed-scopes">unnames scopes</a>.
-            </p>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Selection                                                       -->
-            <!--------------------------------------------------------------------->
-            <h1 id="selection"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- If statement                                                    -->
-            <!--------------------------------------------------------------------->
-            <h1 id="if-statement"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Match statement                                                 -->
-            <!--------------------------------------------------------------------->
-            <h1 id="match-statement"></h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Iteration                                                       -->
-            <!--------------------------------------------------------------------->
-            <h1 id="iteration"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- For loops                                                       -->
-            <!--------------------------------------------------------------------->
-            <h1 id="for-loops"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- While loops                                                     -->
-            <!--------------------------------------------------------------------->
-            <h1 id="while-loops"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Continue and break statements                                   -->
-            <!--------------------------------------------------------------------->
-            <h1 id="continue-and-break-statements"></h1>
-            <p>
-                //TODO break 2; continue 40;
-            </p>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Once statement                                                  -->
-            <!--------------------------------------------------------------------->
-            <h1 id="once-statement"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Then statement                                                  -->
-            <!--------------------------------------------------------------------->
-            <h1 id="then-statement"></h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Non local flow control                                          -->
-            <!--------------------------------------------------------------------->
-            <h1 id="non-local-flow-control"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Return statement                                                -->
-            <!--------------------------------------------------------------------->
-            <h1 id="return-statement"></h1>
-            <p>
-                The <b><code><w->return</w-></code></b> statement skips all remaining statements in the function and <b>returns</b> the <b>code execution</b> to the <b>caller function</b>.<br>
-                Multiple return statements are allowed, but their value must be implicitly convertible to the type of the function.
-            </p>
-            <p>
-                All execution paths of non-<code><t->void</t-></code> functions must return a value.<br>
-                The return value can then be used by the caller function or be ignored.<br>
-                Calls to <code><t->void</t-></code> functions cannot be used in expressions.
-            </p>
-            <p>
-                There is no default return value.
-            </p>
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <code-><scroll->
-                        return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;     <c->// Non-void functions</c->
-                        return;           <c->// Void functions</c->
-                    </scroll-></code->
-                </fill->
-            </syntax->
-            <p>
-                //TODO EXAMPLE
-            </p>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Defer statement                                                 -->
-            <!--------------------------------------------------------------------->
-            <h1 id="defer-statement"></h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Else statement                                                  -->
-            <!--------------------------------------------------------------------->
-            <h1 id="else-statement"></h1>
-
-
-
-
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Reflection                                                      -->
-            <!--------------------------------------------------------------------->
-            <h1 id="reflection"></h1>
-
-
-
-
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Inline GLSL                                                     -->
-            <!--------------------------------------------------------------------->
-            <h1 id="inline-glsl"></h1>
-
-
+            #include "./Page/Language/Statements.html"
 
 
 
@@ -896,34 +738,34 @@
             </p>
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label- class="nobefore">Existence</label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Existence</label2->
+                            <div>
                                 <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) {
                                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                                         <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
                                     }
                                     <w->return</w-> <k->false</k->;
                                 }
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label- class="nobefore">Inexistence</label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Inexistence</label2->
+                            <div>
                                 <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) {
                                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                                         <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
                                     }
                                     <w->return</w-> <k->true</k->;
                                 }
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
             </div>
 
@@ -1206,10 +1048,10 @@
             </p>
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label-></label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Example</label2->
+                            <div>
                                 <t->auto</t-> <f->main</f->(){
                                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                                     <w->return</w-> <f->~</f->a;
@@ -1218,15 +1060,15 @@
 
 
 
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label- class="nobefore">Equivalent code</label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Equivalent code</label2->
+                            <div>
                                 <t->auto</t-> <f->main</f->(){
                                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                                     <t->uint</t->[<k->4</k->] ret;
@@ -1235,9 +1077,9 @@
                                     }
                                     <w->return</w-> ret;
                                 }
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
             </div>
 
@@ -1248,10 +1090,10 @@
             </p>
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label-></label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Example</label2->
+                            <div>
                                 <t->void</t-> <f->main</f->(){
                                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                                     <t->int</t->[<k->4</k->] b;
@@ -1259,15 +1101,15 @@
                                 }
 
 
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label- class="nobefore">Equivalent code</label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Equivalent code</label2->
+                            <div>
                                 <t->void</t-> <f->main</f->(){
                                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                                     <t->int</t->[<k->4</k->] b;
@@ -1275,9 +1117,9 @@
                                         a[i] <f->=</f-> a[i];
                                     }
                                 }
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
             </div>
 
@@ -1288,10 +1130,10 @@
             </p>
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label-></label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Example</label2->
+                            <div>
                                 <t->void</t-> <f->main</f->(){
                                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                                     <t->int</t-> b <f->=</f-> <k->8</k->;
@@ -1299,15 +1141,15 @@
                                 }
 
 
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
-                    <example- style="margin: 0;">
-                        <fill->
-                            <label- class="nobefore">Equivalent code</label->
-                            <code-><scroll->
+                    <example2- style="margin: 0;">
+                        <fill2->
+                            <label2->Equivalent code</label2->
+                            <div>
                                 <t->void</t-> <f->main</f->(){
                                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                                     <t->int</t-> b <f->=</f-> <k->8</k->;
@@ -1315,9 +1157,9 @@
                                         a[i] <f->*=</f-> b;
                                     }
                                 }
-                            </scroll-></code->
-                        </fill->
-                    </example->
+                            </div>
+                        </fill2->
+                    </example2->
                 </div>
             </div>
 

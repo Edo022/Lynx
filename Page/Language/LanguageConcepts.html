@@ -194,7 +194,7 @@
     </ul><br>
     <li>Other</li>
     <ul>
-        <li><a href="#name-resolution"><code>.</code></a> - Concatenates 2 ore more <a href="#symbol-referencing">symbol referencing syntaxes</a>. Part of the <a href="#name-resolution">name resolution</a></li>
+        <li><a href="#name-resolution"><code>.</code></a> - Concatenates 2 ore more <a href="#local-names">local names</a>. Part of the <a href="#name-resolution">name resolution</a></li>
         <li><td class="center" width="20%"><a href="#for-loops"><code>:</code></a></td> - Part of the <a href="#for-loops">for each</a> loop syntax</li>
     </ul>
 </ul>
@@ -238,10 +238,10 @@
     </li>
     <li>
         <a href="#arrays"><elm-><code>[</code><code>]</code></elm-></a> - States that the corresponding <a href="#arrays">array</a> of a <a href="#types">type</a> must be used, or part of the <a href="#element-indexing">element indexing</a> syntax.<br>
-        When used after the name of a <a href="#types">type</a> or after a symbol <a href="#symbol-referencing">referencing syntax</a>.<br><br>
+        When used after the name of a <a href="#types">type</a> or after a <a href="#local-names">local name</a>.<br><br>
     </li>
     <li>
-        <elm-><code>&lt;</code><code>&gt;</code></elm->  - Part of a <a href="#templates">template declaration</a>, or part of the the <a href="#symbol-referencing">referencing syntax</a> of <a href="#function-templates">generated functions</a> and <a href="#struct-templates">generated structs</a>.<br>
+        <elm-><code>&lt;</code><code>&gt;</code></elm->  - Part of a <a href="#templates">template declaration</a>, or part of the the <a href="#local-names">local name</a> of <a href="#function-templates">generated functions</a> and <a href="#struct-templates">generated structs</a>.<br>
         When used after the <a href="#templates"><code><w->template</w-></code></a> keyword or after the name of a <a href="#function-templates">function template</a>.<br><br>
     </li>
     <li>
@@ -302,7 +302,7 @@
             <li><a href="#enums">Enum element declaration</a></li>
             <li><a href="#functions">Function declaration</a> - Declares a <a href="#functions">function</a> that can be called to generate an output <a href="#values">value</a> based on multiple inputs</li>
             <li><a href="#functions">Function parameter declaration</a> - Declares an input/output <a href="#values">value</a> for a <a href="#functions">function</a></li>
-            <li><a href="#templates">Template declration</a> - Declares a <a href="#templates">template</a> that can generate <a href="#functions">functions</a> and <a href="#structs">structs</a> based on the types used in its <a href="#function-definitions">parameters</a> or <a href="#symbol-referencing">referencing syntax</a></li>
+            <li><a href="#templates">Template declration</a> - Declares a <a href="#templates">template</a> that can generate <a href="#functions">functions</a> and <a href="#structs">structs</a> based on the types used in its <a href="#function-definitions">parameters</a> or <a href="#local-names">local name</a></li>
             <li><a href="#symbol-aliases">Symbol alias declaration</a> - Declares a symbol that can be used as an alternative <a href="#name-resolution">name</a> for another symbol</li>
         </ul><br>
         <li>Implicitly declared elements</li>
@@ -335,93 +335,254 @@
 
 <div class="scope-table-container">
     <div class="table-container scope-table-left-container"><table class="scope-table-left">
-        <tr style="height: 80px;"><th class="medium">Scope / Can contain</th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#modules">       Module       </a></th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#namespaces">    Namespace    </a></th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#enums">         Enum         </a></th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#structs">       Struct       </a></th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#functions">     Function     </a></th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed scope</a></th></tr>
-        <tr style="height: 80px;"><th class="medium"><a style="color: var(--fg-text)" href="#statements">    Statement    </a></th></tr>
+        <tr><th class="medium"><div><span>Scope / Can contain</span></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#modules">       Module              </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#namespaces">    Namespace           </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#enums">         Enum                </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates">     Enum<br>template    </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#structs">       Struct              </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates">     Struct<br>template  </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#functions">     Function            </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates">     Function<br>template</a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#opertors">      Operator            </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates">     Operator<br>template</a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed<br>scope    </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#statements">    Statement           </a></div></th></tr>
     </table></div>
     <div class="table-container scope-table-right-container"><table class="scope-table-right">
-        <tr style="height: 80px;">
-            <td><a style="color: var(--fg-text)" href="#namespaces">    Namespace       </a></td>
-            <td><a style="color: var(--fg-text)" href="#enums">         Enum            </a></td>
-            <td><a style="color: var(--fg-text)" href="#structs">       Struct          </a></td>
-            <td><a style="color: var(--fg-text)" href="#functions">     Function        </a></td>
-            <td><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed<br>scope</a></td>
-            <td><a style="color: var(--fg-text)" href="#statements">    Statement       </a></td>
-            <td><a style="color: var(--fg-text)" href="#variables">     Variable        </a></td>
-            <td><a style="color: var(--fg-text)" href="#symbol-aliases">Symbol alias    </a></td>
+        <tr>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#namespaces">    Namespace           </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#enums">         Enum                </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates">     Enum<br>template    </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#structs">       Struct              </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates">     Struct<br>template  </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#functions">     Function            </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates">     Function<br>template</a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#operators">     Operator            </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates">     Operator<br>template</a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#unnamed-scopes">Unnamed<br>scope    </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#statements">    Statement           </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#variables">     Variable            </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#symbol-aliases">Symbol<br>alias     </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#enums">         Enum<br>member      </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#structs">       Struct<br>member    </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#routines">      Routine<br>parameter</a></div></th>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y nobefore" colspan="2">Inherited from the enclosing scope</td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y nobefore" colspan="2">Inherited from the enclosing scope</td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
+            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
+            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
+            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
+            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y"></td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y"></td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
-        <tr style="height: 80px;">
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-n"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
-            <td class="scope-table-y"></td>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+        </tr>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+        </tr>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+        </tr>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+        </tr>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+        </tr>
+        <tr>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
+            <td class="scope-table-n"><div></div></td>
         </tr>
     </table></div>
 </div>
@@ -435,10 +596,10 @@
 <h1 id="name-resolution"></h1>
 <p>
     <a href="#semantic-elements">Symbols</a> are referenced through their name.<br>
-    A <b>name</b> is the list of all the <a href="#symbol-referencing">referencing syntaxes</a> used to refer to the <b>enclosing <a href="#scopes">scopes</a></b>
+    A <b>path</b> is the list of all the <a href="#local-names">local names</a> used to refer to the <b>enclosing <a href="#scopes">scopes</a></b>
     and the <a href="#semantic-elements"><b>symbol</b></a> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
-    The <a href="#symbol-referencing">referencing syntax</a> depends on the type of semantic element the <a href="#semantic-elements">symbol</a> is declared as.
-    They are described in the corresponding sections of each semantic element and summarized in the <a href="#symbol-referencing">Symbol referencing</a> section.
+    The <a href="#local-names">local name</a> depends on the type of semantic element the <a href="#semantic-elements">symbol</a> is declared as.
+    They are described in the corresponding sections of each semantic element and summarized in the <a href="#local-names">Local names</a> section.
 </p>
 <p>
     The name can start from any of the enclosing <a href="#scopes">scopes</a>.<br>
@@ -450,7 +611,7 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -461,7 +622,7 @@
                 </tr>
                 <tr>
                     <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
-                    <td><a href="#symbol-referencing"><elm- style="color: var(--fg-text)">referencing syntax</elm-></a></td>
+                    <td><a href="#local-names"><elm- style="color: var(--fg-text)">local name</elm-></a></td>
                     <td><branch-tr-></branch-tr-><branch-c-></branch-c-><branch-end-></branch-end-></td>
                     <td><code>.</code></td>
                     <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
@@ -474,13 +635,13 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <c->// Complete name: module</c->
 
 
@@ -504,9 +665,9 @@
                 <c->// Local name: n</c->
                 <t->uint</t-> n;
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->
@@ -522,10 +683,10 @@
 <p>
     <a href="#name-resolution">Absolute names</a> cannot be shadowed
 </p>
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <w->namespace</w-> s {
                 <c->// n references module.s.n</c->
                 <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
@@ -536,9 +697,9 @@
                     }
                 }
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 

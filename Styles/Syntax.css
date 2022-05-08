@@ -1,6 +1,38 @@
 
 
 
+
+:root {
+    --syntax-spacing:           20px;
+    --syntax-width:             65%;
+    --syntax-overlap-fix:       2px;
+    --syntax-table-padding:     2ch;
+    --syntax-margin:            30px;
+    --syntax-internal-margin:   10px;
+
+    --syntax-label-h:           3ch;
+    --syntax-label-padding:     2ch;
+    --syntax-label-padding-top: 0.5ch;
+    --syntax-label-fg-active:   rgb(151, 145, 145);
+
+    --syntax-line-h:      42px;
+    --syntax-arrow-w:     42px; /* must be in pixels as it is used by js */
+    --syntax-arrow-margin:8px;  /* must be in pixels as it is used by js */
+    --syntax-fg-arrow:         hsla(212, 14%, 24%, 100%);
+
+    --syntax-elm-margin:         4px;
+    --syntax-note-margin-top:    8px;
+    --syntax-note-margin-bottom: 64px;
+    --example-line-h:            2.4ch;
+}
+
+
+
+
+
+
+
+
 /* Syntax highlight { */
     c-  { color: #6d757e; font-weight: 300; }    /* Comment            */
     ce- { color: #d14141; font-weight: 300; }    /* Error comment      */
@@ -14,6 +46,10 @@
     sg- { color: #c9ca76; }                      /* String regex group */
     s-  { color: #db966e; }                      /* String
 } */
+
+
+
+
 
 
 
@@ -33,8 +69,6 @@
     elm-  { border-color: var(--bd-elm);  }
     elm2- { border-color: var(--bd-elm2); }
     elm3- { border-color: var(--bd-elm3); }
-    elm4- { border-color: var(--bd-elm4); }
-    elm5- { border-color: var(--bd-elm5); }
 
     sup {
         margin-left: 0.5ch;
@@ -58,9 +92,13 @@
 
 
 
+
+
+
+
 /* Syntax elements { */
     .hidden, space-, nl- {
-        color: var(--fg-hidden);
+        color: var(--fg-hidden) !important;
         white-space: nowrap;
         font-weight: normal;
     }
@@ -82,72 +120,287 @@
 
 
 
-/* Syntax box { */
-    syntax- table, syntax- table tr, syntax- table tr > td {
-        background-color: transparent !important;
-        border: 0px solid transparent !important;
-
-        border-radius: 0px;
-        padding: 0;
-        margin: 0;
-        white-space: normal;
-    }
-    syntax- table tr > td > div {
-        display: inline-flex;   /* Inline is required to align the elements */
-        vertical-align: middle; /* This fixes inline-flex not aligning to mid by default */
-        overflow: visible;
-        align-items: center;
-
-        min-width: 100%;
-        max-width: 100%;
-        min-height: var(--syntax-line-h);
-        max-height: var(--syntax-line-h);
-    }
-    syntax- table tr > td > div > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) {
-        box-sizing: border-box;
-        text-align: center;
-        min-width: 100%;
-        max-width: 100%;
-
-    }
-    syntax- table {
-        min-width: fit-content;
-        max-width: fit-content;
-    }
-    syntax- table td {
-        overflow: visible;
-    }
-    svg {
-        overflow: visible;
-    }
 
 
 
-    b-tr-,   b-tb-,   b-tl-,
-    b-rb-,   b-rl-,   b-rt-,
-    b-bl-,   b-bt-,   b-br-,
-    b-lt-,   b-lr-,   b-lb-,
-    b-trc-,  b-tbc-,  b-tlc-,
-    b-rbc-,  b-rlc-,  b-rtc-,
-    b-blc-,  b-btc-,  b-brc-,
-    b-ltc-,  b-lrc-,  b-lbc-,
-    b-c- {
-        display: inline-block;
-        overflow: visible;
-        margin-left:  var(--syntax-arrow-margin);
-        margin-right: calc(0px - var(--syntax-arrow-margin));
 
-        min-width:  0;
-        max-width:  0;
-        /**/width:  0;
-        min-height: var(--syntax-line-h);
-        max-height: var(--syntax-line-h);
-    }
-    b-e- {
-        display: inline-block;
-        min-width:  calc(var(--syntax-arrow-w) + 2 * var(--syntax-arrow-margin));
-        max-width:  calc(var(--syntax-arrow-w) + 2 * var(--syntax-arrow-margin));
-        min-height: 0;
-        max-height: 0;
-    } /*
-} */
+/* Containers */
+syntax2- {
+    display: flex;
+
+    min-width:  100%;
+    max-width:  100%;
+    /**/width:  100%;
+    margin: var(--syntax-margin) 0 var(--syntax-margin) 0;
+}
+
+example2- > fill2-,
+syntax2- > fill2-,
+syntax2- > left2-,
+syntax2- > right2- {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    position: relative;
+
+    min-height: none;
+    max-height: none;
+    /**/height: fit-content; /* Set from JS */
+}
+example2- > fill2-,
+syntax2- > fill2- {
+    min-width: 100%;
+    max-width: 100%;
+    /**/width: 100%;
+}
+syntax2- > left2-  {
+    margin-right: calc(var(--syntax-spacing) / 2);
+    min-width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);
+    max-width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);
+    /**/width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);
+}
+syntax2- > right2- {
+    margin-left:  calc(var(--syntax-spacing) / 2);
+    min-width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);
+    max-width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);
+    /**/width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);
+}
+
+
+
+
+
+
+
+
+/* Labels */
+example2- > fill2- > label2-,
+syntax2- > fill2- > label2-,
+syntax2- > left2- > label2-,
+syntax2- > right2- > label2- {
+    display: block;
+    border: 1px solid var(--bd-code);
+    border-radius: var(--code-decoration-r);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0;
+    background-color: var(--bg-pre);
+    z-index: 2;
+    margin-bottom: calc(0px - var(--syntax-overlap-fix));
+    position: relative;
+    padding: var(--syntax-label-padding-top) var(--syntax-label-padding) 0 var(--syntax-label-padding);
+    font-weight: bold;
+
+    min-width: fit-content;
+    max-width: fit-content;
+    /**/width: fit-content;
+    min-height: var(--syntax-label-h);
+    max-height: var(--syntax-label-h);
+    /**/height: var(--syntax-label-h);
+    box-sizing: border-box;
+}
+syntax2- > left2- > label2-:not(:first-child),
+syntax2- > right2- > label2-:not(:first-child) {
+    margin-top: var(--syntax-internal-margin);
+}
+
+example2- > fill2- > label2-:after,
+syntax2- > fill2- > label2-:after,
+syntax2- > left2- > label2-:after,
+syntax2- > right2- > label2-:after {
+    content: " \00a0□";
+    text-shadow: -3px -3px;
+    font-size: var(--font-size-x-small);
+}
+
+example2- > fill2- > label2-:active,
+syntax2- > fill2- > label2-:active,
+syntax2- > left2- > label2-:active,
+syntax2- > right2- > label2-:active {
+    color: var(--syntax-label-fg-active);
+}
+
+
+
+
+
+
+
+
+/* Tables and borders */
+example2- div,
+syntax2- table {
+    display: block;
+    border: 1px solid var(--bd-code);
+    border-radius: var(--code-decoration-r);
+    border-top-left-radius: 0;
+    background-color: var(--bg-pre);
+    box-sizing: border-box;
+    overflow: hidden;
+
+    min-width: 100%;
+    max-width: 100%;
+    /**/width: 100%;
+    min-height: fit-content;
+    max-height: fit-content;
+    /**/height: fit-content;
+}
+syntax2- table:last-child {
+    flex: 1;
+}
+example2- div {
+    font-family: monospace, monospace;
+    font-size: var(--font-size-code);
+    line-height: var(--example-line-h);
+    letter-spacing: 0;
+    overflow: auto;
+    white-space: pre;
+    padding: 0 var(--syntax-table-padding) 0 var(--syntax-table-padding);
+}
+
+
+syntax2- table tr,
+syntax2- table tr > td {
+    border: 0px solid transparent !important;
+    background-color: transparent !important;
+    margin: 0;
+    padding: 0;
+
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+    /**/height: var(--syntax-line-h);
+}
+syntax2- table tbody {
+    display: flex;
+    flex-direction: column;
+    padding:  var(--syntax-table-padding) 0 var(--syntax-table-padding) 0;
+    margin: 0 var(--syntax-table-padding) 0 var(--syntax-table-padding);
+    overflow-x: hidden;
+
+    min-width:  calc(100% - 2 * var(--syntax-table-padding));
+    max-width:  calc(100% - 2 * var(--syntax-table-padding));
+    /**/width:  calc(100% - 2 * var(--syntax-table-padding));
+    min-height: calc(100% - 2 * var(--syntax-table-padding));
+    max-height: calc(100% - 2 * var(--syntax-table-padding));
+    /**/height: calc(100% - 2 * var(--syntax-table-padding));
+}
+syntax2- table tbody:hover {
+    overflow-x: auto;
+}
+syntax2- table tr > td {
+    display: inline-block;
+    font-size: var(--font-size-medium);
+    word-spacing: var(--word-spacing);
+    letter-spacing: var(--char-spacing);
+    text-align: left;
+
+    padding:  0 var(--syntax-arrow-margin) 0 var(--syntax-arrow-margin);
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+    /**/height: var(--syntax-line-h);
+    min-width: 0;
+    max-width: none;
+    /**/width: fit-content; /* Set from JS */
+}
+syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) {
+    display: inline-block;
+    box-sizing: border-box;
+    text-align: center;
+
+    margin: var(--syntax-elm-margin) 0 0 0;
+    min-width:  100%;
+    max-width:  100%;
+    /**/width:  100%;
+    max-height: calc(100% - 2 * var(--syntax-elm-margin));
+    min-height: calc(100% - 2 * var(--syntax-elm-margin));
+    /**/height: calc(100% - 2 * var(--syntax-elm-margin));
+}
+syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) > div {
+    display: inline-flex;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    flex-direction: row;
+
+    min-width: fit-content;
+    max-width: fit-content;
+    /**/width: fit-content;
+    min-height: 100%;
+    max-height: 100%;
+    /**/height: 100%;
+}
+syntax2- table tr {
+    display: block;
+    font-size: 0;
+    word-spacing: 0;
+    letter-spacing: 0;
+    white-space: nowrap;
+    box-sizing: border-box;
+
+    min-width: calc(100% - 2 * var(--syntax-table-padding));
+    max-width: calc(100% - 2 * var(--syntax-table-padding));
+    /**/width: calc(100% - 2 * var(--syntax-table-padding));
+}
+
+syntax2- > fill2- > table,
+syntax2- > fill2- > label2-,
+syntax2- > left2- > table,
+syntax2- > left2- > label2- {
+    border-color: var(--bd-elm);
+}
+
+syntax2- > right2- > table,
+syntax2- > right2- > label2- {
+    border-color: var(--bd-elm2);
+}
+
+
+
+
+
+
+
+
+/* Elements */
+svg {
+    overflow: visible;
+}
+b-tr-,   b-tb-,   b-tl-,
+b-rb-,   b-rl-,   b-rt-,
+b-bl-,   b-bt-,   b-br-,
+b-lt-,   b-lr-,   b-lb-,
+b-trc-,  b-tbc-,  b-tlc-,
+b-rbc-,  b-rlc-,  b-rtc-,
+b-blc-,  b-btc-,  b-brc-,
+b-ltc-,  b-lrc-,  b-lbc-,
+b-c- {
+    display: inline-block;
+    overflow: visible;
+
+    min-width:  0;
+    max-width:  0;
+    /**/width:  0;
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+}
+
+
+
+
+
+
+
+
+/* Notes */
+syntax-note- {
+    display: block;
+    margin-top: calc(0px - var(--syntax-margin) + var(--syntax-note-margin-top));
+    margin-bottom: var(--syntax-note-margin-bottom);
+}
+syntax-note- > *:link,
+syntax-note- > *:visited,
+syntax-note- > *:hover,
+syntax-note- > *,
+syntax-note- {
+    color: var(--fg-hidden);
+}

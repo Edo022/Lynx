@@ -84,9 +84,9 @@
     All signed integral types use the Two's Complement to represent negative numbers.<br>
     Positive numbers and <code><k->0</k-></code> use the corresponding binary value in both signed and unsigned integral types.
 </p>
-<example->
-    <fill->
-        <code- style="border-top-left-radius: var(--code-decoration-r);"><scroll->
+<example2->
+    <fill2->
+        <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c->  1              31</c->
                                             <c->sign           value</c->
                                             <c->├┬───────────────┴──────────────┐</c->  <t->int</t->
@@ -103,9 +103,9 @@
                                             <c->value</c->
             <c->┌────────────────────────────────┴──────────────────────────────┐</c->  <t->ulong</t->
             <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 <p>
     //TODO GL_EXT_shader_explicit_arithmetic_types_int64
 </p>
@@ -124,9 +124,9 @@
     Positive and negative <code><k->inf</k-></code>, <code><k->nan</k-></code> and signed <code><k->0</k-></code> are all supported.<br>
     <code><k->+0</k-></code> and <code><k->-0</k-></code> are equal.
 </p>
-<example->
-    <fill->
-        <code- style="border-top-left-radius: var(--code-decoration-r);"><scroll->
+<example2->
+    <fill2->
+        <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c-> 1      8          23</c->
                                             <c->sign exponent   mantissa</c->
                                             <c->├┬───┴──┬───────────┴───────────┐</c->  <t->float</t->
@@ -148,9 +148,9 @@
             <c->1111111110000000000000000000000000000000000000000000000000000000</c->   <k->-inf</k->
             <c->011111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->   <k->nan</k->
             <c->111111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->   <k->nan</k->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 <p>
     <code><k->inf</k-></code> values are generated as required by the standard.<br>
     <code><k->nan</k-></code> values are not generated for consistency and performance reasons.
@@ -166,18 +166,18 @@
     The <b>Boolean type</b> is used to <b>represend conditions</b>.<br>
     Its value can be <code><k->true</k-></code> or <code><k->false</k-></code>.
 </p>
-<example->
-    <fill->
-        <code- style="border-top-left-radius: var(--code-decoration-r);"><scroll->
+<example2->
+    <fill2->
+        <div style="border-top-left-radius: var(--code-decoration-r);">
                             <c->32</c->
                             <c->value</c->
             <c->┌───────────────┴───────────────┐</c->  <t->bool</t->
             <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
             <c->00000000000000000000000000000001</c->   <k->true</k->
             <c->00000000000000000000000000000000</c->   <k->false</k->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 <p>
     Booleans purposely waste 31 bits for performance reasons.<br>
     Smaller types require additional bitwise operations and expensive conversions between the CPU and GPU data.
@@ -197,7 +197,7 @@
 <syntax->
     <left->
         <label-></label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -257,11 +257,11 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </left->
     <right->
         <label->Element declaration syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -297,13 +297,13 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </right->
 </syntax->
 <syntax->
     <fill->
         <label- class="nobefore">Referencing syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -311,7 +311,7 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
 <p>
@@ -321,22 +321,22 @@
     Empty enums, <a href="#unnamed-types">unnamed enums</a> and trailing element <code>;</code> are allowed.
 </p>
 
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example 1</label2->
+        <div>
             <w->enum</w-> <t->e</t-> : <t->int</t-> {
                 a, b;              <c->// Ok, a = 0, b = 1</c->
                 c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
                 d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
-<example->
-    <fill->
-        <label->2</label->
-        <code-><scroll->
+        </div>
+    </fill2->
+</example2->
+<example2->
+    <fill2->
+        <label2->Example 2</label2->
+        <div>
             <w->enum</w-> <t->c</t-> : <t->double</t-> {
                 pi = <k->3.14159</k->;      <c->// Ok</c->
                 e  = <k->2.71828</k->;      <c->// Ok</c->
@@ -348,19 +348,19 @@
                 <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
                 <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 <p>
     By default, all enums behave exactly as their base <a href="#types">types</a>, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
     When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
     Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
 </p>
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
                 pi  = <k->3.14159</k->;
                 e   = <k->2.71828</k->;
@@ -372,9 +372,9 @@
                 <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
                 <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->
@@ -400,7 +400,7 @@
 <syntax->
     <left->
         <label- class="nobefore">Declaration syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -442,11 +442,11 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </left->
     <right->
         <label->Member declaration syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -476,13 +476,13 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </right->
 </syntax->
 <syntax->
     <fill->
         <label- class="nobefore">Referencing syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -490,14 +490,14 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
 
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <w->struct</w-> <t->idk</t-> {
                 <t->uint</t-> a, b;        <c->// Ok</c->
                 <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
@@ -510,9 +510,9 @@
                 var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
                 <c->//var.b = var.c[0];     </c-><ce->// Error, var.c is uninitialized</ce->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 <p>
     See
     <a href="#primitive-types">Primitive types</a>,
@@ -545,19 +545,19 @@
 <syntax->
     <fill->
         <label- class="nobefore">Declaration syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><c->none</c-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
 <syntax->
     <fill->
         <label- class="nobefore">Referencing syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -593,20 +593,20 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label->
+        <div>
             <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
                 <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
                 <w->else</w-> <w->return</w-> n[<k->0</k->];
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->
@@ -629,19 +629,19 @@
 <syntax->
     <fill->
         <label- class="nobefore">Declaration syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><c->none</c-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
 <syntax->
     <fill->
         <label- class="nobefore">Referencing syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td></td>
@@ -671,13 +671,13 @@
                     <td></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             (<t->int</t->, <t->int</t->) <f->func</f->((<t->uint</t->, <t->bool</t->, <t->float</t->) <a->a</a->, <t->uint</t-> <a->b</a->){
                 <w->return</w-> (<k->0</k->, a[<k->1</k->] ? a[<k->0</k->] : b * a[<k->2</k->]);
             };
@@ -685,9 +685,9 @@
             <t->void</t-> <f->main</f->(){
                 (<t->int</t->) n = (<f->func</f->((<k->9</k->, <k->true</k->, <k->0.5</k->), <k->5</k->)[<k->1</k->]);
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->
@@ -723,19 +723,19 @@
     Passing <code><t->typename</t-></code> to a <a href="#templates">template</a> parameter is allowed.<br>
     <code><t->typename</t-></code> is a valid <code><t->typename</t-></code> <a href="#values">value</a>.
 </p>
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
             <c->t1 t2 = int;</c->              <ce->// Error, typename cannot be used to declare symbols</ce->
 
             <t->auto</t-> <f->main</f->(){
                 <w->return</w-> <t->typename</t->(<t->typeof</t->(<f->main</f->)) <f->==</f-> <k->t1</k->;         <c->// Ok, returns false</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 //TODO
 //TODO
@@ -770,7 +770,7 @@
 <syntax->
     <fill->
         <label-></label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -784,13 +784,13 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label-></label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example</label2->
+        <div>
             <k->struct</k-> s {
                 <t->double</t-> a;
                 <t->float</t->  b;
@@ -810,9 +810,9 @@
 
                 <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 <p>
     //TODO add array examples
     //TODO add compile time errors examples
@@ -1270,7 +1270,7 @@
 <syntax->
     <fill->
         <label- class="nobefore">Referencing syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr->
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -1278,13 +1278,13 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr->
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example 1</label2->
+        <div>
             <t->auto</t-> <f->func</f->(){
                 <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
             }
@@ -1295,18 +1295,18 @@
                 <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
                 <c->// No return statement, main has type void</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
-<example->
-    <fill->
-        <label->2</label->
-        <code-><scroll->
+        </div>
+    </fill2->
+</example2->
+<example2->
+    <fill2->
+        <label2->Example 2</label2->
+        <div>
             <t->auto</t-> a <f->=</f-> <t->int</t->[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
             <t->auto</t-> <t->const</t-> b <f->=</f-> <f->!</f-><k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->
@@ -1331,7 +1331,7 @@
 <syntax->
     <fill->
         <label- class="nobefore">Referencing syntax</label->
-        <code-><scroll->
+        <div>
             <table>
                 <tr>
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
@@ -1356,13 +1356,13 @@
                     <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
                 </tr>
             </table>
-        </scroll-></code->
+        </div>
     </fill->
 </syntax->
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example 1</label2->
+        <div>
             <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
             <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
@@ -1370,18 +1370,18 @@
                 <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
                 <t->baseof</t->(<k->a</k->) c = <k->a</k->[<k->0</k->];     <c->// c has type int</c->
             }
-        </scroll-></code->
-    </fill->
-</example->
-<example->
-    <fill->
-        <label->2</label->
-        <code-><scroll->
+        </div>
+    </fill2->
+</example2->
+<example2->
+    <fill2->
+        <label2->Example 2</label2->
+        <div>
             <c->//typeof(b) a;</c->  <ce->//Error, circular dependency</ce->
             <c->//typeof(a) b;</c->  <ce->//Error, circular dependency</ce->
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->
 
 
 <!--------------------------------------------------------------------->
@@ -1397,10 +1397,10 @@
     Elements of <a href="#enums">enums</a> and <a href="#structs">structs</a> can be <a href="#element-indexing">indexed</a> and <a href="#name-resolution">accessed</a> normally.<br>
     Defining an unnamed type without also declaring the <a href="#semantic-elements">symbol</a> is not allowed.
 </p>
-<example->
-    <fill->
-        <label->1</label->
-        <code-><scroll->
+<example2->
+    <fill2->
+        <label2->Example 1</label2->
+        <div>
             <w->strict enum</w-> : <t->bool</t-> {
                 on = <k->true</k->;
                 off = <k->false</k->;
@@ -1409,13 +1409,13 @@
             <t->void</t-> <f->main</f->(){
                 grasses = <t->typeof</t->(grasses).<k->on</k->;
             }
-        </scroll-></code->
-    </fill->
-</example->
-<example->
-    <fill->
-        <label->2</label->
-        <code-><scroll->
+        </div>
+    </fill2->
+</example2->
+<example2->
+    <fill2->
+        <label2->Example 2</label2->
+        <div>
             <w->struct</w-> {
                 <t->uint</t-> a, b;
                 <w->enum</w-> : <t->int</t-> {
@@ -1435,6 +1435,6 @@
 
                 <t->typeof</t->(var.a) a <f->=</f-> <k->0</k->;
             }
-        </scroll-></code->
-    </fill->
-</example->
+        </div>
+    </fill2->
+</example2->

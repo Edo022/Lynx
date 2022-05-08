@@ -6,9 +6,6 @@
         --line-h:             2.6ch;
         --wide-line-h:        3.5ch;
         --code-line-h:        2.5ch;
-        --syntax-line-h:      4ch;
-        --syntax-arrow-w:     4ch;
-        --syntax-arrow-margin:8px; /* must be in pixels as it is used by js */
 
         --font-size-xx-small: 8px;
         --font-size-x-small:  12px;
@@ -27,12 +24,7 @@
         --main-padding-l:          2vw;
         --main-padding-r:          4vw;
         --slider-w:                2vw;
-        --logo-size:               50vw;
-        --split-syntax-distance:   0.5vw;
-        --code-h-margin:           20px;
-        --lable-h-padding:         20px;
-        --lable-v-padding:         6px;
-        --lable-h:                 2.6ch;/*
+        --logo-size:               50vw;/*
     }
 
     Color { */
@@ -48,15 +40,11 @@
         --fg-soft-link:     hsl(212, 20%, 79%);
         --fg-separator:     hsl(213, 12%, 18%);
         --fg-text:          hsl(0, 0%, 75%);
-        --fg-lable-active:  hsl(0, 0%, 49%);
         --fg-hidden:        hsl(0, 0%, 33%);
-        --fg-arrow:         hsla(212, 14%, 24%, 100%);
 
         --bd-elm:           hsl(212, 14%, 20%);
         --bd-elm2:          hsl(210, 41%, 54%);
         --bd-elm3:          hsl(281, 41%, 54%);
-        --bd-elm4:          hsl(280, 5%, 76%);
-        --bd-elm5:          hsl(120, 40%, 40%);
         --bd-code:          hsl(212, 14%, 24%);
         --bd-table-cell:    hsl(213, 9%, 10%);
         --bd-table-header:  hsl(213, 9%, 15%);/*
@@ -106,6 +94,6 @@
 
     .nowrap { white-space: nowrap !important; }
     .wrap   { white-space: normal !important; }
-    .nobefore::before { content: "" !important; }
-    .noafter::after   { content: "" !important; }/*
+    .nobefore::before { content: none !important; }
+    .noafter::after   { content: none !important; }/*
 } */
