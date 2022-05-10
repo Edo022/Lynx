@@ -169,7 +169,7 @@
     <indexh-></indexh->
 </index->
     </left->
-    <right- id="main-right" class="hide-scrollbar">
+    <right- id="main-right" class="hide-scrollbar"><div style="overflow: hidden; display: flex; flex-direction: column; max-width: 100%;">
         <!--------------------------------------------------------------------->
         <!-- Logo -->
         <!--------------------------------------------------------------------->
@@ -663,42 +663,273 @@
     Certain <b>semantic elements</b> can be <b>referenced</b> to retrieve their value or obtain additional informations. These elements are called <b>symbols</b>.<br>
     Symbols are referenced through their <a href="#name-resolution">name</a>, or using the <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a> or <a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a> specifiers.<br>
     <a href="#unnamed-types">Unnamed types</a> are also symbols.
+    //FIXME
 </p>
-<ul>
-    <li>Unreferenceable elements</li>
+<style>
+    .semantic-element-list {
+        margin-left: 4ch;
+        margin-left: 0;
+        overflow-x: auto;
+        min-width: 100%;
+        max-width: 100%;
+        /**/width: 100%;
+    }
+    .semantic-element-list ul {
+        margin-left: 4ch;
+        min-width: 100%;
+        max-width: 100%;
+        /**/width: 100%;
+    }
+    .semantic-element-list li {
+        white-space: nowrap;
+        min-width: 100%;
+        max-width: 100%;
+        /**/width: 100%;
+    }
+    .semantic-element-list li > *:nth-child(1) {
+        display: inline-block;
+        min-width: 30ch;
+        max-width: 30ch;
+        /**/width: 30ch;
+    }
+    .semantic-element-list li > *:nth-child(2) {
+        display: inline-block;
+        min-width: fit-content;
+        max-width: fit-content;
+        /**/width: fit-content;
+    }
+</style>
+<ul class="semantic-element-list">
+    <li>
+        <span>Semantic element</span>
+        <span>-</span>
+    </li>
     <ul>
-        <li><a href="#literals">Literals</a> - Generates an <a href="#inline-values">inline value</a> of a <a href="#primitive-types">primitive types</a></li>
-        <li><a href="#constructors">Constructor</a> - Generates an <a href="#inline-values">inline value</a> of any <a href="#types">type</a></li>
-        <li><a href="#statements">Statements</a> - Defines a runtime instruction</li>
-        <li><a href="#inline-glsl">Inline GLSL</a> - Allows GLSL 4.60 code to be used from Lux</li>
-        <li><a href="#inline-glsl">Inline C++</a> - Allows C++20 code to be used from Umbra</li>
-    </ul><br>
-    <li>Symbols</li>
-    <ul>
-        <li>Explicitly declared elements</li>
+        <li>
+            <span>Declaration</span>
+            <span>Defines the interface and behaviour of a user-defined semantic element.<br></span>
+        </li>
         <ul>
-            <li><a href="#variables">Variable declaration</a> - Declares one or more <a href="#variables">variables</a> that can be used to store <a href="#values">values</a></li>
-            <li><a href="#namespaces">Namespace declaration</a> - Declares a named <a href="#scopes">scope</a></li>
-            <li><a href="#structs">Struct declaration</a> - Declares a <a href="#structs">struct</a> that can group <a href="#variables">variables</a> of different <a href="#types">types</a></li>
-            <li><a href="#structs">Struct member declaration</a></li>
-            <li><a href="#enums">Enum declaration</a> - Declares an <a href="#enums">enum</a> that can group constants of the same <a href="#types">type</a></li>
-            <li><a href="#enums">Enum element declaration</a></li>
-            <li><a href="#functions">Function declaration</a> - Declares a <a href="#functions">function</a> that can be called to generate an output <a href="#values">value</a> based on multiple inputs</li>
-            <li><a href="#functions">Function parameter declaration</a> - Declares an input/output <a href="#values">value</a> for a <a href="#functions">function</a></li>
-            <li><a href="#templates">Template declration</a> - Declares a <a href="#templates">template</a> that can generate <a href="#functions">functions</a> and <a href="#structs">structs</a> based on the types used in its <a href="#function-definitions">parameters</a> or <a href="#local-names">local name</a></li>
-            <li><a href="#symbol-aliases">Symbol alias declaration</a> - Declares a symbol that can be used as an alternative <a href="#name-resolution">name</a> for another symbol</li>
-        </ul><br>
-        <li>Implicitly declared elements</li>
-        <ul>
-            <li><a href="#temporary-variables">Temporary variable</a> - <a href="#functions">Function</a> <a href="#scopes">scoped</a> <a href="#variables">variable</a> that can store a <a href="#values">value</a> of any <a href="#types">type</a></li>
-            <li><a href="#function-templates">Generated function</a> - <a href="#functions">Function</a> generated by a <a href="#function-templates">function template</a></li>
-            <li><a href="#struct-templates">Generated struct</a> - <a href="#structs">Struct</a> generated by a <a href="#struct-templates">struct template</a></li>
-            <li><a href="#arrays">Array types</a> - </li>
-            <li><a href="#arrays">Array element</a> - Element of an <a href="#arrays">array</a> type <a href="#values">value</a></li>
-            <li><a href="#tuples">Tuple types</a> - </li>
-            <li><a href="#tuples">Tuple element</a> - Element of a <a href="#tuples">tuple</a> type <a href="#values">value</a></li>
+            <li>
+                <span><a href="#namespaces">Namespace declaration</a></span>
+                <span>Defines a named <a href="#scopes">scope</a>.</span>
+            </li>
+            <li>
+                <span><a href="#enums">Enum declaration</a></span>
+                <span>Groups <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
+            </li>
+            <li>
+                <span><a href="#structs">Struct declaration</a></span>
+                <span>Groups <a href="#variables">variables</a> of different <a href="#types">types</a>.</span>
+            </li>
+            <li>
+                <span><a href="#functions">Function declaration</a></span>
+                <span>A <a href="#routines">routine</a> that requires parentheses to be <a href="#function-calls">called</a>.</span>
+            </li>
+            <li>
+                <span><a href="#operators">Operator declaration</a></span>
+                <span>A <a href="#routines">routine</a> that doesn't require parentheses to be <a href="#operator-calls">called</a> and can use multiple symbolic or alphanumeric <a href="#identifiers">identifiers</a>.</span>
+            </li>
+            <li>
+                <span><a href="#templates">Template declaration</a></span>
+                <span>Generates declarations of semantic elements.</span>
+            </li>
+            <ul>
+                <li>
+                    <span><a href="#">Enum template</a></span>
+                    <span>Generates <a href="#enums">enums</a> based on the explicit <a href="#templates">template</a> arguments.</span>
+                </li><!-- TODO -->
+                <li>
+                    <span><a href="#">Struct template</a></span>
+                    <span>Generates <a href="#structs">structs</a> based on the explicit <a href="#templates">template</a> arguments.</span>
+                </li><!-- TODO -->
+                <li>
+                    <span><a href="#">Function template</a></span>
+                    <span>Generates <a href="#functions">functions</a> based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> of the <a href="#routine-arguments">argumets</a> used in the <a href="#function-calls">routine call</a>.<br></span>
+                </li><!-- TODO -->
+                <li>
+                    <span><a href="#">Operator template</a></span>
+                    <span>Generates <a href="#operators">operators</a> based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> of the <a href="#routine-arguments">argumets</a> used in the <a href="#operator-calls">routine call</a>.<br></span>
+                </li><!-- TODO -->
+            </ul>
+            <li>
+                <span><a href="#symbol-aliases">Symbol alias declaration</a></span>
+                <span>Defines an alternative <a href="#symbol-paths">path</a> for a <a href="#symbols">symbol</a>.</span>
+            </li> <!-- TODO -->
+            <li>
+                <span><a href="#variables">Variable declaration</a></span>
+                <span>Identifies one or more named memory locations that can store <a href="#values">values</a>.</span>
+            </li>
         </ul>
+        <li>
+            <span><a href="#statements">Statement</a></span>
+            <span>Instructions executed in runtime when a routine is called</span>
+        </li>
+        <ul>
+            <li>
+                <span><a href="#if-statement"><code><w->if</w-></code> statement</a></span>
+                <span>Executes a <a href="#statements">statement</a> if its condition evaluates to <a href="#boolean-type"><code><k->true</k-></code></a>.</span>
+            </li>
+            <li>
+                <span><a href="#match-statement"><code><w->match</w-></code> statement</a></span>
+                <span>Executes <a href="#statements">statements</a> based on the value of an <a href="#expressions">expression</a>.</span>
+            </li>
+            <li>
+                <span><a href="#while-loops"><code><w->while</w-></code> loop</a></span>
+                <span>Executes a <a href="#statements">statement</a> until its condition evaluates to <a href="#boolean-type"><code><k->false</k-></code></a>.</span>
+            </li>
+            <li>
+                <span><a href="#for-loops"><code><w->for</w-></code> loop</a></span>
+                <span>Executes a <a href="#statements">statement</a> a fixed amount of times.</span>
+            </li>
+            <li>
+                <span><a href="#once-statement"><code><w->once</w-></code> statement</a></span>
+                <span>Executes a <a href="#statements">statement</a> during the first iteration of the innermost enclosing <a href="#iteration">loop</a>.</span>
+            </li>
+            <li>
+                <span><a href="#then-statement"><code><w->then</w-></code> statement</a></span>
+                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> has not stopped through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and has completed at least one iteration.</span>
+            </li>
+            <li>
+                <span><a href="#break-statement"><code><w->break</w-></code> statement</a></span>
+                <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
+            </li>
+            <li>
+                <span><a href="#continue-statement"><code><w->continue</w-></code> statement</a></span>
+                <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
+            </li>
+            <li>
+                <span><a href="#else-statement"><code><w->else</w-></code> statement</a></span>
+                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> has not completed any iteration</a>.</span>
+            </li>
+            <li>
+                <span><a href="#return-statement"><code><w->return</w-></code> statement</a></span>
+                <span>Returns the flow control to the caller <a href="#routines">routine</a>.</span>
+            </li>
+            <li>
+                <span><a href="#defer-statement"><code><w->defer</w-></code> statement</a></span>
+                <span>Executes a <a href="#statements">statement</a> immediatly before the first <a href="#return-statement"><code><w->return</w-></code> statement</a> is executed.</span>
+            </li>
+            <li>
+                <span><a href="#expressions">Expression statement</a></span>
+                <span>Evaluates an <a href="#expresisons">expression</a>.</span>
+            </li>
+            <li>
+                <span><a href="#unnamed-scopes">Unnamed scope</a></span>
+                <span>Groups multiple <a href="#statements">statements</a> in one.</span>
+            </li>
+            <li>
+                <span><a href="#empty-statement">Empty statement</a></span>
+                <span>Does nothing.</span>
+            </li>
+            <li>
+                <span><a href="#inline-glsl">Inline GLSL</a></span>
+                <span>Allows GLSL 4.60 code to be used from within Lux.</span>
+            </li>
+            <li>
+                <span><a href="#inline-cpp">Inline C++</a></span>
+                <span>Allows C++20 code to be used from within Umbra.</span>
+            </li>
+        </ul>
+        <li>
+            <span><a href="#statements">Expression</a></span>
+            <span>Generates a value when evaluated</span>
+        </li>
+        <ul>
+            <li>
+                <span><a href="#literals">Literal</a></span>
+                <span>Generates a <a href="#inline-values">inline value</a> of a <a href="#primitive-types">primitive type</a>.</span>
+            </li>
+            <li>
+                <span><a href="#constructors">Constructor</a></span>
+                <span>Generates an <a href="#inline-values">inline value</a> of any <a href="#types">type</a>.</span>
+            </li>
+            <li>
+                <span><a href="#variables">Variable</a></span>
+                <span>Accesses the value stored in a previously declared <a href="#variables">variable</a>.</span>
+            </li>
+            <li>
+                <span><a href="#temporary-variables">Temporary variable</a></span>
+                <span>Accesses the value stored in a <a href="#temporary-variables">temporary variable</a>.</span>
+            </li>
+            <li>
+                <span><a href="#function-calls">Function call</a></span>
+                <span>Generates a value by calling a <a href="#functions">function</a> or <a href="#templates">function template</a>.</span>
+            </li>
+            <li>
+                <span><a href="#operator-calls">Operator call</a></span>
+                <span>Generates a value by calling an <a href="#operators">operator</a> or <a href="#templates">operator template</a>.</span>
+            </li>
+            <li>
+                <span><a href="#try-expression"><code><w->try</w-></code> expression</a></span>
+                <span>Compiles a portion of code. Evaluates to <a href="#boolean-type"><code><k->true</k-></code></a> if the code doesn't generate <a href="#compilation">syntactic</a> or <a href="#compilation">semantic errors</a>.</span>
+            </li><!-- TODO -->
+        </ul>
+        <li>
+            <span><a href="#"><code><w->Import</w-></code> directive</a></span>
+            <span>Imports <a href="#symbols">symbols</a> from a <a href="#modules">module</a>.</span>
+        </li>
+        <li>
+            <span><a href="#"><code><w->Export</w-></code> directive</a></span>
+            <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
+        </li>
     </ul>
+    <br>
+    <li>
+        <span>Semantic sub-element</span>
+        <span>Parts of complex semantic elements that are split in order to define better syntax rules</span>
+    </li>
+    <ul>
+        <li>
+            <span><a href="#templates">Template</a> signature</span>
+            <span>Defines the name and parameters of a <a href="#templates">template</a></span>
+        </li>
+        <li>
+            <span><a href="#template-constraints">Template constraint</a></span>
+            <span>Defines the <a href="#template-constraints">constraint</a> that controls when the subsequent element body is available</span>
+        </li>
+        <li>
+            <span><a href="#functions">Function</a> signature</span>
+            <span>Defines the name, <a href="#return-statement">return type</a> and <a href="#routine-parameters">parameters</a> of a <a href="#functions">function</a></span>
+        </li>
+        <li>
+            <span><a href="#operators">Operator</a> signature</span>
+            <span>Defines the names, <a href="#return-statement">return type</a>, <a href="#routine-parameters">parameters</a> and priority of an <a href="#operators">operator</a></span>
+        </li>
+        <li>
+            <span><a href="#routines">Routine</a> body</span>
+            <span>Contains the <a href="#statements">statements</a> and the children <a href="#symbols">symbols</a> of a <a href="#routines">routine</a></span>
+        </li>
+        <li>
+            <span><a href="#enums">Enum</a> signature</span>
+            <span>Defines the name of an <a href="#enums">enum</a> and the <a href="#primitive-types">primitive type</a> it derives from.</span>
+        </li>
+        <li>
+            <span><a href="#enums">Enum</a> body</span>
+            <span>Contains the <a href="#enums">enum</a> elements and other children <a href="#symbols">symbols</a>.</span>
+        </li>
+        <li>
+            <span><a href="#enums">Enum</a> element declaration</span>
+            <span>Defines one or more <a href="#enums">enum</a> elements and their values.</span>
+        </li>
+        <li>
+            <span><a href="#structs">Struct</a> signature</span>
+            <span>Defines the name of a <a href="#structs">struct</a>.</span>
+        </li>
+        <li>
+            <span><a href="#structs">Struct</a> body</span>
+            <span>Contains the <a href="#structs">struct</a> members and other children <a href="#symbols">symbols</a>.</span>
+        </li>
+        <li>
+            <span><a href="#structs">Struct</a> member declaration</span>
+            <span>Defines one ore more <a href="#structs">struct</a> members.</span>
+        </li>
+        <li>
+            <span><a href="#name-resolution">Symbol</a> path</span>
+            <span>References a <a href="#symbols">symbol</a></span>
+        </li>
+    </ul>
+    <br>
 </ul>
 <!--------------------------------------------------------------------->
 <!-- Scopes -->
@@ -717,35 +948,26 @@
         <tr><th class="medium"><div><span>Scope / Can contain</span></div></th></tr>
         <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#modules"> Module </a></div></th></tr>
         <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#namespaces"> Namespace </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#enums"> Enum </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates"> Enum<br>template </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#structs"> Struct </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates"> Struct<br>template </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#functions"> Function </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates"> Function<br>template</a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#opertors"> Operator </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#templates"> Operator<br>template</a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#enums"> Enum<span class="hidden">&nbsp;*</span> </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#structs"> Struct<span class="hidden">&nbsp;*</span> </a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#functions"> Function<span class="hidden">&nbsp;*</span></a></div></th></tr>
+        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#opertors"> Operator<span class="hidden">&nbsp;*</span></a></div></th></tr>
         <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed<br>scope </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#statements"> Statement </a></div></th></tr>
     </table></div>
     <div class="table-container scope-table-right-container"><table class="scope-table-right">
         <tr>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#namespaces"> Namespace </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#enums"> Enum </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates"> Enum<br>template </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#structs"> Struct </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates"> Struct<br>template </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#functions"> Function </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates"> Function<br>template</a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#operators"> Operator </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#templates"> Operator<br>template</a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#enums"> Enum<span class="hidden">&nbsp;*</span> </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#structs"> Struct<span class="hidden">&nbsp;*</span> </a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#functions"> Function<span class="hidden">&nbsp;*</span></a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#operators"> Operator<span class="hidden">&nbsp;*</span></a></div></th>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#unnamed-scopes">Unnamed<br>scope </a></div></th>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#statements"> Statement </a></div></th>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#variables"> Variable </a></div></th>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#symbol-aliases">Symbol<br>alias </a></div></th>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#enums"> Enum<br>member </a></div></th>
             <th><div><a style="color: var(--fg-text)" class="medium" href="#structs"> Struct<br>member </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#routines"> Routine<br>parameter</a></div></th>
+            <th><div><a style="color: var(--fg-text)" class="medium" href="#routines"> Routine<br>parameter </a></div></th>
         </tr>
         <tr>
             <td class="scope-table-y"><div></div></td>
@@ -753,10 +975,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
@@ -769,10 +987,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
-            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
             <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
             <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
             <td class="scope-table-n"><div></div></td>
@@ -787,28 +1001,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-        </tr>
-        <tr>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
@@ -823,28 +1015,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-        </tr>
-        <tr>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
@@ -859,10 +1029,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
@@ -871,16 +1037,12 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div>Yes<span class="hidden" style="min-width: fit-content; max-width: fit-content;">&nbsp;**</span></div></td>
         </tr>
         <tr>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
@@ -889,70 +1051,12 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
+            <td class="scope-table-y"><div>Yes<span class="hidden" style="min-width: fit-content; max-width: fit-content;">&nbsp;**</span></div></td>
         </tr>
         <tr>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-        </tr>
-        <tr>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-        </tr>
-        <tr>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-        </tr>
-        <tr>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
@@ -965,6 +1069,10 @@
         </tr>
     </table></div>
 </div>
+<syntax-note->
+    * Also applies to the respective <a href="templates">template</a>.<br>
+    ** Declared in the routine signature, but part of the routine scope.
+</syntax-note->
 <!--------------------------------------------------------------------->
 <!-- Name resolution -->
 <!--------------------------------------------------------------------->
@@ -4407,33 +4515,29 @@
 <!-- Syntaxes -->
 <!--------------------------------------------------------------------->
 <h1 id="syntaxes"></h1>
-<!--------------------------------------------------------------------->
-<!-- Symbol declarations -->
-<!--------------------------------------------------------------------->
-<h1 id="symbol-declarations"></h1>
-<p>
-    This section summarizes all the syntaxes used to declare user-defined symbols.<br>
-    <!-- Also functions as source to copy paste syntaxes around with JS -->
-    <!-- <div class="ID"> is replaced with the syntax of id ID -->
-</p>
 <syntax2->
     <fill2->
-        <label2-><a href="#variables">Module</a></label2->
+        <label2- id="syntax--module"><a href="#modules">Module</a></label2->
         <table>
             <tr>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
             </tr>
             <tr>
-                <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->import directive</elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            </tr>
+            <tr>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->export directive</elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            </tr>
+            <tr>
+                <td><b-rtc-></b-rtc-></td>
                 <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            </tr>
-            <tr>
-                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-tlc-></b-tlc-></td>
+                <td><b-tl-></b-tl-></td>
             </tr>
         </table>
     </fill2->
@@ -4452,6 +4556,153 @@
     <a href="#syntax--variable-declaration"> variable</a> or a
     <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
 </syntax-note->
+<syntax2->
+    <fill2->
+        <label2- id="syntax--import-directive"><a href="#modules">Import directive</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><code>&lt;</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->module name</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>&gt;</code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code><w->include</w-></code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-br-></b-br-></td>
+                <td><code>*</code></td>
+                <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-br-></b-br-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->from</w-></code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>"</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->path/to/module</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>"</code></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+                <td><code><w->import</w-></code></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+                <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+<syntax2->
+    <fill2->
+        <label2- id="syntax--export-directive"><a href="#modules">Export directive</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><code>*</code></td>
+                <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-br-></b-br-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->export</w-></code></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+                <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+<!--------------------------------------------------------------------->
+<!-- Symbol declarations -->
+<!--------------------------------------------------------------------->
+<h1 id="symbol-declarations"></h1>
+<p>
+    This section summarizes all the syntaxes used to declare user-defined symbols.<br>
+</p>
 <syntax2->
     <fill2->
         <label2- id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label2->
@@ -4518,9 +4769,9 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
-                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-blc-></b-blc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -4534,16 +4785,154 @@
                 <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
                 <td><code>:</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm2->element declaration</elm2-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <label2- id="syntax--enum-template-declaration"><a href="#templates">Enum template declaration</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-blc-></b-blc-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->template signature</elm3-></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><code><w->strict</w-></code></td>
+                <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+                <td><code><w->enum</w-></code></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+                <td><code>:</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+                <td><code><w->when</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -4585,7 +4974,7 @@
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>=</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>,</code></td>
@@ -4625,9 +5014,9 @@
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lbc-></b-lbc-></td>
                 <td></td>
-                <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
-                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-blc-></b-blc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -4638,13 +5027,121 @@
                 <td><elm->name</elm-></td>
                 <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
                 <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+           <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm2->element declaration</elm2-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <label2- id="syntax--struct-template-declaration"><a href="#templates">Struct template declaration</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-rbc-></b-rbc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-blc-></b-blc-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->template signature</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->struct</w-></code></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+                <td><code><w->when</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -4673,7 +5170,7 @@
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-><b-br-></b-br-></td>
                 <td><elm->name</elm-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
@@ -4719,13 +5216,13 @@
                 <td><code>{</code></td>
                 <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
+                <td><b-lbc-></b-lbc-><b-lr-></b-lr-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
                 <td><elm->name</elm-></td>
                 <td><b-lr-></b-lr-></td>
@@ -4738,9 +5235,69 @@
                 <td></td>
                 <td><b-btc-></b-btc-><b-rtc-></b-rtc-></td>
                 <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
-                <td><b-tl-></b-tl-><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <label2- id="syntax--function-template-declaration"><a href="#functions">Function template declaration</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-><b-lr-></b-lr-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-br-></b-br-></td>
+                <td><elm2->parameter declaration</elm2-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td><b-btc-></b-btc-><b-rtc-></b-rtc-></td>
+                <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td></td>
@@ -4773,28 +5330,44 @@
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-br-></b-br-><b-lr-></b-lr-></td>
-                <td><code>{</code></td>
-                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-><b-rtc-></b-rtc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-tbc-></b-tbc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-btc-></b-btc-><b-blc-></b-blc-></td>
-                <td></td>
-                <td><b-btc-></b-btc-><b-rtc-></b-rtc-></td>
-                <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
-                <td><b-tl-></b-tl-><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+                <td><b-blc-></b-blc-><b-tr-></b-tr-><b-br-></b-br-></td>
+                <td><code><w->at</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->ulong<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
@@ -4809,9 +5382,17 @@
                 <td></td>
                 <td><b-btc-></b-btc-></td>
                 <td></td>
-                <td><b-rtc-></b-rtc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -4831,6 +5412,14 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     </left2->
@@ -4848,7 +5437,7 @@
                 <td><b-lr-></b-lr-></td>
                 <td><code>=</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lbc-></b-lbc-></td>
             </tr>
             <tr>
@@ -4892,6 +5481,14 @@
     <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
     ** At least one name and one parameter declaration
 </syntax-note->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO when is used in template constraints -->
+<!-- TODO not part of the definition -->
+<!-- TODO before the parameter list -->
 <syntax2->
     <fill2->
         <label2- id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label2->
@@ -4915,7 +5512,7 @@
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code><t->const</t-></code></td>
@@ -4924,7 +5521,7 @@
                 <td><b-lr-></b-lr-></td>
                 <td><code>=</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>,</code></td>
@@ -4972,7 +5569,7 @@
 </syntax2->
 <syntax2->
     <fill2->
-        <label2- id="syntax--template-declaration"><a href="#templates">Template declaration</a></label2->
+        <label2- id="syntax--template-signature-declaration"><a href="#templates">Template signature declaration</a></label2->
         <table>
             <tr>
                 <td></td>
@@ -4983,10 +5580,7 @@
                 <td></td>
                 <td><b-br-></b-br-></td>
                 <td><code>&gt;</code></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-                <td><elm3-><a href="#syntax--enum-declaration">enum declaration</a></elm3-></td>
-                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
@@ -4998,9 +5592,6 @@
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>,</code></td>
                 <td><b-lbc-></b-lbc-></td>
-                <td><b-tr-></b-tr-><b-tbc-></b-tbc-></td>
-                <td><elm3-><a href="#syntax--struct-declaration">struct declaration</a></elm3-></td>
-                <td><b-ltc-></b-ltc-><b-btc-></b-btc-></td>
             </tr>
             <tr>
                 <td></td>
@@ -5012,23 +5603,6 @@
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-tlc-></b-tlc-></td>
-                <td><b-tr-></b-tr-><b-tbc-></b-tbc-></td>
-                <td><elm3-><a href="#syntax--function-declaration">function declaration</a></elm3-></td>
-                <td><b-ltc-></b-ltc-><b-btc-></b-btc-></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-tr-></b-tr-></td>
-                <td><elm3-><a href="#syntax--operator-declaration">operator declaration</a></elm3-></td>
-                <td><b-ltc-></b-ltc-></td>
             </tr>
         </table>
     </fill2->
@@ -5045,36 +5619,39 @@
         <label2- id="syntax--statement-if"><a href="#if-statement">If statement</a></label2->
         <table>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
                 <td><b-lr-></b-lr-></td>
                 <td><code><w->if</w-></code></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>(</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->bool</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+<syntax2->
+    <left2->
+        <label2- id="syntax--statement-match"><a href="#match-statement">Match statement</a></label2->
+        <table>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->match</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>)</code></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->statement</elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><elm2->match case</elm2-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
@@ -5087,6 +5664,190 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </left2->
+    <right2->
+        <label2-><a href="#match-statement">Match case</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><code>:</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+            </tr>
+            <tr>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>to</code></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+                <td></td>
+            </tr>
+        </table>
+    </right2->
+</syntax2->
+<syntax2->
+    <fill2->
+        <label2- id="syntax--statement-else"><a href="#else-statement">Else statement</a></label2->
+        <table>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->else</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+<syntax2->
+    <fill2->
+        <label2- id="syntax--statement-for"><a href="#for-statement">For statement</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->U<sup>expr</sup></t-></elm-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->for</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->in</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->to</w-></code></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-ltc-></b-ltc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-ltc-></b-ltc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+<syntax2->
+    <fill2->
+        <label2- id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label2->
+        <table>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
                 <td></td>
                 <td></td>
                 <td><b-rtc-></b-rtc-></td>
@@ -5109,53 +5870,18 @@
 </syntax-note->
 <syntax2->
     <fill2->
-        <label2- id="syntax--statement-else"><a href="#else-statement">Else statement</a></label2->
+        <label2- id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label2->
         <table>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><code><w->else</w-></code></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
-                <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->statement</elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
-                <td><code>}</code></td>
+                <td><code>;</code></td>
                 <td><b-lr-></b-lr-></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-rtc-></b-rtc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tl-></b-tl-></td>
-                <td></td>
-                <td></td>
             </tr>
         </table>
     </fill2->
 </syntax2->
-<syntax-note->
-    * An
-    <a href="#syntax--enum-declaration">enum</a>,
-    <a href="#syntax--template-declaration">enum template</a>,
-    <a href="#syntax--struct-declaration">struct</a>,
-    <a href="#syntax--template-declaration">struct template</a>,
-    <a href="#syntax--variables">variable</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
-</syntax-note->
 <!--------------------------------------------------------------------->
 <!-- Expression elements -->
 <!--------------------------------------------------------------------->
@@ -5339,7 +6065,7 @@
             <!--------------------------------------------------------------------->
             <h1 id="complete-examples"></h1>
         </main-scroll->
-    </right->
+    </div></right->
     <!-- Page format -->
     <script src="Scripts/Setup/Fix.js"></script>
     <script src="Scripts/Setup/Syntax.js"></script>

@@ -72,6 +72,13 @@ var setup_syntax = {
         let arrow_d = 5;                                                                                                 //!^ remove 'px' suffix
         let r = 0.05, fix = 0.04;
 
+        let a = Array();
+            a['T'.charCodeAt(0)] = Math.PI * 1.5; //! y is inverted
+            a['R'.charCodeAt(0)] = Math.PI * 0.0;
+            a['B'.charCodeAt(0)] = Math.PI * 0.5; //! y is inverted
+            a['L'.charCodeAt(0)] = Math.PI * 1.0;
+        ;
+
 
         // For each tag
         let tags = [
@@ -80,7 +87,7 @@ var setup_syntax = {
             'C'
         ];
         for(let i = 0; i < tags.length; ++i) {
-            var children = Array.from(document.getElementsByTagName(`B-${ tags[i] }-`));
+            var children = document.getElementsByTagName(`B-${ tags[i] }-`);
 
 
             // For each element
@@ -105,11 +112,6 @@ var setup_syntax = {
                 // Arrows
                 else {
                     // Calculate coordinates
-                    let a = Array();
-                        a['T'.charCodeAt(0)] = Math.PI * 1.5; //! y is inverted
-                        a['R'.charCodeAt(0)] = Math.PI * 0.0;
-                        a['B'.charCodeAt(0)] = Math.PI * 0.5; //! y is inverted
-                        a['L'.charCodeAt(0)] = Math.PI * 1.0;
                     let
                         ax0 = Math.cos(a[f]) * (1 + fix), ax = ax0 / 2 + 0.5,
                         ay0 = Math.sin(a[f]) * (1 + fix), ay = ay0 / 2 + 0.5,
@@ -137,7 +139,8 @@ var setup_syntax = {
 
 
                 // Add HTML boilerplate
-                //FIXME this takes like 99% of the loading time for whatever reason
+                //FIXME this takes like 99% of the loading time for some reason
+                //FIXME front end moment
                 children[j].innerHTML =
                     `<svg width="${ w }" height="${ h }">` +
                         `<path d="${ s }"style="stroke: var(--syntax-fg-arrow); stroke-width: 2px; fill: none;"/>` +
@@ -197,7 +200,7 @@ var setup_syntax = {
     init : function() {
         setup_syntax.even_widths();
         setup_syntax.format_arrows();
-        setup_syntax.even_heights();
+        // setup_syntax.even_heights(); //FIXME dynamic layout
         setup_syntax.format_code();
     }
 }

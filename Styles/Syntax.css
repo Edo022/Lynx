@@ -15,9 +15,9 @@
     --syntax-label-padding-top: 0.5ch;
     --syntax-label-fg-active:   rgb(151, 145, 145);
 
-    --syntax-line-h:      42px;
-    --syntax-arrow-w:     42px; /* must be in pixels as it is used by js */
-    --syntax-arrow-margin:8px;  /* must be in pixels as it is used by js */
+    --syntax-line-h:      36px;
+    --syntax-arrow-w:     36px; /* must be in pixels as it is used by js */
+    --syntax-arrow-margin:6px;  /* must be in pixels as it is used by js */
     --syntax-fg-arrow:         hsla(212, 14%, 24%, 100%);
 
     --syntax-elm-margin:         4px;
@@ -127,6 +127,8 @@
 /* Containers */
 syntax2- {
     display: flex;
+    /* flex-direction: row; */  /*FIXME dynamic layout*/
+    flex-direction: column;     /*FIXME dynamic layout*/
 
     min-width:  100%;
     max-width:  100%;
@@ -153,18 +155,26 @@ syntax2- > fill2- {
     max-width: 100%;
     /**/width: 100%;
 }
-syntax2- > left2-  {
-    margin-right: calc(var(--syntax-spacing) / 2);
-    min-width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);
-    max-width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);
-    /**/width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);
-}
-syntax2- > right2- {
-    margin-left:  calc(var(--syntax-spacing) / 2);
-    min-width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);
-    max-width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);
-    /**/width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);
-}
+/* syntax2- > left2-  {                                                         //FIXME dynamic layout
+    margin-right: calc(var(--syntax-spacing) / 2);                              //FIXME dynamic layout
+    min-width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);           //FIXME dynamic layout
+    max-width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);           //FIXME dynamic layout
+        width: calc(var(--syntax-width) - var(--syntax-spacing) / 2);           //FIXME dynamic layout
+}                                                                               //FIXME dynamic layout
+syntax2- > right2- {                                                            //FIXME dynamic layout
+    margin-left:  calc(var(--syntax-spacing) / 2);                              //FIXME dynamic layout
+    min-width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);    //FIXME dynamic layout
+    max-width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);    //FIXME dynamic layout
+        width: calc(100% - var(--syntax-width) - var(--syntax-spacing) / 2);    //FIXME dynamic layout
+} */                                                                            /*FIXME dynamic layout*/
+
+syntax2- > right2-,         /*FIXME dynamic layout*/
+syntax2- > left2- {         /*FIXME dynamic layout*/
+    min-width: 100%;        /*FIXME dynamic layout*/
+    max-width: 100%;        /*FIXME dynamic layout*/
+    /**/width: 100%;        /*FIXME dynamic layout*/
+}                           /*FIXME dynamic layout*/
+
 
 
 
@@ -199,10 +209,14 @@ syntax2- > right2- > label2- {
     /**/height: var(--syntax-label-h);
     box-sizing: border-box;
 }
+syntax2- > fill2- > label2-:not(:first-child),
 syntax2- > left2- > label2-:not(:first-child),
 syntax2- > right2- > label2-:not(:first-child) {
     margin-top: var(--syntax-internal-margin);
 }
+syntax2- > right2- > label2-:first-child {      /*FIXME dynamic layout*/
+    margin-top: var(--syntax-internal-margin);  /*FIXME dynamic layout*/
+}                                               /*FIXME dynamic layout*/
 
 example2- > fill2- > label2-:after,
 syntax2- > fill2- > label2-:after,

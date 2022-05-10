@@ -50,8 +50,8 @@
     padding-right: 8px;
     min-height: 64px;
     max-height: 64px;
-    min-width:  96px;
-    max-width:  96px;
+    min-width:  128px;
+    max-width:  128px;
 }
 .scope-table-left th > div {
     min-width: 256px;

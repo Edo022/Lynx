@@ -6,33 +6,43 @@
 <h1 id="syntaxes"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Symbol declarations                                             -->
-<!--------------------------------------------------------------------->
-<h1 id="symbol-declarations"></h1>
-<p>
-    This section summarizes all the syntaxes used to declare user-defined symbols.<br>
-    <!-- Also functions as source to copy paste syntaxes around with JS -->
-    <!-- <div class="ID"> is replaced with the syntax of id ID          -->
-</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <syntax2->
     <fill2->
-        <label2-><a href="#variables">Module</a></label2->
+        <label2- id="syntax--module"><a href="#modules">Module</a></label2->
         <table>
             <tr>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
             </tr>
             <tr>
-                <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->import directive</elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            </tr>
+            <tr>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->export directive</elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            </tr>
+            <tr>
+                <td><b-rtc-></b-rtc-></td>
                 <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            </tr>
-            <tr>
-                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-tlc-></b-tlc-></td>
+                <td><b-tl-></b-tl-></td>
             </tr>
         </table>
     </fill2->
@@ -51,6 +61,235 @@
     <a href="#syntax--variable-declaration">    variable</a> or a
     <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
 </syntax-note->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2->
+    <fill2->
+        <label2- id="syntax--import-directive"><a href="#modules">Import directive</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><code>&lt;</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->module name</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>&gt;</code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code><w->include</w-></code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-br-></b-br-></td>
+                <td><code>*</code></td>
+                <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-br-></b-br-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->from</w-></code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>"</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->path/to/module</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>"</code></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+                <td><code><w->import</w-></code></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+                <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2->
+    <fill2->
+        <label2- id="syntax--export-directive"><a href="#modules">Export directive</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><code>*</code></td>
+                <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td><b-br-></b-br-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->export</w-></code></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+                <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Symbol declarations                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="symbol-declarations"></h1>
+<p>
+    This section summarizes all the syntaxes used to declare user-defined symbols.<br>
+</p>
 
 
 
@@ -148,9 +387,9 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
-                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-blc-></b-blc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -164,16 +403,154 @@
                 <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
                 <td><code>:</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm2->element declaration</elm2-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <label2- id="syntax--enum-template-declaration"><a href="#templates">Enum template declaration</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-blc-></b-blc-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->template signature</elm3-></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><code><w->strict</w-></code></td>
+                <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+                <td><code><w->enum</w-></code></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+                <td><code>:</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+                <td><code><w->when</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -215,7 +592,7 @@
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>=</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>,</code></td>
@@ -270,9 +647,9 @@
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lbc-></b-lbc-></td>
                 <td></td>
-                <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
-                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-blc-></b-blc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -283,13 +660,121 @@
                 <td><elm->name</elm-></td>
                 <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
                 <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+           <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm2->element declaration</elm2-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <label2- id="syntax--struct-template-declaration"><a href="#templates">Struct template declaration</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-rbc-></b-rbc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-blc-></b-blc-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->template signature</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->struct</w-></code></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+                <td><code><w->when</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -318,7 +803,7 @@
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-><b-br-></b-br-></td>
                 <td><elm->name</elm-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
@@ -379,13 +864,13 @@
                 <td><code>{</code></td>
                 <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
+                <td><b-lbc-></b-lbc-><b-lr-></b-lr-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
                 <td><elm->name</elm-></td>
                 <td><b-lr-></b-lr-></td>
@@ -398,9 +883,69 @@
                 <td></td>
                 <td><b-btc-></b-btc-><b-rtc-></b-rtc-></td>
                 <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
-                <td><b-tl-></b-tl-><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <label2- id="syntax--function-template-declaration"><a href="#functions">Function template declaration</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-><b-lr-></b-lr-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-br-></b-br-></td>
+                <td><elm2->parameter declaration</elm2-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td><b-btc-></b-btc-><b-rtc-></b-rtc-></td>
+                <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
             </tr>
             <tr>
                 <td></td>
@@ -433,28 +978,44 @@
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-br-></b-br-><b-lr-></b-lr-></td>
-                <td><code>{</code></td>
-                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                 <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-><b-rtc-></b-rtc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-tbc-></b-tbc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-                <td><b-btc-></b-btc-><b-blc-></b-blc-></td>
-                <td></td>
-                <td><b-btc-></b-btc-><b-rtc-></b-rtc-></td>
-                <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
-                <td><b-tl-></b-tl-><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+                <td><b-blc-></b-blc-><b-tr-></b-tr-><b-br-></b-br-></td>
+                <td><code><w->at</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->ulong<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
@@ -469,9 +1030,17 @@
                 <td></td>
                 <td><b-btc-></b-btc-></td>
                 <td></td>
-                <td><b-rtc-></b-rtc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3-><a href="#syntax--statement">statement</a></elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
                 <td></td>
                 <td></td>
             </tr>
@@ -491,6 +1060,14 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-></td>
+                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
+                <td><b-tl-></b-tl-></td>
+                <td></td>
+                <td></td>
             </tr>
         </table>
     </left2->
@@ -508,7 +1085,7 @@
                 <td><b-lr-></b-lr-></td>
                 <td><code>=</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lbc-></b-lbc-></td>
             </tr>
             <tr>
@@ -559,9 +1136,16 @@
 
 
 
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
+<!-- TODO at is a keyword -->
 
 
-
+<!-- TODO when is used in template constraints -->
+<!-- TODO not part of the definition -->
+<!-- TODO before the parameter list -->
 
 
 
@@ -591,7 +1175,7 @@
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>type</sup></elm-></td>
+                <td><elm-><t->T<sup>type</sup></t-></elm-></td>
                 <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code><t->const</t-></code></td>
@@ -600,7 +1184,7 @@
                 <td><b-lr-></b-lr-></td>
                 <td><code>=</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->T</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>,</code></td>
@@ -680,7 +1264,7 @@
 
 <syntax2->
     <fill2->
-        <label2- id="syntax--template-declaration"><a href="#templates">Template declaration</a></label2->
+        <label2- id="syntax--template-signature-declaration"><a href="#templates">Template signature declaration</a></label2->
         <table>
             <tr>
                 <td></td>
@@ -691,10 +1275,7 @@
                 <td></td>
                 <td><b-br-></b-br-></td>
                 <td><code>&gt;</code></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-                <td><elm3-><a href="#syntax--enum-declaration">enum declaration</a></elm3-></td>
-                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><b-lr-></b-lr-></td>
             </tr>
             <tr>
                 <td><b-lr-></b-lr-></td>
@@ -706,9 +1287,6 @@
                 <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
                 <td><code>,</code></td>
                 <td><b-lbc-></b-lbc-></td>
-                <td><b-tr-></b-tr-><b-tbc-></b-tbc-></td>
-                <td><elm3-><a href="#syntax--struct-declaration">struct declaration</a></elm3-></td>
-                <td><b-ltc-></b-ltc-><b-btc-></b-btc-></td>
             </tr>
             <tr>
                 <td></td>
@@ -720,23 +1298,6 @@
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
                 <td><b-tlc-></b-tlc-></td>
-                <td><b-tr-></b-tr-><b-tbc-></b-tbc-></td>
-                <td><elm3-><a href="#syntax--function-declaration">function declaration</a></elm3-></td>
-                <td><b-ltc-></b-ltc-><b-btc-></b-btc-></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-tr-></b-tr-></td>
-                <td><elm3-><a href="#syntax--operator-declaration">operator declaration</a></elm3-></td>
-                <td><b-ltc-></b-ltc-></td>
             </tr>
         </table>
     </fill2->
@@ -833,36 +1394,46 @@
         <label2- id="syntax--statement-if"><a href="#if-statement">If statement</a></label2->
         <table>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
                 <td><b-lr-></b-lr-></td>
                 <td><code><w->if</w-></code></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>(</code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><elm-><t->bool</t-><sup>expr</sup></elm-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+
+
+
+
+
+
+
+<syntax2->
+    <left2->
+        <label2- id="syntax--statement-match"><a href="#match-statement">Match statement</a></label2->
+        <table>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->match</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>)</code></td>
                 <td><b-lr-></b-lr-></td>
                 <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->statement</elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><elm2->match case</elm2-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
                 <td><code>}</code></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
@@ -875,6 +1446,237 @@
                 <td></td>
                 <td></td>
                 <td></td>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </left2->
+    <right2->
+        <label2-><a href="#match-statement">Match case</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><code>:</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+            </tr>
+            <tr>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>to</code></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+                <td><code>,</code></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+                <td><b-tlc-></b-tlc-></td>
+                <td></td>
+            </tr>
+        </table>
+    </right2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2->
+    <fill2->
+        <label2- id="syntax--statement-else"><a href="#else-statement">Else statement</a></label2->
+        <table>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->else</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2->
+    <fill2->
+        <label2- id="syntax--statement-for"><a href="#for-statement">For statement</a></label2->
+        <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-br-></b-br-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->bool<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>;</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->U<sup>expr</sup></t-></elm-></td>
+                <td><b-lbc-></b-lbc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->for</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code>(</code></td>
+                <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
+                <td><elm->name</elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->in</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
+                <td><code>)</code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->to</w-></code></td>
+                <td><b-lr-></b-lr-><b-br-></b-br-></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
+                <td><b-lr-></b-lr-></td>
+                <td><code><w->as</w-></code></td>
+                <td><b-lr-></b-lr-></td>
+                <td><elm->name</elm-></td>
+                <td><b-ltc-></b-ltc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b-trc-></b-trc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-ltc-></b-ltc-></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </fill2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2->
+    <fill2->
+        <label2- id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label2->
+        <table>
+            <tr>
+                <td><b-lr-></b-lr-></td>
+                <td><code>{</code></td>
+                <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+                <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+                <td><code>}</code></td>
+                <td><b-lr-></b-lr-></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+                <td><elm3->statement</elm3-></td>
+                <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
                 <td></td>
                 <td></td>
                 <td><b-rtc-></b-rtc-></td>
@@ -913,54 +1715,18 @@
 
 <syntax2->
     <fill2->
-        <label2- id="syntax--statement-else"><a href="#else-statement">Else statement</a></label2->
+        <label2- id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label2->
         <table>
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><code><w->else</w-></code></td>
+                <td><elm-><t->T<sup>expr</sup></t-></elm-></td>
                 <td><b-lr-></b-lr-></td>
-                <td><code>{</code></td>
-                <td><b-ltc-></b-ltc-><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-                <td><elm3->statement</elm3-></td>
-                <td><b-tr-></b-tr-><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
-                <td><code>}</code></td>
+                <td><code>;</code></td>
                 <td><b-lr-></b-lr-></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b-rtc-></b-rtc-></td>
-                <td><elm3->declaration<span class="hidden">&nbsp;*</span></elm3-></td>
-                <td><b-tl-></b-tl-></td>
-                <td></td>
-                <td></td>
             </tr>
         </table>
     </fill2->
 </syntax2->
-<syntax-note->
-    * An
-    <a href="#syntax--enum-declaration">enum</a>,
-    <a href="#syntax--template-declaration">enum template</a>,
-    <a href="#syntax--struct-declaration">struct</a>,
-    <a href="#syntax--template-declaration">struct template</a>,
-    <a href="#syntax--variables">variable</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
-</syntax-note->
-
 
 
 
