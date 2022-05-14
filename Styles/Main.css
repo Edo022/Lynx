@@ -39,6 +39,22 @@ body {
         max-height: 100vh;
     }
 
+    lux-logo-, umbra-logo- {
+        display: inline-block;
+        background-color: transparent;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-width:  var(--line-h);
+        max-width:  var(--line-h);
+        min-height: var(--line-h);
+        max-height: var(--line-h);
+        border-radius: calc(var(--line-h) / 2);
+        vertical-align: bottom;
+    }
+    lux-logo-   { background-image: url("../Logos/Lux.png");   }
+    umbra-logo- { background-image: url("../Logos/Umbra.png"); }
+
 
 
 

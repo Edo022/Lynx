@@ -55,17 +55,15 @@
     </right->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
 
-            <t->void</t-> <f->main</f->(){
-                <t->int</t-> var = <k->0</k->;
-                <f->fun</f->(<k->var</k->);
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> var = <k->0</k->;
+            <f->fun</f->(<k->var</k->);
+        }
+    </div>
 </example2->
 <p>
     See
@@ -88,23 +86,21 @@
 </p>
 
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
-                arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
-                arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
-            }
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
+            arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
+            arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
+        }
 
-            <t->void</t-> <f->main</f->(){
-                <t->uint</t-> a, b;
-                <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
-                <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
-            }
+        <t->void</t-> <f->main</f->(){
+            <t->uint</t-> a, b;
+            <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
+            <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
+        }
 
-            <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
-        </div>
-    </fill2->
+        <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
+    </div>
 </example2->
 
 <p>
@@ -140,24 +136,22 @@
 </syntax->
 
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
-            <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
+        <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
 
-            <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
-            <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
+        <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
+        <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
 
-            <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
-            <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
+        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+        <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
 
-            <t->void</t-> <f->main</f->(){
-                <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
-                n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
+            n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
+        }
+    </div>
 </example2->
 //TODO update example
 

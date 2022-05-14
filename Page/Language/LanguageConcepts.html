@@ -499,12 +499,39 @@
     </li>
     <ul>
         <li>
-            <span><a href="#templates">Template</a> signature</span>
-            <span>Defines the name and parameters of a <a href="#templates">template</a></span>
-        </li>
-        <li>
             <span><a href="#template-constraints">Template constraint</a></span>
             <span>Defines the <a href="#template-constraints">constraint</a> that controls when the subsequent element body is available</span>
+        </li>
+        <li>
+            <span><a href="#routine-parameters">Routine parameters</a></span>
+            <span>Defines the input values of a <a href="routines">routine</a></span>
+        </li>
+        <li>
+            <span><a href="#enums">Enum</a> element declaration</span>
+            <span>Defines one or more <a href="#enums">enum</a> elements and their values.</span>
+        </li>
+        <li>
+            <span><a href="#structs">Struct</a> member declaration</span>
+            <span>Defines one ore more <a href="#structs">struct</a> members.</span>
+        </li>
+        <li>
+            <span><a href="#name-resolution">Symbol</a> path</span>
+            <span>References a <a href="#symbols">symbol</a></span>
+        </li>
+    </ul>
+    <br>
+    <li>
+        <span>Semantic pseudo-element</span>
+        <span>-</span>
+    </li>
+    <ul>
+        <li>
+            <span><a href="#while-statement">While</a> signature</span>
+            <span>Contains the <a href="boolean-type">condition</a> and structure of the <a href="while-statement">while statements</a></span>
+        </li>
+        <li>
+            <span><a href="#templates">Template</a> signature</span>
+            <span>Defines the name and parameters of a <a href="#templates">template</a></span>
         </li>
         <li>
             <span><a href="#functions">Function</a> signature</span>
@@ -527,24 +554,12 @@
             <span>Contains the <a href="#enums">enum</a> elements and other children <a href="#symbols">symbols</a>.</span>
         </li>
         <li>
-            <span><a href="#enums">Enum</a> element declaration</span>
-            <span>Defines one or more <a href="#enums">enum</a> elements and their values.</span>
-        </li>
-        <li>
             <span><a href="#structs">Struct</a> signature</span>
             <span>Defines the name of a <a href="#structs">struct</a>.</span>
         </li>
         <li>
             <span><a href="#structs">Struct</a> body</span>
             <span>Contains the <a href="#structs">struct</a> members and other children <a href="#symbols">symbols</a>.</span>
-        </li>
-        <li>
-            <span><a href="#structs">Struct</a> member declaration</span>
-            <span>Defines one ore more <a href="#structs">struct</a> members.</span>
-        </li>
-        <li>
-            <span><a href="#name-resolution">Symbol</a> path</span>
-            <span>References a <a href="#symbols">symbol</a></span>
         </li>
     </ul>
     <br>
@@ -748,34 +763,32 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <c->// Complete name: module</c->
+    <label2->Example</label2->
+    <div>
+        <c->// Complete name: module</c->
 
 
-            <c->// Complete name: module.s</c->
-            <c->// Local name: s</c->
-            <w->namespace</w-> s {
-                <c->// Absolute name: module.s.fun</c->
-                <c->// Relative names: s.fun</c->
-                <c->// Local name: fun</c->
-                <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
-                    <c->//        ^</c->
-                    <c->// Absolute name: module.s.fun.n</c->
-                    <c->// Relative names: s.fun.n, fun.n</c->
-                    <c->// Local name: n</c->
-                }
-            }
-
-            <w->namespace</w-> {
-                <c->// No complete name</c->
-                <c->// No relative names</c->
+        <c->// Complete name: module.s</c->
+        <c->// Local name: s</c->
+        <w->namespace</w-> s {
+            <c->// Absolute name: module.s.fun</c->
+            <c->// Relative names: s.fun</c->
+            <c->// Local name: fun</c->
+            <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
+                <c->//        ^</c->
+                <c->// Absolute name: module.s.fun.n</c->
+                <c->// Relative names: s.fun.n, fun.n</c->
                 <c->// Local name: n</c->
-                <t->uint</t-> n;
             }
-        </div>
-    </fill2->
+        }
+
+        <w->namespace</w-> {
+            <c->// No complete name</c->
+            <c->// No relative names</c->
+            <c->// Local name: n</c->
+            <t->uint</t-> n;
+        }
+    </div>
 </example2->
 
 
@@ -793,21 +806,19 @@
     <a href="#name-resolution">Absolute names</a> cannot be shadowed
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <w->namespace</w-> s {
-                <c->// n references module.s.n</c->
-                <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
-                    <c->// n references module.s.n.n</c->
-                    <w->namespace</w-> {
-                        <t->float</t-> n;
-                        <c->// n references module.s.n.*unnamed*.n</c->
-                    }
+    <label2->Example</label2->
+    <div>
+        <w->namespace</w-> s {
+            <c->// n references module.s.n</c->
+            <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
+                <c->// n references module.s.n.n</c->
+                <w->namespace</w-> {
+                    <t->float</t-> n;
+                    <c->// n references module.s.n.*unnamed*.n</c->
                 }
             }
-        </div>
-    </fill2->
+        }
+    </div>
 </example2->
 
 

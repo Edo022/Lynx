@@ -120,18 +120,23 @@ var ui_slider = {
         document.getElementsByTagName("LOGO-TOP-")[0].style.width = "calc(" +
             "100% - " + value + "px - var(--slider-w) - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-w") +
         ")";
-        let logo = document.getElementsByTagName("LOGO-")[0];
-        logo.style.backgroundPositionX = "calc(" +
-            "calc(" +
-                "calc(100vw - var(--main-padding-r)) / 2 + " +
-                "calc(" + value + "px + var(--main-padding-r) + var(--main-padding-l)) / 2" +
-            ") - " +
-            "calc(" +
-                ui_slider.getBackgroundSize(logo).width + "px / " +
-                "2" +
-            ")" +
-        ")";
+        let logos = document.getElementsByTagName("LOGO-");
+        for(let i = 0; i < logos.length; ++i){
+            logos[i].style.backgroundPositionX = "calc(" +
+                "calc(" +
+                    "calc(100vw - var(--main-padding-r)) / 2 + " +
+                    "calc(" + value + "px + var(--main-padding-r) + var(--main-padding-l)) / 2" +
+                ") - " +
+                "calc(" +
+                    ui_slider.getBackgroundSize(logos[i]).width + "px / " +
+                    "2" +
+                ")" +
+            ")";
+        }
     },
+
+
+
 
     // Updates the width of the left and right main containers
     update_main_width : function(){

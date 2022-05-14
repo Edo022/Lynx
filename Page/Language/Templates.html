@@ -110,26 +110,24 @@
     Generic type parameters can be references or const.
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
-                return a + b + c;
-            }
-            <t->auto</t-> <f->add2</f->(<t->?t</t-> <a->a</a->, <t->?u</t-> <a->b</a->){
-                <w->return</w-> a + b;
-            }
+    <label2->Example</label2->
+    <div>
+        <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            return a + b + c;
+        }
+        <t->auto</t-> <f->add2</f->(<t->?t</t-> <a->a</a->, <t->?u</t-> <a->b</a->){
+            <w->return</w-> a + b;
+        }
 
-            <t->void</t-> <f->main</f->(){
-                <f->add</f->(<k->0</k->, <k->1</k->, <k->0</k->);        <c->// Generates uint add(uint a, uint b, int c)</c->
-                <f->add</f->(<k->1.0</k->, <k->0.4</k->, <k->0.2</k->);  <c->// Generates float add(float a, float b, int c)</c->
-                <c->//add(1, 0.4, 1);    </c-><ce->// Error, no match for function "add(int a, float b, int c)"</ce->
+        <t->void</t-> <f->main</f->(){
+            <f->add</f->(<k->0</k->, <k->1</k->, <k->0</k->);        <c->// Generates uint add(uint a, uint b, int c)</c->
+            <f->add</f->(<k->1.0</k->, <k->0.4</k->, <k->0.2</k->);  <c->// Generates float add(float a, float b, int c)</c->
+            <c->//add(1, 0.4, 1);    </c-><ce->// Error, no match for function "add(int a, float b, int c)"</ce->
 
-                <f->add2</f->(<k->0</k->, <k->1</k->);          <c->// Generates uint add2(uint a, uint b)</c->
-                <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
-            }
-        </div>
-    </fill2->
+            <f->add2</f->(<k->0</k->, <k->1</k->);          <c->// Generates uint add2(uint a, uint b)</c->
+            <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
+        }
+    </div>
 </example2->
 
 <p>
@@ -141,32 +139,30 @@
     Calling the function with types that don't match any definition is a semantic error.<br>
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
-                floating_point, integral, other;
-            }
+    <label2->Example</label2->
+    <div>
+        <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
+            floating_point, integral, other;
+        }
 
-            <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
-            <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
-                <w->return</w-> type_id.<k->integral</k->;
-            }
-            <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
-                <w->return</w-> type_id.<k->floating_point</k->;
-            }
-            <w->default</w-> {
-                <w->return</w-> type_id.<k->other</k->;
-            }
+        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+        <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
+            <w->return</w-> type_id.<k->integral</k->;
+        }
+        <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
+            <w->return</w-> type_id.<k->floating_point</k->;
+        }
+        <w->default</w-> {
+            <w->return</w-> type_id.<k->other</k->;
+        }
 
 
-            <t->void</t-> <f->main</f->(){
-                <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id.integral</c->
-                <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id.floating_point</c->
-                <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <f->get_id</f->(<k->-1</k->);      <c->// Returns type_id.integral</c->
+            <f->get_id</f->(<k->0.4</k->);     <c->// Returns type_id.floating_point</c->
+            <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
+        }
+    </div>
 </example2->
 
 <p>
@@ -181,33 +177,31 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
-                floating_point, integral, other;
-            }
+    <label2->Example</label2->
+    <div>
+        <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
+            floating_point, integral, other;
+        }
 
-            <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
-            <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
-                <w->return</w-> type_id.<k->integral</k->;
-            }
-            <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
-                <w->return</w-> type_id.<k->floating_point</k->;
-            }
-            <w->default</w-> {
-                <w->return</w-> type_id.<k->other</k->;
-            }
+        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+        <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
+            <w->return</w-> type_id.<k->integral</k->;
+        }
+        <w->when</w->(<t->t</t-> == <t->float</t-> || <t->t</t-> == <t->double</t->) {
+            <w->return</w-> type_id.<k->floating_point</k->;
+        }
+        <w->default</w-> {
+            <w->return</w-> type_id.<k->other</k->;
+        }
 
 
-            <t->void</t-> <f->main</f->(){
-                <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id.integral</c->
-                <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id.floating_point</c->
-                <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id.other</c->
-                <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <f->get_id</f->&lt;<t->int</t->&gt;(<k->0.4</k->); <c->// Returns type_id.integral</c->
+            <f->get_id</f->&lt;<t->double</t->&gt;(<k->1</k->); <c->// Returns type_id.floating_point</c->
+            <f->get_id</f->&lt;(<t->double</t->)&gt;((<k->0.4</k->)); <c->// Returns type_id.other</c->
+            <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
+        }
+    </div>
 </example2->
 
 

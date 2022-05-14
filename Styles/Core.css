@@ -42,10 +42,6 @@
         --fg-text:          hsl(0, 0%, 75%);
         --fg-hidden:        hsl(0, 0%, 33%);
 
-        --bd-elm:           hsl(212, 14%, 20%);
-        --bd-elm2:          hsl(210, 41%, 54%);
-        --bd-elm3:          hsl(281, 41%, 54%);
-        --bd-code:          hsl(212, 14%, 24%);
         --bd-table-cell:    hsl(213, 9%, 10%);
         --bd-table-header:  hsl(213, 9%, 15%);/*
     } */

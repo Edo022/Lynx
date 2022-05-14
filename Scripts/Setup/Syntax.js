@@ -46,25 +46,6 @@ var setup_syntax = {
 
 
 
-    // Fix syntax codes having different heights because any CSS solution doesn't work and i don't want to add a million wrapper tags
-    even_heights : function(){
-        let scroll_fix = 16;
-        let c = document.getElementsByTagName('SYNTAX2-');
-        for(let i = 0; i < c.length; ++i){
-            let l = c[i].getElementsByTagName('LEFT2-');
-            let r = c[i].getElementsByTagName('RIGHT2-');
-
-            if(l.length) {
-                let h = `${Math.max(l[0].clientHeight, r[0].clientHeight) + scroll_fix }px`;
-                l[0].style.height = h;
-                r[0].style.height = h;
-            }
-        }
-    },
-
-
-
-
     // Create syntax path arrows with svg elements
     format_arrows : function(){
         // Calculate constants
@@ -139,8 +120,6 @@ var setup_syntax = {
 
 
                 // Add HTML boilerplate
-                //FIXME this takes like 99% of the loading time for some reason
-                //FIXME front end moment
                 children[j].innerHTML =
                     `<svg width="${ w }" height="${ h }">` +
                         `<path d="${ s }"style="stroke: var(--syntax-fg-arrow); stroke-width: 2px; fill: none;"/>` +
@@ -200,7 +179,6 @@ var setup_syntax = {
     init : function() {
         setup_syntax.even_widths();
         setup_syntax.format_arrows();
-        // setup_syntax.even_heights(); //FIXME dynamic layout
         setup_syntax.format_code();
     }
 }

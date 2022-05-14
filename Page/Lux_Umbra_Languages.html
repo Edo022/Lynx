@@ -8,7 +8,7 @@
     <meta charset="UTF-8">
     <meta name="author" content="Snek" />
     <meta name="description" content="Lux language specification" />
-    <link rel="icon" href="Lux-logo.png" type="image/icon type">
+    <link rel="icon" href="Logos/Lux.png" type="image/icon type">
 
     <!-- Style -->
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
@@ -56,7 +56,7 @@
         <!-- Logo                                                            -->
         <!--------------------------------------------------------------------->
         <logo-top-></logo-top->
-        <logo- style="background-image: url('Lux-logo.png');"></logo->
+        <logo- style="background-image: url('Logos/Photon.png');"></logo->
 
         <main-scroll->
             <!--------------------------------------------------------------------->
@@ -68,10 +68,14 @@
                 Lux is a <b>high level compiled shading language</b> with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing buffers and shaders.<br>
                 It compiles to <b>GLSL 4.6</b>.
             </p>
-            <p>The language is meant to be used alongside <b>Umbra</b>, the main programming language of the Lynx Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
-            <p>Lux is part of the <b>Lynx SDK</b>.</p>
+            <p>The language is meant to be used alongside <b>Umbra</b>, the main programming language of the Photon Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
+            <p>Lux is part of the <b>Photon SDK</b>.</p>
             <p><a href="#quick-reference-tabs">Quick reference tabs</a></p>
 
+            <lux-logo-></lux-logo->
+            <umbra-logo-></umbra-logo->
+            <logo- style="background-image: url('Logos/Lux.png');"></logo->
+            <logo- style="background-image: url('Logos/Umbra.png');"></logo->
 
 
 
@@ -123,27 +127,25 @@
             </p>
 
             <example2->
-                <fill2->
-                    <label2-></label2->
-                    <div>
-                        <w->struct</w-> <t->s</t-> {
-                            <t->uint</t-> a;            <c->// Ok, non-const member</c->
-                            <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
-                        }
-                        <t->s const</t-> var;           <c->// Ok, const global variable</c->
+                <label2-></label2->
+                <div>
+                    <w->struct</w-> <t->s</t-> {
+                        <t->uint</t-> a;            <c->// Ok, non-const member</c->
+                        <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
+                    }
+                    <t->s const</t-> var;           <c->// Ok, const global variable</c->
 
-                        <c->//double const fun(){}              </c-><ce->// Error, functions cannot be const</ce->
-                        <c->//double fun(double const &arg){}   </c-><ce->// Error, references cannot be const</ce->
+                    <c->//double const fun(){}              </c-><ce->// Error, functions cannot be const</ce->
+                    <c->//double fun(double const &arg){}   </c-><ce->// Error, references cannot be const</ce->
 
-                        <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
-                            <c->//uint const a;                 </c-><ce->// Error, uninitialized const</ce->
-                            <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
-                            <t->uint const</t-> b = arg, c;          <c->// Ok</c->
-                            <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
-                            c = <k->a</k-> + b;                      <c->// Ok</c->
-                        }
-                    </div>
-                </fill2->
+                    <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
+                        <c->//uint const a;                 </c-><ce->// Error, uninitialized const</ce->
+                        <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
+                        <t->uint const</t-> b = arg, c;          <c->// Ok</c->
+                        <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
+                        c = <k->a</k-> + b;                      <c->// Ok</c->
+                    }
+                </div>
             </example2->
             <p>
                 See
@@ -179,22 +181,20 @@
                 </fill->
             </syntax->
             <example2->
-                <fill2->
-                    <label2->Example 1</label2->
-                    <div>
-                        <w->namespace</w-> n {
-                            <t->void</t-> <f->f</f->(){}
-                        }
-                        <w->alias</w-> n2 = n;        <c->// Ok, n2 = module.n</c->
-                        <w->alias</w-> f2 = n2.<f->f</f->;    <c->// Ok, f2 = (module.n2).f = module.n.f</c->
-                        <w->alias</w-> f3 = n2.<f->f2</f->;   <c->// Ok, f2 = (module.n2).(module.f2) = module.n.f</c->
+                <label2->Example 1</label2->
+                <div>
+                    <w->namespace</w-> n {
+                        <t->void</t-> <f->f</f->(){}
+                    }
+                    <w->alias</w-> n2 = n;        <c->// Ok, n2 = module.n</c->
+                    <w->alias</w-> f2 = n2.<f->f</f->;    <c->// Ok, f2 = (module.n2).f = module.n.f</c->
+                    <w->alias</w-> f3 = n2.<f->f2</f->;   <c->// Ok, f2 = (module.n2).(module.f2) = module.n.f</c->
 
-                        <t->void</t-> <f->main</f->(){
-                            <f->f2</f->();            <c->// Ok, calls n.f()</c->
-                            <f->f3</f->();            <c->// Ok, calls n.f()</c->
-                        }
-                    </div>
-                </fill2->
+                    <t->void</t-> <f->main</f->(){
+                        <f->f2</f->();            <c->// Ok, calls n.f()</c->
+                        <f->f3</f->();            <c->// Ok, calls n.f()</c->
+                    }
+                </div>
             </example2->
 
 
@@ -569,7 +569,6 @@
                 </tbody>
             </table></div>
 
-            <sep-3-><sep-3->
             <h1 id="arithmetic"></h1>
             <p>
                 Arithmetic operators can be used on any <a href="#primitive-types">primitive type</a> or <a href="#enums">enum</a>.
@@ -755,32 +754,28 @@
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Existence</label2->
-                            <div>
-                                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) {
-                                    <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
-                                        <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
-                                    }
-                                    <w->return</w-> <k->false</k->;
+                        <label2->Existence</label2->
+                        <div>
+                            <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) {
+                                <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
+                                    <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
                                 }
-                            </div>
-                        </fill2->
+                                <w->return</w-> <k->false</k->;
+                            }
+                        </div>
                     </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Inexistence</label2->
-                            <div>
-                                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) {
-                                    <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
-                                        <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
-                                    }
-                                    <w->return</w-> <k->true</k->;
+                        <label2->Inexistence</label2->
+                        <div>
+                            <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) {
+                                <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
+                                    <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
                                 }
-                            </div>
-                        </fill2->
+                                <w->return</w-> <k->true</k->;
+                            }
+                        </div>
                     </example2->
                 </div>
             </div>
@@ -1065,36 +1060,32 @@
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Example</label2->
-                            <div>
-                                <t->auto</t-> <f->main</f->(){
-                                    <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
-                                    <w->return</w-> <f->~</f->a;
-                                }
+                        <label2->Example</label2->
+                        <div>
+                            <t->auto</t-> <f->main</f->(){
+                                <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
+                                <w->return</w-> <f->~</f->a;
+                            }
 
 
 
 
-                            </div>
-                        </fill2->
+                        </div>
                     </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Equivalent code</label2->
-                            <div>
-                                <t->auto</t-> <f->main</f->(){
-                                    <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
-                                    <t->uint</t->[<k->4</k->] ret;
-                                    <w->for</w->(<t->int</t-> i <f->=</f-> <k->0</k->; i <f->&lt;</f-> a.<f->len</f->(); <f->++</f->){
-                                        ret[i] <f->=</f-> <f->~</f->a[i];
-                                    }
-                                    <w->return</w-> ret;
+                        <label2->Equivalent code</label2->
+                        <div>
+                            <t->auto</t-> <f->main</f->(){
+                                <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
+                                <t->uint</t->[<k->4</k->] ret;
+                                <w->for</w->(<t->int</t-> i <f->=</f-> <k->0</k->; i <f->&lt;</f-> a.<f->len</f->(); <f->++</f->){
+                                    ret[i] <f->=</f-> <f->~</f->a[i];
                                 }
-                            </div>
-                        </fill2->
+                                <w->return</w-> ret;
+                            }
+                        </div>
                     </example2->
                 </div>
             </div>
@@ -1107,34 +1098,30 @@
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Example</label2->
-                            <div>
-                                <t->void</t-> <f->main</f->(){
-                                    <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
-                                    <t->int</t->[<k->4</k->] b;
-                                    b = a;
-                                }
+                        <label2->Example</label2->
+                        <div>
+                            <t->void</t-> <f->main</f->(){
+                                <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
+                                <t->int</t->[<k->4</k->] b;
+                                b = a;
+                            }
 
 
-                            </div>
-                        </fill2->
+                        </div>
                     </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Equivalent code</label2->
-                            <div>
-                                <t->void</t-> <f->main</f->(){
-                                    <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
-                                    <t->int</t->[<k->4</k->] b;
-                                    <w->for</w->(<t->int</t-> i <f->=</f-> <k->0</k->; i <f->&lt;</f-> a.<f->len</f->(); <f->++</f->){
-                                        a[i] <f->=</f-> a[i];
-                                    }
+                        <label2->Equivalent code</label2->
+                        <div>
+                            <t->void</t-> <f->main</f->(){
+                                <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
+                                <t->int</t->[<k->4</k->] b;
+                                <w->for</w->(<t->int</t-> i <f->=</f-> <k->0</k->; i <f->&lt;</f-> a.<f->len</f->(); <f->++</f->){
+                                    a[i] <f->=</f-> a[i];
                                 }
-                            </div>
-                        </fill2->
+                            }
+                        </div>
                     </example2->
                 </div>
             </div>
@@ -1147,34 +1134,30 @@
             <div style="min-width: 100%; display: flex;">
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Example</label2->
-                            <div>
-                                <t->void</t-> <f->main</f->(){
-                                    <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
-                                    <t->int</t-> b <f->=</f-> <k->8</k->;
-                                    a <f->*=</f-> b;
-                                }
+                        <label2->Example</label2->
+                        <div>
+                            <t->void</t-> <f->main</f->(){
+                                <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
+                                <t->int</t-> b <f->=</f-> <k->8</k->;
+                                a <f->*=</f-> b;
+                            }
 
 
-                            </div>
-                        </fill2->
+                        </div>
                     </example2->
                 </div>
                 <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
                     <example2- style="margin: 0;">
-                        <fill2->
-                            <label2->Equivalent code</label2->
-                            <div>
-                                <t->void</t-> <f->main</f->(){
-                                    <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
-                                    <t->int</t-> b <f->=</f-> <k->8</k->;
-                                    <w->for</w->(<t->int</t-> i <f->=</f-> <k->0</k->; i <f->&lt;</f-> a.<f->len</f->(); <f->++</f->){
-                                        a[i] <f->*=</f-> b;
-                                    }
+                        <label2->Equivalent code</label2->
+                        <div>
+                            <t->void</t-> <f->main</f->(){
+                                <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
+                                <t->int</t-> b <f->=</f-> <k->8</k->;
+                                <w->for</w->(<t->int</t-> i <f->=</f-> <k->0</k->; i <f->&lt;</f-> a.<f->len</f->(); <f->++</f->){
+                                    a[i] <f->*=</f-> b;
                                 }
-                            </div>
-                        </fill2->
+                            }
+                        </div>
                     </example2->
                 </div>
             </div>

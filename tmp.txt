@@ -41,7 +41,7 @@ Syntax: <option>
 
 
 Syntax: <option>
--f                              Full build. All the source files are preprocessed and compiled, including the core module and the standard modules
+//TODO PROB USELESS-f                              Full build. All the source files are preprocessed and compiled, including the core module and the standard modules
 --max-iterations-optimization   Maximum number of iterations for compile time optimizations         [ Default value: 16777216 ]
 --max-iterations-value          Maximum number of iterations for compile time values definition     [ Default value: 16777216 ]
 --max-depth-optimization        Maximum function depth for compilt time optimizations               [ Default value: 16777216 ]
@@ -94,6 +94,216 @@ Syntax: <option>
 .                │ │                                                                                           │    │
 .                │ ╰───────────────────────────────────────────────────────────────────────────────────────────╯    │
 .                ╰─                                                                                                 │
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Extra layer
+
+Adds:
+    Abbreviated template syntax
+    For-n statement
+    For-range statement
+    For-each statement
+
+
+Descending:
+    Abbreviated template syntax
+        rewritten as a template declaration
+
+    For-n statement
+        rewritten as a for statement
+
+    For-range statement
+        rewritten as a for statement
+
+    For-each statement
+        rewritten as a for statement
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+Surface layer
+
+Adds:
+    For statement
+    Match statement
+    Once statement
+    Defer statement
+
+
+Descending:
+    For statement
+        rewritten as a while statement
+        + 1 variable declaration
+        + 1 experession statement
+
+    Match statement
+        rewritten as an if-else chain
+
+    Once statement
+        rewritten as an if statement
+        + 1 variable declaration
+        + 1 experession statement
+
+    Defer statement
+        rewritten as a stack push
+        + 1 variable declaration (stack of Func)
+        + 1 while loop before every return statement
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+Template layer
+
+
+Adds:
+    Enum template
+    Struct template
+    Function template
+    Operator template
+
+
+Descending:
+    Enum template
+        replaced with the generated enum declarations
+    Struct template
+        replaced with the generated struct declarations
+    Function template
+        replaced with the generated function declarations
+    Operator template
+        replaced with the generated operator declarations
+//TODO name mangling in required in order to find the template calls
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+Namespace layer
+
+
+Adds:
+    Scope concept
+    Namespace
+    Operator
+    Operator template
+
+
+Descending:
+    Operator declaration
+        rewritten as a function declaration
+
+    Operator template declaration
+        rewritten as a funciton template declaration
+
+    Scope, namespace
+        removed though name mangling
+
+
+Name mangling:
+    Each elements starts with a letter
+        a<n> = Alphanumeric identifier of n characters
+        e<n> = prEfix  symbolic identifier of n characters
+        t<n> = posTfix symbolic identifier of n characters
+        n<n> = iNfix   symbolic identifier of n characters
+
+    Symbolic identifiers are translated
+        ! $ % & ( ) * + - / : < = > ? @ ^ ` | ~ ; { } [ ] .
+        a b c d e f g h i j k l m n o p q r s t u v w x y z
+
+    var += f<int>(2) + 54 % n;
+    n2hm(a3var, n1h(a1f<a3int>(2), n1c(54, a1n)));
+
+    idk.a.n = x ? a : ++Math.k.PI;
+    n1m(a3idka1aa1n, n1on1(a1x, a1a, e2hh(a4Matha1ka2PI)));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+quindi
+
+- reference counter + pointer arithmetic con pointer da 16 byte
+- 2 tipi per ogni struct automatici + function overload generati automaticamente
+
+la dimensione e il padding delle cose non si può dare per scontato ma tanto non si usa praticamente mai. sizeof ovunque.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

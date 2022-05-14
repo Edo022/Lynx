@@ -82,34 +82,30 @@
     Operations with those literals are explained in <a href="#standard-operators">Standard operators</a>.
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->int</t-> n = <k->4</k->;             <c->// Ok</c->
-            <t->bool</t-> b =<k-> true</k->;         <c->// Ok</c->
-            <t->float</t-> f1 = <k->0x0d.aAb4</k->;  <c->// Ok</c->
-            <t->float</t-> f2 = <k->inf</k->;        <c->// Ok</c->
-            <t->float</t-> f3 = <k->nan</k->;        <c->// Ok</c->
-            <c->float f4 = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
-            <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
-            <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
-        </div>
-    </fill2->
+    <label2->Example</label2->
+    <div>
+        <t->int</t-> n = <k->4</k->;             <c->// Ok</c->
+        <t->bool</t-> b =<k-> true</k->;         <c->// Ok</c->
+        <t->float</t-> f1 = <k->0x0d.aAb4</k->;  <c->// Ok</c->
+        <t->float</t-> f2 = <k->inf</k->;        <c->// Ok</c->
+        <t->float</t-> f3 = <k->nan</k->;        <c->// Ok</c->
+        <c->float f4 = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
+        <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
+        <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
+    </div>
 </example2->
 <p>
     The <code>_</code> character can be used anywhere after the base prefix of numerical literals to separate digits and improve readability.<br>
     Decimal literals without base prefix cannot start with <code>_</code>.
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->int</t-> n = <k->395_935</k->;             <c->// Ok</c->
-            <t->int</t-> n = <k->654_3_21___</k->;         <c->// Ok, doesn't make sense but it is allowed</c->
-            <t->int</t-> n = <k->0x_32_A4_FF_E2</k->;      <c->// Ok</c->
-            <c->//int n = _123_456;</c->          <ce->// Error, undeclared identifier "_123_456".</ce->
-        </div>
-    </fill2->
+    <label2->Example</label2->
+    <div>
+        <t->int</t-> n = <k->395_935</k->;             <c->// Ok</c->
+        <t->int</t-> n = <k->654_3_21___</k->;         <c->// Ok, doesn't make sense but it is allowed</c->
+        <t->int</t-> n = <k->0x_32_A4_FF_E2</k->;      <c->// Ok</c->
+        <c->//int n = _123_456;</c->          <ce->// Error, undeclared identifier "_123_456".</ce->
+    </div>
 </example2->
 <p>
     There are no literal suffixes and no <code><t->float</t-></code>, <code><t->uint</t-></code> or <code><t->int</t-></code> literals.<br>
@@ -176,21 +172,19 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <w->struct</w-> s {
-                <t->int</t-> a;
-                <t->float</t-> b;
-            };
-            <t->void</t-> <f->f</f->(<t->s</t-> <a->a</a->, (<t->int</t->[<k->2</k->], <t->s</t->) <a->b</a->){}
+    <label2->Example</label2->
+    <div>
+        <w->struct</w-> s {
+            <t->int</t-> a;
+            <t->float</t-> b;
+        };
+        <t->void</t-> <f->f</f->(<t->s</t-> <a->a</a->, (<t->int</t->[<k->2</k->], <t->s</t->) <a->b</a->){}
 
-            <t->void</t-> <f->main</f->(){
-                <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
-                <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->);
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
+            <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->);
+        }
+    </div>
 </example2->
 
 
@@ -238,15 +232,13 @@
     </right->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
-            <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
-            <t->bool</t-> var$, var3 = nya;     <c->// Ok, var$ has undefined value, var2 has value true</c->
-            <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
-        </div>
-    </fill2->
+    <label2->Example</label2->
+    <div>
+        <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
+        <t->bool</t-> var$, var3 = nya;     <c->// Ok, var$ has undefined value, var2 has value true</c->
+        <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
+    </div>
 </example2->
 <p>
     There are no pointers or reference variables.
@@ -280,42 +272,38 @@
 <p>They act as normal variables for anything else.</p>
 
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
-                $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
-                <c->//$2 = $1;          </c-><ce->// Error, $1 has undefined type</ce->
+    <label2->Example 1</label2->
+    <div>
+        <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
+            $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
+            <c->//$2 = $1;          </c-><ce->// Error, $1 has undefined type</ce->
 
-                <t->uint3</t-> vec = { <k->0</k->, <k->1</k->, <k->2</k-> };
-                $2 = <k->true</k->;          <c->// Ok, $2 has type b and value true</c->
-                $2 = <k->vec</k->;           <c->// Ok, $2 has type uint3 and value { 0, 1, 2 }</c->
-            }
+            <t->uint3</t-> vec = { <k->0</k->, <k->1</k->, <k->2</k-> };
+            $2 = <k->true</k->;          <c->// Ok, $2 has type b and value true</c->
+            $2 = <k->vec</k->;           <c->// Ok, $2 has type uint3 and value { 0, 1, 2 }</c->
+        }
 
-            <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
-                <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2.$2 has nothing to do with fun1.$2</ce->
-            }
+        <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
+            <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2.$2 has nothing to do with fun1.$2</ce->
+        }
 
-            <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
-        </div>
-    </fill2->
+        <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
-                <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
-                <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
-                <c->//ref = $0;                 </c-><ce->// Error, cannot determine the type of $0</ce->
-                $0 = ref;                   <c->// Ok, $0 has type uint2 and the same value as ref</c->
+    <label2->Example 2</label2->
+    <div>
+        <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
+            <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
+            <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
+            <c->//ref = $0;                 </c-><ce->// Error, cannot determine the type of $0</ce->
+            $0 = ref;                   <c->// Ok, $0 has type uint2 and the same value as ref</c->
 
-                <w->if</w->(arg) $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
-                <w->else</w->    $0 = { <k->2</k->, <k->3</k-> };      <c->// $0 has type uint2</c->
-                ref = <k->$0</k->;                   <c->// Ok, $0 has type uint2</c->
-            }
-        </div>
-    </fill2->
+            <w->if</w->(arg) $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
+            <w->else</w->    $0 = { <k->2</k->, <k->3</k-> };      <c->// $0 has type uint2</c->
+            ref = <k->$0</k->;                   <c->// Ok, $0 has type uint2</c->
+        }
+    </div>
 </example2->
 <p>
     See

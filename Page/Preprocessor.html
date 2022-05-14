@@ -56,25 +56,21 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <c->// Single line comment</c->
+    <label2->Example 1</label2->
+    <div>
+        <c->// Single line comment</c->
 
-            <c->/* Multi
-            line
-            comment */</c->
-        </div>
-    </fill2->
+        <c->/* Multi
+        line
+        comment */</c->
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <c->/* Multi line /* Anorhter comment */ comment */
-            // Ok                             </c-><ce->// ^ Error, unexpected token "comment"</ce->
-        </div>
-    </fill2->
+    <label2->Example 2</label2->
+    <div>
+        <c->/* Multi line /* Anorhter comment */ comment */
+        // Ok                             </c-><ce->// ^ Error, unexpected token "comment"</ce->
+    </div>
 </example2->
 
 
@@ -137,20 +133,18 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <k->#include</k-> <s->"/home/Lynx/Lux/file.ilsh"</s->   <c->// Ok, absolute path</c->
-            <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
-            <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
-            <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
-            <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
+    <label2->Example</label2->
+    <div>
+        <k->#include</k-> <s->"/home/Photon/Lux/file.ilsh"</s->   <c->// Ok, absolute path</c->
+        <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
+        <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
+        <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
+        <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
 
-            <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
-            <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
-            <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
-        </div>
-    </fill2->
+        <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
+        <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
+        <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
+    </div>
 </example2->
 
 
@@ -204,42 +198,38 @@
 </syntax->
 
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <c->// single line comment</c->\
-            <c->on two lines</c->
+    <label2->Example 1</label2->
+    <div>
+        <c->// single line comment</c->\
+        <c->on two lines</c->
 
-            <c->// #include "path/to/file"</c->
-            <k->#include</k-> <s->"pat</s->\
-            <s->h/to/file</s->\
-            <s->"</s->
+        <c->// #include "path/to/file"</c->
+        <k->#include</k-> <s->"pat</s->\
+        <s->h/to/file</s->\
+        <s->"</s->
 
-            <c->// void function() {
-            //   uint var = 0, b = 0;
-            //   var += b;
-            // }</c->
-            <t->vo</t->\
-            <t->id</t-> <f->fun</f->\
-            <f->ction</f->() {
-            <t->uint</t-> va\
-            r = <k->0</k->, b = <k->0</k->;
-            v\
-            ar +\
-            = <k->b</k->;
-            }
-        </div>
-    </fill2->
+        <c->// void function() {
+        //   uint var = 0, b = 0;
+        //   var += b;
+        // }</c->
+        <t->vo</t->\
+        <t->id</t-> <f->fun</f->\
+        <f->ction</f->() {
+        <t->uint</t-> va\
+        r = <k->0</k->, b = <k->0</k->;
+        v\
+        ar +\
+        = <k->b</k->;
+        }
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <ce->// Error, unexpected token "\"</ce->
-            <c->//void ma\\
+    <label2->Example 2</label2->
+    <div>
+        <ce->// Error, unexpected token "\"</ce->
+        <c->//void ma\\
 
-            //in(){}</c->
-            <ce->// Error,  unexpected token "in"</ce->
-        </div>
-    </fill2->
+        //in(){}</c->
+        <ce->// Error,  unexpected token "in"</ce->
+    </div>
 </example2->

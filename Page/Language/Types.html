@@ -85,7 +85,6 @@
     Positive numbers and <code><k->0</k-></code> use the corresponding binary value in both signed and unsigned integral types.
 </p>
 <example2->
-    <fill2->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c->  1              31</c->
                                             <c->sign           value</c->
@@ -104,7 +103,6 @@
             <c->┌────────────────────────────────┴──────────────────────────────┐</c->  <t->ulong</t->
             <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
         </div>
-    </fill2->
 </example2->
 <p>
     //TODO GL_EXT_shader_explicit_arithmetic_types_int64
@@ -125,7 +123,6 @@
     <code><k->+0</k-></code> and <code><k->-0</k-></code> are equal.
 </p>
 <example2->
-    <fill2->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c-> 1      8          23</c->
                                             <c->sign exponent   mantissa</c->
@@ -149,7 +146,6 @@
             <c->011111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->   <k->nan</k->
             <c->111111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->   <k->nan</k->
         </div>
-    </fill2->
 </example2->
 <p>
     <code><k->inf</k-></code> values are generated as required by the standard.<br>
@@ -167,7 +163,6 @@
     Its value can be <code><k->true</k-></code> or <code><k->false</k-></code>.
 </p>
 <example2->
-    <fill2->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                             <c->32</c->
                             <c->value</c->
@@ -176,7 +171,6 @@
             <c->00000000000000000000000000000001</c->   <k->true</k->
             <c->00000000000000000000000000000000</c->   <k->false</k->
         </div>
-    </fill2->
 </example2->
 <p>
     Booleans purposely waste 31 bits for performance reasons.<br>
@@ -322,34 +316,30 @@
 </p>
 
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <w->enum</w-> <t->e</t-> : <t->int</t-> {
-                a, b;              <c->// Ok, a = 0, b = 1</c->
-                c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
-                d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
-            }
-        </div>
-    </fill2->
+    <label2->Example 1</label2->
+    <div>
+        <w->enum</w-> <t->e</t-> : <t->int</t-> {
+            a, b;              <c->// Ok, a = 0, b = 1</c->
+            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
+            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
+        }
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <w->enum</w-> <t->c</t-> : <t->double</t-> {
-                pi = <k->3.14159</k->;      <c->// Ok</c->
-                e  = <k->2.71828</k->;      <c->// Ok</c->
-                <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
-            }
+    <label2->Example 2</label2->
+    <div>
+        <w->enum</w-> <t->c</t-> : <t->double</t-> {
+            pi = <k->3.14159</k->;      <c->// Ok</c->
+            e  = <k->2.71828</k->;      <c->// Ok</c->
+            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
+        }
 
-            <t->void</t-> <f->main</f->(){
-                <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
-                <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
-                <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
+            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
+            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        }
+    </div>
 </example2->
 
 <p>
@@ -358,22 +348,20 @@
     Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
-                pi  = <k->3.14159</k->;
-                e   = <k->2.71828</k->;
-                phi = <k->1.61803</k->;
-            }
+    <label2->Example</label2->
+    <div>
+        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
+            pi  = <k->3.14159</k->;
+            e   = <k->2.71828</k->;
+            phi = <k->1.61803</k->;
+        }
 
-            <t->void</t-> <f->main</f->(){
-                <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
-                <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
-                <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
+            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
+            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        }
+    </div>
 </example2->
 
 
@@ -495,23 +483,21 @@
 </syntax->
 
 <example2->
-    <fill2->
         <label2->Example</label2->
-        <div>
-            <w->struct</w-> <t->idk</t-> {
-                <t->uint</t-> a, b;        <c->// Ok</c->
-                <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
-                <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
-            }
-            <t->void</t-> <f->main</f->(){
-                <t->idk</t-> var;
+    <div>
+        <w->struct</w-> <t->idk</t-> {
+            <t->uint</t-> a, b;        <c->// Ok</c->
+            <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
+            <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
+        }
+        <t->void</t-> <f->main</f->(){
+            <t->idk</t-> var;
 
-                var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
-                var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
-                <c->//var.b = var.c[0];     </c-><ce->// Error, var.c is uninitialized</ce->
-            }
-        </div>
-    </fill2->
+            var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
+            var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
+            <c->//var.b = var.c[0];     </c-><ce->// Error, var.c is uninitialized</ce->
+        }
+    </div>
 </example2->
 <p>
     See
@@ -597,15 +583,13 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label->
-        <div>
-            <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
-                <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
-                <w->else</w-> <w->return</w-> n[<k->0</k->];
-            }
-        </div>
-    </fill2->
+    <label2->Example</label->
+    <div>
+        <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
+            <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
+            <w->else</w-> <w->return</w-> n[<k->0</k->];
+        }
+    </div>
 </example2->
 
 
@@ -675,18 +659,16 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            (<t->int</t->, <t->int</t->) <f->func</f->((<t->uint</t->, <t->bool</t->, <t->float</t->) <a->a</a->, <t->uint</t-> <a->b</a->){
-                <w->return</w-> (<k->0</k->, a[<k->1</k->] ? a[<k->0</k->] : b * a[<k->2</k->]);
-            };
+    <label2->Example</label2->
+    <div>
+        (<t->int</t->, <t->int</t->) <f->func</f->((<t->uint</t->, <t->bool</t->, <t->float</t->) <a->a</a->, <t->uint</t-> <a->b</a->){
+            <w->return</w-> (<k->0</k->, a[<k->1</k->] ? a[<k->0</k->] : b * a[<k->2</k->]);
+        };
 
-            <t->void</t-> <f->main</f->(){
-                (<t->int</t->) n = (<f->func</f->((<k->9</k->, <k->true</k->, <k->0.5</k->), <k->5</k->)[<k->1</k->]);
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            (<t->int</t->) n = (<f->func</f->((<k->9</k->, <k->true</k->, <k->0.5</k->), <k->5</k->)[<k->1</k->]);
+        }
+    </div>
 </example2->
 
 
@@ -724,17 +706,15 @@
     <code><t->typename</t-></code> is a valid <code><t->typename</t-></code> <a href="#values">value</a>.
 </p>
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
-            <c->t1 t2 = int;</c->              <ce->// Error, typename cannot be used to declare symbols</ce->
+    <label2->Example</label2->
+    <div>
+        <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
+        <c->t1 t2 = int;</c->              <ce->// Error, typename cannot be used to declare symbols</ce->
 
-            <t->auto</t-> <f->main</f->(){
-                <w->return</w-> <t->typename</t->(<t->typeof</t->(<f->main</f->)) <f->==</f-> <k->t1</k->;         <c->// Ok, returns false</c->
-            }
-        </div>
-    </fill2->
+        <t->auto</t-> <f->main</f->(){
+            <w->return</w-> <t->typename</t->(<t->typeof</t->(<f->main</f->)) <f->==</f-> <k->t1</k->;         <c->// Ok, returns false</c->
+        }
+    </div>
 </example2->
 
 //TODO
@@ -788,30 +768,28 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example</label2->
-        <div>
-            <k->struct</k-> s {
-                <t->double</t-> a;
-                <t->float</t->  b;
-            }
-            <k->enum</k-> e {
-                a, b;
-            }
+    <label2->Example</label2->
+    <div>
+        <k->struct</k-> s {
+            <t->double</t-> a;
+            <t->float</t->  b;
+        }
+        <k->enum</k-> e {
+            a, b;
+        }
 
-            <t->void</t-> <f->main</f->(){
-                (<t->int</t->, <t->float</t->) var1;
-                <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
-                <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
+        <t->void</t-> <f->main</f->(){
+            (<t->int</t->, <t->float</t->) var1;
+            <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
+            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
 
-                <t->s</t-> var2;
-                <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
-                <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
+            <t->s</t-> var2;
+            <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
+            <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
 
-                <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
-            }
-        </div>
-    </fill2->
+            <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
+        }
+    </div>
 </example2->
 <p>
     //TODO add array examples
@@ -1282,30 +1260,26 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <t->auto</t-> <f->func</f->(){
-                <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
-            }
+    <label2->Example 1</label2->
+    <div>
+        <t->auto</t-> <f->func</f->(){
+            <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
+        }
 
-            <t->auto</t-> <f->main</f->(){
-                <t->auto</t-> a = <k->2</k->;         <c->// a has type ulong</c->
-                <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type double</c->
-                <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
-                <c->// No return statement, main has type void</c->
-            }
-        </div>
-    </fill2->
+        <t->auto</t-> <f->main</f->(){
+            <t->auto</t-> a = <k->2</k->;         <c->// a has type ulong</c->
+            <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type double</c->
+            <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
+            <c->// No return statement, main has type void</c->
+        }
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <t->auto</t-> a <f->=</f-> <t->int</t->[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
-            <t->auto</t-> <t->const</t-> b <f->=</f-> <f->!</f-><k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
-        </div>
-    </fill2->
+    <label2->Example 2</label2->
+    <div>
+        <t->auto</t-> a <f->=</f-> <t->int</t->[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
+        <t->auto</t-> <t->const</t-> b <f->=</f-> <f->!</f-><k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
+    </div>
 </example2->
 
 
@@ -1360,27 +1334,23 @@
     </fill->
 </syntax->
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
+    <label2->Example 1</label2->
+    <div>
+        <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
-            <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
-                <t->int</t-> a[<k->2</k->] = (<k->1</k->, <k->2</k->);      <c->// a has type int[2]</c->
-                <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
-                <t->baseof</t->(<k->a</k->) c = <k->a</k->[<k->0</k->];     <c->// c has type int</c->
-            }
-        </div>
-    </fill2->
+        <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
+            <t->int</t-> a[<k->2</k->] = (<k->1</k->, <k->2</k->);      <c->// a has type int[2]</c->
+            <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
+            <t->baseof</t->(<k->a</k->) c = <k->a</k->[<k->0</k->];     <c->// c has type int</c->
+        }
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <c->//typeof(b) a;</c->  <ce->//Error, circular dependency</ce->
-            <c->//typeof(a) b;</c->  <ce->//Error, circular dependency</ce->
-        </div>
-    </fill2->
+    <label2->Example 2</label2->
+    <div>
+        <c->//typeof(b) a;</c->  <ce->//Error, circular dependency</ce->
+        <c->//typeof(a) b;</c->  <ce->//Error, circular dependency</ce->
+    </div>
 </example2->
 
 
@@ -1398,43 +1368,39 @@
     Defining an unnamed type without also declaring the <a href="#semantic-elements">symbol</a> is not allowed.
 </p>
 <example2->
-    <fill2->
-        <label2->Example 1</label2->
-        <div>
-            <w->strict enum</w-> : <t->bool</t-> {
-                on = <k->true</k->;
-                off = <k->false</k->;
-            } grasses;
+    <label2->Example 1</label2->
+    <div>
+        <w->strict enum</w-> : <t->bool</t-> {
+            on = <k->true</k->;
+            off = <k->false</k->;
+        } grasses;
 
-            <t->void</t-> <f->main</f->(){
-                grasses = <t->typeof</t->(grasses).<k->on</k->;
-            }
-        </div>
-    </fill2->
+        <t->void</t-> <f->main</f->(){
+            grasses = <t->typeof</t->(grasses).<k->on</k->;
+        }
+    </div>
 </example2->
 <example2->
-    <fill2->
-        <label2->Example 2</label2->
-        <div>
-            <w->struct</w-> {
-                <t->uint</t-> a, b;
-                <w->enum</w-> : <t->int</t-> {
-                    idk1;
-                    idk2;
-                } c;
-            } <f->fun</f->(){
-                <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed constructor of unnamed struct</c->
-            }
+    <label2->Example 2</label2->
+    <div>
+        <w->struct</w-> {
+            <t->uint</t-> a, b;
+            <w->enum</w-> : <t->int</t-> {
+                idk1;
+                idk2;
+            } c;
+        } <f->fun</f->(){
+            <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed constructor of unnamed struct</c->
+        }
 
-            <t->void</t-> <f->main</f->(){
-                <t->auto</t-> var <f->=</f-> <f->fun</f->();
+        <t->void</t-> <f->main</f->(){
+            <t->auto</t-> var <f->=</f-> <f->fun</f->();
 
-                <c->// Both are allowed</c->
-                var.c <f->=</f-> <t->typeof</t->(var.c).<k->idk1</k->;
-                var.c <f->=</f-> <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
+            <c->// Both are allowed</c->
+            var.c <f->=</f-> <t->typeof</t->(var.c).<k->idk1</k->;
+            var.c <f->=</f-> <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
 
-                <t->typeof</t->(var.a) a <f->=</f-> <k->0</k->;
-            }
-        </div>
-    </fill2->
+            <t->typeof</t->(var.a) a <f->=</f-> <k->0</k->;
+        }
+    </div>
 </example2->
