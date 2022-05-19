@@ -13,12 +13,16 @@ var setup_index = {
                     continue;
                 }
                 let name = capitalize(id).replaceAll('-', ' ');
-                let num = (c.tagName == 'INDEXH-' ? last : last + i + '.');
+                let num = (c.tagName == 'INDEXH-' ? last : (last + i + '.'));
 
                 // Fix index
                 c.innerHTML =
-                    `<a style="display: inline-block; padding: 0 1ch 0 1ch; color: var(--fg-link);" ` +
-                    `href="#${ id }">${ num } ${ name }</a>`
+                    `<a ` +
+                        `style="display: inline-block; padding: 0 1ch 0 1ch; color: var(--fg-link);" ` +
+                        `href="#${ id }"` +
+                        `onclick="setup_index.update_active(this)"` +
+                        `id="index--${ id }"` +
+                    `>${ num } ${ name }</a>`
                 ;
                 c.style.paddingLeft = `calc(` +   `${ index_indent } * ${ (depth - (c.tagName == 'INDEXH-')) })`;
                 c.style.maxWidth    = `calc(100% - ${ index_indent } * ${ (depth - (c.tagName == 'INDEXH-')) })`;
@@ -50,7 +54,32 @@ var setup_index = {
 
 
 
+    check_active : function(active_id) {
+        return !(Object.is(active_id, undefined) || active_id == null || !active_id.length || document.getElementById(active_id) == null);
+    },
+
+    set_active : function(){
+        let active_id = window.sessionStorage.getItem('active_index');
+        if(!setup_index.check_active(active_id)) {
+            window.sessionStorage.setItem('active_index', 'index--overview'); //FIXME automatically detect and set first index element
+            active_id = 'index--overview';
+        }
+        document.getElementById(active_id).parentElement.style.backgroundColor = 'var(--bg-index-active)';
+    },
+
+    update_active : function(elm){
+        let active_id = window.sessionStorage.getItem('active_index');
+        if(setup_index.check_active(active_id)) {
+            document.getElementById(active_id).parentElement.style.backgroundColor = 'transparent'
+        }
+        window.sessionStorage.setItem('active_index', elm.id)
+        setup_index.set_active();
+    },
+
+
+
     init : function(){
         setup_index.format();
+        setup_index.set_active();
     }
 }

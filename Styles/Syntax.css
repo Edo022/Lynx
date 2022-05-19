@@ -39,17 +39,17 @@
 
 
 /* Syntax highlight { */
-    c-  { color: #6d757e; font-weight: 300; }    /* Comment            */
-    ce- { color: #d14141; font-weight: 300; }    /* Error comment      */
-    cw- { color: #ddcf06; font-weight: 300; }    /* Warning comment    */
-    k-  { color: #85b4e0; }                      /* Constant           */
-    t-  { color: #3884dc; }                      /* Type               */
-    f-  { color: #e6e6b3; }                      /* Function           */
-    a-  { color: #2fc5d0; }                      /* Argument           */
-    w-  { color: #cc94d1; }                      /* Keyword            */
-    sr- { color: #c44e4e; }                      /* String regex token */
-    sg- { color: #c9ca76; }                      /* String regex group */
-    s-  { color: #db966e; }                      /* String
+    c-  { display: inline-block; color: #6d757e; font-weight: 300; }    /* Comment            */
+    ce- { display: inline-block; color: #d14141; font-weight: 300; }    /* Error comment      */
+    cw- { display: inline-block; color: #ddcf06; font-weight: 300; }    /* Warning comment    */
+    k-  { display: inline-block; color: #85b4e0; }                      /* Constant           */
+    t-  { display: inline-block; color: #3884dc; }                      /* Type               */
+    f-  { display: inline-block; color: #e6e6b3; }                      /* Function           */
+    a-  { display: inline-block; color: #2fc5d0; }                      /* Argument           */
+    w-  { display: inline-block; color: #cc94d1; }                      /* Keyword            */
+    sr- { display: inline-block; color: #c44e4e; }                      /* String regex token */
+    sg- { display: inline-block; color: #c9ca76; }                      /* String regex group */
+    s-  { display: inline-block; color: #db966e; }                      /* String
 } */
 
 
@@ -66,7 +66,7 @@
         font-family: monospace, monospace;
         border: 1px solid;
         border-radius: var(--code-decoration-r);
-        padding: 2px 8px 2px 8px;
+        padding: 0 4px 0 4px;
         margin: 4px 2px 4px 2px;
         background-color: var(--bg-elm);
         font-size: var(--font-size-code);
@@ -107,16 +107,18 @@
 
 
 /* Syntax elements { */
-    .hidden, space-, nl- {
+    .hidden, eof-, tab-, space-, nl- {
         color: var(--fg-hidden) !important;
         white-space: nowrap;
         font-weight: normal;
     }
-    space-, nl- {
+    eof-, tab-, space-, nl- {
         display: inline;
     }
-    space-::before { content: "·"; }
-    nl-::before    { content: "↩"; }
+    eof-::before { content: "⨯ EOF"; }
+    tab-::before { content: "⇥ tab"; }
+    space-::before { content: "␣ space"; }
+    nl-::before    { content: "↩ newline"; }
 
 
     template- {
@@ -136,6 +138,20 @@
 syntax2- {
     display: flex;
     flex-direction: column;
+    word-spacing: normal;
+
+    min-width:  100%;
+    max-width:  100%;
+    /**/width:  100%;
+    margin: var(--syntax-margin) 0 var(--syntax-margin) 0;
+}
+example2- {
+    display: flex;
+    flex-direction: column;
+    font-family: monospace, monospace;
+    font-size: var(--font-size-code);
+    word-spacing: normal;
+    white-space: pre;
 
     min-width:  100%;
     max-width:  100%;
@@ -172,6 +188,7 @@ syntax2- > label2- {
     /**/height: var(--syntax-label-h);
     box-sizing: border-box;
 }
+example2- > label2-:not(:first-child),
 syntax2- > label2-:not(:first-child) {
     margin-top: var(--syntax-internal-margin);
 }
@@ -216,7 +233,7 @@ syntax2- table {
 syntax2- table:last-child {
     flex: 1;
 }
-example2- div {
+example2- > div {
     font-family: monospace, monospace;
     font-size: var(--font-size-code);
     line-height: var(--example-line-h);
@@ -270,7 +287,7 @@ syntax2- table tr > td {
     max-width: none;
     /**/width: fit-content; /* Set from JS */
 }
-syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) {
+syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-):not(b-tr-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-tr-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-) {
     display: inline-block;
     box-sizing: border-box;
     text-align: center;
@@ -283,12 +300,12 @@ syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-
     min-height: calc(100% - 2 * var(--syntax-elm-margin));
     /**/height: calc(100% - 2 * var(--syntax-elm-margin));
 }
-syntax2- table tr > td.rowspan_2 > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) {
+syntax2- table tr > td.rowspan_2 > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-):not(b-tr-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-tr-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-) {
     max-height: calc(200% - 2 * var(--syntax-elm-margin));
     min-height: calc(200% - 2 * var(--syntax-elm-margin));
     /**/height: calc(200% - 2 * var(--syntax-elm-margin));
 }
-syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-) > div {
+syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-):not(b-tr-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-tr-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-) > div {
     display: inline-flex;
     text-align: center;
     align-items: center;
@@ -340,6 +357,10 @@ b-trc-,  b-tbc-,  b-tlc-,
 b-rbc-,  b-rlc-,  b-rtc-,
 b-blc-,  b-btc-,  b-brc-,
 b-ltc-,  b-lrc-,  b-lbc-,
+b-tr-b-, b-br-b-,  b-lt-b-,  b-lr-b-,  b-lb-b-,
+b-trcb-, b-brcb-,  b-ltcb-,  b-lrcb-,  b-lbcb-,
+b-tr-t-, b-br-t-,  b-lt-t-,  b-lr-t-,  b-lb-t-,
+b-trct-, b-brct-,  b-ltct-,  b-lrct-,  b-lbct-,
 b-c- {
     display: inline-block;
     overflow: visible;

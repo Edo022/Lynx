@@ -1,4 +1,14 @@
 #!/bin/bash
-gcc -I. -E -P -CC -w -xc ./Page/Lux_Umbra_Languages.html -o \~Lux_Umbra_Languages.html
-cat \~Lux_Umbra_Languages.html | awk 'NR > 35 {print $0}' > Lux.html
-rm \~Lux_Umbra_Languages.html
+cat ./Page/Lux_Umbra_Languages.html |\
+    sed -e "s/^\s*#include/#include/g" |\
+    gcc -I. -E -P -CC -w -xc -traditional-cpp - |\
+    sed -e ':a' -e 'N' -e '$!ba' -e "s/\n/<\!-- \\\\n -->/g" |\
+    sed -e "s/^.*\(<\!DOCTYPE html>\)/\1/g" -e "s/<\!-- \\\\n -->/\\n/g" \
+> Lux.html
+
+cat ./Page/Internal.html |\
+    sed -e "s/^\s*#include/#include/g" |\
+    gcc -I. -E -P -CC -w -xc -traditional-cpp - |\
+    sed -e ':a' -e 'N' -e '$!ba' -e "s/\n/<\!-- \\\\n -->/g" |\
+    sed -e "s/^.*\(<\!DOCTYPE html>\)/\1/g" -e "s/<\!-- \\\\n -->/\\n/g" \
+> Internal.html

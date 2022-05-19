@@ -24,7 +24,8 @@
         --main-padding-l:          2vw;
         --main-padding-r:          4vw;
         --slider-w:                2vw;
-        --logo-size:               50vw;/*
+        --logo-size:               50vw;
+        --list-indentation: 4ch;/*
     }
 
     Color { */
@@ -43,7 +44,10 @@
         --fg-hidden:        hsl(0, 0%, 33%);
 
         --bd-table-cell:    hsl(213, 9%, 10%);
-        --bd-table-header:  hsl(213, 9%, 15%);/*
+        --bd-table-header:  hsl(213, 9%, 15%);
+
+        --bg-index-hover:   hsl(222, 21%, 12%);
+        --bg-index-active:  hsl(223, 23%, 16%);/*
     } */
 }
 
@@ -68,9 +72,6 @@
     }
     p, syntax-, example-, table-container, h1, h2, h3{
         margin:  var(--def-margin) 0 var(--def-margin) 0;
-    }
-    ul {
-        margin-left: 2ch;
     } /*
 } */
 

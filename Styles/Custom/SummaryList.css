@@ -1,0 +1,59 @@
+
+.summary-list {
+    margin-left: 0;
+    overflow-x: hidden;
+    min-width: 100%;
+    max-width: 100%;
+    /**/width: 100%;
+}
+
+
+.summary-list > li, .summary-list > ul, .summary-list > ol {
+    min-width: calc(100% - var(--list-indentation));
+    max-width: calc(100% - var(--list-indentation));
+    /**/width: calc(100% - var(--list-indentation));
+}
+
+
+.summary-list li {
+    display: list-item;
+
+    min-height: fit-content;
+    max-height: fit-content;
+    /**/height: fit-content;
+}
+
+
+.summary-list li > div {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    align-items: center;
+
+    min-width: 100%;
+    max-width: 100%;
+    /**/width: 100%;
+    min-height: fit-content;
+    max-height: fit-content;
+    /**/height: fit-content;
+}
+
+
+.summary-list li > span,      /* Before div from JS */
+.summary-list li > div > span /* After div from JS  */ {
+    display: inline-block;
+    white-space: normal;
+
+    min-width: fit-content; /* Set from JS */
+    max-width: fit-content; /* Set from JS */
+    /**/width: fit-content; /* Set from JS */
+    min-height: fit-content;
+    max-height: fit-content;
+    /**/height: fit-content;
+}
+.summary-list li:first-child > div {
+    border-top: 1px solid var(--bd-table-cell);
+}
+.summary-list li > div {
+    border-bottom: 1px solid var(--bd-table-cell)
+}

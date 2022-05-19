@@ -4,14 +4,14 @@
 <html>
 <head>
     <!-- HTML boilerplate -->
-    <title>The Lux shading language</title>
+    <title>Umbra | Lux</title>
     <meta charset="UTF-8">
     <meta name="author" content="Snek" />
-    <meta name="description" content="Lux language specification" />
-    <link rel="icon" href="Logos/Lux.png" type="image/icon type">
+    <meta name="description" content="Umbra and Lux languages specification"/>
+    <link rel="icon" href="Logos/Lux.png" type="image/png">
 
     <!-- Style -->
-    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no" />
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no"/>
     <link rel="stylesheet" type="text/css" href="Styles/Init.css" media="screen">
 </head>
 
@@ -32,14 +32,9 @@
 
 <body onresize="ui_slider._onresize()">
     <!--------------------------------------------------------------------->
-    <!-- Mask                                                            -->
+    <!-- Fix                                                             -->
     <!--------------------------------------------------------------------->
     <div style="min-width: 100vw; min-height: 100vh; background-color: var(--bg); position: fixed; z-index: 999999;" id="main-mask"></div>
-
-
-    <!--------------------------------------------------------------------->
-    <!-- Slider                                                          -->
-    <!--------------------------------------------------------------------->
     <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
     <!-- !                           ^ not a random value -->
 
@@ -59,149 +54,9 @@
         <logo- style="background-image: url('Logos/Photon.png');"></logo->
 
         <main-scroll->
-            <!--------------------------------------------------------------------->
-            <!-- Overview                                                        -->
-            <!--------------------------------------------------------------------->
-            <div style="margin-top: var(--main-padding-r);"></div>
-            <h1 id="overview"></h1>
-            <p>
-                Lux is a <b>high level compiled shading language</b> with the aim of helping developers to efficiently write shaders without going through the tedious work of manually managing buffers and shaders.<br>
-                It compiles to <b>GLSL 4.6</b>.
-            </p>
-            <p>The language is meant to be used alongside <b>Umbra</b>, the main programming language of the Photon Engine, as it is highly compatible and interfacing shaders requires little to no effort.</p>
-            <p>Lux is part of the <b>Photon SDK</b>.</p>
-            <p><a href="#quick-reference-tabs">Quick reference tabs</a></p>
-
-            <lux-logo-></lux-logo->
-            <umbra-logo-></umbra-logo->
-            <logo- style="background-image: url('Logos/Lux.png');"></logo->
-            <logo- style="background-image: url('Logos/Umbra.png');"></logo->
-
-
-
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Preprocessor                                                    -->
-            <!--------------------------------------------------------------------->
-            #include "./Page/Preprocessor.html"
-
-
-
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Language                                                        -->
-            <!--------------------------------------------------------------------->
-            <h1 id="language"></h1>
-
-            #include "./Page/Language/LanguageConcepts.html"
-            #include "./Page/Language/Namespaces.html"
-            #include "./Page/Language/Types.html"
-            #include "./Page/Language/Values.html"
-            #include "./Page/Language/Routines.html"
-            #include "./Page/Language/Templates.html"
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Const qualifier                                                 -->
-            <!--------------------------------------------------------------------->
-            <h1 id="const-qualifier"></h1>
-            <p>
-                The <code><t->const</t-></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
-                Reference const parameters are not allowed, as well as const functions, const struct members and const tuple elements.<br>
-            </p>
-            <p>
-                As opposed to GLSL, const symbols can be initialized using non-const expressions.<br>
-                The qualifier doesn't affect compiler optimizations or the GLSL output in any way.
-            </p>
-            <p>
-                Passing a const identifier as argument of reference parameters is not allowed and will result in a semantic error.<br>
-                Const variables cannot have undefined value.
-            </p>
-
-            <example2->
-                <label2-></label2->
-                <div>
-                    <w->struct</w-> <t->s</t-> {
-                        <t->uint</t-> a;            <c->// Ok, non-const member</c->
-                        <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
-                    }
-                    <t->s const</t-> var;           <c->// Ok, const global variable</c->
-
-                    <c->//double const fun(){}              </c-><ce->// Error, functions cannot be const</ce->
-                    <c->//double fun(double const &arg){}   </c-><ce->// Error, references cannot be const</ce->
-
-                    <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
-                        <c->//uint const a;                 </c-><ce->// Error, uninitialized const</ce->
-                        <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
-                        <t->uint const</t-> b = arg, c;          <c->// Ok</c->
-                        <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
-                        c = <k->a</k-> + b;                      <c->// Ok</c->
-                    }
-                </div>
-            </example2->
-            <p>
-                See
-                <a href="#compiler-optimizations">Compiler optimizations</a>
-            </p>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Symbol aliases                                                  -->
-            <!--------------------------------------------------------------------->
-            <h1 id="symbol-aliases"></h1>
-            <p>
-                <b>Symbol aliases</b> are <b>alternative names</b> for symbols.
-                Symbols can be aliased using the <code><w->alias</w-></code> keyword.<br>
-                Any declared symbol can be aliased, including modules, generated functions and other aliases.
-            </p>
-            <p>
-                An alias is not simply replaced like a <a href="#macros">macro</a> but it identifies the symbol itself in a unique way.<br>
-                Once an alias is declared, the alias and the symbol it aliases can be used interchangeably.
-            </p>
-            <p>
-                Variables can be aliased before their declaration, but the alias can only be used after the declaration of the variable.
-            </p>
-
-            <syntax->
-                <fill->
-                    <label-></label->
-                    <div>
-                        alias <elm->name<sup>id</sup></elm-> = <elm->symbol<sup>id</sup></elm->;
-                    </div>
-                </fill->
-            </syntax->
-            <example2->
-                <label2->Example 1</label2->
-                <div>
-                    <w->namespace</w-> n {
-                        <t->void</t-> <f->f</f->(){}
-                    }
-                    <w->alias</w-> n2 = n;        <c->// Ok, n2 = module.n</c->
-                    <w->alias</w-> f2 = n2.<f->f</f->;    <c->// Ok, f2 = (module.n2).f = module.n.f</c->
-                    <w->alias</w-> f3 = n2.<f->f2</f->;   <c->// Ok, f2 = (module.n2).(module.f2) = module.n.f</c->
-
-                    <t->void</t-> <f->main</f->(){
-                        <f->f2</f->();            <c->// Ok, calls n.f()</c->
-                        <f->f3</f->();            <c->// Ok, calls n.f()</c->
-                    }
-                </div>
-            </example2->
-
-
-
-
-
-            #include "./Page/Language/Statements.html"
+            #include "./Page/Overview/Overview.html"
+            #include "./Page/Preprocessor/Preprocessor.html"
+            #include "./Page/Language/Language.html"
 
 
 
@@ -329,6 +184,70 @@
                 //TODO the mod function returns the same sign of /
                 //TODO add other types
 
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
+                //TODO
                 //TODO
                 //TODO
                 //TODO
@@ -1225,6 +1144,9 @@
     <!-- Functionalities -->
     <script src="Scripts/UI/Slider.js"></script>
     <script src="Scripts/UI/CopyCode.js"></script>
+
+    <!-- Custom -->
+    <script src="Scripts/Custom/SummaryList.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

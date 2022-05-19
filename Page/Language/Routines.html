@@ -49,7 +49,7 @@
         <label->Parameter syntax</label->
         <div>
             <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
+            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
             <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm->
         </div>
     </right->
@@ -78,11 +78,11 @@
 <h1 id="reference-parameters"></h1>
 <p>
     By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
-    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#tokens">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
+    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#syntactic-elements">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
 </p>
 <p>
     Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
-    Notice that in this case, the <code>&</code> <a href="#tokens">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
+    Notice that in this case, the <code>&</code> <a href="#syntactic-elements">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
 </p>
 
 <example2->
@@ -117,7 +117,7 @@
 <p>
     <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
     A function call must provide an argument for each parameter of the function.<br>
-    Reference parameters (<a href="#reference-parameters"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
+    Reference parameters (<a href="#references"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
 </p>
 <p>
     The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>

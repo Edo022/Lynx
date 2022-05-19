@@ -50,13 +50,13 @@ var setup_syntax = {
     format_arrows : function(){
         // Calculate constants
         let margin = parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--syntax-arrow-margin').slice(0, -2));
-        let arrow_d = 5;                                                                                                 //!^ remove 'px' suffix
-        let r = 0.05, fix = 0.04;
+        let arrow_d = 5;                                                                                                 //!^ Remove 'px' suffix
+        let fix = 0.04, mfix = 0.3, r = 0.2;
 
         let a = Array();
-            a['T'.charCodeAt(0)] = Math.PI * 1.5; //! y is inverted
+            a['T'.charCodeAt(0)] = Math.PI * 1.5; //! T is inverted
             a['R'.charCodeAt(0)] = Math.PI * 0.0;
-            a['B'.charCodeAt(0)] = Math.PI * 0.5; //! y is inverted
+            a['B'.charCodeAt(0)] = Math.PI * 0.5; //! T is inverted
             a['L'.charCodeAt(0)] = Math.PI * 1.0;
         ;
 
@@ -65,11 +65,14 @@ var setup_syntax = {
         let tags = [
             'TR',  'TB',  'TL',  'RB',  'RL',  'RT',  'BL',  'BT',  'BR',  'LT',  'LR',  'LB',
             'TRC', 'TBC', 'TLC', 'RBC', 'RLC', 'RTC', 'BLC', 'BTC', 'BRC', 'LTC', 'LRC', 'LBC',
+            'TR-B', 'BR-B',  'LT-B',  'LR-B',  'LB-B',
+            'TRCB', 'BRCB',  'LTCB',  'LRCB',  'LBCB',
+            'TR-T', 'BR-T',  'LT-T',  'LR-T',  'LB-T',
+            'TRCT', 'BRCT',  'LTCT',  'LRCT',  'LBCT',
             'C'
         ];
         for(let i = 0; i < tags.length; ++i) {
             var children = document.getElementsByTagName(`B-${ tags[i] }-`);
-
 
             // For each element
             for(let j = 0; j < children.length; ++j) {
@@ -79,6 +82,11 @@ var setup_syntax = {
                 let s = '';
                 let f = tagName.charCodeAt(2);
                 let t = tagName.charCodeAt(3);
+                let m = 0; switch(tagName[5]) { case 'T': m = -1; break; case 'B': m = 1; }; //! Y is inverted
+                let ma = (m && (tagName[2] == 'R' || tagName[2] == 'L')) ? (mfix * m) : 0;
+                let mb = (m && (tagName[3] == 'R' || tagName[3] == 'L')) ? (mfix * m) : 0;
+                children[j].className += "syntax-arrow";
+                console.log(r);
 
 
                 // Connector
@@ -93,11 +101,21 @@ var setup_syntax = {
                 // Arrows
                 else {
                     // Calculate coordinates
+                    // let r2 = r + mfix * Math.abs(m);
+                    let r2 = r;
                     let
-                        ax0 = Math.cos(a[f]) * (1 + fix), ax = ax0 / 2 + 0.5,
-                        ay0 = Math.sin(a[f]) * (1 + fix), ay = ay0 / 2 + 0.5,
-                        bx0 = Math.cos(a[t]) * (1 + fix), bx = bx0 / 2 + 0.5,
-                        by0 = Math.sin(a[t]) * (1 + fix), by = by0 / 2 + 0.5,
+                        ax = (Math.cos(a[f]) * (1 + fix     ))      / 2 + 0.5,
+                        aX = (Math.cos(a[f]) * (1 + fix - r2))      / 2 + 0.5,
+                        ay = (Math.sin(a[f]) * (1 + fix     ) + ma) / 2 + 0.5,
+                        aY = (Math.sin(a[f]) * (1 + fix - r2) + ma) / 2 + 0.5,
+                        bx = (Math.cos(a[t]) * (1 + fix     ))      / 2 + 0.5,
+                        bX = (Math.cos(a[t]) * (1 + fix - r2))      / 2 + 0.5,
+                        by = (Math.sin(a[t]) * (1 + fix     ) + mb) / 2 + 0.5,
+                        bY = (Math.sin(a[t]) * (1 + fix - r2) + mb) / 2 + 0.5,
+
+                        cx = 0 / 2 + 0.5,
+                        cy = (ma ? ma : mb) / 2 + 0.5,
+
                         h0x = Math.cos(a[t] + Math.PI * 1.25),
                         h0y = Math.sin(a[t] + Math.PI * 1.25),
                         h1x = Math.cos(a[t] - Math.PI * 1.25),
@@ -106,15 +124,15 @@ var setup_syntax = {
 
                     // Draw arrow
                     s =
-                        `M${ ax * w },${ ay * h }` +                                                    // Starting position
-                        `L${ (ax - ax0 * r) * w },${ (ay - ay0 * r) * h }` +                            // Draw starting segment
-                        `Q${ 0.5 * w },${ 0.5 * h } ${ (bx - bx0 * r) * w },${ (by - by0 * r) * h }` +  // Draw curve
-                        `L${ bx * w },${ by * h }`                                                      // Draw ending segment
+                        `M${ ax * w },${ ay * h }` +                            // Starting position
+                        `L${ aX * w },${ aY * h }` +                            // Draw starting segment
+                        `Q${ cx * w },${ cy * h } ${ bX * w },${ bY * h }` +    // Draw curve
+                        `L${ bx * w },${ by * h }`                              // Draw ending segment
                     ;
                     if(tagName[4] != 'C') s +=
-                        `m${ h0x * arrow_d },${ h0y * arrow_d }` +                                      // Starting position
-                        `L${ bx * w },${ by * h }` +                                                    // Draw head form 0 to O
-                        `l${ h1x * arrow_d },${ h1y * arrow_d }`                                        // Draw head from O to 1
+                        `m${ h0x * arrow_d },${ h0y * arrow_d }` +              // Starting position
+                        `L${ bx * w },${ by * h }` +                            // Draw head form 0 to O
+                        `l${ h1x * arrow_d },${ h1y * arrow_d }`                // Draw head from O to 1
                     ;
                 }
 
@@ -164,9 +182,11 @@ var setup_syntax = {
     format_code : function() {
         let c = document.getElementsByTagName('EXAMPLE2-');
         for(let i = 0; i < c.length; i++){
-            let div = c[i].getElementsByTagName('DIV')[0];
-            div.innerHTML = setup_syntax.format(div.innerHTML) + '<br>';
-            // Add trailing newline to fix CSS's bugged max-height  ^
+            let divs = c[i].getElementsByTagName('DIV');
+            for(let j = 0; j < divs.length; ++j){
+                divs[j].innerHTML = setup_syntax.format(divs[j].innerHTML) + '<br>';
+                // Add trailing newline to fix CSS's bugged max-height  ^
+            }
         }
     },
 

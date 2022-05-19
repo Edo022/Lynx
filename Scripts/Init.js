@@ -7,6 +7,8 @@ function init() {
         setup_syntax.init();
     ui_copy_code.init();
 
+    summary_list.init();
+
 
     // This scrolls to the correct header, which is the same the browser already scrolled to.
     // Apparently, JS is loaded after scrolling to it and adding new HTML elements messes everything up,

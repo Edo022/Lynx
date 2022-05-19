@@ -92,10 +92,10 @@
         <label->Parameter syntax</label->
         <div>
             <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
+            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
             <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
             <c->/* Normal parameters */</c->    ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#reference-parameters"><c->Reference parameters</c-></a> */</c-> ?<elm->type<sup>id</sup></elm-> &<elm->name<sup>id</sup></elm->
+            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> ?<elm->type<sup>id</sup></elm-> &<elm->name<sup>id</sup></elm->
             <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      ?<elm->type<sup>id</sup></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
         </div>
     </right->
@@ -103,7 +103,7 @@
 
 <p>
     Any function with one or more generic type parameters is considered a function template.<br>
-    Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> <a href="#tokens">token</a>.<br>
+    Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> <a href="#syntactic-elements">token</a>.<br>
     Parameters declared using the same type identifier will always have the same type in any generated function.
 </p>
 <p>

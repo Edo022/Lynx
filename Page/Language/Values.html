@@ -32,7 +32,7 @@
     Unary <a href="#common-operators"><code>+</code></a> and <a href="#common-operators"><code>-</code></a> operators are not part of the literal.
 </p>
 <p>
-    Literals are not sequences of tokens like other semantic elements, but a category of tokens.<br>
+    Literals are not sequences of <a href="#syntaxtic-elements">syntactic elements</a> like other <a href="#semantic-elements">semantic elements</a>, but a category of <a href="#syntaxtic-elements">syntactic element</a>.<br>
     Regex syntax is used to describe their pattern:
 </p>
 <div class="table-container"><table>
@@ -149,11 +149,11 @@
                 </tr>
                 <tr>
                     <td><elm-><t->T</t-><sup>type</sup></elm-></td>
-                    <td><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><b-lr-></b-lr-></td>
                     <td><code>(</code></td>
-                    <td><loop-end-></loop-end-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
                     <td><elm-><t->U<sup>r</sup></t-></elm-></td>
-                    <td><branch-t-></branch-t-><branch-c-></branch-c-><branch-end-></branch-end-></td>
+                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
                     <td><code>,</code></td>
                     <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
                 </tr>
@@ -331,7 +331,7 @@
         <th>Right values</th>
     </tr>
     <tr>
-        <td>Non-const <a href="#functions">parameters</a> and <a href="#reference-parameters">referece (<code>&</code>) parameters</a></td>
+        <td>Non-const <a href="#functions">parameters</a> and <a href="#references">referece (<code>&</code>) parameters</a></td>
         <td><a href="#const-qualifier">Const</a> parameters</td>
     </tr>
     <tr>
