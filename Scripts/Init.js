@@ -1,4 +1,11 @@
 
+function move_to_view(){
+    let header = window.location.href;
+    window.location.replace(header);
+}
+
+
+
 
 function init() {
     ui_slider.init();
@@ -16,9 +23,7 @@ function init() {
     // Apparently, JS is loaded after scrolling to it and adding new HTML elements messes everything up,
     // so JS has to scroll again after the new elements are loaded.
     // Anything else refuses to work
-    let header = window.location.href;
-    window.location.replace(header);
-
+    move_to_view();
 
     // The id="main-mask" div is used to hide the page before js is done moving stuff around as anything else just doesn't work
     // This line removes it from the body so that the user can see the page and think it loaded flawlessly

@@ -1,4 +1,5 @@
 
+let readability_highlighted = false;
 
 var readability = {
 
@@ -18,7 +19,9 @@ var readability = {
 
             // Load new elements
             if(/^\s*$/.test(n.textContent)) continue; // Skip empty elements
-            let w = n.textContent.split(/(?=\b)/);
+            let w = n.textContent.split(/((?<=[a-zA-Z]+)(?=[^a-zA-Z]+)|(?<=[^a-zA-Z]+)(?=[a-zA-Z]+))/);
+            //!                           ^ word-to-symbol boundary    ^ symbol-to-word boundary
+
             let span = document.createElement('span');
             for(let j = 0; j < w.length; ++j){
 
@@ -58,7 +61,8 @@ var readability = {
 
     toggle : function(){
         localStorage.setItem('readability', localStorage.getItem('readability') != 'true');
-        location.reload();
+        readability.load_css();
+        move_to_view();
     },
 
 
@@ -76,19 +80,29 @@ var readability = {
 
 
 
-    load_css : function(s){
-        let link = `<link rel="stylesheet" type="text/css" href="Styles/Custom/Readability${ s }.css" media="screen">`;
-        document.getElementsByTagName("head")[0].innerHTML += link;
+    load_css : function(){
+        let r = localStorage.getItem('readability') == 'true';
+        let link = `<link id="readability-css" rel="stylesheet" type="text/css" href="Styles/Custom/Readability${ r ? 'On' : 'Off' }.css" media="screen">`;
+
+        let e = document.getElementById('readability-css');
+        if(e == null) {
+            document.getElementsByTagName("head")[0].innerHTML += link;
+        }
+        else {
+            e.outerHTML = link;
+        }
+
+        if(!readability_highlighted) {
+            readability.highlight();
+            readability_highlighted = true;
+        }
     },
 
 
 
 
     init : function(){
-        r = localStorage.getItem('readability') == 'true';
-        readability.load_css(r ? 'On' : 'Off');
-        if(r) readability.highlight();
-
+        readability.load_css();
         readability.spanw_button();
     }
 }

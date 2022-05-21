@@ -1,8 +1,8 @@
 * {
-    font-weight: normal;
+    font-weight: inherit;
 }
 b {
-    font-weight: bold;
+    font-weight: bolder;
 }
 
 
