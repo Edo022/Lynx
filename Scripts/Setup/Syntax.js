@@ -86,7 +86,6 @@ var setup_syntax = {
                 let ma = (m && (tagName[2] == 'R' || tagName[2] == 'L')) ? (mfix * m) : 0;
                 let mb = (m && (tagName[3] == 'R' || tagName[3] == 'L')) ? (mfix * m) : 0;
                 children[j].className += "syntax-arrow";
-                console.log(r);
 
 
                 // Connector

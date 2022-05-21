@@ -1,0 +1,13 @@
+* {
+    font-weight: normal;
+}
+b {
+    font-weight: bold;
+}
+
+
+.readability-button {
+    background-color: var(--bg);
+}
+.readability-button > .a { font-weight: normal; }
+.readability-button > .b  { font-weight: normal; }

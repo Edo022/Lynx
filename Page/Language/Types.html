@@ -5,7 +5,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="types"></h1>
 <p>
-    <b>Data types</b> define how <b><a href="#values">values</a></b> are <b>interpreted</b> during runtime and how they can be used within <a href="#statements">expressions</a>.<br>
+    <b>Data types</b> define how <b><a href="#values">values</a></b> are <b>interpreted</b> during runtime and how they can be used within <a href="#expressions">expressions</a>.<br>
 </p>
 <p>
     Both languages are statically types.<br>
@@ -379,7 +379,7 @@
     <b>Structs</b> are used to <b>group named <a href="#values">values</a></b> of <b>different <a href="#types">types</a></b>.<br>
     The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a> and other structs.<br>
     They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
-    As with <a href="#variables">variables</a>, uninitialized members cannot be used within <a href="#statements">expressions</a>. Struct <a href="#values">values</a> must also be fully initialized before they can be used in <a href="#statements">expressions</a>.
+    As with <a href="#variables">variables</a>, uninitialized members cannot be used within <a href="#expressions">expressions</a>. Struct <a href="#values">values</a> must also be fully initialized before they can be used in <a href="#expressions">expressions</a>.
 </p>
 <p>
     Empty structs, <a href="#unnamed-types">unnamed structs</a> and trailing element <code>;</code> are allowed.<br>
@@ -803,8 +803,8 @@
 <!--------------------------------------------------------------------->
 <h1 id="implicit-conversions"></h1>
 <p>
-    <b>Implicit conversions</b> are performed when an <b><a href="#statements">expression</a></b> of the <b>incorrect <a href="#types">type</a></b> is used in place of the expected one.<br>
-    This includes anything whose syntax requires an <a href="#statements">expression</a>.<br>
+    <b>Implicit conversions</b> are performed when an <b><a href="#expressions">expression</a></b> of the <b>incorrect <a href="#types">type</a></b> is used in place of the expected one.<br>
+    This includes anything whose syntax requires an <a href="#expressions">expression</a>.<br>
     Conversions are not allowed in <a href="#function-templates">function template</a> calls and inizializer values of <a href="auto-specifier">auto</a> <a href="#semantic-elements">symbols</a>.
 </p>
 <p>
@@ -1284,21 +1284,16 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Typeof and baseof specifiers                                    -->
+<!-- Typeof specifier                                                -->
 <!--------------------------------------------------------------------->
-<h1 id="typeof-and-baseof-specifiers"></h1>
+<h1 id="typeof-specifier"></h1>
 <p>
-    The <b><code><t->typeof</t-></code></b> and <b><code><t->baseof</t-></code></b> specifiers are used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#statements">expression</a></b> that is passed to them.<br>
-    <code><t->typeof</t-></code> returns the <a href="#types">type</a> of the <a href="#statements">expression</a>, whereas <code><t->baseof</t-></code> returns its base <a href="#types">type</a>.<br>
+    The <b><code><t->typeof</t-></code></b> specifier is used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#expressions">expression</a></b> that is passed to it.<br>
     Passing a <a href="#types">type</a> to <code><t->typeof</t-></code> returns <code><t->typename</t-></code>.
 </p>
 <p>
-    <code><t->baseof</t-></code> can only be used on <a href="#arrays">arrays</a>, <a href="#enums">enums</a> and <a href="#primitive-types">primitive types</a>.<br>
-    The base type of <a href="#primitive-types">primitive types</a> is the type itself.<br>
-    The <a href="#values">values</a> passed to these specifiers can be <a href="#compile-time-values">runtime</a>.
-</p>
-<p>
-    The <code><t->typeof</t-></code> and <code><t->baseof</t-></code> specifiers can be used as <a href="#constructors">constructors</a>.<br>
+    The <a href="#values">value</a> passed to <code><t->typeof</t-></code> can be <a href="#compile-time-values">runtime</a>.
+    <code><t->typeof</t-></code> <a href="#constructors">constructors</a> are allowed.<br>
     Circular dependencies are a semantic error. //TODO LINK
 </p>
 
@@ -1310,17 +1305,6 @@
                 <tr>
                     <td><b-lr-></b-lr-></td>
                     <td><code><t->typeof</t-></code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>(</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T</t-><sup>r</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>)</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code><t->baseof</t-></code></td>
                     <td><b-lr-></b-lr-></td>
                     <td><code>(</code></td>
                     <td><b-lr-></b-lr-></td>
@@ -1341,15 +1325,14 @@
         <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
             <t->int</t-> a[<k->2</k->] = (<k->1</k->, <k->2</k->);      <c->// a has type int[2]</c->
             <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
-            <t->baseof</t->(<k->a</k->) c = <k->a</k->[<k->0</k->];     <c->// c has type int</c->
         }
     </div>
 </example2->
 <example2->
     <label2->Example 2</label2->
     <div>
-        <c->//typeof(b) a;</c->  <ce->//Error, circular dependency</ce->
-        <c->//typeof(a) b;</c->  <ce->//Error, circular dependency</ce->
+        <c->//typeof(b) a(){};</c->  <ce->//Error, circular dependency with b</ce->
+        <c->//typeof(a) b(){};</c->  <ce->//Error, circular dependency with a</ce->
     </div>
 </example2->
 
@@ -1363,7 +1346,7 @@
     Similarly to the C syntax, the <a href="#types">type</a> <a href="#identifiers">identifier</a> is not specified and the definition is used as <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a>.
 </p>
 <p>
-    Any <a href="#semantic-elements">symbol</a> defined inside these <a href="#types">types</a> can still be referenced through the <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a> and <a href="#typeof-and-baseof-specifiers"><code><t->auto</t-></code></a> specifiers.<br>
+    Any <a href="#semantic-elements">symbol</a> defined inside these <a href="#types">types</a> can still be referenced through the <a href="#typeof-specifier"><code><t->typeof</t-></code></a> and <a href="#typeof-specifier"><code><t->auto</t-></code></a> specifiers.<br>
     Elements of <a href="#enums">enums</a> and <a href="#structs">structs</a> can be <a href="#element-indexing">indexed</a> and <a href="#name-resolution">accessed</a> normally.<br>
     Defining an unnamed type without also declaring the <a href="#semantic-elements">symbol</a> is not allowed.
 </p>

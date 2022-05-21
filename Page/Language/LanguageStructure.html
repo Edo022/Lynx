@@ -67,18 +67,18 @@
 <!--------------------------------------------------------------------->
 <h1 id="syntactic-elements"></h1>
 <p>
-    <b>Syntactic elements</b>, or as they are called in most languages, Tokens, are the fundamental elements of the source code of any program.<br>
+    <b>Syntactic elements</b>, also known as Tokens, are the fundamental elements of the source code of any program.<br>
     They are <b>sequences</b> of one or more <a href="#character-set">allowed <b>characters</b></a> that follow specific patterns.<br>
     One or more syntactic elements create a <a href="#semantic-elements">semantic element</a>.
 </p>
 <p>
     A syntactic element ends when a character that isn't allowed in its pattern is encountered.
     Syntactic elements can also be separated by any number of <code><tab-></tab-></code>, <code><space-></space-></code> and <code><nl-></nl-></code> characters or <a href="#comments">comments</a>.<br>
-    Syntactic elements that aren't declared or part of the language generate a syntactic error. //TODO LINK
+    Those who that don't follow any of the specified patterns generate a syntactic error. //TODO LINK
     //TODO sizeof
 </p>
 <p>
-    All syntactic elements are case sensitive, with the only exception of hexadecimal <a href="#literals">literals</a>.<br>
+    Syntactic elements are case sensitive, with the only exception of hexadecimal <a href="#literals">literals</a>.<br>
     <code><tab-></tab-></code>, <code><space-></space-></code> and <code><nl-></nl-></code> characters are not syntactic elements.
 </p>
 <p>
@@ -97,17 +97,16 @@
         <tr>
             <td style="line-height: 80px;" class="nowrap"><a href="#keywords">Keyword</a></td>
             <td class="center" colspan="2">
-                <a href="#namespaces">                  <code><w->namespace</w-></code></a>
-                <a href="#enums">                       <code><w->enum</w-></code></a>
-                <a href="#structs">                     <code><w->struct</w-></code></a>
-                <a href="#auto-specifier">              <code><t->auto</t-></code></a>
-                <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a>
-                <a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a>
-                <a href="#symbol-aliases">              <code><w->alias</w-></code></a>
-                <a href="#import-directive">            <code><w->import</w-></code></a>
-                <a href="#export-directive">            <code><w->export</w-></code></a>
-                <elm->                                  <code>(</code><code>)</code></elm->
-                <a href="#scopes-and-symbols"><elm->    <code>{</code><code>}</code></elm-></a>
+                <a href="#namespaces">              <code><w->namespace</w-></code></a>
+                <a href="#enums">                   <code><w->enum</w-></code></a>
+                <a href="#structs">                 <code><w->struct</w-></code></a>
+                <a href="#auto-specifier">          <code><t->auto</t-></code></a>
+                <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
+                <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
+                <a href="#import-directive">        <code><w->import</w-></code></a>
+                <a href="#export-directive">        <code><w->export</w-></code></a>
+                <elm->                              <code>(</code><code>)</code></elm->
+                <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
             </td>
             <td class="center" colspan="2">
                 <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -195,31 +194,27 @@
     <ul class="summary-list">
         <li>
             <span><a href="#namespaces"><code><w->namespace</w-></code></a></span>
-            <span>Declares a <a href="#namespaces">namespace</a>.</span>
+            <span>Used to declare a <a href="#namespaces">namespace</a>.</span>
         </li>
         <li>
             <span><a href="#enums"><code><w->enum</w-></code></a></span>
-            <span>Declares an <a href="#enums">enum</a>.</span>
+            <span>Used to declare an <a href="#enums">enum</a>.</span>
         </li>
         <li>
             <span><a href="#structs"><code><w->struct</w-></code></a></span>
-            <span>Declares a <a href="#structs">struct</a>.</span>
+            <span>Used to declare a <a href="#structs">struct</a>.</span>
         </li>
         <li>
             <span><a href="#auto-specifier"><code><t->auto</t-></code></a></span>
-            <span>Automatic <a href="#types">type</a>.</span>
+            <span>Can be used in place of the <a href="#types">type</a> of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> to declare it using the <a href="#types">type</a> of its initializer <a href="#values">value</a>.</span>
         </li>
         <li>
-            <span><a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a></span>
-            <span>Retrieves the <a href="#types">type</a> of a <a href="#semantic-elements">symbol</a>.</span>
-        </li>
-        <li>
-            <span><a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a></span>
-            <span>Retrieves the <a href="#primitive-types">base type</a> of a <a href="#semantic-elements">symbol</a>.</span>
+            <span><a href="#typeof-specifier"><code><t->typeof</t-></code></a></span>
+            <span>Retrieves the <a href="#types">type</a> of an <a href="#expressions">expression</a>.</span>
         </li>
         <li>
             <span><a href="#symbol-aliases"><code><w->alias</w-></code></a></span>
-            <span>Creates an <a href="#aliases">alias</a> of a <a href="#semantic-elements">symbol</a>.</span>
+            <span>Creates an alternative <a href="#name-resolution">path</a> for a <a href="#semantic-elements">symbol</a>.</span>
         </li>
         <li>
             <span><a href="#import-directive"><code><w->import</w-></code></a></span>
@@ -238,39 +233,39 @@
         </li>
         <li>
             <span><a href="#match-statement"><code><w->match</w-></code></a></span>
-            <span>Changes execution path based on multiple <a href="#bool-type">conditions</a>.</span>
+            <span>Changes execution path based on the value of an <a href="#expressions">expression</a>.</span>
         </li>
         <li>
             <span><a href="#for-loops"><code><w->for</w-></code></a></span>
-            <span>Runs a <a href="#statements">statement</a> an arbitrary number of times.</span>
+            <span>Executes a <a href="#statements">statement</a> an arbitrary number of times.</span>
         </li>
         <li>
             <span><a href="#while-loops"><code><w->while</w-></code></a></span>
-            <span>Runs a <a href="#statements">statement</a> until a condition is no longer true.</span>
+            <span>Executes a <a href="#statements">statement</a> until its <a href="#boolean-type">condition</a> evaluates to <code><k->false</k-></code>.</span>
         </li>
         <li>
             <span><a href="#while-loops"><code><w->do</w-></code></a></span>
-            <span>Used with <a href="#while-loops">while</a> to check the <a href="#bool-type">condition</a> after having ran a <a href="#statements">statement</a>.</span>
+            <span>Used with <a href="#while-loops"><code><w->while</w-></code></a> to check the <a href="#bool-type">condition</a> after having executed the <a href="#statements">statement</a> instead of the other way around.</span>
         </li>
         <li>
             <span><a href="#continue-and-break-statements"><code><w->continue</w-></code></a></span>
-            <span>Skips an arbitrary number of iterations.</span>
+            <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
         </li>
         <li>
             <span><a href="#continue-and-break-statements"><code><w->break</w-></code></a></span>
-            <span>Exits an arbitrary number of innermost <a href="#iteration">loops</a>.</span>
+            <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
         </li>
         <li>
             <span><a href="#once-statement"><code><w->once</w-></code></a></span>
-            <span>Runs a <a href="#statements">statement</a> only in the first iteration of a <a href="#iteration">loop</a>.</span>
+            <span>Executes a <a href="#statements">statement</a> only during the first iteration of the innermost enclosing <a href="#iteration">loop</a>.</span>
         </li>
         <li>
             <span><a href="#then-statement"><code><w->then</w-></code></a></span>
-            <span>Runs a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> ran all the iterations.</span>
+            <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> executed at least one iteration and didn't stop through a <code><w->break</w-></code> statement.</span>
         </li>
         <li>
             <span><a href="#else-statement"><code><w->else</w-></code></a></span>
-            <span>Runs a <a href="#statements">statement</a> if the <a href="#bool-type">condition</a> of the immediatly preceeding <a href="#for-loops">for</a>, <a href="#while-loops">while</a> or <a href="#if-statement">if</a> was <code><k->false</k-></code>.</span>
+            <span>Executes a <a href="#statements">statement</a> if the <a href="#bool-type">condition</a> of the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code></a> statement evaluates to <code><k->false</k-></code>.</span>
         </li>
         <li>
             <span><a href="#return-statement"><code><w->return</w-></code></a></span>
@@ -278,39 +273,39 @@
         </li>
         <li>
             <span><a href="#defer-statement"><code><w->defer</w-></code></a></span>
-            <span>Delays a routine call until the first <a href="#return-statement"><code><w->return</w-></code></a> statement that is encountered.</span>
+            <span>Delays a <a href="#routine-calls">routine call</a> until the first <a href="#return-statement"><code><w->return</w-></code></a> statement is encountered.</span>
         </li>
     </ul><br>
     <li>Containers</li>
     <ul class="summary-list">
         <li>
             <span><elm-><code>(</code><code>)</code></elm-></span>
-            <span>Groups an <a href="#statements">expression</a>, or encloses a list of <a href="#function-parameters">function parameters</a>. Also used in <a href="constructors">constructors</a> and <a href="#template-constraints">template contratints.</a></span>
+            <span>Groups an <a href="#expressions">expression</a>, or encloses a list of <a href="#routine-parameters">routine parameters</a>. Also used in <a href="#operator-precedence">operator precedence</a> and <a href="#template-constraints">template constraints.</a></span>
         </li>
         <li>
             <span><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a></span>
-            <span>Declares a new <a href="#scopes">scope</a>. Used to define a variety of <a href="#semantic-elements">semantic element.s</a></span>
+            <span>Declares a new <a href="#scopes">scope</a>. Used to declare most <a href="#semantic-elements">semantic elements.</a></span>
         </li>
     </ul><br>
     <li>Separators</li>
     <ul class="summary-list">
         <li>
             <span><a href="#statements"><code>,</code></a></span>
-            <span>Separates 2 or more <a href="#statements">expressions</a>.</span>
+            <span>Separates 2 or more <a href="#expressions">expressions</a>.</span>
         </li>
         <li>
             <span><a href="#statements"><code>;</code></a></span>
-            <span>Defines the end of certain <a href="#statements">statements and directives</a>.</span>
+            <span>Defines the end of <a href="#expression-statements">expression statements</a> or certain declarations and directives.</span>
         </li>
         <li>
             <span><a href="#name-resolution"><code>.</code></a></span>
-            <span>Concatenates 2 ore more <a href="#local-names">local names</a> to form a symbol path. Part of the <a href="#name-resolution">name resolution</a>.</span>
+            <span>Concatenates 2 ore more <a href="#local-names">local names</a> to form a symbol <a href="#name-resolution">path</a>.
         </li>
     </ul>
 </ul>
 <p>
     <a href="#keywords">Keywords</a> cannot be <a href="#name-shadowing">shadowed</a> like <a href="#identifiers">identifiers</a>.<br>
-    Attempting to do so generates a syntactic error. //TODO LINK
+    Attempting to do so generates a semantic error. //TODO LINK
 </p>
 
 
@@ -342,29 +337,29 @@
         <li>
             <span><a href="#templates"><code><w->template</w-></code></a></span>
             <span>
-                Declares a <a href="#templates">template</a>
-                [When used before the <elm-><code>&lt;</code><code>&gt;</code></elm-> Pseudo keyword].
+                Used to declare a <a href="#templates">template</a><br>
+                <span class="pseudo-keyword-constraint">[When used before the <elm-><code>&lt;</code><code>&gt;</code></elm-> pseudo keyword]</span>.
             </span>
         </li>
         <li>
             <span><elm-><code>&lt;</code><code>&gt;</code></elm-> </span>
             <span>
-                Part of a <a href="#templates">template declaration</a>, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a></a>
-                [When used after the <a href="#templates"><code><w->template</w-></code></a> pseudo keyword or after the path to a <a href="#templates">template</a> <a href="#symbols">symbol</a>].
+                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a></a><br>
+                <span class="pseudo-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> pseudo keyword or after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a>]</span>.
             </span>
         </li>
         <li>
             <span><a href="#templates"><code><w->when</w-></code></a></span>
             <span>
-                Specifies a <a href="#template-constraints">template constraint</a>
-                [When used before the body of a <a href="#templates">template</a> declaration].
+                Specifies a <a href="#template-constraints">template constraint</a><br>
+                <span class="pseudo-keyword-constraint">[When used before a body of a <a href="#templates">template</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><a href="#templates"><code>?</code></a></span>
             <span>
-                <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>
-                [When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> inside a <a href="#symbols">symbol</a> declaration].
+                <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
+                <span class="pseudo-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
             </span>
         </li>
     </ul><br>
@@ -373,15 +368,15 @@
         <li>
             <span><a href="#references"><code>&</code></a></span>
             <span>
-                Declares a symbol as <a href="#references">reference</a> or returns the <a href="#references">address</a> of a <a href="#variables">variable</a> as <a href="integral-types"><code><t->ulong</t-></code></a>
-                [When used before the <a href="#name-resolution">name</a> of a <a href="#symbols">symbol</a> in its declaration or before a <a href="#name-resolution">path</a> to a <a href="#variables">variable</a>].
+                Declares a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> as <a href="#references">reference</a>, or returns the <a href="#references">address</a> of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> as <a href="integral-types"><code><t->ulong</t-></code></a><br>
+                <span class="pseudo-keyword-constraint">[When used before the <a href="#name-resolution">name</a> of a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> declaration or before a <a href="#name-resolution">path</a> to a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a>]</span>.
             </span>
         </li>
         <li>
             <span><a href="#references"><code>*</code></a></span>
             <span>
-                Returns the address stored in a <a href="#references">reference</a> as a <a href="integral-types"><code><t->ulong</t-></code></a> <a href="#references">reference</a> //TODO
-                [When used before the <a href="#name-resolution">name</a> of a <a href="#symbols">symbol</a> in its declaration].
+                Returns the address stored in a <a href="#references">reference</a> as a <a href="integral-types"><code><t->ulong</t-></code></a> <a href="#references">reference</a> //TODO<br>
+                <span class="pseudo-keyword-constraint">[When used before a <a href="#references">reference</a> value]</span>.
             </span>
         </li>
     </ul><br>
@@ -390,43 +385,43 @@
         <li>
             <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
             <span>
-                Prevents the value of a <a href="#variables">variable</a> or the <a href="#references">address</a> of a <a href="#references">reference</a> to be modified after its declaration</a>
-                [When used before the <a href="#name-resolution">name</a> of a <a href="#symbols">symbol</a> or its <code>&</code> specifier in its declaration].
+                Prevents the value, and/or, if a <a href="#references">reference</a>, the stored address to be modified after the <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration</a><br>
+                <span class="pseudo-keyword-constraint">[When used before the <a href="#name-resolution">name</a> or the reference qualifier (<code>&</code>) of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><a href="#operator-precedence"><code><w->at</w-></code></a></span>
             <span>
-                Defines the <a href="#operator-precedence">precedence</a> of an <a href="#operators">operator</a>
-                [When used before the body of an <a href="#operators">operator</a> declaration].
+                Defines the <a href="#operator-precedence">precedence</a> of an <a href="#operators">operator</a><br>
+                <span class="pseudo-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><code><w->as</w-></code></span>
             <span>
-                Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the base type of an <a href="#enums">enum</a>
-                [When used in a <a href="#for-loops">for-each</a>, <a href="#for-loops">for-n</a> and <a href="#for-loops">for-range</a> loop, after the name of a <a href="#symbols">symbol</a> in an <a href="#import-directive">import</a> or <a href="#export-directive">export</a> directive or before the body of an <a href="#enums">enum</a> declaration].
+                Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the <a href="#primitive-types">primitive type</a> an <a href="#enums">enum</a> uses<br>
+                <span class="pseudo-keyword-constraint">[When used in the signature of a <a href="#for-loops">for-each</a>, <a href="#for-loops">for-n</a> or <a href="#for-loops">for-range</a> loop, after the name of a <a href="#symbols">symbol</a> in an <a href="#import-directive">import</a> or <a href="#export-directive">export</a> directive or at the end of the signature of an <a href="#enums">enum</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><code><w->to</w-></code></span>
             <span>
-                Defines the end of a numerical range
-                [When used in the <a href="#for-loops">for-range</a> loop or in a <a href="#match-statement">match case</a>].
+                Defines the end of a numerical range<br>
+                <span class="pseudo-keyword-constraint">[When used in the <a href="#for-loops">for-range</a> loop or in a <a href="#match-statement">match case</a>]</span>.
             </span>
         </li>
         <li>
             <span><a href="#temporary-variables"><code>$</code></a></span>
             <span>
-                References a <a href="#temporary-variables">temporary variable</a>
-                [When used before a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>].
+                References a <a href="#temporary-variables">temporary variable</a><br>
+                <span class="pseudo-keyword-constraint">[When used before a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>]</span>.
             </span>
         </li>
         <li>
             <span><code>=</code> </span>
             <span>
-                Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values
-                [When used after the <a href="#identifiers">identifier</a> of a <a href="#variables">variable</a> inside its declaration or the <a href="#identifiers">identifier</a> of a <a href="#routine-parameters">routine parameter</a> in its declaration].
+                Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values<br>
+                <span class="pseudo-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
             </span>
         </li>
     </ul>
@@ -498,7 +493,7 @@
 </p>
 <p>
     Certain <b>semantic elements</b> can be <b>referenced</b> to retrieve their value or obtain additional informations. These elements are called <b>symbols</b>.<br>
-    Symbols are referenced through their <a href="#name-resolution">name</a>, or using the <a href="#typeof-and-baseof-specifiers"><code><t->typeof</t-></code></a> or <a href="#typeof-and-baseof-specifiers"><code><t->baseof</t-></code></a> specifiers.<br>
+    Symbols are referenced through their <a href="#name-resolution">name</a>, or using the <a href="#typeof-specifier"><code><t->typeof</t-></code></a> specifier.<br>
     <a href="#unnamed-types">Unnamed types</a> are also symbols.
     //FIXME
 </p>
@@ -638,7 +633,7 @@
             </li>
         </ul>
         <li>
-            <span><a href="#statements">Expression</a></span>
+            <span><a href="#expressions">expression</a></span>
             <span>Generates a value when evaluated</span>
         </li>
         <ul>

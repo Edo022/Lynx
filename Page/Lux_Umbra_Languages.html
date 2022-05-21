@@ -426,14 +426,14 @@
                         <tr>
                             <fake-td></fake-td>
                             <td class="center"><code>=:</code></td>
-                            <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <a->a</a->) <f->=:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                            <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <a->a</a->) <f->=:</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Existence</td>
                             <fake-td></fake-td>
                         </tr>
                         <tr>
                             <fake-td></fake-td>
                             <td class="center"><code>!:</code></td>
-                            <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <a->a</a->) <f->!:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                            <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <a->a</a->) <f->!:</f-> (?<t->T</t-> <a->b</a->)</code></td>
                             <td class="left">Inexistence</td>
                             <fake-td></fake-td>
                         </tr>
@@ -675,7 +675,7 @@
                     <example2- style="margin: 0;">
                         <label2->Existence</label2->
                         <div>
-                            <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) {
+                            <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
                                 <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                                     <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
                                 }
@@ -688,7 +688,7 @@
                     <example2- style="margin: 0;">
                         <label2->Inexistence</label2->
                         <div>
-                            <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) {
+                            <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
                                 <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                                     <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
                                 }
@@ -1147,6 +1147,9 @@
 
     <!-- Custom -->
     <script src="Scripts/Custom/SummaryList.js"></script>
+
+    <!-- Other -->
+    <script src="Scripts/Readability.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

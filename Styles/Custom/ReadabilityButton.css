@@ -1,0 +1,36 @@
+ /* The switch - the box around the slider */
+.readability-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: fixed;
+    z-index: 10;
+    overflow: hidden;
+    background-color: transparent; /* Set when loading the style */
+    transition: background-color 0.2s cubic-bezier(.17,.84,.44,1);
+
+    cursor: pointer;
+    border-radius: 999px;
+    border: 1px solid hsl(254, 12%, 57%);
+    width: 24px;
+    height: 24px;
+    bottom: 16px;
+    right: 16px;
+}
+.readability-button:hover {
+    background-color: var(--bg-readability-hover);
+}
+
+
+.readability-button > .a,
+.readability-button > .b {
+    display: inline-block;
+    background-color: transparent;
+    min-width: calc(50% - 1px);
+    max-width: calc(50% - 1px);
+    min-height: fit-content;
+    max-height: fit-content;
+    font-size: var(--font-size-xx-small);
+}
+.readability-button > .a { text-align: right; margin-right: 2px; }
+.readability-button > .b { text-align: left;  }

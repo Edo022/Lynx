@@ -125,7 +125,7 @@
 <p>
     The values used to create the r-value are also implicitly converted.<br>
     Flattening constructors is not allowed.<br>
-    <a href="typeof-and-baseof-specifiers"><code><w->typeof</w-></code></a> and <a href="typeof-and-baseof-specifiers"><code><w->baseof</w-></code></a> can be used as types.
+    <a href="typeof-specifier"><code><w->typeof</w-></code></a> can used as type.
 </p>
 <p>
     //FIXME no specific syntax
@@ -182,7 +182,7 @@
 
         <t->void</t-> <f->main</f->(){
             <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
-            <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->);
+            <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->); <!-- TODO REMOVE BASEOF -->
         }
     </div>
 </example2->

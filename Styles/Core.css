@@ -2,16 +2,16 @@
     Font { */
         --code-decoration-r:  9px;
         --char-spacing:      -0.06ch;
-        --word-spacing:       0.6ch;
-        --line-h:             2.6ch;
+        --word-spacing:       0.5ch;
+        --line-h:             3ch;
         --wide-line-h:        3.5ch;
         --code-line-h:        2.5ch;
 
         --font-size-xx-small: 8px;
         --font-size-x-small:  12px;
-        --font-size-small:    14px;
-        --font-size-medium:   16px;
-        --font-size-mono:     14px;
+        --font-size-small:    13px;
+        --font-size-medium:   14px;
+        --font-size-mono:     13px;
         --font-size-code:     13px;
         --font-size-large:    22px;
         --font-size-x-large:  28px;
@@ -29,18 +29,20 @@
     }
 
     Color { */
-        --bg:               hsl(216, 28%, 7%);
-        --bg-code:          hsl(210, 18%, 15%);
-        --bg-pre:           hsl(216, 22%, 9%);
-        --bg-elm:           hsl(216, 22%, 9%);
-        --bg-table-odd:     hsl(216, 28%, 8.6%);
-        --bg-table-even:    hsl(216, 28%, 8.0%);
-        --bg-table-header:  hsl(213, 20%, 12%);
+        --bg:               hsl(240, 5%, 8%);
+        --bg-readability-on:hsl(240, 8%, 18%);
+        --bg-readability-hover:hsl(240, 2%, 24%);
+        --bg-code:          hsl(210, 8%, 13%);
+        --bg-pre:           hsl(216, 8%, 9%);
+        --bg-elm:           hsl(216, 12%, 8%);
+        --bg-table-odd:     hsl(226, 10%, 8%);
+        --bg-table-even:    hsl(226, 10%, 9%);
+        --bg-table-header:  hsl(223, 10%, 11%);
 
         --fg-link:          hsl(209, 100%, 66%);
         --fg-soft-link:     hsl(212, 34%, 77%);
         --fg-separator:     hsl(213, 12%, 18%);
-        --fg-text:          hsl(0, 0%, 75%);
+        --fg-text:          hsl(240, 2%, 88%);
         --fg-hidden:        hsl(0, 0%, 33%);
 
         --bd-table-cell:    hsl(213, 9%, 10%);
@@ -94,3 +96,4 @@
     .nobefore::before { content: none !important; }
     .noafter::after   { content: none !important; }/*
 } */
+

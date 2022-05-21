@@ -1,0 +1,16 @@
+* {
+    font-weight: lighter;
+}
+b {
+    text-decoration: underline;
+}
+b- {
+    font-weight: normal;
+}
+
+
+.readability-button {
+    background-color: var(--bg-readability-on);
+}
+.readability-button > .a { font-weight: bold;   }
+.readability-button > .b { font-weight: normal; }

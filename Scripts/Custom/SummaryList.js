@@ -9,7 +9,6 @@ var summary_list = {
             for(var j = 0; j < li.length; ++j){
                 if(!li[j].getElementsByTagName('SPAN').length) console.error("<span> elements not found int summary list <li>");
                 max = Math.max(max, li[j].getElementsByTagName('SPAN')[0].clientWidth);
-                console.log(li[j].getElementsByTagName('SPAN')[0]);
             }
 
             for(var j = 0; j < li.length; ++j){

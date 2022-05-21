@@ -330,7 +330,7 @@ la dimensione e il padding delle cose non si può dare per scontato ma tanto non
 . -oe   │   │   Semantic tree   │             │   Semantic tree   │││   │
 .       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │
 .       │          pc │                              pc │               │
-.       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Removes templates, namespaces, tuples, typeof, baseof, aliases
+.       │   ╭───────────────────╮             ╭───────────────────╮╮╮   │   Removes templates, namespaces, tuples, typeof, aliases
 . -o1   │   │      Layer 1      │             │      Layer 1      │││   │   Translates the names of symbols
 .       │   ╰───────────────────╯             ╰───────────────────╯╯╯   │
 .       │          pc │                              pc │               │
