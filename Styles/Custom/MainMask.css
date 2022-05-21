@@ -1,0 +1,11 @@
+
+div.main-mask {
+    min-width: 100vw;
+    min-height: 100vh;
+    background-color: var(--bg);
+    position: fixed;
+    z-index: 999999; /* Make sure it hides everythin */
+
+    transition: opacity 1s cubic-bezier(.17,.84,.44,1);
+    pointer-events: all; /* Set to 'none' from JS */
+}

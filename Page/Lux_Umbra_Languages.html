@@ -34,7 +34,7 @@
     <!--------------------------------------------------------------------->
     <!-- Fix                                                             -->
     <!--------------------------------------------------------------------->
-    <div style="min-width: 100vw; min-height: 100vh; background-color: var(--bg); position: fixed; z-index: 999999;" id="main-mask"></div>
+    <div id="main-mask" class="main-mask"></div>
     <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
     <!-- !                           ^ not a random value -->
 
@@ -1152,9 +1152,9 @@
     <script src="Scripts/Readability.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            init();
-        });
+        document.addEventListener('DOMContentLoaded', init);
+        //<!--! view() called after readability css load --> //TODO implement counter to manage more dynamic css loadings
+        window.addEventListener('beforeunload', unload);
     </script>
 </body>
 </html>

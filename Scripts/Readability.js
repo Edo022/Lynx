@@ -18,16 +18,15 @@ var readability = {
         while(n = walk.nextNode()) {
 
             // Load new elements
-            if(/^\s*$/.test(n.textContent)) continue; // Skip empty elements
-            let w = n.textContent.split(/((?<=[a-zA-Z]+)(?=[^a-zA-Z]+)|(?<=[^a-zA-Z]+)(?=[a-zA-Z]+))/);
-            //!                           ^ word-to-symbol boundary    ^ symbol-to-word boundary
-
+            if(/^\s*$/.test(n.textContent) | n.parentElement.tagName == 'TITLE') continue; // Skip empty elements and tab title
+            let w = n.textContent.split(/((?<=[a-z]+)(?=[^a-z]+)|(?<=[^a-z]+)(?=[a-z]+))/i);
+            //!                           ^ word-to-symbol       ^ symbol-to-word
             let span = document.createElement('span');
             for(let j = 0; j < w.length; ++j){
 
                 let text = w[j];
-                // Skip non-alphabetic elements
-                if(/[^a-zA-Z]+/.test(text)) {
+                // Skip symbolic elements
+                if(/[^a-z]/i.test(text[0])) {
                     let a = document.createElement('span');
                     a.innerHTML = text;
                     span.appendChild(a);
@@ -54,6 +53,8 @@ var readability = {
             lastOld = n;
             lastNew = span;
         }
+        // Replace last element
+        if(lastOld != null) lastOld.replaceWith(lastNew);
     },
 
 
@@ -62,7 +63,7 @@ var readability = {
     toggle : function(){
         localStorage.setItem('readability', localStorage.getItem('readability') != 'true');
         readability.load_css();
-        move_to_view();
+        // move_to_view();
     },
 
 
@@ -82,14 +83,22 @@ var readability = {
 
     load_css : function(){
         let r = localStorage.getItem('readability') == 'true';
-        let link = `<link id="readability-css" rel="stylesheet" type="text/css" href="Styles/Custom/Readability${ r ? 'On' : 'Off' }.css" media="screen">`;
+        let linkStr = `Styles/Custom/Readability${ r ? 'On' : 'Off' }.css`;
 
         let e = document.getElementById('readability-css');
         if(e == null) {
-            document.getElementsByTagName("head")[0].innerHTML += link;
+            // Load style
+            var link = document.createElement('link');
+            link.setAttribute("rel", "stylesheet");
+            link.setAttribute("type", "text/css");
+            link.onload = view;
+            link.setAttribute("href", linkStr);
+            link.id = 'readability-css';
+            document.getElementsByTagName("head")[0].appendChild(link);
         }
         else {
-            e.outerHTML = link;
+            e.setAttribute('href', linkStr)
+            e.onload = null;
         }
 
         if(!readability_highlighted) {

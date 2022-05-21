@@ -72,7 +72,7 @@
         scrollbar-width: thin;
         text-rendering: optimizeLegibility;
     }
-    p, syntax-, example-, table-container, h1, h2, h3{
+    p, syntax-, example-, table, h1, h2, h3{
         margin:  var(--def-margin) 0 var(--def-margin) 0;
     } /*
 } */
