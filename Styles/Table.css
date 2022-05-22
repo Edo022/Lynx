@@ -1,4 +1,7 @@
-
+:root {
+    --padding-h-table-cell: 10px;
+    --padding-w-table-cell: 20px;
+}
 
 
 
@@ -26,7 +29,7 @@ table tr th {
 th, td {
     border-width: 1px 0 0 1px;
     border-style: solid;
-    padding:10px 20px 10px 20px
+    padding: var(--padding-h-table-cell) var(--padding-w-table-cell) var(--padding-h-table-cell) var(--padding-w-table-cell)
 }
 th {
     border-color: var(--bd-table-header);

@@ -7,7 +7,7 @@ var summary_list = {
             let max = 0;
             let li = c[i].getElementsByTagName('LI');
             for(var j = 0; j < li.length; ++j){
-                if(!li[j].getElementsByTagName('SPAN').length) console.error("<span> elements not found int summary list <li>");
+                if(!li[j].getElementsByTagName('SPAN').length) console.error("<span> elements not found in summary list <li>");
                 max = Math.max(max, li[j].getElementsByTagName('SPAN')[0].clientWidth);
             }
 

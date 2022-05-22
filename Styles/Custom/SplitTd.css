@@ -1,0 +1,25 @@
+
+div.split-td-outer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 80px;
+    max-height: fit-content;
+}
+div.split-td-outer > div.split-td {
+    flex: 1;
+    text-align: center;
+
+    border-left: 1px solid var(--bd-table-cell);
+    padding: 0 var(--padding-w-table-cell) 0 var(--padding-w-table-cell);
+}
+div.split-td-outer > div.split-td:first-child {
+    border-left-width: 0px;
+    padding-left: 0;
+}
+div.split-td-outer > div.split-td:last-child {
+    padding-right: 0;
+}

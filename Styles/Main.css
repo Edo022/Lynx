@@ -161,6 +161,10 @@ body {
         body > left- > index- indexd-:hover, body > left- > index- indexh-:hover {
             background-color: var(--bg-index-hover);
         }
+        body > left- > index- indexd-:hover > *, body > left- > index- indexh-:hover > * {
+            transform: matrix(1.025, 0, 0.0, 1.05, 0, 0);
+            transition: transform 0.2s cubic-bezier(.17,.84,.44,1);
+        }
         body > left- > index- > indexh-:first-child:hover, body > left- > index- > indexh-:last-child:hover {
             max-width: 0;
         }/*

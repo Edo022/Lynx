@@ -9,14 +9,17 @@ function move_to_view(){
 
 function init() {
     ui_slider.init();
-        setup_index.init();
-        setup_fix.init();
-        setup_syntax.init();
-    ui_copy_code.init();
 
+    setup_index.init();
+    setup_fix.init();
+    setup_syntax.init();
     summary_list.init();
 
+
     readability.init();
+
+    ui_copy_code.init();
+    //!^ Must be executed after modifying the body as changing the innerHTML recreates all the elements and removes the event listeners
 }
 
 
@@ -42,3 +45,6 @@ function unload(){
     e.style.pointerEvents = 'all';
     e.style.opacity = '100%';
 }
+
+
+

@@ -18,7 +18,7 @@ var readability = {
         while(n = walk.nextNode()) {
 
             // Load new elements
-            if(/^\s*$/.test(n.textContent) | n.parentElement.tagName == 'TITLE') continue; // Skip empty elements and tab title
+            if(/^\s*$/.test(n.textContent) | n.parentElement.tagName == 'TITLE' | n.parentElement.tagName == 'STYLE') continue; // Skip empty elements, tab title and styles
             let w = n.textContent.split(/((?<=[a-z]+)(?=[^a-z]+)|(?<=[^a-z]+)(?=[a-z]+))/i);
             //!                           ^ word-to-symbol       ^ symbol-to-word
             let span = document.createElement('span');
@@ -72,8 +72,8 @@ var readability = {
     spanw_button : function(){
         document.body.getElementsByTagName('RIGHT-')[0].innerHTML +=
             '<div class="readability-button" onclick="readability.toggle()">' +
-            '<span class="a">A</span>' +
-            '<span class="b">a</span>' +
+                '<span class="a">A</span>' +
+                '<span class="b">a</span>' +
             '</div>'
         ;
     },

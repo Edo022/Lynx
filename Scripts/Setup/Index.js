@@ -20,7 +20,7 @@ var setup_index = {
                     `<a ` +
                         `style="display: inline-block; padding: 0 1ch 0 1ch; color: var(--fg-link);" ` +
                         `href="#${ id }"` +
-                        `onclick="setup_index.update_active(this)"` +
+                        `onclick="setup_index.update_active_elm(this)"` +
                         `id="index--${ id }"` +
                     `>${ num } ${ name }</a>`
                 ;
@@ -67,19 +67,39 @@ var setup_index = {
         document.getElementById(active_id).parentElement.style.backgroundColor = 'var(--bg-index-active)';
     },
 
-    update_active : function(elm){
+
+    update_active_elm : function(elm){ setup_index.update_active(elm.id); },
+    update_active : function(id){
         let active_id = window.sessionStorage.getItem('active_index');
         if(setup_index.check_active(active_id)) {
             document.getElementById(active_id).parentElement.style.backgroundColor = 'transparent'
         }
-        window.sessionStorage.setItem('active_index', elm.id)
+        window.sessionStorage.setItem('active_index', id)
         setup_index.set_active();
     },
 
+
+    check_scroll : function(right){
+        let h = document.getElementsByTagName('H1');
+        for(var i = 0; i < h.length; i++) {
+            var element = h[i];
+
+            if(h[i].getBoundingClientRect().bottom >= right.getBoundingClientRect().top) { //FIXME imperfect
+                let active_h = h[Math.max(i - 1, 0)];
+                setup_index.update_active(`index--${ active_h.id }`);
+                console.log(active_h.id);
+                return;
+            }
+        }
+    },
 
 
     init : function(){
         setup_index.format();
         setup_index.set_active();
+        // window.addEventListener('popstate', setup_index.load_url);
+
+        let right = document.getElementsByTagName('RIGHT-')[0];
+        right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
     }
 }

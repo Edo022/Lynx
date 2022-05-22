@@ -82,85 +82,92 @@
     <code><tab-></tab-></code>, <code><space-></space-></code> and <code><nl-></nl-></code> characters are not syntactic elements.
 </p>
 <p>
-    There are 4 types of syntactic elements:
+    Syntactic elements are divided in 4 categories:
 </p>
-
 
 <div class="table-container"><table>
     <thead>
         <tr>
-            <th>Type</th>
+            <th>Category</th>
             <th style="text-align: center;" colspan="4">Pattern</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td style="line-height: 80px;" class="nowrap"><a href="#keywords">Keyword</a></td>
-            <td class="center" colspan="2">
-                <a href="#namespaces">              <code><w->namespace</w-></code></a>
-                <a href="#enums">                   <code><w->enum</w-></code></a>
-                <a href="#structs">                 <code><w->struct</w-></code></a>
-                <a href="#auto-specifier">          <code><t->auto</t-></code></a>
-                <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
-                <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
-                <a href="#import-directive">        <code><w->import</w-></code></a>
-                <a href="#export-directive">        <code><w->export</w-></code></a>
-                <elm->                              <code>(</code><code>)</code></elm->
-                <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
-            </td>
-            <td class="center" colspan="2">
-                <a href="#if-statement">                 <code><w->if</w-></code></a>
-                <a href="#match-statement">              <code><w->match</w-></code></a>
-                <a href="#for-loops">                    <code><w->for</w-></code></a>
-                <a href="#while-loops">                  <code><w->while</w-></code></a>
-                <a href="#while-loops">                  <code><w->do</w-></code></a>
-                <a href="#continue-and-break-statements"><code><w->continue</w-></code></a>
-                <a href="#continue-and-break-statements"><code><w->break</w-></code></a>
-                <a href="#once-statement">               <code><w->once</w-></code></a>
-                <a href="#then-statement">               <code><w->then</w-></code></a>
-                <a href="#else-statement">               <code><w->else</w-></code></a>
-                <a href="#return-statement">             <code><w->return</w-></code></a>
-                <a href="#defer-statement">              <code><w->defer</w-></code></a>
-                <a href="#statements">                   <code>,</code></a>
-                <a href="#statements">                   <code> ;</code></a>
-                <a href="#scopes-and-symbols">           <code>.</code></a>
-            </td>
+            <th class="nowrap medium"><a href="#keywords">Keyword</a></th>
+            <td><div class="split-td-outer">
+                <div class="split-td">
+                    <a href="#namespaces">              <code><w->namespace</w-></code></a>
+                    <a href="#enums">                   <code><w->enum</w-></code></a>
+                    <a href="#structs">                 <code><w->struct</w-></code></a>
+                    <a href="#auto-specifier">          <code><t->auto</t-></code></a>
+                    <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
+                    <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
+                    <a href="#import-directive">        <code><w->import</w-></code></a>
+                    <a href="#export-directive">        <code><w->export</w-></code></a>
+                    <elm->                              <code>(</code><code>)</code></elm->
+                    <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
+                </div>
+                <div class="split-td">
+                    <a href="#if-statement">                 <code><w->if</w-></code></a>
+                    <a href="#match-statement">              <code><w->match</w-></code></a>
+                    <a href="#for-loops">                    <code><w->for</w-></code></a>
+                    <a href="#while-loops">                  <code><w->while</w-></code></a>
+                    <a href="#while-loops">                  <code><w->do</w-></code></a>
+                    <a href="#continue-and-break-statements"><code><w->continue</w-></code></a>
+                    <a href="#continue-and-break-statements"><code><w->break</w-></code></a>
+                    <a href="#once-statement">               <code><w->once</w-></code></a>
+                    <a href="#then-statement">               <code><w->then</w-></code></a>
+                    <a href="#else-statement">               <code><w->else</w-></code></a>
+                    <a href="#return-statement">             <code><w->return</w-></code></a>
+                    <a href="#defer-statement">              <code><w->defer</w-></code></a>
+                    <a href="#statements">                   <code>,</code></a>
+                    <a href="#statements">                   <code> ;</code></a>
+                    <a href="#scopes-and-symbols">           <code>.</code></a>
+                </div>
+            </div></td>
         </tr>
         <tr>
-            <td style="line-height: 80px;" class="nowrap"><a href="#pseudo-keywords">Pseudo keyword</a></td>
-            <td class="center" colspan="2">
-                <a href="#templates">                  <code><w->template</w-></code></a>
-                <a href="#templates">                  <elm-><code>&lt;</code><code>&gt;</code></elm-></a>
-                <a href="#template-constraints">       <code><w->when</w-></code></a>
-                <a href="#abbreviated-template-syntax"><code>?</code></a>
-                <a href="#const-qualifier">            <code><t->const</t-></code></a>
-                <a href="#operator-precedence">        <code><w->at</w-></code></a>
-                <code><w->as</w-></code>
-                <code><w->to</w-></code>
-            </td>
-            <td class="center" colspan="2">
-                <a href="#references"><code>&</code></a>
-                <code>*</code>
-                <a href="#temporary-variables"><code>$</code></a>
-                <code>=</code> //TODO
-            </td>
+            <th class="nowrap medium"><a href="#pseudo-keywords">Pseudo keyword</a></th>
+            <td><div class="split-td-outer">
+                <div class="split-td">
+                    <a href="#templates">                  <code><w->template</w-></code></a>
+                    <a href="#templates">                  <elm-><code>&lt;</code><code>&gt;</code></elm-></a>
+                    <a href="#template-constraints">       <code><w->when</w-></code></a>
+                    <a href="#abbreviated-template-syntax"><code>?</code></a>
+                    <a href="#const-qualifier">            <code><t->const</t-></code></a>
+                    <a href="#operator-precedence">        <code><w->at</w-></code></a>
+                    <code><w->as</w-></code>
+                    <code><w->to</w-></code>
+                </div>
+                <div class="split-td">
+                    <a href="#references"><code>&</code></a>
+                    <code>*</code>
+                    <a href="#temp  orary-variables"><code>$</code></a>
+                    <code>=</code> //TODO
+                </div>
+            </div></td>
         </tr>
         <tr>
-            <td style="line-height: 80px;" class="nowrap"><a href="#literals">Literal</a></td>
-            <td class="left" colspan="4">
-                Any sequence of characters with pattern
-                <code><sg->[</sg-><s->0</s-><sr->-</sr-><s->9</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->(</sg-><sr->\</sr-><s->.</s-><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->)</sg-><sr->?</sr-></code>
-            </td>
+            <th class="nowrap medium"><a href="#literals">Literal</a></th>
+            <td><div class="split-td-outer">
+                <div clas="split-td">
+                    Any sequence of characters with pattern
+                    <code><sg->[</sg-><s->0</s-><sr->-</sr-><s->9</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->(</sg-><sr->\</sr-><s->.</s-><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z</s-><s->_</s-><sg->]</sg-><sr->*</sr-><sg->)</sg-><sr->?</sr-></code>
+                </div>
+            </div></td>
         </tr>
         <tr>
-            <td style="line-height: 80px;" class="nowrap"><a href="#identifiers">Identifier</a></td>
-            <td class="left" colspan="5">
-                Any sequence of characters with pattern
-                <code><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sg->]</sg-><sr->*</sr-></code>
-                or
-                <code><sg->[</sg-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sg->]</sg-><sr->+</sr-></code>
-                that isn't a <a href="#keywords">keyword</a>
-            </td>
+            <th class="nowrap medium"><a href="#identifiers">Identifier</a></th>
+            <td><div class="split-td-outer">
+                <div clas="split-td">
+                    Any sequence of characters with pattern
+                    <code><sg->[</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_</s-><sg->][</sg-><s->a</s-><sr->-</sr-><s->zA</s-><sr->-</sr-><s->Z_0</s-><sr->-</sr-><s->9</s-><sg->]</sg-><sr->*</sr-></code>
+                    or
+                    <code><sg->[</sg-><s->!$%&()*+</s-><sr->\</sr-><s->-/:&lt;=&gt;?@^`|~;{}</s-><sr->\</sr-><s->[</s-><sr->\</sr-><s->]</s-><sr->\</sr-><s->.</s-><sg->]</sg-><sr->+</sr-></code>
+                    that isn't a <a href="#keywords">keyword</a>
+                </div>
+            </div></td>
         </tr>
     </tbody>
 </table></div>
@@ -496,6 +503,74 @@
     //FIXME
 </p>
 
+<p>
+    Semantic elements are divided in 4 categories:
+</p>
+
+
+<div class="table-container"><table>
+    <tr>
+        <th>Category</th>
+        <th>Semantic element</th>
+    </tr>
+    <tr>
+        <th class="nowrap medium">Directive</th>
+        <td><div class="split-td-outer">
+            <div class="split-td">
+                <elm2-><a href="#import-directive"><code><w->import</w-></code> directive</a></elm2->
+                <elm2-><a href="#export-directive"><code><w->export</w-></code> directive</a></elm2->
+            </div>
+        </div></td>
+    </tr>
+    <tr>
+        <th class="nowrap medium">Declaration</th>
+        <td><div class="split-td-outer">
+            <div class="split-td">
+                <elm2-><a href="#namespaces"><code><w->namespace</w-></code></a></elm2->
+                <elm2-><a href="#enums"><code><w->enum</w-></code></a></elm2->
+                <elm2-><a href="#structs"><code><w->struct</w-></code></a></elm2->
+                <elm2-><a href="#functions">Function declaration</a></elm2->
+                <elm2-><a href="#operators">Operator declaration</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#templates"><code><w->template</w-></code></a></elm2->
+                <elm2-><a href="#symbol-aliases"><code><w->alias</w-></code></a></elm2->
+                <elm2-><a href="#variables">Variable declaration</a></elm2->
+            </div>
+        </div></td>
+    </tr>
+    <tr>
+        <th class="nowrap medium"><a href="#statements">Statements</a></th>
+        <td><div class="split-td-outer">
+            <div class="split-td">
+                <elm2-><a href="#if-statement"><code><w->if</w-></code> statement</a></elm2->
+                <elm2-><a href="#match-statement"><code><w->match</w-></code> statement</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#while-loops"><code><w->while</w-></code> loop</a></elm2->
+                <elm2-><a href="#for-loops"><code><w->for</w-></code> loop</a></elm2->
+                <elm2-><a href="#once-statement"><code><w->once</w-></code> statement</a></elm2->
+                <elm2-><a href="#then-statement"><code><w->then</w-></code> statement</a></elm2->
+                <elm2-><a href="#break-statement"><code><w->break</w-></code> statement</a></elm2->
+                <elm2-><a href="#continue-statement"><code><w->continue</w-></code> statement</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#else-statement"><code><w->else</w-></code> statement</a></elm2->
+                <elm2-><a href="#return-statement"><code><w->return</w-></code> statement</a></elm2->
+                <elm2-><a href="#defer-statement"><code><w->defer</w-></code> statement</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#expressions">Expression statement</a></elm2->
+                <elm2-><a href="#unnamed-scopes">Unnamed scope</a></elm2->
+                <elm2-><a href="#empty-statement">Empty statement</a></elm2->
+                <elm2-><a href="#inline-glsl">Inline GLSL</a></elm2->
+                <elm2-><a href="#inline-cpp">Inline C++</a></elm2->
+            </div>
+        </div></td>
+    </tr>
+</table></div>
+
+
 
 
 <ul class="summary-list">
@@ -505,59 +580,55 @@
     </li>
     <ul>
         <li>
+            <span>Directive</span>
+            <span></span>
+        </li>
+        <ul>
+            <li>
+                <span><a href="#import-directive"><code><w->import</w-></code> directive</a></span>
+                <span><a href="#import-directive">Imports</a> <a href="#symbols">symbols</a> from a <a href="#modules">module</a>.</span>
+            </li>
+            <li>
+                <span><a href="#export-directive"><code><w->export</w-></code> directive</a></span>
+                <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
+            </li>
+        </ul>
+        <li>
             <span>Declaration</span>
             <span>Defines the interface and behaviour of a user-defined semantic element.<br></span>
         </li>
         <ul>
             <li>
-                <span><a href="#namespaces">Namespace declaration</a></span>
-                <span>Defines a named <a href="#scopes">scope</a>.</span>
+                <span><a href="#namespaces"><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</a></span>
+                <span>Declares a named <a href="#scopes">scope</a>.</span>
             </li>
             <li>
-                <span><a href="#enums">Enum declaration</a></span>
-                <span>Groups <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
+                <span><a href="#enums"><a href="#enums"><code><w->enum</w-></code></a> declaration</a></span>
+                <span>Declares an <a href="#enums">enum</a>, a type used to group <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
             </li>
             <li>
-                <span><a href="#structs">Struct declaration</a></span>
-                <span>Groups <a href="#variables">variables</a> of different <a href="#types">types</a>.</span>
+                <span><a href="#structs"><a href="#structs"><code><w->struct</w-></code></a> declaration</a></span>
+                <span>Declares a <a href="#structs">struct</a>, a type used to group <a href="#variables">variables</a> of different <a href="#types">types</a>.</span>
             </li>
             <li>
                 <span><a href="#functions">Function declaration</a></span>
-                <span>A <a href="#routines">routine</a> that requires parentheses to be <a href="#function-calls">called</a>.</span>
+                <span>Declares a <a href="#functions">function</a>, a prefix <a href="#routines">routine</a> that requires parentheses to be <a href="#function-calls">called</a>.</span>
             </li>
             <li>
                 <span><a href="#operators">Operator declaration</a></span>
-                <span>A <a href="#routines">routine</a> that doesn't require parentheses to be <a href="#operator-calls">called</a> and can use multiple symbolic or alphanumeric <a href="#identifiers">identifiers</a>.</span>
+                <span>Declares an <a href="#operators">operator</a>, a <a href="#routines">routine</a> that doesn't require parentheses to be <a href="#operator-calls">called</a> and can use multiple symbolic or alphanumeric <a href="#identifiers">identifiers</a>.</span>
             </li>
             <li>
-                <span><a href="#templates">Template declaration</a></span>
-                <span>Generates declarations of semantic elements.</span>
+                <span><a href="#templates"><a href="#templates"><code><w->template</w-></code></a> declaration</a></span>
+                <span>Generates <a href="#enums">enum</a>, <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine call</a>.</span>
             </li>
-            <ul>
-                <li>
-                    <span><a href="#">Enum template</a></span>
-                    <span>Generates <a href="#enums">enums</a> based on the explicit <a href="#templates">template</a> arguments.</span>
-                </li><!-- TODO -->
-                <li>
-                    <span><a href="#">Struct template</a></span>
-                    <span>Generates <a href="#structs">structs</a> based on the explicit <a href="#templates">template</a> arguments.</span>
-                </li><!-- TODO -->
-                <li>
-                    <span><a href="#">Function template</a></span>
-                    <span>Generates <a href="#functions">functions</a> based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> of the <a href="#routine-arguments">argumets</a> used in the <a href="#function-calls">routine call</a>.<br></span>
-                </li><!-- TODO -->
-                <li>
-                    <span><a href="#">Operator template</a></span>
-                    <span>Generates <a href="#operators">operators</a> based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> of the <a href="#routine-arguments">argumets</a> used in the <a href="#operator-calls">routine call</a>.<br></span>
-                </li><!-- TODO -->
-            </ul>
             <li>
-                <span><a href="#symbol-aliases">Symbol alias declaration</a></span>
-                <span>Defines an alternative <a href="#symbol-paths">path</a> for a <a href="#symbols">symbol</a>.</span>
-            </li> <!-- TODO -->
+                <span><a href="#symbol-aliases"><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</a></span>
+                <span>Declares an alternative <a href="#symbol-paths">path</a> for a <a href="#symbols">symbol</a>.</span>
+            </li>
             <li>
                 <span><a href="#variables">Variable declaration</a></span>
-                <span>Identifies one or more named memory locations that can store <a href="#values">values</a>.</span>
+                <span>Declares one or more named memory locations that can store <a href="#values">values</a>.</span>
             </li>
         </ul>
         <li>
@@ -587,7 +658,7 @@
             </li>
             <li>
                 <span><a href="#then-statement"><code><w->then</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> has not stopped through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and has completed at least one iteration.</span>
+                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> didn't stop through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and completed at least one iteration.</span>
             </li>
             <li>
                 <span><a href="#break-statement"><code><w->break</w-></code> statement</a></span>
@@ -599,7 +670,7 @@
             </li>
             <li>
                 <span><a href="#else-statement"><code><w->else</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> has not completed any iteration</a>.</span>
+                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> didn't complete any iteration</a>.</span>
             </li>
             <li>
                 <span><a href="#return-statement"><code><w->return</w-></code> statement</a></span>
@@ -607,7 +678,7 @@
             </li>
             <li>
                 <span><a href="#defer-statement"><code><w->defer</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> immediatly before the first <a href="#return-statement"><code><w->return</w-></code> statement</a> is executed.</span>
+                <span>Evaluates all the <a href="#routine-calls">arguments</a> of a <a href="#routine-calls">routine call</a> but delays its execution until the first <a href="#return-statement"><code><w->return</w-></code> statement</a> is encountered and all the <a href="#routine-calls">routine calls</a> of subsequent <a href="defer-statement"><code><w->defer</w-></code> statements</a> are executed.</span>
             </li>
             <li>
                 <span><a href="#expressions">Expression statement</a></span>
@@ -664,14 +735,6 @@
                 <span>Compiles a portion of code. Evaluates to <a href="#boolean-type"><code><k->true</k-></code></a> if the code doesn't generate <a href="#compilation">syntactic</a> or <a href="#compilation">semantic errors</a>.</span>
             </li><!-- TODO -->
         </ul>
-        <li>
-            <span><a href="#"><code><w->import</w-></code> directive</a></span>
-            <span>Imports <a href="#symbols">symbols</a> from a <a href="#modules">module</a>.</span>
-        </li>
-        <li>
-            <span><a href="#"><code><w->export</w-></code> directive</a></span>
-            <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
-        </li>
     </ul>
     <br>
     <li>

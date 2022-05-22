@@ -1,10 +1,3 @@
-// FIXME
-// FIXME
-// FIXME
-// FIXME READ FROM NEW FORMATS
-// FIXME
-// FIXME
-// FIXME
 
 
 var ui_copy_code = {
@@ -17,15 +10,16 @@ var ui_copy_code = {
     copy_code : function(lable) {
         let children = lable.parentNode.childNodes;
         for(let i = 0; i < children.length; i++){
-            if(children[i].tagName == "CODE-") {
-                let output_text = ui_copy_code.decodeHTML(children[i].innerHTML.replace(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, ""));
-                output_text = output_text.substring(1, output_text.length - 2).split('\n');
-                //           Remove leading newline ^                       ^
-                //             Remove trailing newline and CSS fix newline -'
+            if(children[i].tagName == "DIV") {
+
+                // Convert <br> to newlines and decode the lines one by one
+                let output_text = children[i].innerHTML.replaceAll(/<br>/g, '\n').split('\n');
                 for(let i = 0; i < output_text.length; i++) {
-                    output_text[i] = output_text[i].slice(4);
+                    output_text[i] = ui_copy_code.decodeHTML(output_text[i].replaceAll(/<\/?(!--|([a-zA-Z0-9_\-]+))[^>]+>/g, '')).slice(4);
                 }
-                navigator.clipboard.writeText(output_text.join("\n"));
+
+                // Join the lines and remove all leading and trailing newlines
+                navigator.clipboard.writeText(output_text.join('\n').trim());
                 return 0;
             }
         }
@@ -33,9 +27,9 @@ var ui_copy_code = {
 
 
     init : function() {
-        let children = document.getElementsByTagName("LABEL-");
+        let children = document.getElementsByTagName("LABEL2-");
         for(let i = 0; i < children.length; i++){
-            children[i].addEventListener("click", function(){ ui_copy_code.copy_code(this);})
+            children[i].addEventListener('click', function(){ ui_copy_code.copy_code(this); });
         }
     }
 }

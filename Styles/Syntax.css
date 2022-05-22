@@ -61,7 +61,7 @@
 
 /* Syntax element containters { */
     /* FIXME fix names */
-    elm-, sub2-, sub-, stx- {
+    elm-, sub2-, sub-, stx-, elm2- {
         display: inline-block;
         font-family: monospace, monospace;
         border: 1px solid;
@@ -78,7 +78,12 @@
     sub-  { border-color: var(--bd-elm2); }
     stx-  { border-color: var(--bd-elm3); }
 
-
+    elm2-  {
+        margin: 0;
+        padding: 6px;
+        border-color: var(--bd-elm);
+        background-color: transparent;
+    }
 
     sup, sub {
         margin-left: 0.5ch;
@@ -193,11 +198,11 @@ syntax2- > label2-:not(:first-child) {
     margin-top: var(--syntax-internal-margin);
 }
 
-example2- > label2-:after,
-syntax2- > label2-:after {
-    content: " \00a0□";
-    text-shadow: -3px -3px;
-    font-size: var(--font-size-x-small);
+example2- > label2-:hover:after,
+syntax2- > label2-:hover:after {
+    content: " [copy]";
+    /* text-shadow: -3px -3px; */
+    font-size: var(--font-size-xx-small);
 }
 
 example2- > label2-:active,
@@ -222,6 +227,7 @@ syntax2- table {
     background-color: var(--bg-pre);
     box-sizing: border-box;
     overflow: hidden;
+    margin: 0;
 
     min-width: 100%;
     max-width: 100%;
