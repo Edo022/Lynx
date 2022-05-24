@@ -61,7 +61,7 @@
 
 /* Syntax element containters { */
     /* FIXME fix names */
-    elm-, sub2-, sub-, stx-, elm2- {
+    elm-, sub-, stx-, elm2- {
         display: inline-block;
         font-family: monospace, monospace;
         border: 1px solid;
@@ -74,7 +74,6 @@
     }
 
     elm-  { border-color: var(--bd-elm);  }
-    sub2- { border-color: var(--bd-elm2); border-style: dashed; }
     sub-  { border-color: var(--bd-elm2); }
     stx-  { border-color: var(--bd-elm3); }
 
@@ -409,11 +408,6 @@ syntax-note- {
 
 
 /* Border colors */
-syntax2- > table.sub2,
-syntax2- > label2-.sub2 {
-    border-left-style: dashed;
-    border-left-color: var(--bd-elm2);
-}
 
 syntax2- > table.sub,
 syntax2- > label2-.sub {

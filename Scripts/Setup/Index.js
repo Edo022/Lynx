@@ -12,7 +12,7 @@ var setup_index = {
                     c.style.minHeight = '2em';
                     continue;
                 }
-                let name = capitalize(id).replaceAll('-', ' ');
+                let name = capitalize(id.split('.').pop()).replaceAll('-', ' ');
                 let num = (c.tagName == 'INDEXH-' ? last : (last + i + '.'));
 
                 // Fix index
@@ -20,7 +20,6 @@ var setup_index = {
                     `<a ` +
                         `style="display: inline-block; padding: 0 1ch 0 1ch; color: var(--fg-link);" ` +
                         `href="#${ id }"` +
-                        `onclick="setup_index.update_active_elm(this)"` +
                         `id="index--${ id }"` +
                     `>${ num } ${ name }</a>`
                 ;
@@ -30,6 +29,7 @@ var setup_index = {
                 //Fix header
                 let depth2 = (c.tagName == 'INDEXH-' ? depth : depth + 1);
                 let header = document.getElementById(id);
+                if(header == null) console.error(`header for ID ${ id } not found`);
 
                 header.insertAdjacentHTML('beforebegin', `<sep-${ depth2 }-></sep-${ depth2 }->`);
                 header.innerHTML = `${ num } ${ name }`;
@@ -44,8 +44,6 @@ var setup_index = {
     },
 
 
-
-
     format : function(){
         let children = document.getElementsByTagName('INDEX-');
         setup_index.format_elm(children[0], 0, '');
@@ -58,47 +56,36 @@ var setup_index = {
         return !(Object.is(active_id, undefined) || active_id == null || !active_id.length || document.getElementById(active_id) == null);
     },
 
-    set_active : function(){
-        let active_id = window.sessionStorage.getItem('active_index');
-        if(!setup_index.check_active(active_id)) {
-            window.sessionStorage.setItem('active_index', 'index--overview'); //FIXME automatically detect and set first index element
-            active_id = 'index--overview';
-        }
-        document.getElementById(active_id).parentElement.style.backgroundColor = 'var(--bg-index-active)';
-    },
-
-
-    update_active_elm : function(elm){ setup_index.update_active(elm.id); },
-    update_active : function(id){
-        let active_id = window.sessionStorage.getItem('active_index');
-        if(setup_index.check_active(active_id)) {
-            document.getElementById(active_id).parentElement.style.backgroundColor = 'transparent'
-        }
-        window.sessionStorage.setItem('active_index', id)
-        setup_index.set_active();
-    },
-
 
     check_scroll : function(right){
         let h = document.getElementsByTagName('H1');
         for(var i = 0; i < h.length; i++) {
-            var element = h[i];
 
-            if(h[i].getBoundingClientRect().bottom >= right.getBoundingClientRect().top) { //FIXME imperfect
-                let active_h = h[Math.max(i - 1, 0)];
-                setup_index.update_active(`index--${ active_h.id }`);
-                console.log(active_h.id);
+            // Check if element is in view
+            let view = right.getBoundingClientRect();
+            if(h[i].getBoundingClientRect().top >= view.top + 20) { //! +20 = Extra space in case js goes crazy with float values
+
+                // Reset the old element and highlight the new one
+                let old = window.sessionStorage.getItem('active_index');
+                let new_ = `index--${ h[Math.max(i - 1, 0)].id }`;
+                if(setup_index.check_active(old)) {
+                    document.getElementById(old).parentElement.style.backgroundColor = 'transparent'
+                }
+                window.sessionStorage.setItem('active_index', new_)
+                document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';
+
                 return;
             }
         }
     },
 
 
+
+
     init : function(){
         setup_index.format();
-        setup_index.set_active();
-        // window.addEventListener('popstate', setup_index.load_url);
 
+        // Setup scroll listener
         let right = document.getElementsByTagName('RIGHT-')[0];
         right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
     }

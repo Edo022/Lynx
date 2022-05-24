@@ -1,18 +1,17 @@
 
-div.split-td-outer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
+div.split-td-outer2 {
+    display: table;
+    table-layout: fixed;
     min-width: 100%;
     max-width: 100%;
-    min-height: 80px;
-    max-height: fit-content;
+    /**/width: 100%;
+}
+div.split-td-outer {
+    display: table-row;
 }
 div.split-td-outer > div.split-td {
-    flex: 1;
-    text-align: center;
-
+    display: table-cell;
+    vertical-align: middle;
     border-left: 1px solid var(--bd-table-cell);
     padding: 0 var(--padding-w-table-cell) 0 var(--padding-w-table-cell);
 }
@@ -22,4 +21,25 @@ div.split-td-outer > div.split-td:first-child {
 }
 div.split-td-outer > div.split-td:last-child {
     padding-right: 0;
+}
+
+div.split-td-outer > div.split-td > div {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+
+    min-height: 80px;
+    max-height: fit-content;
+    /**/height: fit-content;
+    min-width: 100%;
+    max-width: 100%;
+}
+div.split-td-outer > div.split-td > div > div {
+    display: inline-block;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
 }

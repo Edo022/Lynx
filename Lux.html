@@ -64,7 +64,12 @@
                 <indexd->literal-tokens</indexd->
                 <indexd->identifiers</indexd->
             </index->
-            <indexd->semantic-elements</indexd->
+            <index-><indexh->semantic-elements</indexh->
+                <indexd->language-structure.directives</indexd->
+                <indexd->language-structure.declarations</indexd->
+                <indexd->language-structure.statements</indexd->
+                <indexd->language-structure.expressions</indexd->
+            </index->
             <indexd->scopes</indexd->
             <index-><indexh->name-resolution</indexh->
                 <indexd->name-shadowing</indexd->
@@ -842,11 +847,11 @@
             <span><a href="#templates"><code><w->template</w-></code></a></span>
             <span>
                 Used to declare a <a href="#templates">template</a><br>
-                <span class="pseudo-keyword-constraint">[When used before the <elm-><code>&lt;</code><code>&gt;</code></elm-> pseudo keyword]</span>.
+                <span class="pseudo-keyword-constraint">[When used before the <a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> pseudo keyword]</span>.
             </span>
         </li>
         <li>
-            <span><elm-><code>&lt;</code><code>&gt;</code></elm-> </span>
+            <span><a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> </span>
             <span>
                 Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a></a><br>
                 <span class="pseudo-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> pseudo keyword or after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a>]</span>.
@@ -860,7 +865,7 @@
             </span>
         </li>
         <li>
-            <span><a href="#templates"><code>?</code></a></span>
+            <span><a href="#abbreviated-template-syntax"><code>?</code></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
                 <span class="pseudo-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
@@ -994,13 +999,6 @@
     They define the contents and interface of the <a href="#modules">module</a>.
 </p>
 <p>
-    Certain <b>semantic elements</b> can be <b>referenced</b> to retrieve their value or obtain additional informations. These elements are called <b>symbols</b>.<br>
-    Symbols are referenced through their <a href="#name-resolution">name</a>, or using the <a href="#typeof-specifier"><code><t->typeof</t-></code></a> specifier.<br>
-    <a href="#unnamed-types">Unnamed types</a> are also symbols.
-    //FIXME
-</p>
-
-<p>
     Semantic elements are divided in 4 categories:
 </p>
 
@@ -1011,52 +1009,57 @@
         <th>Semantic element</th>
     </tr>
     <tr>
-        <th class="nowrap medium">Directive</th>
+        <th class="nowrap medium"><a href="#language-structure.directives">Directive</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#import-directive"><code><w->import</w-></code> directive</a></elm2->
-                <elm2-><a href="#export-directive"><code><w->export</w-></code> directive</a></elm2->
+                <elm2-><a href="#import-directive"><code><w->import</w-></code></a> directive</elm2->
+                <elm2-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm2->
             </div>
         </div></td>
     </tr>
     <tr>
-        <th class="nowrap medium">Declaration</th>
+        <th class="nowrap medium"><a href="#language-structure.declarations">Declaration</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#namespaces"><code><w->namespace</w-></code></a></elm2->
-                <elm2-><a href="#enums"><code><w->enum</w-></code></a></elm2->
-                <elm2-><a href="#structs"><code><w->struct</w-></code></a></elm2->
-                <elm2-><a href="#functions">Function declaration</a></elm2->
-                <elm2-><a href="#operators">Operator declaration</a></elm2->
+                <elm2-><a href="#enums"><code><w->enum</w-></code></a> declaration</elm2->
+                <elm2-><a href="#enums"><code><w->enum</w-></code></a> element declaration</elm2->
+                <elm2-><a href="#structs"><code><w->struct</w-></code></a> declaration</elm2->
+                <elm2-><a href="#structs"><code><w->struct</w-></code></a> member declaration</elm2->
             </div>
             <div class="split-td">
-                <elm2-><a href="#templates"><code><w->template</w-></code></a></elm2->
-                <elm2-><a href="#symbol-aliases"><code><w->alias</w-></code></a></elm2->
-                <elm2-><a href="#variables">Variable declaration</a></elm2->
+                <elm2-><a href="#functions">Function</a> declaration</elm2->
+                <elm2-><a href="#operators">Operator</a> declaration</elm2->
+                <elm2-><a href="#routine-parameters">Routine parameter</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</elm2->
+                <elm2-><a href="#templates"><code><w->template</w-></code></a> declaration</elm2->
+                <elm2-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</elm2->
+                <elm2-><a href="#variables">Variable</a> declaration</elm2->
             </div>
         </div></td>
     </tr>
     <tr>
-        <th class="nowrap medium"><a href="#statements">Statements</a></th>
+        <th class="nowrap medium"><a href="#language-structure.statements">Statement</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#if-statement"><code><w->if</w-></code> statement</a></elm2->
-                <elm2-><a href="#match-statement"><code><w->match</w-></code> statement</a></elm2->
+                <elm2-><a href="#if-statement"><code><w->if</w-></code></a> statement</elm2->
+                <elm2-><a href="#match-statement"><code><w->match</w-></code></a> statement</elm2->
             </div>
             <div class="split-td">
-                <elm2-><a href="#while-loops"><code><w->while</w-></code> loop</a></elm2->
-                <elm2-><a href="#for-loops"><code><w->for</w-></code> loop</a></elm2->
-                <elm2-><a href="#once-statement"><code><w->once</w-></code> statement</a></elm2->
-                <elm2-><a href="#then-statement"><code><w->then</w-></code> statement</a></elm2->
-                <elm2-><a href="#break-statement"><code><w->break</w-></code> statement</a></elm2->
-                <elm2-><a href="#continue-statement"><code><w->continue</w-></code> statement</a></elm2->
+                <elm2-><a href="#while-loops"><code><w->while</w-></code></a> loop</elm2->
+                <elm2-><a href="#for-loops"><code><w->for</w-></code></a> loop</elm2->
+                <elm2-><a href="#once-statement"><code><w->once</w-></code></a> statement</elm2->
+                <elm2-><a href="#then-statement"><code><w->then</w-></code></a> statement</elm2->
+                <elm2-><a href="#break-statement"><code><w->break</w-></code></a> statement</elm2->
+                <elm2-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</elm2->
             </div>
             <div class="split-td">
-                <elm2-><a href="#else-statement"><code><w->else</w-></code> statement</a></elm2->
-                <elm2-><a href="#return-statement"><code><w->return</w-></code> statement</a></elm2->
-                <elm2-><a href="#defer-statement"><code><w->defer</w-></code> statement</a></elm2->
+                <elm2-><a href="#return-statement"><code><w->return</w-></code></a> statement</elm2->
+                <elm2-><a href="#defer-statement"><code><w->defer</w-></code></a> statement</elm2->
             </div>
             <div class="split-td">
+                <elm2-><a href="#else-statement"><code><w->else</w-></code></a> statement</elm2->
                 <elm2-><a href="#expressions">Expression statement</a></elm2->
                 <elm2-><a href="#unnamed-scopes">Unnamed scope</a></elm2->
                 <elm2-><a href="#empty-statement">Empty statement</a></elm2->
@@ -1065,227 +1068,34 @@
             </div>
         </div></td>
     </tr>
+    <tr>
+        <th class="nowrap medium"><a href="#language-structure.expressions">Expression</a></th>
+        <td><div class="split-td-outer">
+            <div class="split-td">
+                <elm2-><a href="#literals">Literal</a></elm2->
+                <elm2-><a href="#constructors">Constructor</a></elm2->
+                <elm2-><a href="#try-expression"><code><w->try</w-></code> expression</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#variables">Variable</a></elm2->
+                <elm2-><a href="#temporary-variables">Temporary variable</a></elm2->
+            </div>
+            <div class="split-td">
+                <elm2-><a href="#function-calls">Function call</a></elm2->
+                <elm2-><a href="#operator-calls">Operator call</a></elm2->
+            </div>
+        </div></td>
+    </tr>
 </table></div>
 
 
 
+<p>
 
-<ul class="summary-list">
-    <li>
-        <span>Semantic element</span>
-        <span>-</span>
-    </li>
-    <ul>
-        <li>
-            <span>Directive</span>
-            <span></span>
-        </li>
-        <ul>
-            <li>
-                <span><a href="#import-directive"><code><w->import</w-></code> directive</a></span>
-                <span><a href="#import-directive">Imports</a> <a href="#symbols">symbols</a> from a <a href="#modules">module</a>.</span>
-            </li>
-            <li>
-                <span><a href="#export-directive"><code><w->export</w-></code> directive</a></span>
-                <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
-            </li>
-        </ul>
-        <li>
-            <span>Declaration</span>
-            <span>Defines the interface and behaviour of a user-defined semantic element.<br></span>
-        </li>
-        <ul>
-            <li>
-                <span><a href="#namespaces"><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</a></span>
-                <span>Declares a named <a href="#scopes">scope</a>.</span>
-            </li>
-            <li>
-                <span><a href="#enums"><a href="#enums"><code><w->enum</w-></code></a> declaration</a></span>
-                <span>Declares an <a href="#enums">enum</a>, a type used to group <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
-            </li>
-            <li>
-                <span><a href="#structs"><a href="#structs"><code><w->struct</w-></code></a> declaration</a></span>
-                <span>Declares a <a href="#structs">struct</a>, a type used to group <a href="#variables">variables</a> of different <a href="#types">types</a>.</span>
-            </li>
-            <li>
-                <span><a href="#functions">Function declaration</a></span>
-                <span>Declares a <a href="#functions">function</a>, a prefix <a href="#routines">routine</a> that requires parentheses to be <a href="#function-calls">called</a>.</span>
-            </li>
-            <li>
-                <span><a href="#operators">Operator declaration</a></span>
-                <span>Declares an <a href="#operators">operator</a>, a <a href="#routines">routine</a> that doesn't require parentheses to be <a href="#operator-calls">called</a> and can use multiple symbolic or alphanumeric <a href="#identifiers">identifiers</a>.</span>
-            </li>
-            <li>
-                <span><a href="#templates"><a href="#templates"><code><w->template</w-></code></a> declaration</a></span>
-                <span>Generates <a href="#enums">enum</a>, <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine call</a>.</span>
-            </li>
-            <li>
-                <span><a href="#symbol-aliases"><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</a></span>
-                <span>Declares an alternative <a href="#symbol-paths">path</a> for a <a href="#symbols">symbol</a>.</span>
-            </li>
-            <li>
-                <span><a href="#variables">Variable declaration</a></span>
-                <span>Declares one or more named memory locations that can store <a href="#values">values</a>.</span>
-            </li>
-        </ul>
-        <li>
-            <span><a href="#statements">Statement</a></span>
-            <span>Instructions executed in runtime when a routine is called</span>
-        </li>
-        <ul>
-            <li>
-                <span><a href="#if-statement"><code><w->if</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> if its condition evaluates to <a href="#boolean-type"><code><k->true</k-></code></a>.</span>
-            </li>
-            <li>
-                <span><a href="#match-statement"><code><w->match</w-></code> statement</a></span>
-                <span>Executes <a href="#statements">statements</a> based on the value of an <a href="#expressions">expression</a>.</span>
-            </li>
-            <li>
-                <span><a href="#while-loops"><code><w->while</w-></code> loop</a></span>
-                <span>Executes a <a href="#statements">statement</a> until its condition evaluates to <a href="#boolean-type"><code><k->false</k-></code></a>.</span>
-            </li>
-            <li>
-                <span><a href="#for-loops"><code><w->for</w-></code> loop</a></span>
-                <span>Executes a <a href="#statements">statement</a> a fixed amount of times.</span>
-            </li>
-            <li>
-                <span><a href="#once-statement"><code><w->once</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> during the first iteration of the innermost enclosing <a href="#iteration">loop</a>.</span>
-            </li>
-            <li>
-                <span><a href="#then-statement"><code><w->then</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> didn't stop through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and completed at least one iteration.</span>
-            </li>
-            <li>
-                <span><a href="#break-statement"><code><w->break</w-></code> statement</a></span>
-                <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
-            </li>
-            <li>
-                <span><a href="#continue-statement"><code><w->continue</w-></code> statement</a></span>
-                <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
-            </li>
-            <li>
-                <span><a href="#else-statement"><code><w->else</w-></code> statement</a></span>
-                <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> didn't complete any iteration</a>.</span>
-            </li>
-            <li>
-                <span><a href="#return-statement"><code><w->return</w-></code> statement</a></span>
-                <span>Returns the flow control to the caller <a href="#routines">routine</a>.</span>
-            </li>
-            <li>
-                <span><a href="#defer-statement"><code><w->defer</w-></code> statement</a></span>
-                <span>Evaluates all the <a href="#routine-calls">arguments</a> of a <a href="#routine-calls">routine call</a> but delays its execution until the first <a href="#return-statement"><code><w->return</w-></code> statement</a> is encountered and all the <a href="#routine-calls">routine calls</a> of subsequent <a href="defer-statement"><code><w->defer</w-></code> statements</a> are executed.</span>
-            </li>
-            <li>
-                <span><a href="#expressions">Expression statement</a></span>
-                <span>Evaluates an <a href="#expresisons">expression</a>.</span>
-            </li>
-            <li>
-                <span><a href="#unnamed-scopes">Unnamed scope</a></span>
-                <span>Groups multiple <a href="#statements">statements</a> in one.</span>
-            </li>
-            <li>
-                <span><a href="#empty-statement">Empty statement</a></span>
-                <span>Does nothing.</span>
-            </li>
-            <li>
-                <span><a href="#inline-glsl">Inline GLSL</a></span>
-                <span>Allows GLSL 4.60 code to be used from within Lux.</span>
-            </li>
-            <li>
-                <span><a href="#inline-cpp">Inline C++</a></span>
-                <span>Allows C++20 code to be used from within Umbra.</span>
-            </li>
-        </ul>
-        <li>
-            <span><a href="#expressions">expression</a></span>
-            <span>Generates a value when evaluated</span>
-        </li>
-        <ul>
-            <li>
-                <span><a href="#literals">Literal</a></span>
-                <span>Generates a <a href="#inline-values">inline value</a> of a <a href="#primitive-types">primitive type</a>.</span>
-            </li>
-            <li>
-                <span><a href="#constructors">Constructor</a></span>
-                <span>Generates an <a href="#inline-values">inline value</a> of any <a href="#types">type</a>.</span>
-            </li>
-            <li>
-                <span><a href="#variables">Variable</a></span>
-                <span>Accesses the value stored in a previously declared <a href="#variables">variable</a>.</span>
-            </li>
-            <li>
-                <span><a href="#temporary-variables">Temporary variable</a></span>
-                <span>Accesses the value stored in a <a href="#temporary-variables">temporary variable</a>.</span>
-            </li>
-            <li>
-                <span><a href="#function-calls">Function call</a></span>
-                <span>Generates a value by calling a <a href="#functions">function</a> or <a href="#templates">function template</a>.</span>
-            </li>
-            <li>
-                <span><a href="#operator-calls">Operator call</a></span>
-                <span>Generates a value by calling an <a href="#operators">operator</a> or <a href="#templates">operator template</a>.</span>
-            </li>
-            <li>
-                <span><a href="#try-expression"><code><w->try</w-></code> expression</a></span>
-                <span>Compiles a portion of code. Evaluates to <a href="#boolean-type"><code><k->true</k-></code></a> if the code doesn't generate <a href="#compilation">syntactic</a> or <a href="#compilation">semantic errors</a>.</span>
-            </li><!-- TODO -->
-        </ul>
-    </ul>
-    <br>
-    <li>
-        <span>Semantic sub-element</span>
-        <span>Parts of complex semantic elements that are split in order to define better syntax rules</span>
-    </li>
-    <ul>
-        <li>
-            <span><a href="#template-constraints">Template constraint</a></span>
-            <span>Defines the <a href="#template-constraints">constraint</a> that controls when the subsequent element body is available</span>
-        </li>
-        <li>
-            <span><a href="#routine-parameters">Routine parameters</a></span>
-            <span>Defines the input values of a <a href="routines">routine</a></span>
-        </li>
-        <li>
-            <span><a href="#enums">Enum</a> element declaration</span>
-            <span>Defines one or more <a href="#enums">enum</a> elements and their values.</span>
-        </li>
-        <li>
-            <span><a href="#structs">Struct</a> member declaration</span>
-            <span>Defines one ore more <a href="#structs">struct</a> members.</span>
-        </li>
-        <li>
-            <span><a href="#name-resolution">Symbol</a> path</span>
-            <span>References a <a href="#symbols">symbol</a></span>
-        </li>
-    </ul>
-    <br>
-    <li>
-        <span>Semantic pseudo-element</span>
-        <span>-</span>
-    </li>
-    <ul>
-        <li>
-            <span><a href="#while-statement">While</a> signature</span>
-            <span>Contains the <a href="boolean-type">condition</a> and structure of the <a href="while-statement">while statements</a></span>
-        </li>
-        <li>
-            <span><a href="#templates">Template</a> signature</span>
-            <span>Defines the name and parameters of a <a href="#templates">template</a></span>
-        </li>
-        <li>
-            <span><a href="#functions">Function</a> signature</span>
-            <span>Defines the name, <a href="#return-statement">return type</a> and <a href="#routine-parameters">parameters</a> of a <a href="#functions">function</a></span>
-        </li>
-        <li>
-            <span><a href="#operators">Operator</a> signature</span>
-            <span>Defines the names, <a href="#return-statement">return type</a>, <a href="#routine-parameters">parameters</a> and priority of an <a href="#operators">operator</a></span>
-        </li>
-        <li>
-            <span><a href="#routines">Routine</a> body</span>
-            <span>Contains the <a href="#statements">statements</a> and the children <a href="#symbols">symbols</a> of a <a href="#routines">routine</a></span>
-        </li>
+</p>
+<ul>
+    <li>Declaration sub-elements</li>
+    <ul class="summary-list">
         <li>
             <span><a href="#enums">Enum</a> signature</span>
             <span>Defines the name of an <a href="#enums">enum</a> and the <a href="#primitive-types">primitive type</a> it derives from.</span>
@@ -1302,8 +1112,272 @@
             <span><a href="#structs">Struct</a> body</span>
             <span>Contains the <a href="#structs">struct</a> members and other children <a href="#symbols">symbols</a>.</span>
         </li>
+        <li>
+            <span><a href="#functions">Function</a> signature</span>
+            <span>Defines the name, <a href="#return-statement">return type</a> and <a href="#routine-parameters">parameters</a> of a <a href="#functions">function</a></span>
+        </li>
+        <li>
+            <span><a href="#operators">Operator</a> signature</span>
+            <span>Defines the names, <a href="#return-statement">return type</a>, <a href="#routine-parameters">parameters</a> and priority of an <a href="#operators">operator</a></span>
+        </li>
+        <li>
+            <span><a href="#routines">Routine</a> body</span>
+            <span>Contains the <a href="#statements">statements</a> and the children <a href="#symbols">symbols</a> of a <a href="#routines">routine</a></span>
+        </li>
+        <li>
+            <span><a href="#templates">Template</a> signature</span>
+            <span>Defines the name and parameters of a <a href="#templates">template</a></span>
+        </li>
+        <li>
+            <span><a href="#template-constraints">Template constraint</a></span>
+            <span>Defines the <a href="#template-constraints">constraint</a> that controls when the subsequent element body is available</span>
+        </li>
     </ul>
-    <br>
+    <li>Other sub-elements</li>
+    <ul class="summary-list">
+        <li>
+            <span><a href="#while-statement">While</a> signature</span>
+            <span>Contains the <a href="boolean-type">condition</a> and structure of the <a href="while-statement">while statements</a></span>
+        </li>
+        <li>
+            <span><a href="#name-resolution">Symbol</a> path</span>
+            <span>References a <a href="#symbols">symbol</a></span>
+        </li>
+    </ul>
+</ul>
+
+
+<!-- TODO build statement -->
+<!-- TODO auto scoping for enum values -->
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Directives                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="language-structure.directives"></h1>
+<p>
+
+</p>
+<ul>
+    <li>Module interface</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#import-directive"><code><w->import</w-></code></a> directive</elm-></span>
+            <span><a href="#import-directive">Imports</a> <a href="#symbols">symbols</a> from a <a href="#modules">module</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm-></span>
+            <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
+        </li>
+    </ul>
+</ul>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Declarations                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="language-structure.declarations"></h1>
+<p>
+
+</p>
+<ul>
+    <li>Types</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#enums"><code><w->enum</w-></code></a> declaration</elm-></span>
+            <span>Declares an <a href="#enums">enum</a>, a type used to group <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#enums">Enum</a> element declaration</elm-></span>
+            <span>Defines one or more <a href="#enums">enum</a> elements and their values.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#structs"><code><w->struct</w-></code></a> declaration</elm-></span>
+            <span>Declares a <a href="#structs">struct</a>, a type used to group <a href="#variables">variables</a> of different <a href="#types">types</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#structs">Struct</a> member declaration</elm-></span>
+            <span>Defines one ore more <a href="#structs">struct</a> members.</span>
+        </li>
+    </ul><br>
+    <li>Routines</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#functions">Function</a> declaration</elm-></span>
+            <span>Declares a <a href="#functions">function</a>, a prefix <a href="#routines">routine</a> that requires parentheses to be <a href="#function-calls">called</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#operators">Operator</a> declaration</elm-></span>
+            <span>Declares an <a href="#operators">operator</a>, a <a href="#routines">routine</a> that doesn't require parentheses to be <a href="#operator-calls">called</a> and can use multiple symbolic or alphanumeric <a href="#identifiers">identifiers</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#routine-parameters">Routine parameter</a></elm-></span>
+            <span>Defines the input values of a <a href="routines">routine</a></span>
+        </li>
+    </ul><br>
+    <li>Other</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</elm-></span>
+            <span>Declares a named <a href="#scopes">scope</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#templates"><code><w->template</w-></code></a> declaration</elm-></span>
+            <span>Generates <a href="#enums">enum</a>, <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine call</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</elm-></span>
+            <span>Declares an alternative <a href="#symbol-paths">path</a> for a <a href="#symbols">symbol</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#variables">Variable</a> declaration</elm-></span>
+            <span>Declares one or more named memory locations that can store <a href="#values">values</a>.</span>
+        </li>
+    </ul>
+</ul>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Statements                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="language-structure.statements"></h1>
+<p>
+
+</p>
+<ul>
+    <li>Selection</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#if-statement"><code><w->if</w-></code></a> statement</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> if its condition evaluates to <a href="#boolean-type"><code><k->true</k-></code></a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#match-statement"><code><w->match</w-></code></a> statement</elm-></span>
+            <span>Executes <a href="#statements">statements</a> based on the value of an <a href="#expressions">expression</a>.</span>
+        </li>
+    </ul><br>
+    <li>Iteration</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#while-loops"><code><w->while</w-></code></a> loop</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> until its condition evaluates to <a href="#boolean-type"><code><k->false</k-></code></a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#for-loops"><code><w->for</w-></code></a> loop</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> a fixed amount of times.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#once-statement"><code><w->once</w-></code></a> statement</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> during the first iteration of the innermost enclosing <a href="#iteration">loop</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#then-statement"><code><w->then</w-></code></a> statement</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> didn't stop through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and completed at least one iteration.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#break-statement"><code><w->break</w-></code></a> statement</elm-></span>
+            <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</elm-></span>
+            <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
+        </li>
+    </ul><br>
+    <li>Non-local</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#return-statement"><code><w->return</w-></code></a> statement</elm-></span>
+            <span>Returns the flow control to the caller <a href="#routines">routine</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#defer-statement"><code><w->defer</w-></code></a> statement</elm-></span>
+            <span>Evaluates all the <a href="#routine-calls">arguments</a> of a <a href="#routine-calls">routine call</a> but delays its execution until the first <a href="#return-statement"><code><w->return</w-></code> statement</a> is encountered and all the <a href="#routine-calls">routine calls</a> of subsequent <a href="defer-statement"><code><w->defer</w-></code> statements</a> are executed.</span>
+        </li>
+    </ul><br>
+    <li>Other</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#else-statement"><code><w->else</w-></code></a> statement</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> didn't complete any iteration</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#expressions">Expression statement</a></elm-></span>
+            <span>Evaluates an <a href="#expresisons">expression</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#unnamed-scopes">Unnamed scope</a></elm-></span>
+            <span>Groups multiple <a href="#statements">statements</a> in one.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#empty-statement">Empty statement</a></elm-></span>
+            <span>Does nothing.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#inline-glsl">Inline GLSL</a></elm-></span>
+            <span>Allows GLSL 4.60 code to be used from within Lux.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#inline-cpp">Inline C++</a></elm-></span>
+            <span>Allows C++20 code to be used from within Umbra.</span>
+        </li>
+    </ul>
+</ul>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Expressions                                                     -->
+<!--------------------------------------------------------------------->
+<h1 id="language-structure.expressions"></h1>
+<p>
+
+</p>
+<ul>
+    <li>Inline values</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#literals">Literal</a></elm-></span>
+            <span>Generates a <a href="#inline-values">inline value</a> of a <a href="#primitive-types">primitive type</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#constructors">Constructor</a></elm-></span>
+            <span>Generates an <a href="#inline-values">inline value</a> of any <a href="#types">type</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#try-expression"><code><w->try</w-></code> expression</a></elm-></span>
+            <span>Compiles a portion of code. Evaluates to <a href="#boolean-type"><code><k->true</k-></code></a> if the code doesn't generate <a href="#compilation">syntactic</a> or <a href="#compilation">semantic errors</a>.</span>
+        </li>
+    </ul><br>
+    <li>Stored values</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#variables">Variable</a></elm-></span>
+            <span>Accesses the value stored in a previously declared <a href="#variables">variable</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#temporary-variables">Temporary variable</a></elm-></span>
+            <span>Accesses the value stored in a <a href="#temporary-variables">temporary variable</a>.</span>
+        </li>
+    </ul><br>
+    <li>Routine calls</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#function-calls">Function call</a></elm-></span>
+            <span>Generates a value by calling a <a href="#functions">function</a> or <a href="#templates">function template</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#operator-calls">Operator call</a></elm-></span>
+            <span>Generates a value by calling an <a href="#operators">operator</a> or <a href="#templates">operator template</a>.</span>
+        </li>
+    </ul>
 </ul>
 
 
@@ -5633,14 +5707,14 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->enum signature</sub2-></td>
+            <td><sub->enum signature</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->enum body</sub2-></td>
+            <td><sub->enum body</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--enum-declaration--signature"><a href="#enums">Enum signature</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--enum-declaration--signature"><a href="#enums">Enum signature</a></label2->
+    <table class="sub">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -5668,8 +5742,8 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--enum-declaration--body"><a href="#enums">Enum body</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--enum-declaration--body"><a href="#enums">Enum body</a></label2->
+    <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><code>{</code></td>
@@ -5692,14 +5766,14 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><sub->enum element</sub-></td>
+            <td><stx->enum element</stx-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label2->
-    <table class="sub">
+    <label2- class="stx" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label2->
+    <table class="stx">
         <tr>
             <td></td>
             <td></td>
@@ -5766,14 +5840,14 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->struct signature</sub2-></td>
+            <td><sub->struct signature</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->struct body</sub2-></td>
+            <td><sub->struct body</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label2->
+    <table class="sub">
         <tr>
             <td></td>
             <td></td>
@@ -5789,8 +5863,8 @@
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
         </tr>
      </table>
-    <label2- class="sub2" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label2->
+    <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><code>{</code></td>
@@ -5813,14 +5887,14 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><sub->struct element</sub-></td>
+            <td><stx->struct member</stx-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
     </table>
-    <label2- class="sub"><a href="#structs">Struct element</a></label2->
-    <table class="sub">
+    <label2- class="stx"><a href="#structs">Struct member</a></label2->
+    <table class="stx">
         <tr>
             <td></td>
             <td></td>
@@ -5878,9 +5952,9 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->function signature</sub2-></td>
+            <td><sub->function signature</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->routine body</sub2-></td>
+            <td><sub->routine body</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -5888,14 +5962,14 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->operator signature</sub2-></td>
+            <td><sub->operator signature</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->routine body</sub2-></td>
+            <td><sub->routine body</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label2->
+    <table class="sub">
         <tr>
             <td></td>
             <td></td>
@@ -5917,7 +5991,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>(</code></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-br-></b-br-></td>
-            <td><sub->routine parameter</sub-></td>
+            <td><stx->routine parameter</stx-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>,</code></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5936,8 +6010,8 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label2->
+    <table class="sub">
         <tr>
             <td></td>
             <td></td>
@@ -6001,7 +6075,7 @@
             <td><b-tr-></b-tr-></td>
             <td><code>(</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine parameter<span class="hidden">&nbsp;**</span></sub-></td>
+            <td><stx->routine parameter<span class="hidden">&nbsp;**</span></stx-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>)</code></td>
             <td><b-tlc-></b-tlc-></td>
@@ -6015,8 +6089,8 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label2->
-    <table class="sub">
+    <label2- class="stx" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label2->
+    <table class="stx">
         <tr>
             <td></td>
             <td></td>
@@ -6060,8 +6134,8 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label2->
+    <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><code>{</code></td>
@@ -6075,7 +6149,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><sub-><a href="#statement-syntaxes">routine statement</a></sub-></td>
+            <td><sub-><a href="#statement-syntaxes">statement</a></sub-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -6237,13 +6311,13 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->template signature<span class="hidden">&nbsp;*</span></sub2-></td>
+            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->enum signature</sub2-></td>
+            <td><sub->enum signature</sub-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><sub->template constraint</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->enum body</sub2-></td>
+            <td><sub->enum body</sub-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6262,13 +6336,13 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->template signature<span class="hidden">&nbsp;*</span></sub2-></td>
+            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->struct signature</sub2-></td>
+            <td><sub->struct signature</sub-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><sub->template constraint</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->struct body</sub2-></td>
+            <td><sub->struct body</sub-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6287,13 +6361,13 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->template signature<span class="hidden">&nbsp;*</span></sub2-></td>
+            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->function signature</sub2-></td>
+            <td><sub->function signature</sub-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><sub->template constraint</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->function body</sub2-></td>
+            <td><sub->function body</sub-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6312,13 +6386,13 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->template signature<span class="hidden">&nbsp;*</span></sub2-></td>
+            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->operator signature</sub2-></td>
+            <td><sub->operator signature</sub-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><sub->template constraint</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->operator body</sub2-></td>
+            <td><sub->operator body</sub-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6333,8 +6407,8 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label2->
+    <table class="sub">
         <tr>
             <td></td>
             <td></td>
@@ -6495,7 +6569,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>)</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6558,7 +6632,7 @@
             <td><b-br-></b-br-></td>
             <td><code>:</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
         </tr>
         <tr>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -6647,7 +6721,7 @@
             <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
             <td><code>)</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6714,9 +6788,9 @@
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->while signature</sub2-></td>
+            <td><sub->while signature</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6726,14 +6800,14 @@
             <td><b-lr-></b-lr-></td>
             <td><code><w->do</w-></code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub2->while signature</sub2-></td>
+            <td><sub->while signature</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub2" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label2->
-    <table class="sub2">
+    <label2- class="sub" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label2->
+    <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><code><w->while</w-></code></td>
@@ -6841,7 +6915,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code><w->once</w-></code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6868,7 +6942,7 @@
                 <td><b-lr-></b-lr-></td>
                 <td><code><w->then</w-></code></td>
                 <td><b-lr-></b-lr-></td>
-                <td><sub->routine statement</sub-></td>
+                <td><sub->statement</sub-></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
             </tr>
@@ -6934,7 +7008,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code><w->defer</w-></code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine call</sub-></td>
+            <td><a href="#syntax--expression-routine-call"><sub->routine call</sub-></a></td>
             <td><b-lr-></b-lr-></td>
             <td><code>;</code></td>
             <td><b-lr-></b-lr-></td>
@@ -6963,7 +7037,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code><w->else</w-></code></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -7002,7 +7076,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><sub->routine statement</sub-></td>
+            <td><sub->statement</sub-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
