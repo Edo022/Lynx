@@ -10,20 +10,24 @@
     overflow: hidden;
     word-spacing: -100vw;
     text-align: center;
-}.scope-table-right-container {
+}
+.scope-table-right-container {
     vertical-align: top;
     overflow-x: scroll;
     display: inline-block;
     max-width: calc(100% - 28ch);
-}.scope-table-right {
+}
+.scope-table-right {
     border-radius: 0 10px 10px 0;
     word-spacing: var(--word-spacing);
-}.scope-table-left-container {
+}
+.scope-table-left-container {
     vertical-align: top;
     display: inline-block;
-    max-width: 28ch;
+    max-width: fit-content;
     border-bottom-left-radius: 10px;
-}.scope-table-left {
+}
+.scope-table-left {
     border-radius: 10px 0 0 10px;
     word-spacing: var(--word-spacing);
 }

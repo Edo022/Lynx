@@ -70,13 +70,16 @@
                 <indexd->language-structure.statements</indexd->
                 <indexd->language-structure.expressions</indexd->
             </index->
-            <indexd->scopes</indexd->
-            <index-><indexh->name-resolution</indexh->
+            <index-><indexh->scopes</indexh->
+                <indexd->name-resolution</indexd->
                 <indexd->name-shadowing</indexd->
+                <indexd->multiple-declarations</indexd->
             </index->
-            <indexd->undefined-values</indexd->
-            <indexd->undefined-behaviour</indexd->
-            <indexd->compile-time-values</indexd->
+            <index-><indexh->concepts</indexh->
+                <indexd->undefined-values</indexd->
+                <indexd->undefined-behaviour</indexd->
+                <indexd->compile-time-values</indexd->
+            </index->
         </index->
         <indexd->namespaces</indexd->
         <index-><indexh->types</indexh->
@@ -162,7 +165,7 @@
         </index->
     </index->
     <index-><indexh->core-module</indexh->
-        <index-><indexh->operators</indexh->
+        <index-><indexh->core.operators</indexh->
             <indexd->common-operators</indexd->
             <indexd->assignment-operators</indexd->
             <indexd->special-operators</indexd->
@@ -1073,7 +1076,6 @@
         <td><div class="split-td-outer">
             <div class="split-td">
                 <elm2-><a href="#literals">Literal</a></elm2->
-                <elm2-><a href="#constructors">Constructor</a></elm2->
                 <elm2-><a href="#try-expression"><code><w->try</w-></code> expression</a></elm2->
             </div>
             <div class="split-td">
@@ -1083,6 +1085,7 @@
             <div class="split-td">
                 <elm2-><a href="#function-calls">Function call</a></elm2->
                 <elm2-><a href="#operator-calls">Operator call</a></elm2->
+                <elm2-><a href="#constructors">Constructor call</a></elm2->
             </div>
         </div></td>
     </tr>
@@ -1091,7 +1094,8 @@
 
 
 <p>
-
+    <a href="#enums">enums</a>, <a href="#structs">structs</a>, <a href="#routines">routines</a>, <a href="#templates">templates</a> and the <a href="#while-loops"><code><w->while</w-></code> loop</a>
+    are divided in sub-elements in order to provide a clear and concise syntax.<br>
 </p>
 <ul>
     <li>Declaration sub-elements</li>
@@ -1102,7 +1106,7 @@
         </li>
         <li>
             <span><a href="#enums">Enum</a> body</span>
-            <span>Contains the <a href="#enums">enum</a> elements and other children <a href="#symbols">symbols</a>.</span>
+            <span>Contains the <a href="#enums">enum</a> elements and other allowed declarations.</span>
         </li>
         <li>
             <span><a href="#structs">Struct</a> signature</span>
@@ -1110,7 +1114,7 @@
         </li>
         <li>
             <span><a href="#structs">Struct</a> body</span>
-            <span>Contains the <a href="#structs">struct</a> members and other children <a href="#symbols">symbols</a>.</span>
+            <span>Contains the <a href="#structs">struct</a> members and other allowed declarations.</span>
         </li>
         <li>
             <span><a href="#functions">Function</a> signature</span>
@@ -1122,7 +1126,7 @@
         </li>
         <li>
             <span><a href="#routines">Routine</a> body</span>
-            <span>Contains the <a href="#statements">statements</a> and the children <a href="#symbols">symbols</a> of a <a href="#routines">routine</a></span>
+            <span>Contains the <a href="#statements">statements</a> and other allowed declarations of a <a href="#routines">routine</a></span>
         </li>
         <li>
             <span><a href="#templates">Template</a> signature</span>
@@ -1130,14 +1134,14 @@
         </li>
         <li>
             <span><a href="#template-constraints">Template constraint</a></span>
-            <span>Defines the <a href="#template-constraints">constraint</a> that controls when the subsequent element body is available</span>
+            <span>Defines the <a href="#template-constraints">constraint</a> that determines when the subsequent element body is available</span>
         </li>
-    </ul>
+    </ul><br>
     <li>Other sub-elements</li>
     <ul class="summary-list">
         <li>
-            <span><a href="#while-statement">While</a> signature</span>
-            <span>Contains the <a href="boolean-type">condition</a> and structure of the <a href="while-statement">while statements</a></span>
+            <span><a href="#while-loops">While</a> signature</span>
+            <span>Defines the <a href="boolean-type">condition</a> of a <a href="while-loops">while loop</a></span>
         </li>
         <li>
             <span><a href="#name-resolution">Symbol</a> path</span>
@@ -1159,7 +1163,10 @@
 <!--------------------------------------------------------------------->
 <h1 id="language-structure.directives"></h1>
 <p>
-
+    <b>Directives</b> are instructions that <b>modify</b> the <a href="#modules">module</a> on a <b>semantic</b> level.<br>
+    They are used to define which <a href="#name-resolution">symbols</a> are <a href="#import-directive">imported</a> and/or <a href="#export-directive">exported</a> and to programmatically generate code.
+    //TODO build directive
+    //TODO shader directive
 </p>
 <ul>
     <li>Module interface</li>
@@ -1183,7 +1190,9 @@
 <!--------------------------------------------------------------------->
 <h1 id="language-structure.declarations"></h1>
 <p>
-
+    <b>Declarations</b> define user-defined elements, such as <a href="#structs">structs</a>, <a href="#enums">enums</a>, <a href="#routines">routines</a>, <a href="#namespaces">namespaces</a>, <a href="#templates">templates</a>, <a href="#symbol-aliases">symbol aliases and <a href="#variables">variables</a>.</a><br>
+    Anything defined through a declaration is called a <b>Symbol</b>. Symbols can be referenced through their <a href="#name-resolution">path</a>. This is explained in <a href="#name-resolution">Name resolution</a>.<br>
+    There are a total of 11 user-defined elements. They are available in both languages.
 </p>
 <ul>
     <li>Types</li>
@@ -1193,7 +1202,7 @@
             <span>Declares an <a href="#enums">enum</a>, a type used to group <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
         </li>
         <li>
-            <span><elm-><a href="#enums">Enum</a> element declaration</elm-></span>
+            <span><elm-><a href="#enums"><code><w->enum</w-></code></a> element declaration</elm-></span>
             <span>Defines one or more <a href="#enums">enum</a> elements and their values.</span>
         </li>
         <li>
@@ -1201,7 +1210,7 @@
             <span>Declares a <a href="#structs">struct</a>, a type used to group <a href="#variables">variables</a> of different <a href="#types">types</a>.</span>
         </li>
         <li>
-            <span><elm-><a href="#structs">Struct</a> member declaration</elm-></span>
+            <span><elm-><a href="#structs"><code><w->struct</w-></code></a> member declaration</elm-></span>
             <span>Defines one ore more <a href="#structs">struct</a> members.</span>
         </li>
     </ul><br>
@@ -1249,7 +1258,8 @@
 <!--------------------------------------------------------------------->
 <h1 id="language-structure.statements"></h1>
 <p>
-
+    <b>Statements</b> perform actions during runtime. They define the behaviour of each <a href="#routines">routine</a>, their return value and runtime performance.<br>
+    Statements are hard coded into the languages and cannot be modified. There are a total of 16 statements, 2 of which can only be used in their respective language.
 </p>
 <ul>
     <li>Selection</li>
@@ -1321,11 +1331,11 @@
         </li>
         <li>
             <span><elm-><a href="#inline-glsl">Inline GLSL</a></elm-></span>
-            <span>Allows GLSL 4.60 code to be used from within Lux.</span>
+            <span><lux-logo-></lux-logo-> Allows GLSL 4.60 code to be used from within Lux.</span>
         </li>
         <li>
             <span><elm-><a href="#inline-cpp">Inline C++</a></elm-></span>
-            <span>Allows C++20 code to be used from within Umbra.</span>
+            <span><umbra-logo-></umbra-logo-> Allows C++20 code to be used from within Umbra.</span>
         </li>
     </ul>
 </ul>
@@ -1338,18 +1348,14 @@
 <!--------------------------------------------------------------------->
 <h1 id="language-structure.expressions"></h1>
 <p>
-
+    <b>Expressions</b> generate values. They are mostly used to declare <a href="#name-resolution">symbols</a> and call <a href="#routines">routines</a>.
 </p>
 <ul>
     <li>Inline values</li>
     <ul class="summary-list">
         <li>
             <span><elm-><a href="#literals">Literal</a></elm-></span>
-            <span>Generates a <a href="#inline-values">inline value</a> of a <a href="#primitive-types">primitive type</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#constructors">Constructor</a></elm-></span>
-            <span>Generates an <a href="#inline-values">inline value</a> of any <a href="#types">type</a>.</span>
+            <span>Generates an <a href="#inline-values">inline value</a> of a <a href="#primitive-types">primitive type</a>.</span>
         </li>
         <li>
             <span><elm-><a href="#try-expression"><code><w->try</w-></code> expression</a></elm-></span>
@@ -1377,6 +1383,10 @@
             <span><elm-><a href="#operator-calls">Operator call</a></elm-></span>
             <span>Generates a value by calling an <a href="#operators">operator</a> or <a href="#templates">operator template</a>.</span>
         </li>
+        <li>
+            <span><elm-><a href="#constructors">Constructor</a> call</elm-></span>
+            <span>Generates a value of the correponding <a href="#types">type</a>.</span>
+        </li>
     </ul>
 </ul>
 
@@ -1400,9 +1410,9 @@
 <!--------------------------------------------------------------------->
 <h1 id="scopes"></h1>
 <p>
-    <b>Scopes</b> define which <a href="#semantic-elements"><b>symbols</b></a> the code can <b>reference</b> and their local, relative and complete <a href="#name-resolution">names</a>.<br>
-    Any portion of code enclosed in <code>{</code><code>}</code> defines a new scope. The only exception is the <b><a href="#modules">module</a> scope</b> which contains
-    all the <a href="#semantic-elements">symbols</a> and scopes declared in the <a href="#modules">module</a>. It can be referenced using the <code>module</code> <a href="#identifiers">identifier</a>.<br>
+    <b>Scopes</b> define the <a href="#name-resolution"><b>path</b></a> to the <b>symbols</b> declared within them.<br>
+    Any portion of code enclosed in <elm-><code>{</code><code>}</code></elm-> tokens defines a new scope.
+    The only exception is the module scope, which contains anything declared in the module.
 </p>
 <p>
     Each scope can only contain certain types of <a href="#semantic-elements">symbols</a>:
@@ -1411,28 +1421,26 @@
 <div class="scope-table-container">
     <div class="table-container scope-table-left-container"><table class="scope-table-left">
         <tr><th class="medium"><div><span>Scope / Can contain</span></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#modules">       Module                                     </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#namespaces">    Namespace                                  </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#enums">         Enum<span class="hidden">&nbsp;*</span>    </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#structs">       Struct<span class="hidden">&nbsp;*</span>  </a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#functions">     Function<span class="hidden">&nbsp;*</span></a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#opertors">      Operator<span class="hidden">&nbsp;*</span></a></div></th></tr>
-        <tr><th class="medium"><div><a style="color: var(--fg-text)" href="#unnamed-scopes">Unnamed<br>scope    </a></div></th></tr>
+        <tr><th class="medium"><div><a href="#modules">       Module                                     </a></div></th></tr>
+        <tr><th class="medium"><div><a href="#namespaces">    Namespace                                  </a></div></th></tr>
+        <tr><th class="medium"><div><a href="#enums">         Enum<span class="hidden">&nbsp;*</span>    </a></div></th></tr>
+        <tr><th class="medium"><div><a href="#structs">       Struct<span class="hidden">&nbsp;*</span>  </a></div></th></tr>
+        <tr><th class="medium"><div><a href="#functions">     Function<span class="hidden">&nbsp;*</span></a></div></th></tr>
+        <tr><th class="medium"><div><a href="#opertors">      Operator<span class="hidden">&nbsp;*</span></a></div></th></tr>
+        <tr><th class="medium"><div><a href="#unnamed-scopes">Unnamed<br>scope    </a></div></th></tr>
     </table></div>
     <div class="table-container scope-table-right-container"><table class="scope-table-right">
         <tr>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#namespaces">    Namespace                                  </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#enums">         Enum<span class="hidden">&nbsp;*</span>    </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#structs">       Struct<span class="hidden">&nbsp;*</span>  </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#functions">     Function<span class="hidden">&nbsp;*</span></a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#operators">     Operator<span class="hidden">&nbsp;*</span></a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#unnamed-scopes">Unnamed<br>scope                           </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#statements">    Statement                                  </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#variables">     Variable                                   </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#symbol-aliases">Symbol<br>alias                            </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#enums">         Enum<br>member                             </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#structs">       Struct<br>member                           </a></div></th>
-            <th><div><a style="color: var(--fg-text)" class="medium" href="#routines">      Routine<br>parameter                       </a></div></th>
+            <th><div><a class="medium" href="#namespaces">    Namespace                                  </a></div></th>
+            <th><div><a class="medium" href="#enums">         Enum<span class="hidden">&nbsp;*</span>    </a></div></th>
+            <th><div><a class="medium" href="#structs">       Struct<span class="hidden">&nbsp;*</span>  </a></div></th>
+            <th><div><a class="medium" href="#functions">     Function<span class="hidden">&nbsp;*</span></a></div></th>
+            <th><div><a class="medium" href="#operators">     Operator<span class="hidden">&nbsp;*</span></a></div></th>
+            <th><div><a class="medium" href="#variables">     Variable                                   </a></div></th>
+            <th><div><a class="medium" href="#symbol-aliases">Symbol<br>alias                            </a></div></th>
+            <th><div><a class="medium" href="#enums">         Enum<br>member                             </a></div></th>
+            <th><div><a class="medium" href="#structs">       Struct<br>member                           </a></div></th>
+            <th><div><a class="medium" href="#routines">      Routine<br>parameter                       </a></div></th>
         </tr>
         <tr>
             <td class="scope-table-y"><div></div></td>
@@ -1440,8 +1448,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
@@ -1453,8 +1459,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
-            <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
             <td class="scope-table-y"><div class="nobefore"><span>Inherited</span></div></td>
             <td class="scope-table-y"><div></div></td>
@@ -1469,8 +1473,6 @@
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
@@ -1483,8 +1485,6 @@
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
@@ -1498,11 +1498,9 @@
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div>Yes<span class="hidden" style="min-width: fit-content; max-width: fit-content;">&nbsp;**</span></div></td>
+            <td class="scope-table-y"><div class="nobefore noafter"><div>Yes<span class="hidden" style="min-width: fit-content; max-width: fit-content;">&nbsp;**</span></div></div></td>
         </tr>
         <tr>
             <td class="scope-table-y"><div></div></td>
@@ -1512,11 +1510,9 @@
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div>Yes<span class="hidden" style="min-width: fit-content; max-width: fit-content;">&nbsp;**</span></div></td>
+            <td class="scope-table-y"><div class="nobefore noafter"><div>Yes<span class="hidden" style="min-width: fit-content; max-width: fit-content;">&nbsp;**</span></div></div></td>
         </tr>
         <tr>
             <td class="scope-table-y"><div></div></td>
@@ -1524,8 +1520,6 @@
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
             <td class="scope-table-n"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
-            <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-y"><div></div></td>
             <td class="scope-table-n"><div></div></td>
@@ -1534,7 +1528,7 @@
         </tr>
     </table></div>
 </div>
-<syntax-note->
+<syntax-note- style="margin-top: 0;">
     * Also applies to the respective <a href="templates">template</a>.<br>
     ** Declared in the routine signature, but part of the routine scope.
 </syntax-note->
@@ -1559,73 +1553,69 @@
 <!--------------------------------------------------------------------->
 <h1 id="name-resolution"></h1>
 <p>
-    <a href="#semantic-elements">Symbols</a> are referenced through their name.<br>
-    A <b>path</b> is the list of all the <a href="#local-names">local names</a> used to refer to the <b>enclosing <a href="#scopes">scopes</a></b>
-    and the <a href="#semantic-elements"><b>symbol</b></a> separated by <b><code>.</code> tokens</b>, starting from the outermost.<br>
-    The <a href="#local-names">local name</a> depends on the type of semantic element the <a href="#semantic-elements">symbol</a> is declared as.
-    They are described in the corresponding sections of each semantic element and summarized in the <a href="#local-names">Local names</a> section.
+    <b><a href="#semantic-elements.declarations">User defined elements</a></b>, or <a href="#declarations">Symbols</a>, can be referenced to use them as <a href="#types">types</a>, access their value or perform <a href="#routine-calls">routine calls</a>.
+    This is done through their <b>name</b> or <b>path</b>.
 </p>
 <p>
-    The name can start from any of the enclosing <a href="#scopes">scopes</a>.<br>
-    If the enclosing <a href="#scopes">scopes</a> are omitted, the <a href="#semantic-elements">symbol</a> <a href="#identifiers">identifier</a> is searched in the current <a href="#scopes">scope</a>.<br>
-    Names that start from the <a href="#modules">module</a> <a href="#scopes">scope</a> are called complete names.
-    Names that omit the enclosing <a href="#scopes">scopes</a> are called local names.
-    Other names are called relative names.
+    The name is the <a href="#identifiers">identifier</a> that was used to declare the <a href="#declarations">symbol</a>, optionally followed, if the symbol is a <a href="#templates">template</a>,
+    by <elm-><code>&lt</code><code>&gt</code></elm-> tokens containing the <a href="#types">types</a> that identify the generated <a href="#declarations">symbol</a>.<br>
+    Names are used to reference <a href="#declarations">symbols</a> that are declared in the current <a href="#scopes">scope</a> or in one of the enclosing ones.
 </p>
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><a href="#local-names"><elm- style="color: var(--fg-text)">local name</elm-></a></td>
-                    <td><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><code>.</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
+<p>
+    Paths, instead, are used to reference <a href="#declarations">symbols</a> declared in <a href="#scopes">scopes</a> that are not parents of the current <a href="#scopes">scope</a>.<br>
+    They consist of the names of the enclosing <a href="#scopes">scopes</a> of the <a href="#declarations">symbol</a> and the name of the <a href="#declarations">symbol</a> itself separated by <code>.</code> tokens, starting from the outermost.<br>
+    The <code>.</code> token is used to access the children <a href="#declarations">symbols</a> of the <a href="#scopes">scope</a>.<br>
+    Paths work in the same way as file paths, with <a href="#scopes">scopes</a> and <a href="#declarations">symbol</a> acting like directories.
+</p>
+<p>
+    The path of a symbol can start from any of its enclosing <a href="#scopes">scopes</a>.<br>
+    <a href="#declarations">Symbols</a> declared within unnamed <a href="#scopes">scopes</a> cannot be referenced from outside.<br>
+    The <code>module</code> identifier is used to reference the <a href="#scopes">scope</a> of the current <a href="#modules">module</a>.<br>
+    A path that starts from the module <a href="#scopes">scope</a> of the current <a href="#modules">module</a> or any of the <a href="#import-directive">imported</a> ones is called an absolute path.
+</p>
+<syntax2->
+    <label2->Syntax</label2->
+    <table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+        <tr>
+            <td><b-br-></b-br-><b-lr-></b-lr-></td>
+            <td><a href="#local-names"><elm- style="color: var(--fg-text)">name</elm-></a></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>.</code></td>
+            <td><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
+        </tr>
+    </table>
+</syntax2->
 <example2->
     <label2->Example</label2->
     <div>
-        <c->// Complete name: module</c->
+        <c->// Absolute path: module</c->
 
 
-        <c->// Complete name: module.s</c->
-        <c->// Local name: s</c->
+        <c->// Absolute path: module.s</c->
         <w->namespace</w-> s {
-            <c->// Absolute name: module.s.fun</c->
-            <c->// Relative names: s.fun</c->
-            <c->// Local name: fun</c->
+            <c->// Absolute path: module.s.fun</c->
             <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
                 <c->//        ^</c->
-                <c->// Absolute name: module.s.fun.n</c->
-                <c->// Relative names: s.fun.n, fun.n</c->
-                <c->// Local name: n</c->
+                <c->// Absolute path: module.s.fun.n</c->
             }
         }
 
         <w->namespace</w-> {
-            <c->// No complete name</c->
-            <c->// No relative names</c->
-            <c->// Local name: n</c->
+            <c->// No absolute path, cannot be referenced from outside</c->
             <t->uint</t-> n;
         }
     </div>
@@ -1651,25 +1641,27 @@
 <!--------------------------------------------------------------------->
 <h1 id="name-shadowing"></h1>
 <p>
-    The same <a href="#identifiers"><b>identifier</b></a> can be used to declare <b>multiple <a href="#semantic-elements">symbols</a></b> in different <a href="#scopes">scopes</a>.<br>
-    When the <a href="#scopes">scopes</a> are one inside another and the <a href="#identifiers">identifier</a> is used in relative or local <a href="#name-resolution">names</a>
-    from one of the inner <a href="#scopes">scopes</a>, the innermost <a href="#semantic-elements">symbol</a> takes precedence over the others.<br>
-    This is known as <b>name shadowing</b>.
+    <a href="#declarations"><b>Symbols</b></a> in <b>different enclosing <a href="#scopes">scopes</a></b> can be declared using the <b>same <a href="#identifiers">identifier</a></b>. This is known as <b>name shadowing</b>.<br>
 </p>
 <p>
-    <a href="#name-resolution">Absolute names</a> cannot be shadowed
+    When the <a href="#identifiers">identifier</a> is used as a <a href="#declarations">symbol</a> name or as the first name of a <a href="#declarations">symbol</a> <a href="#name-resolution">path</a>, the <a href="#declarations">symbol</a> declared in the innermost <a href="#scopes">scope</a>, relatively to where the <a href="#identifiers">identifier</a> is used, always takes precedence.
+    This can be avoided by starting the <a href="#name-resolution">path</a> from a parent <a href="#scopes">scope</a> so that the <a href="#identifiers">identifier</a> is not ambiguous.<br>
+    Any <a href="#identifiers">identifier</a> can be shadowed, including <a href="#primitive-types">primitive types</a>, the <a href="#name-resolution"><code>module</code></a> <a href="#identifiers">identifier</a> and <a href="#declarations">symbols</a> from the <a href="#core-module">core module</a>.
 </p>
 <example2->
     <label2->Example</label2->
     <div>
         <w->namespace</w-> s {
+            <w->namespace</w-> {
+                <t->float</t-> n;
+                <c->// n references module.s.*unnamed*.n</c->
+            }
+
             <c->// n references module.s.n</c->
             <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
                 <c->// n references module.s.n.n</c->
-                <w->namespace</w-> {
-                    <t->float</t-> n;
-                    <c->// n references module.s.n.*unnamed*.n</c->
-                }
+                int int = 5; // Ok, declares an int variable with name "int"
+
             }
         }
     </div>
@@ -1677,6 +1669,91 @@
 
 
 
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Multiple declarations                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="multiple-declarations"></h1>
+<p>
+    Multiple symbols can be declared in the same scope using the same identifier.<br>
+    If the declared symbols are the type of semantic element, the behaviour of these declarations depend on it.<br>
+    If they are different types, a semantic error is generated. //TODO LINK
+</p>
+<p>
+    <code><w->namespace</w-></code>.<br>
+    Namespaces with the same absolute path merge their contents.<br>
+    <br>
+    Functions.<br>
+    Functions and function templates declared in the same scope using the same identifier create a function overloading.<br>
+    This is explained in <a href="#function-overloading">Function overloading</a>.<br>
+    The <code><f->main</f-></code> function cannot be overloaded.<br>
+    <br>
+    Operators.<br>
+    As with functions, operators and operator templates declared in the same scope using the same identifier create an operator overloading.<br>
+    Explained in <a href="#operator-overloading">Operator overloading</a><br>
+    <br>
+    Other symbols.<br>
+    Multiple declarations of other symbols generate a semantic error. //TODO LINK
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->namespace</w-> a {     <c->// Ok, merges with the second declaration</c->
+            <t->int</t-> n;        <c->// Ok</c->
+            <t->int</t-> a;        <c->// Ok, shadows "module.a"</c->
+        }
+        <w->namespace</w-> a {     <c->// Ok, merges with the first declaration</c->
+            <c->//int n;</c->      <ce->// Error, redeclaration of "module.a.n"</ce->
+            <t->int</t-> b;        <c->// Ok</c->
+        }
+        <t->void</t-> <f->main</f->(){
+            a.b <f->=</f-> <k->5</k->;      <c->// Ok</c->
+        }
+
+        <t->void</t-> <f->f</f->(<t->int</t-> <a->n</a->) { } <c->// Ok</c->
+        <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
+    </div>
+</example2->
+
+<p>
+    As for name shadowing, the first declaration is the only one that actually shadows the identifier. Subsequent usages of the identifier refer to the symbol declared in the same scope.<br>
+    Like single declarations, this doesn't apply to paths that start from a parent scope.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <c->// Ok, declares a struct with name "t"</c->
+        <w->strct</w-> t {
+            <t->int</t-> n;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->t</t-> t;            <c->// Ok, declares a variable with name "t" and type "module.t"</c->
+            <c->//t a;</c->          <ce->// Error, "t" is a variable and not a type</ce->
+            <c->//module.t t;</c->   <ce->// Error, redeclaration of "module.main.t"</ce->
+            module.<t->t</t-> a;     <c->// Ok, declares a variable with name "a" and type "module.t"</c->
+        }
+
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Concepts                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="concepts"></h1>
 
 
 
@@ -4343,7 +4420,7 @@
             <!--------------------------------------------------------------------->
             <!-- Operators                                                       -->
             <!--------------------------------------------------------------------->
-            <h1 id="standard-operators"></h1>
+            <h1 id="core.operators"></h1>
             <p style="margin-bottom: 20px;">
                 The language defines a total of 44 operators.<br>
             </p>
@@ -5360,7 +5437,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- id="syntax--module"><a href="#modules">Module</a></label2->
     <table>
         <tr>
@@ -5415,7 +5492,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--import-directive"><a href="#modules">Import directive</a></label2->
     <table class="stx">
         <tr>
@@ -5520,7 +5597,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--export-directive"><a href="#modules">Export directive</a></label2->
     <table class="stx">
         <tr>
@@ -5639,7 +5716,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label2->
         <table class="stx">
         <tr>
@@ -5702,7 +5779,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label2->
     <table class="stx">
         <tr>
@@ -5835,7 +5912,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label2->
     <table class="stx">
         <tr>
@@ -5947,7 +6024,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label2->
     <table class="stx">
         <tr>
@@ -6200,7 +6277,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label2->
     <table class="stx">
         <tr>
@@ -6272,7 +6349,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label2->
     <table class="stx">
         <tr>
@@ -6306,7 +6383,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="stx" id="syntax--template-enum-declaration"><a href="#templates">Enum template declaration</a></label2->
     <table class="stx">
         <tr>
@@ -6556,7 +6633,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-if"><a href="#if-statement">If statement</a></label2->
     <table class="sub">
         <tr>
@@ -6581,7 +6658,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label2->
     <table class="sub">
         <tr>
@@ -6678,7 +6755,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-for"><a href="#for-statement">For statement</a></label2->
     <table class="sub">
         <tr>
@@ -6783,7 +6860,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-while"><a href="#while-statement">While statement</a></label2->
     <table class="sub">
         <tr>
@@ -6836,7 +6913,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-continue"><a href="#continue-and-break-statements">Continue statement</a></label2->
     <table class="sub">
         <tr>
@@ -6870,7 +6947,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-break"><a href="#continue-and-break-statements">Break statement</a></label2->
     <table class="sub">
         <tr>
@@ -6908,7 +6985,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-once"><a href="#once-statement">Once statement</a></label2->
     <table class="sub">
         <tr>
@@ -6934,7 +7011,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label2->
     <table class="sub">
         <tr>
@@ -6962,7 +7039,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label2->
     <table class="sub">
         <tr>
@@ -7001,7 +7078,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-defer"><a href="#defer-statement">Defer statement</a></label2->
     <table class="sub">
         <tr>
@@ -7030,7 +7107,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-else"><a href="#else-statement">Else statement</a></label2->
     <table class="sub">
         <tr>
@@ -7060,7 +7137,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label2->
     <table class="sub">
         <tr>
@@ -7117,7 +7194,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label2->
     <table class="sub">
         <tr>
@@ -7151,7 +7228,7 @@
 
 
 
-<syntax2->
+<syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-empty"><a href="#empty-statement">Empty statement</a></label2->
     <table class="sub">
         <tr>
@@ -7161,6 +7238,8 @@
         </tr>
     </table>
 </syntax2->
+<!-- TODO try -->
+<!-- TODO build -->
 
 
 
@@ -7334,7 +7413,7 @@
     They are concatenated with <code>.</code> tokens to create names for the <a href="#name-resolution">name resolution</a>.
     //TODO
 </p>
-<syntax2->
+<syntax2- class="qrt">
     <label2-><a href="#primitive-types" style="color: var(--fg-text);">Primitive types</a>, <a href="#enums" style="color: var(--fg-text);">Enums</a>, <a href="#structs" style="color: var(--fg-text);">Structs</a>, <a href="#void" style="color: var(--fg-text);">Void</a>, <a href="#typename" style="color: var(--fg-text);">Typename</a></label2->
     <table>
         <tr>
@@ -7344,7 +7423,7 @@
         </tr>
     </table>
 </syntax2->
-<syntax2->
+<syntax2- class="qrt">
     <label2-><a href="#arrays" style="color: var(--fg-text);">Arrays</a></label2->
     <table>
         <tr>
@@ -7382,7 +7461,7 @@
         </tr>
     </table>
 </syntax2->
-<syntax2->
+<syntax2- class="qrt">
     <label2-><a href="#tuples" style="color: var(--fg-text);">Tuples</a></label2->
     <table>
         <tr>
@@ -7414,7 +7493,7 @@
         </tr>
     </table>
 </syntax2->
-<syntax2->
+<syntax2- class="qrt">
     <label2-><a href="#variables" style="color: var(--fg-text);">Variables</a>, <a href="#functions" style="color: var(--fg-text);">Functions</a>, <a href="#functions-definitions" style="color: var(--fg-text);">Parameters</a>, <a href="#symbol-aliases" style="color: var(--fg-text);">Symbol aliases</a>, <a href="#templates" style="color: var(--fg-text);">Templates</a></label2->
         <table>
             <tr>
@@ -7424,7 +7503,7 @@
             </tr>
         </table>
 </syntax2->
-<syntax2->
+<syntax2- class="qrt">
     <label2-><a href="#struct-templates" style="color: var(--fg-text);">Generated structs</a>, <a href="#function-templates" style="color: var(--fg-text);">Generated functions</a></label2->
     <table>
         <tr>
@@ -7559,29 +7638,6 @@
         //<!--! view() called after readability readability css load -->
         //TODO implement counter to manage more dynamic css loadings
     </script>
-
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
 </body>
 </html>
 

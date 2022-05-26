@@ -69,7 +69,7 @@ var setup_index = {
                 let old = window.sessionStorage.getItem('active_index');
                 let new_ = `index--${ h[Math.max(i - 1, 0)].id }`;
                 if(setup_index.check_active(old)) {
-                    document.getElementById(old).parentElement.style.backgroundColor = 'transparent'
+                    document.getElementById(old).parentElement.style.removeProperty('background-color');
                 }
                 window.sessionStorage.setItem('active_index', new_)
                 document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';

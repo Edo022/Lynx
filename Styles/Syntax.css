@@ -7,7 +7,8 @@
     --syntax-width:             65%;
     --syntax-overlap-fix:       2px;
     --syntax-table-padding:     2ch;
-    --syntax-margin:            128px;
+    --syntax-margin:            32px;
+    --syntax-margin-2:          128px;
     --syntax-internal-margin:   32px;
 
     --syntax-label-h:           3ch;
@@ -139,7 +140,7 @@
 
 
 /* Containers */
-syntax2- {
+syntax2-, example2- {
     display: flex;
     flex-direction: column;
     word-spacing: normal;
@@ -150,19 +151,13 @@ syntax2- {
     margin: var(--syntax-margin) 0 var(--syntax-margin) 0;
 }
 example2- {
-    display: flex;
-    flex-direction: column;
     font-family: monospace, monospace;
     font-size: var(--font-size-code);
-    word-spacing: normal;
     white-space: pre;
-
-    min-width:  100%;
-    max-width:  100%;
-    /**/width:  100%;
-    margin: var(--syntax-margin) 0 var(--syntax-margin) 0;
 }
-
+example2-.qrt, syntax2-.qrt {
+    margin: var(--syntax-margin-2) 0 var(--syntax-margin-2) 0;
+}
 
 
 
