@@ -45,8 +45,7 @@ var setup_index = {
 
 
     format : function(){
-        let children = document.getElementsByTagName('INDEX-');
-        setup_index.format_elm(children[0], 0, '');
+        setup_index.format_elm(document.querySelector('index-'), 0, '');
     },
 
 
@@ -58,12 +57,12 @@ var setup_index = {
 
 
     check_scroll : function(right){
-        let h = document.getElementsByTagName('H1');
+        let h = document.querySelectorAll('h1');
         for(var i = 0; i < h.length; i++) {
 
             // Check if element is in view
             let view = right.getBoundingClientRect();
-            if(h[i].getBoundingClientRect().top >= view.top + 20) { //! +20 = Extra space in case js goes crazy with float values
+            if(h[i].getBoundingClientRect().top >= view.top + parseInt(getComputedStyle(document.body).getPropertyValue('--sep-4'))) {
 
                 // Reset the old element and highlight the new one
                 let old = window.sessionStorage.getItem('active_index');
@@ -86,7 +85,7 @@ var setup_index = {
         setup_index.format();
 
         // Setup scroll listener
-        let right = document.getElementsByTagName('RIGHT-')[0];
+        let right = document.querySelector('right-');
         right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
     }
 }

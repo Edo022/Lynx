@@ -117,10 +117,10 @@ var ui_slider = {
 
     // Updates the logo- and logo-top- width
     update_logo_width : function(value){
-        document.getElementsByTagName("LOGO-TOP-")[0].style.width = "calc(" +
+        document.querySelector("logo-top-").style.width = "calc(" +
             "100% - " + value + "px - var(--slider-w) - " + window.getComputedStyle(document.documentElement).getPropertyValue("--slider-w") +
         ")";
-        let logos = document.getElementsByTagName("LOGO-");
+        let logos = document.querySelectorAll("logo-");
         for(let i = 0; i < logos.length; ++i){
             logos[i].style.backgroundPositionX = "calc(" +
                 "calc(" +

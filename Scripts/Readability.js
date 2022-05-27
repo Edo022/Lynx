@@ -70,7 +70,7 @@ var readability = {
 
 
     spanw_button : function(){
-        document.body.getElementsByTagName('RIGHT-')[0].innerHTML +=
+        document.body.querySelector('right-').innerHTML +=
             '<div class="readability-button" onclick="readability.toggle()">' +
                 '<span class="a">A</span>' +
                 '<span class="b">a</span>' +
@@ -94,7 +94,7 @@ var readability = {
             link.onload = view;
             link.setAttribute("href", linkStr);
             link.id = 'readability-css';
-            document.getElementsByTagName("head")[0].appendChild(link);
+            document.querySelector("head").appendChild(link);
         }
         else {
             e.setAttribute('href', linkStr)

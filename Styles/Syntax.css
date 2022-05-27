@@ -14,7 +14,6 @@
     --syntax-label-h:           3ch;
     --syntax-label-padding:     2ch;
     --syntax-label-padding-top: 0.5ch;
-    --syntax-label-fg-active:   rgb(151, 145, 145);
 
     --syntax-line-h:      36px;
     --syntax-arrow-w:     36px; /* must be in pixels as it is used by js */
@@ -166,6 +165,7 @@ example2-.qrt, syntax2-.qrt {
 /* Labels */
 example2- > label2-,
 syntax2- > label2- {
+    cursor: pointer;
     display: block;
     border: 1px solid var(--bd-code);
     border-radius: var(--code-decoration-r);
@@ -192,16 +192,37 @@ syntax2- > label2-:not(:first-child) {
     margin-top: var(--syntax-internal-margin);
 }
 
-example2- > label2-:hover:after,
-syntax2- > label2-:hover:after {
-    content: " [copy]";
-    /* text-shadow: -3px -3px; */
-    font-size: var(--font-size-xx-small);
+
+
+
+example2- > label2-::after,
+syntax2- > label2-::after {
+    content: "a";
+    color: transparent;
+    display: inline-block;
+    background-image: url('./Custom/CopyButton.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    -webkit-transition: background-image 0.5s cubic-bezier(.17,.84,.44,1);
+    transition: background-image 0.5s cubic-bezier(.17,.84,.44,1);
+
+    margin-left: 10px;
+    min-width: 12px;
+    max-width: 12px;
+}
+example2- > label2-:hover::after,
+syntax2- > label2-:hover::after {
+    background-image: url('./Custom/CopyButtonHover.svg');
 }
 
 example2- > label2-:active,
 syntax2- > label2-:active {
-    color: var(--syntax-label-fg-active);
+    color: var(--fg-hidden);
+}
+example2- > label2-:active::after,
+syntax2- > label2-:active::after {
+    background-image: url('./Custom/CopyButton.svg');
 }
 
 

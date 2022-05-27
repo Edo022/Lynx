@@ -576,11 +576,11 @@
             <div class="split-td">
                 <elm2-><a href="#variables">Variable</a></elm2->
                 <elm2-><a href="#temporary-variables">Temporary variable</a></elm2->
+                <elm2-><a href="#routine-parameters">Routine parameter</a></elm2->
             </div>
             <div class="split-td">
                 <elm2-><a href="#function-calls">Function call</a></elm2->
                 <elm2-><a href="#operator-calls">Operator call</a></elm2->
-                <elm2-><a href="#constructors">Constructor call</a></elm2->
             </div>
         </div></td>
     </tr>
@@ -694,7 +694,7 @@
     <ul class="summary-list">
         <li>
             <span><elm-><a href="#enums"><code><w->enum</w-></code></a> declaration</elm-></span>
-            <span>Declares an <a href="#enums">enum</a>, a type used to group <a href="#compile-time-values">compile time values</a> of the same <a href="#types">type</a>.</span>
+            <span>Declares an <a href="#enums">enum</a>, a type used to group <a href="#compile-time-expressions">compile time expressions</a> of the same <a href="#types">type</a>.</span>
         </li>
         <li>
             <span><elm-><a href="#enums"><code><w->enum</w-></code></a> element declaration</elm-></span>
@@ -867,6 +867,10 @@
             <span><elm-><a href="#temporary-variables">Temporary variable</a></elm-></span>
             <span>Accesses the value stored in a <a href="#temporary-variables">temporary variable</a>.</span>
         </li>
+        <li>
+            <span><elm-><a href="#routine-parameters">Routine parameter</a></elm-></span>
+            <span>Accesses the value that was passed to a <a href="#variables">routine parameter</a>.</span>
+        </li>
     </ul><br>
     <li>Routine calls</li>
     <ul class="summary-list">
@@ -877,10 +881,6 @@
         <li>
             <span><elm-><a href="#operator-calls">Operator call</a></elm-></span>
             <span>Generates a value by calling an <a href="#operators">operator</a> or <a href="#templates">operator template</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#constructors">Constructor</a> call</elm-></span>
-            <span>Generates a value of the correponding <a href="#types">type</a>.</span>
         </li>
     </ul>
 </ul>
@@ -1155,8 +1155,6 @@
             <c->// n references module.s.n</c->
             <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
                 <c->// n references module.s.n.n</c->
-                int int = 5; // Ok, declares an int variable with name "int"
-
             }
         }
     </div>
@@ -1173,7 +1171,7 @@
 <!-- Multiple declarations                                           -->
 <!--------------------------------------------------------------------->
 <h1 id="multiple-declarations"></h1>
-<p>
+<p> //TODO linkkk
     Multiple symbols can be declared in the same scope using the same identifier.<br>
     If the declared symbols are the type of semantic element, the behaviour of these declarations depend on it.<br>
     If they are different types, a semantic error is generated. //TODO LINK
@@ -1321,25 +1319,28 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Compile time values                                             -->
+<!-- Compile time expression                                         -->
 <!--------------------------------------------------------------------->
-<h1 id="compile-time-values"></h1>
+<h1 id="compile-time-expressions"></h1>
 <p>
-    <b>Compile time values</b> are values that can be <b>calculated</b> during the <a href="#compilation"><b>compilation</b></a> phase.<br>
-    Whether a value can be calculated or not depends on precise rules:
+    <b>Compile time expressions</b> are <a href="#expressions">expressions</a> that can be <b>calculated</b> during the <a href="#compilation"><b>compilation</b></a> phase.<br>
+    These <a href="#expressions">expressions</a> are required in certain syntaxes, such as <a href="#operators">operator</a> declarations, <a href="#enums">enum</a> elements, <a href="#template">template</a> <a href="#name-resolution">paths</a> and <a href="#template-constraints">template constraints</a>.<br>
 </p>
 <ul>
-    <li>It cannot depend on <a href="#functions">parameters</a> of the <a href="#the-main-function"><f->main</f-> function</a></li>
-    <li>It cannot depend on </li>
+    <li>Whether an <a href="#expressions">expression</a> can be compile time is determined in the following way:</li>
+    <ul>
+        <li>A <a href="#routine-calls">routine call</a> is compile time if all of its <a href="#routine-calls">arguments</a> are compile time, and all the <a href="#expressions-statement">expression statements</a> used within the <a href="#routines">routine</a> body are also compile time.</li>
+        <li>A <a href="#variables">variable</a> or <a href="#temporary-variables">temporary variable</a> is compile time if its initializer value is compile time and all the <a href="#routine-calls">routine calls</a> it is used in as <a href="#routine-calls">argument</a> to a <a href="#references">reference</a> <a href="#routine-parameters">parameter</a> are compile time.</li>
+        <li><a href="#literals">Literals</a>, <a href="#enums">enum</a> elements, <a href="#templates">template</a> parameters and <a href="#try-expression"><code><w->try</w-></code> expressions</a> are always compile time.</li>
+        <li><a href="#variables">Variables</a> and <a href="#routine-parameter">routine parameters</a> declared with the <a href="#ct-qualifier"><code><w->ct</w-></code> qualifier</a> and <a href="#routine-calls">calls</a> to <a href="#routines">routines</a> declared with the <a href="#ct-qualifier"><code><w->ct</w-></code> qualifier</a> are always compile time.</li>
+    </ul>
 </ul>
 <p>
-    A value <code>a</code> is said to depend on a value <code>b</code> if <code>b</code> is used in one of the preceeding function calls where <code>a</code> is passed as argument of a <a href="#references">reference parameter</a>.
-
-</p>
-<p>
     Known special cases that generate constant values, such as <code>n <f->*</f-> <k->0</k-></code> or <code>n <f->-</f-> n</code>,
-    are used by the compiler to <a href="#value-precomputation">optimize</a> the code, but for consistency reasons, they have no relevance in determining if a value is compile time or not.
+    are used by the compiler to <a href="#value-precomputation">optimize</a> the code, but for consistency reasons, they have no relevance in determining if an <a href="#expressions">expression</a> is compile time or not.
 </p>
 <p>
-    //TODO
+    Cases in which a <a href="#routine-calls">call</a> to a <a href="#routines">routine</a> that uses runtime <a href="#expression-statements">expression statements</a> in its body is performed but the <a href="#return-statement">return</a> value or the reference <a href="#routine-parameters">parameter</a>
+    doesn't depend on any of them are also not considered compile time for consistency reasons, although it would still be possible to calculate the result during compile time.<br>
+    As with special cases, they are exclusively used to <a href="#value-precomputation">optimize</a> the code.
 </p>

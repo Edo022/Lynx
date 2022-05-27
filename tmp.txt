@@ -22,7 +22,7 @@ Syntax: <option>
 -Of                             Complete optimization. Includes standard modules and context dependant optimizations. Requires -f
 
 --o-rewrite                     Rewrites inefficient functions
---o-values                      Replaces compile time values with literals or constants
+--o-values                      Replaces compile time expressions with literals or constants
 --o-unused-functions            Removes unused functions
 --o-unused-vvalues              Removes unused values
 
@@ -43,9 +43,9 @@ Syntax: <option>
 Syntax: <option>
 //TODO PROB USELESS-f                              Full build. All the source files are preprocessed and compiled, including the core module and the standard modules
 --max-iterations-optimization   Maximum number of iterations for compile time optimizations         [ Default value: 16777216 ]
---max-iterations-value          Maximum number of iterations for compile time values definition     [ Default value: 16777216 ]
+--max-iterations-value          Maximum number of iterations for compile time expressions definition     [ Default value: 16777216 ]
 --max-depth-optimization        Maximum function depth for compilt time optimizations               [ Default value: 16777216 ]
---max-depth-value               Maximum function depth for compile time values definition           [ Default value: 16777216 ]
+--max-depth-value               Maximum function depth for compile time expressions definition           [ Default value: 16777216 ]
 
 
 

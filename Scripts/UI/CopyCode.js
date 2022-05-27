@@ -27,7 +27,7 @@ var ui_copy_code = {
 
 
     init : function() {
-        let children = document.getElementsByTagName("LABEL2-");
+        let children = document.querySelectorAll("label2-");
         for(let i = 0; i < children.length; i++){
             children[i].addEventListener('click', function(){ ui_copy_code.copy_code(this); });
         }

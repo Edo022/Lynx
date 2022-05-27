@@ -1,4 +1,9 @@
-
+:root {
+    --sep-1: 512px;
+    --sep-2: 256px;
+    --sep-3: 256px;
+    --sep-4: 128px;
+}
 
 
 
@@ -183,25 +188,25 @@ body {
         }
         sep-1- {
             background-color: var(--fg-separator);
-            margin: 256px 0 256px 0;
+            margin: calc(var(--sep-1) / 2) 0 calc(var(--sep-1) / 2) 0;
             min-height: 4px;
             max-height: 4px;
         }
         sep-2- {
             background-color: var(--fg-separator);
-            margin: 128px 0 128px 0;
+            margin: calc(var(--sep-2) / 2) 0 calc(var(--sep-2) / 2) 0;
             min-height: 1px;
             max-height: 1px;
         }
         sep-3- {
             background-color: transparent;
-            margin: 256px 0 256px 0;
+            margin: var(--sep-3) 0 0;
             min-height: 0;
             max-height: 0;
         }
         sep-4- {
             background-color: transparent;
-            margin: 128px 0 128px 0;
+            margin: var(--sep-4) 0 0 0;
             min-height: 0;
             max-height: 0;
         }/*

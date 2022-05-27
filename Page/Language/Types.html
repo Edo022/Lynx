@@ -701,7 +701,7 @@
     <code><t->typename</t-></code> <a href="#constructors">constructors</a> are allowed, as well as <code><t->typename</t-></code> <a href="#structs">struct</a> elements, <code><t->typename</t-></code> <a href="#tuples">tuple</a> elements and <code><t->typename</t-></code> <a href="#arrays">arrays</a>.
 </p>
 <p>
-    All <code><t->typename</t-></code> values must be known at <a href="#compile-time-values">compile time</a>, and they cannot be used to declare <a href="#semantic-elements">symbols</a> or call <a href="#constructors">constructors</a> (for these, <a href="#templates">templates</a> are used).<br>
+    All <code><t->typename</t-></code> values must be known at <a href="#compile-time-expressions">compile time</a>, and they cannot be used to declare <a href="#semantic-elements">symbols</a> or call <a href="#constructors">constructors</a> (for these, <a href="#templates">templates</a> are used).<br>
     Passing <code><t->typename</t-></code> to a <a href="#templates">template</a> parameter is allowed.<br>
     <code><t->typename</t-></code> is a valid <code><t->typename</t-></code> <a href="#values">value</a>.
 </p>
@@ -741,7 +741,7 @@
 <p>
     <b>Elements</b> of <b><a href="#structs">structs</a></b>, <b><a href="#enums">enums</a></b> <b><a href="#arrays">arrays</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced
     and accessed by referencing their parent object or semantic element and specifying the <b>index</b> of the element between <elm-><code>[</code><code>]</code></elm-> tokens.<br>
-    Only <a href="#arrays">arrays</a> can use <a href="#compile-time-values">runtime values</a> as indices. All the other types must use <a href="#compile-time-values">compile time values</a>
+    Only <a href="#arrays">arrays</a> can use <a href="#compile-time-expressions">runtime values</a> as indices. All the other types must use <a href="#compile-time-expressions">compile time expressions</a>
 </p>
 <p>
     The return value is an <a href="#left-and-right-values">r-value</a> for <a href="#enums">enums</a> and an <a href="#left-and-right-values">l-value</a> for any other type.
@@ -1292,7 +1292,7 @@
     Passing a <a href="#types">type</a> to <code><t->typeof</t-></code> returns <code><t->typename</t-></code>.
 </p>
 <p>
-    The <a href="#values">value</a> passed to <code><t->typeof</t-></code> can be <a href="#compile-time-values">runtime</a>.
+    The <a href="#values">value</a> passed to <code><t->typeof</t-></code> can be <a href="#compile-time-expressions">runtime</a>.
     <code><t->typeof</t-></code> <a href="#constructors">constructors</a> are allowed.<br>
     Circular dependencies are a semantic error. //TODO LINK
 </p>
