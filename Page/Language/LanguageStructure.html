@@ -1323,24 +1323,45 @@
 <!--------------------------------------------------------------------->
 <h1 id="compile-time-expressions"></h1>
 <p>
-    <b>Compile time expressions</b> are <a href="#expressions">expressions</a> that can be <b>calculated</b> during the <a href="#compilation"><b>compilation</b></a> phase.<br>
+    <b>Compile time expressions</b> are <a href="#expressions">expressions</a> that can be <b>calculated during</b> the <a href="#compilation"><b>compilation</b></a> phase.<br>
     These <a href="#expressions">expressions</a> are required in certain syntaxes, such as <a href="#operators">operator</a> declarations, <a href="#enums">enum</a> elements, <a href="#template">template</a> <a href="#name-resolution">paths</a> and <a href="#template-constraints">template constraints</a>.<br>
 </p>
 <ul>
-    <li>Whether an <a href="#expressions">expression</a> can be compile time is determined in the following way:</li>
+    <li>Whether an <a href="#expressions">expression</a> can be compile time or not is determined in the following way:</li>
     <ul>
-        <li>A <a href="#routine-calls">routine call</a> is compile time if all of its <a href="#routine-calls">arguments</a> are compile time, and all the <a href="#expressions-statement">expression statements</a> used within the <a href="#routines">routine</a> body are also compile time.</li>
-        <li>A <a href="#variables">variable</a> or <a href="#temporary-variables">temporary variable</a> is compile time if its initializer value is compile time and all the <a href="#routine-calls">routine calls</a> it is used in as <a href="#routine-calls">argument</a> to a <a href="#references">reference</a> <a href="#routine-parameters">parameter</a> are compile time.</li>
-        <li><a href="#literals">Literals</a>, <a href="#enums">enum</a> elements, <a href="#templates">template</a> parameters and <a href="#try-expression"><code><w->try</w-></code> expressions</a> are always compile time.</li>
-        <li><a href="#variables">Variables</a> and <a href="#routine-parameter">routine parameters</a> declared with the <a href="#ct-qualifier"><code><w->ct</w-></code> qualifier</a> and <a href="#routine-calls">calls</a> to <a href="#routines">routines</a> declared with the <a href="#ct-qualifier"><code><w->ct</w-></code> qualifier</a> are always compile time.</li>
+        <li>
+            A <a href="#routine">routine</a> is suitable for compile time <a href="#routine-calls">calls</a> if it is not declared with the <a href="#runtime-qualifier"><code><w->runtime</w-></code> qualifier</a>,
+            all of the <a href="#routine-calls">routine calls</a> within its body are compile time and
+            it doesn't contain <a href="#inline-cpp">inline C++</a> or <a href="#inline-glsl">inline GLSL</a> statements.
+        </li>
+        <li>
+            A <a href="#routine-calls">routine call</a> is compile time if the <a href="#routines">routine</a> is suitable for compile time <a href="#routine-calls">calls</a> and
+            all of its <a href="#routine-parameters">arguments</a> are compile time expressions.
+        </li>
+        <li>
+            A <a href="#variables">variable</a> or <a href="#temporary-variables">temporary variable</a> is compile time if its initializer expression is compile time,
+            all the <a href="#routine-calls">routine calls</a> in which it is used as <a href="#routine-calls">argument</a> to a <a href="#references">reference</a> <a href="#routine-parameters">parameter</a> refer to routines that are suitable for compile time calls and
+            all the additional <a href="#routine-parameters">arguments</a> of such <a href="#routine-calls">calls</a> are compile time expressions.
+        </li>
+        <li>
+            <a href="#literals">Literals</a>, <a href="#enums">enum</a> elements, <a href="#templates">template</a> parameters and <a href="#try-expression"><code><w->try</w-></code> expressions</a> are always compile time.
+        </li>
     </ul>
 </ul>
 <p>
-    Known special cases that generate constant values, such as <code>n <f->*</f-> <k->0</k-></code> or <code>n <f->-</f-> n</code>,
-    are used by the compiler to <a href="#value-precomputation">optimize</a> the code, but for consistency reasons, they have no relevance in determining if an <a href="#expressions">expression</a> is compile time or not.
+    For consistency reasons, cases in which a <a href="#routine">routine</a> is runtime but it doesn't actually need to run during runtime,
+    either by containing empty <a href="#inline-cpp">inline C++</a> or <a href="#inline-glsl">inline GLSL</a> statements or
+    by containing runtime <a href="#routine-calls">routine calls</a> that are empty or have the aforementioned properties,
+    are not considered suitable for compile time <a href="#routine-calls">calls</a>, even though it would be perfectly possible to determine their <a href="#return-statement">return value</a> and operations on reference <a href="#routine-parameters">parameters</a> during the <a href="#compilation">compilation</a> process.
 </p>
 <p>
-    Cases in which a <a href="#routine-calls">call</a> to a <a href="#routines">routine</a> that uses runtime <a href="#expression-statements">expression statements</a> in its body is performed but the <a href="#return-statement">return</a> value or the reference <a href="#routine-parameters">parameter</a>
-    doesn't depend on any of them are also not considered compile time for consistency reasons, although it would still be possible to calculate the result during compile time.<br>
-    As with special cases, they are exclusively used to <a href="#value-precomputation">optimize</a> the code.
+    Notice that compile time expressions are not required to run during compile time, and they don't affect <a href="#value-precomputation">optimizations</a> in any way.<br>
+    Compile time expressions are exclusively used to determine which <a href="#expressions">expressions</a> can be used in contexts where a compile time value is required.
+</p>
+<p>
+    All the routines in the <a href="#standard-modules">standard modules</a> that could change the observable behaviour of the program if executed during compile time are properly marked as <a href="#runtime-qualifier"><code><w->runtime</w-></code></a>,
+    therefore is not possible to accidentally modify the program behaviour by inadvertently executing <a href="#routines">routines</a> that are not supposed to be executed during the <a href="#compilation">compilation</a> process.
+</p>
+<p>
+    //TODO build directive
 </p>
