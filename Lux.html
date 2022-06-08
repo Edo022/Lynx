@@ -60,7 +60,7 @@
             <indexd->character-set</indexd->
             <index-><indexh->syntactic-elements</indexh->
                 <indexd->keywords</indexd->
-                <indexd->pseudo-keywords</indexd->
+                <indexd->meta-keywords</indexd->
                 <indexd->literal-tokens</indexd->
                 <indexd->identifiers</indexd->
             </index->
@@ -76,12 +76,41 @@
                 <indexd->multiple-declarations</indexd->
             </index->
             <index-><indexh->concepts</indexh->
+                <indexd->left-and-right-values</indexd->
                 <indexd->undefined-values</indexd->
                 <indexd->undefined-behaviour</indexd->
                 <indexd->compile-time-expressions</indexd->
             </index->
         </index->
-        <indexd->namespaces</indexd->
+        <index-><indexh->directives</indexh->
+            <indexd->import-directive</indexd->
+            <indexd->export-directive</indexd->
+            <indexd->shader-directive</indexd->
+            <indexd->construct-directive</indexd->
+        </index->
+        <index-><indexh->declarations</indexh->
+            <indexd->declarations.namespaces</indexd->
+            <indexd->declarations.variables</indexd->
+            <index-><indexh->declarations.types</indexh->
+                <indexd->declarations.enums</indexd->
+                <indexd->declarations.structs</indexd->
+            </index->
+            <index-><indexh->declarations.routines</indexh->
+                <indexd->declarations.functions</indexd->
+                <indexd->declarations.operators</indexd->
+                <indexd->declarations.routine-parameters</indexd->
+                <indexd->declarations.the-main-function</indexd->
+                <indexd->declarations.constructor-functions</indexd->
+            </index->
+            <index-><indexh->declarations.templates</indexh->
+                <indexd->declarations.template-constraints</indexd->
+            </index->
+            <indexd->declarations.symbol-aliases</indexd->
+        </index->
+
+
+
+
         <index-><indexh->types</indexh->
             <index-><indexh->primitive-types</indexh->
                 <indexd->integral-types</indexd->
@@ -112,7 +141,6 @@
             <index-><indexh->stored-values</indexh->
                 <indexd->variables</indexd-> <indexd->temporary-variables</indexd->
             </index->
-            <indexd->left-and-right-values</indexd->
         </index->
         <index-><indexh->routines</indexh->
             <index-><indexh->functions</indexh->
@@ -633,7 +661,7 @@
             </div></td>
         </tr>
         <tr>
-            <th class="nowrap medium"><a href="#pseudo-keywords">Pseudo keyword</a></th>
+            <th class="nowrap medium"><a href="#meta-keywords">Meta keyword</a></th>
             <td><div class="split-td-outer">
                 <div class="split-td">
                     <a href="#templates">                  <code><w->template</w-></code></a>
@@ -836,11 +864,11 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Pseudo keywords                                                 -->
+<!-- Meta keywords                                                   -->
 <!--------------------------------------------------------------------->
-<h1 id="pseudo-keywords"></h1>
+<h1 id="meta-keywords"></h1>
 <p>
-    <b>Pseudo keywords</b> are <a href="#syntactic-elements">syntactic elements</a> that only have meaning when <b>combined</b> with other <a href="#keywords"><b>keywords</b></a> or <a href="#semantic-elements">semantic elements</a>.<br>
+    <b>Meta keywords</b> are <a href="#syntactic-elements">syntactic elements</a> that only have meaning when <b>combined</b> with other <a href="#keywords"><b>keywords</b></a> or <a href="#semantic-elements">semantic elements</a>.<br>
     When active, they always take precedence over <a href="#identifiers">identifiers</a>.
 </p>
 <ul>
@@ -850,28 +878,28 @@
             <span><a href="#templates"><code><w->template</w-></code></a></span>
             <span>
                 Used to declare a <a href="#templates">template</a><br>
-                <span class="pseudo-keyword-constraint">[When used before the <a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> pseudo keyword]</span>.
+                <span class="meta-keyword-constraint">[When used before the <a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> meta keyword]</span>.
             </span>
         </li>
         <li>
             <span><a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> </span>
             <span>
                 Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a></a><br>
-                <span class="pseudo-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> pseudo keyword or after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a>]</span>.
+                <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword or after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a>]</span>.
             </span>
         </li>
         <li>
             <span><a href="#templates"><code><w->when</w-></code></a></span>
             <span>
                 Specifies a <a href="#template-constraints">template constraint</a><br>
-                <span class="pseudo-keyword-constraint">[When used before a body of a <a href="#templates">template</a> declaration]</span>.
+                <span class="meta-keyword-constraint">[When used before a body of a <a href="#templates">template</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><a href="#abbreviated-template-syntax"><code>?</code></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
-                <span class="pseudo-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
+                <span class="meta-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
             </span>
         </li>
     </ul><br>
@@ -881,14 +909,14 @@
             <span><a href="#references"><code>&</code></a></span>
             <span>
                 Declares a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> as <a href="#references">reference</a>, or returns the <a href="#references">address</a> of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> as <a href="integral-types"><code><t->ulong</t-></code></a><br>
-                <span class="pseudo-keyword-constraint">[When used before the <a href="#name-resolution">name</a> of a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> declaration or before a <a href="#name-resolution">path</a> to a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a>]</span>.
+                <span class="meta-keyword-constraint">[When used before the <a href="#name-resolution">name</a> of a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> declaration or before a <a href="#name-resolution">path</a> to a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a>]</span>.
             </span>
         </li>
         <li>
             <span><a href="#references"><code>*</code></a></span>
             <span>
                 Returns the address stored in a <a href="#references">reference</a> as a <a href="integral-types"><code><t->ulong</t-></code></a> <a href="#references">reference</a> //TODO<br>
-                <span class="pseudo-keyword-constraint">[When used before a <a href="#references">reference</a> value]</span>.
+                <span class="meta-keyword-constraint">[When used before a <a href="#references">reference</a> value]</span>.
             </span>
         </li>
     </ul><br>
@@ -898,42 +926,42 @@
             <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
             <span>
                 Prevents the value, and/or, if a <a href="#references">reference</a>, the stored address to be modified after the <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration</a><br>
-                <span class="pseudo-keyword-constraint">[When used before the <a href="#name-resolution">name</a> or the reference qualifier (<code>&</code>) of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
+                <span class="meta-keyword-constraint">[When used before the <a href="#name-resolution">name</a> or the reference qualifier (<code>&</code>) of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><a href="#operator-precedence"><code><w->at</w-></code></a></span>
             <span>
                 Defines the <a href="#operator-precedence">precedence</a> of an <a href="#operators">operator</a><br>
-                <span class="pseudo-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
+                <span class="meta-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><code><w->as</w-></code></span>
             <span>
                 Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the <a href="#primitive-types">primitive type</a> an <a href="#enums">enum</a> uses<br>
-                <span class="pseudo-keyword-constraint">[When used in the signature of a <a href="#for-loops">for-each</a>, <a href="#for-loops">for-n</a> or <a href="#for-loops">for-range</a> loop, after the name of a <a href="#symbols">symbol</a> in an <a href="#import-directive">import</a> or <a href="#export-directive">export</a> directive or at the end of the signature of an <a href="#enums">enum</a> declaration]</span>.
+                <span class="meta-keyword-constraint">[When used in the signature of a <a href="#for-loops">for-each</a>, <a href="#for-loops">for-n</a> or <a href="#for-loops">for-range</a> loop, after the name of a <a href="#symbols">symbol</a> in an <a href="#import-directive">import</a> or <a href="#export-directive">export</a> directive or at the end of the signature of an <a href="#enums">enum</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><code><w->to</w-></code></span>
             <span>
                 Defines the end of a numerical range<br>
-                <span class="pseudo-keyword-constraint">[When used in the <a href="#for-loops">for-range</a> loop or in a <a href="#match-statement">match case</a>]</span>.
+                <span class="meta-keyword-constraint">[When used in the <a href="#for-loops">for-range</a> loop or in a <a href="#match-statement">match case</a>]</span>.
             </span>
         </li>
         <li>
             <span><a href="#temporary-variables"><code>$</code></a></span>
             <span>
                 References a <a href="#temporary-variables">temporary variable</a><br>
-                <span class="pseudo-keyword-constraint">[When used before a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>]</span>.
+                <span class="meta-keyword-constraint">[When used before a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>]</span>.
             </span>
         </li>
         <li>
             <span><code>=</code> </span>
             <span>
                 Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values<br>
-                <span class="pseudo-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
+                <span class="meta-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
             </span>
         </li>
     </ul>
@@ -1017,6 +1045,8 @@
             <div class="split-td">
                 <elm2-><a href="#import-directive"><code><w->import</w-></code></a> directive</elm2->
                 <elm2-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm2->
+                <elm2-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</elm2->
+                <elm2-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</elm2->
             </div>
         </div></td>
     </tr>
@@ -1178,6 +1208,17 @@
         <li>
             <span><elm-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm-></span>
             <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</elm-></span>
+            <span>Imports a Lux <a href="#modules">module</a> as shader. //TODO</span>
+        </li>
+    </ul>
+    <li>Code generation</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</elm-></span>
+            <span>Generates code in the corresponding language by compiling and running Umbra code during the compilation phase.</span>
         </li>
     </ul>
 </ul>
@@ -1527,11 +1568,12 @@
             <td class="scope-table-n"><div></div></td>
         </tr>
     </table></div>
+
+    <syntax-note->
+        * Also applies to the respective <a href="templates">template</a>.<br>
+        ** Declared in the routine signature, but part of the routine scope.
+    </syntax-note->
 </div>
-<syntax-note- style="margin-top: 0;">
-    * Also applies to the respective <a href="templates">template</a>.<br>
-    ** Declared in the routine signature, but part of the routine scope.
-</syntax-note->
 
 
 
@@ -1776,7 +1818,7 @@
     Uninitialized <a href="#variables">variables</a> also have undefined value.
 </p>
 <p>
-    Generating undefined values doesn't stop the execution and is not signaled in any way, nor is it detectable.<br>
+    Generating undefined values during runtime doesn't stop the execution and is not signaled in any way, nor is it detectable.<br>
     The <a href="#modules">module</a> is responsible for preventing, discarding or documenting undefined values.
 </p>
 
@@ -1864,72 +1906,279 @@
     Compile time expressions are exclusively used to determine which <a href="#expressions">expressions</a> can be used in contexts where a compile time value is required.
 </p>
 <p>
-    All the routines in the <a href="#standard-modules">standard modules</a> that could change the observable behaviour of the program if executed during compile time are properly marked as <a href="#runtime-qualifier"><code><w->runtime</w-></code></a>,
-    therefore is not possible to accidentally modify the program behaviour by inadvertently executing <a href="#routines">routines</a> that are not supposed to be executed during the compilation process.
+    Any routine declared in <a href="#standard-modules">standard modules</a> that could change the observable behaviour of the program if executed during compile time is properly marked as <a href="#runtime-qualifier"><code><w->runtime</w-></code></a>,
+    therefore is not possible to accidentally modify the program behaviour by inadvertently executing <a href="#routines">routines</a> that are not supposed to be executed during the <a href="#compilation">compilation</a> process.
 </p>
 <p>
     //TODO build directive
 </p>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE -->
+<!-- FIXME UPDATE seriously -->
+<!--------------------------------------------------------------------->
+<!-- Left and right values                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="left-and-right-values"></h1>
+<p>
+    Values can either be left values or right values.<br>
+    <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
+    Any other value is a <b>right value</b>.
+</p>
+<div class="table-container"><table>
+    <tr>
+        <th>Left values</th>
+        <th>Right values</th>
+    </tr>
+    <tr>
+        <td>Non-const <a href="#functions">parameters</a> and <a href="#references">referece (<code>&</code>) parameters</a></td>
+        <td><a href="#const-qualifier">Const</a> parameters</td>
+    </tr>
+    <tr>
+        <td>Result of the <a href="#special-operators">field (<code>[</code><code>]</code>)</a> and <a href="#special-operators">subscription (<code>.</code>)</a> operators</td>
+        <td>Result of <a href="#common-operators">common</a>, <a href="#assignment-operators">assignment</a>, <a href="#special-operators">grouping</a>, <a href="#special-operators">ternary</a> and <a href="#common-operators">relational</a> operators</td>
+    </tr>
+    <tr>
+        <td>Non-const <a href="#variables">varibales</a></td>
+        <td><a href="#const-qualifier">Const</a> variables</td>
+    </tr>
+    <tr>
+        <td><a href="#temporary-variables">Temporary variables</a></td>
+        <td><a href="#enums">Enum</a> elements</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Result of <a href="#function-calls">function calls</a></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Result of <a href="#constructors">constructors</a></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><a href="#literals">Literals</a></td>
+    </tr>
+</table></div>
+<p>
+    Left values can be used anywhere right values can.<br>
+    Left and right values are also called l-values and r-values.
+</p>
+<!--------------------------------------------------------------------->
+<!-- Directives                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="directives"></h1>
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Import directive                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="import-directive"></h1>
+<p>
+
+</p>
+<syntax2->
+    <label2- id="copy.syntax--import-directive">Import syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Export directive                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="export-directive"></h1>
+<p>
+
+</p>
+<syntax2->
+    <label2- id="copy.syntax--export-directive">Export syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Shader directive                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="shader-directive"></h1>
+<p>
+
+</p>
+<syntax2->
+    <label2- id="copy.syntax--shader-directive">Shader import syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Construct directive                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="construct-directive"></h1>
+<p>
+
+</p>
+<syntax2->
+    <label2- id="copy.syntax--construct-directive">Construct syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Declarations                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations"></h1>
+<p>
+    This section explains the declaration syntax and usage of each category of user-declared <a href="#semantic-elements">semantic elements</a>, also known as <a href="#name-resolution">symbols</a>.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Namespaces                                                      -->
 <!--------------------------------------------------------------------->
-<h1 id="namespaces"></h1>
+<h1 id="declarations.namespaces"></h1>
 <p>
-    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b>.<br>
-    They don't affect the runtime behaviour and can be declared in any scope.<br>
-    Unnamed namespaces are allowed.
+    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
+    The <a href="#name-resolution">symbol</a> categories they can contain are the same as their parent <a href="#scopes">scope</a>.<br>
+    They cannot contain <a href="#statements">statements</a>.
 </p>
-<syntax->
-    <fill->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code><w->namespace</w-></code></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>{</code></td>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm3->symbol declaration</elm3-></td>
-                    <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                    <td><code>}</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
+<p>
+    Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
+    Unnamed namespaces are allowed. Empty namespaces are also allowed.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
+</syntax2->
 
 <example2->
     <label2->Example</label2->
@@ -1945,6 +2194,420 @@
     </div>
 </example2->
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.variables                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.variables"></h1>
+<p>
+    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
+    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
+</p>
+<p>
+    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
+</p>
+<syntax2->
+    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->uint</t-> var= <k->0</k->;               <c->// Ok, var has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya ha value 5.0</c->
+        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
+    </div>
+</example2->
+<p>
+    Variables can be <a href="#references">references</a>.<br>
+    The <a href="#const-qualifier"><code><t->const</t-></code> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.types                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.types"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.enums                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.enums"></h1>
+<p>
+    <b>Enums</b> are used to <b>group named <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
+    The base <a href="#types">type</a> of an enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>, or an enum type.<br>
+    Elements are declared in the same way as <a href="#variables">variables</a>, but neither the type is not specified explicitly.
+</p>
+<p>
+    Elements of integral enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
+    Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
+    Multiple elements can have the same <a href="#values">value</a>, but each element can only be declared once.<br>
+    Empty enums and <a href="#unnamed-types">unnamed enums</a> are allowed. //FIXME inline declarations
+</p>
+<syntax2->
+    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
+    <label2- id="copy.syntax--enum-declaration-body">Enum body</label2->
+    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
+</syntax2->
+
+<p>
+    By default, all enum elements behave exactly as if they were declared with the base type of the enum.<br>
+    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
+    Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
+</p>
+
+
+<example2->
+    <label2->Example 1</label2->
+    <div>
+        <w->enum</w-> <t->e</t-> : <t->int</t-> {
+            a, b;              <c->// Ok, a = 0, b = 1</c->
+            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
+            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2</label2->
+    <div>
+        <w->enum</w-> <t->c</t-> : <t->double</t-> {
+            pi = <k->3.14159</k->;      <c->// Ok</c->
+            e  = <k->2.71828</k->;      <c->// Ok</c->
+            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
+            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
+            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 3</label2->
+    <div>
+        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
+            pi  = <k->3.14159</k->;
+            e   = <k->2.71828</k->;
+            phi = <k->1.61803</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
+            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
+            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.structs                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.structs"></h1>
+<p>
+    <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
+    The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a>, other structs or <a href="#references">references</a>.<br>
+    They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
+</p>
+<p>
+    Empty structs and <a href="#unnamed-types">unnamed structs</a> are allowed.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
+    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
+    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->struct</w-> <t->idk</t-> {
+            <t->uint</t-> a, b;        <c->// Ok</c->
+            <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
+            <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
+        }
+        <t->void</t-> <f->main</f->(){
+            <t->idk</t-> var;
+
+            var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
+            var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.routines                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.routines"></h1>
+<p>
+    <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
+    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>. They share the same <a href="#declarations.routine-parameters">parameters</a> and body declarations.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.functions                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.functions"></h1>
+<p>
+    //TODO
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.operators                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.operators"></h1>
+
+
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.routine-parameters                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.routine-parameters"></h1>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.the-main-function                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.the-main-function"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.constructor-functions                              -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.constructor-functions"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.templates                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.templates"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.template-constraints                               -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.template-constraints"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.symbol-aliases                                     -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.symbol-aliases"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- #include "./Page/Language/Namespaces.html" -->
 
 
 <!--------------------------------------------------------------------->
@@ -3652,53 +4315,7 @@
 
 
 
-<!--------------------------------------------------------------------->
-<!-- Left and right values                                           -->
-<!--------------------------------------------------------------------->
-<h1 id="left-and-right-values"></h1>
-<p>
-    Values can either be left values or right values.<br>
-    <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
-    Any other value is a <b>right value</b>.
-</p>
-<div class="table-container"><table>
-    <tr>
-        <th>Left values</th>
-        <th>Right values</th>
-    </tr>
-    <tr>
-        <td>Non-const <a href="#functions">parameters</a> and <a href="#references">referece (<code>&</code>) parameters</a></td>
-        <td><a href="#const-qualifier">Const</a> parameters</td>
-    </tr>
-    <tr>
-        <td>Result of the <a href="#special-operators">field (<code>[</code><code>]</code>)</a> and <a href="#special-operators">subscription (<code>.</code>)</a> operators</td>
-        <td>Result of <a href="#common-operators">common</a>, <a href="#assignment-operators">assignment</a>, <a href="#special-operators">grouping</a>, <a href="#special-operators">ternary</a> and <a href="#common-operators">relational</a> operators</td>
-    </tr>
-    <tr>
-        <td>Non-const <a href="#variables">varibales</a></td>
-        <td><a href="#const-qualifier">Const</a> variables</td>
-    </tr>
-    <tr>
-        <td><a href="#temporary-variables">Temporary variables</a></td>
-        <td><a href="#enums">Enum</a> elements</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>Result of <a href="#function-calls">function calls</a></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>Result of <a href="#constructors">constructors</a></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><a href="#literals">Literals</a></td>
-    </tr>
-</table></div>
-<p>
-    Left values can be used anywhere right values can.<br>
-    Left and right values are also called l-values and r-values.
-</p>
+
 
 
 <!--------------------------------------------------------------------->
@@ -5515,7 +6132,7 @@
 
 
 <syntax2- class="qrt">
-    <label2- class="stx" id="syntax--import-directive"><a href="#modules">Import directive</a></label2->
+    <label2- class="stx" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label2->
     <table class="stx">
         <tr>
             <td></td>
@@ -5620,7 +6237,7 @@
 
 
 <syntax2- class="qrt">
-    <label2- class="stx" id="syntax--export-directive"><a href="#modules">Export directive</a></label2->
+    <label2- class="stx" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label2->
     <table class="stx">
         <tr>
             <td></td>
@@ -5669,6 +6286,48 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+<syntax2- class="qrt">
+    <label2- class="stx" id="syntax--shader-directive"><a href="#shader-directive">Shader directive</a></label2->
+    <table class="stx">
+        <tr>
+            <td></td>
+        </tr>
+    </table>
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2- class="qrt">
+    <label2- class="stx" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label2->
+    <table class="stx">
+        <tr>
+            <td></td>
+        </tr>
+    </table>
+</syntax2->
 
 
 
@@ -5781,10 +6440,10 @@
             <td></td>
         </tr>
     </table>
+    <syntax-note->
+        * One of the <a href="#symbol-declarations">declarations</a> allowed in the parent scope.
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * One of the <a href="#symbol-declarations">declarations</a> allowed in the parent scope.
-</syntax-note->
 
 
 
@@ -5812,16 +6471,16 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--enum-declaration--signature"><a href="#enums">Enum signature</a></label2->
+    <label2- class="sub" id="syntax--enum-declaration-signature"><a href="#enums">Enum signature</a></label2->
     <table class="sub">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -5832,16 +6491,16 @@
             <td><code><w->strict</w-></code></td>
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
             <td><code><w->enum</w-></code></td>
-            <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-></td>
             <td><elm-><span>name<sup>new</sup></span></elm-></td>
-            <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-></td>
             <td><code>:</code></td>
             <td><b-lr-></b-lr-></td>
             <td><elm-><t->type<sub><t->t</t-></sub><sup>path</sup></t-></elm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--enum-declaration--body"><a href="#enums">Enum body</a></label2->
+    <label2- class="sub" id="syntax--enum-declaration-body"><a href="#enums">Enum body</a></label2->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -5910,15 +6569,15 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
+    <syntax-note->
+        * An
+        <a href="#syntax--enum-declaration">enum</a>,
+        <a href="#syntax--template-declaration">enum template</a>,
+        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--template-declaration">struct template</a> or a
+        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * An
-    <a href="#syntax--enum-declaration">enum</a>,
-    <a href="#syntax--template-declaration">enum template</a>,
-    <a href="#syntax--struct-declaration">struct</a>,
-    <a href="#syntax--template-declaration">struct template</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
-</syntax-note->
 
 
 
@@ -5948,18 +6607,11 @@
     <label2- class="sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label2->
     <table class="sub">
         <tr>
-            <td></td>
-            <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
             <td><b-lr-></b-lr-></td>
             <td><code><w->struct</w-></code></td>
-            <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-></td>
             <td><elm-><span>name<sup>new</sup></span></elm-></td>
-            <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-></td>
         </tr>
      </table>
     <label2- class="sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label2->
@@ -5992,7 +6644,7 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="stx"><a href="#structs">Struct member</a></label2->
+    <label2- class="stx" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label2->
     <table class="stx">
         <tr>
             <td></td>
@@ -6022,15 +6674,15 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
+    <syntax-note->
+        * An
+        <a href="#syntax--enum-declaration">enum</a>,
+        <a href="#syntax--template-declaration">enum template</a>,
+        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--template-declaration">struct template</a> or a
+        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * An
-    <a href="#syntax--enum-declaration">enum</a>,
-    <a href="#syntax--template-declaration">enum template</a>,
-    <a href="#syntax--struct-declaration">struct</a>,
-    <a href="#syntax--template-declaration">struct template</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
-</syntax-note->
 
 
 
@@ -6263,36 +6915,28 @@
             <td></td>
         </tr>
     </table>
+    <syntax-note->
+        * An
+        <a href="#syntax--enum-declaration">enum</a>,
+        <a href="#syntax--template-declaration">enum template</a>,
+        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--template-declaration">struct template</a>,
+        <a href="#syntax--variables">variable</a> or a
+        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
+
+        ** At least one name and one parameter declaration
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * An
-    <a href="#syntax--enum-declaration">enum</a>,
-    <a href="#syntax--template-declaration">enum template</a>,
-    <a href="#syntax--struct-declaration">struct</a>,
-    <a href="#syntax--template-declaration">struct template</a>,
-    <a href="#syntax--variables">variable</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
-
-    ** At least one name and one parameter declaration
-</syntax-note->
-
-
-<!-- TODO -->
-<!-- FIXME ROUTINE STATEMENTS ARE RUTINE SUB ELEMENTS -->
 
 
 
 
-<!-- TODO at is a keyword -->
-<!-- TODO at is a keyword -->
-<!-- TODO at is a keyword -->
-<!-- TODO at is a keyword -->
-<!-- TODO at is a keyword -->
 
 
-<!-- TODO when is used in template constraints -->
-<!-- TODO not part of the definition -->
-<!-- TODO before the parameter list -->
+
+
+
+
 
 
 
@@ -6308,9 +6952,9 @@
             <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td class="rowspan_2"><elm-><span>name<sup>new</sup></span></elm-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -6324,13 +6968,13 @@
             <td><elm-><t->type<sub><t->t</t-></sub><sup>path</sup></t-></elm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code><t->const</t-></code></td>
-            <td><b-lr-></b-lr-><b-tr-></btrc-></td>
-            <td></td>
-            <td><b-lr-></b-lr-></td>
+            <td><code>&</code></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-><b-tr-></b-tr-></td>
+            <td><elm->name<sup>new</sup></elm-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>=</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><t->value<sub><t->t</t-></sub><sup>expr</sup></t-></elm-></td>
+            <td><elm-><k->value<sub><t->t</t-></sub><sup>expr</sup></k-></elm-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>,</code></td>
@@ -6353,7 +6997,7 @@
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
         </tr>
-        </table>
+    </table>
 </syntax2->
 
 
@@ -6556,10 +7200,10 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
+    <syntax-note->
+        * Can be omitted by using the <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * Can be omitted by using the <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.
-</syntax-note->
 
 
 
@@ -7085,10 +7729,10 @@
             </tr>
         </tr>
     </table>
+    <syntax-note->
+        * t = routine return type used in the function or operator signature
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * t = routine return type used in the function or operator signature
-</syntax-note->
 
 
 
@@ -7190,16 +7834,16 @@
             <td></td>
         </tr>
     </table>
+    <syntax-note->
+        * An
+        <a href="#syntax--enum-declaration">enum</a>,
+        <a href="#syntax--template-declaration">enum template</a>,
+        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--template-declaration">struct template</a>,
+        <a href="#syntax--variables">variable</a> or a
+        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
+    </syntax-note->
 </syntax2->
-<syntax-note->
-    * An
-    <a href="#syntax--enum-declaration">enum</a>,
-    <a href="#syntax--template-declaration">enum template</a>,
-    <a href="#syntax--struct-declaration">struct</a>,
-    <a href="#syntax--template-declaration">struct template</a>,
-    <a href="#syntax--variables">variable</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
-</syntax-note->
 
 
 
@@ -7641,6 +8285,7 @@
     <script src="Scripts/Setup/Fix.js"></script>
     <script src="Scripts/Setup/Syntax.js"></script>
     <script src="Scripts/Setup/Index.js"></script>
+    <script src="Scripts/Setup/CopySyntax.js"></script>
     <script src="Scripts/Init.js"></script>
 
     <!-- Functionalities -->
@@ -7657,7 +8302,7 @@
         window.addEventListener('popstate', move_to_view);
         document.addEventListener('DOMContentLoaded', init);
         window.addEventListener('beforeunload', unload);
-        //<!--! view() called after readability readability css load -->
+        //<!--! view() called after readability css load -->
         //TODO implement counter to manage more dynamic css loadings
     </script>
 </body>

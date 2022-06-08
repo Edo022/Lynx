@@ -74,7 +74,7 @@
     }
 
     elm-  { border-color: var(--bd-elm);  }
-    sub-  { border-color: var(--bd-elm2); }
+    sub-  { border-color: var(--bd-elm2); border-style: dashed; }
     stx-  { border-color: var(--bd-elm3); }
 
     elm2-  {
@@ -403,8 +403,8 @@ b-c- {
 /* Notes */
 syntax-note- {
     display: block;
-    margin-top: calc(0px - var(--syntax-margin) + var(--syntax-note-margin-top));
-    margin-bottom: var(--syntax-margin);
+    margin-top: var(--syntax-note-margin-top);
+    margin-bottom: 0;
 }
 syntax-note- > *:link,
 syntax-note- > *:visited,
@@ -428,6 +428,7 @@ syntax-note- {
 syntax2- > table.sub,
 syntax2- > label2-.sub {
     border-left-color: var(--bd-elm2);
+    border-left-style: dashed;
 }
 
 syntax2- > table.stx,

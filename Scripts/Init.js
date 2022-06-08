@@ -13,8 +13,9 @@ function init() {
     setup_index.init();
     setup_fix.init();
     setup_syntax.init();
-    summary_list.init();
+    setup_copy_syntax.init();
 
+    summary_list.init();
 
     readability.init();
 

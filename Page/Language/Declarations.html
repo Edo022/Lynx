@@ -1,0 +1,467 @@
+
+
+<!--------------------------------------------------------------------->
+<!-- Declarations                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations"></h1>
+<p>
+    This section explains the declaration syntax and usage of each category of user-declared <a href="#semantic-elements">semantic elements</a>, also known as <a href="#name-resolution">symbols</a>.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Namespaces                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.namespaces"></h1>
+<p>
+    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
+    The <a href="#name-resolution">symbol</a> categories they can contain are the same as their parent <a href="#scopes">scope</a>.<br>
+    They cannot contain <a href="#statements">statements</a>.
+</p>
+<p>
+    Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
+    Unnamed namespaces are allowed. Empty namespaces are also allowed.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->namespace</w-> a {
+            <t->int</t-> n = <k->4</k->;
+        }
+        <w->namespace</w-> {
+            <t->int</t-> n = <k->4</k->;
+        }
+
+        <t->int</t-> n2 = a.<k->n</k->;
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.variables                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.variables"></h1>
+<p>
+    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
+    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
+</p>
+<p>
+    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
+</p>
+<syntax2->
+    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->uint</t-> var= <k->0</k->;               <c->// Ok, var has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya ha value 5.0</c->
+        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
+    </div>
+</example2->
+<p>
+    Variables can be <a href="#references">references</a>.<br>
+    The <a href="#const-qualifier"><code><t->const</t-></code> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.types                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.types"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.enums                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.enums"></h1>
+<p>
+    <b>Enums</b> are used to <b>group named <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
+    The base <a href="#types">type</a> of an enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>, or an enum type.<br>
+    Elements are declared in the same way as <a href="#variables">variables</a>, but neither the type is not specified explicitly.
+</p>
+<p>
+    Elements of integral enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
+    Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
+    Multiple elements can have the same <a href="#values">value</a>, but each element can only be declared once.<br>
+    Empty enums and <a href="#unnamed-types">unnamed enums</a> are allowed. //FIXME inline declarations
+</p>
+<syntax2->
+    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
+    <label2- id="copy.syntax--enum-declaration-body">Enum body</label2->
+    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
+</syntax2->
+
+<p>
+    By default, all enum elements behave exactly as if they were declared with the base type of the enum.<br>
+    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
+    Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
+</p>
+
+
+<example2->
+    <label2->Example 1</label2->
+    <div>
+        <w->enum</w-> <t->e</t-> : <t->int</t-> {
+            a, b;              <c->// Ok, a = 0, b = 1</c->
+            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
+            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2</label2->
+    <div>
+        <w->enum</w-> <t->c</t-> : <t->double</t-> {
+            pi = <k->3.14159</k->;      <c->// Ok</c->
+            e  = <k->2.71828</k->;      <c->// Ok</c->
+            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
+            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
+            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 3</label2->
+    <div>
+        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
+            pi  = <k->3.14159</k->;
+            e   = <k->2.71828</k->;
+            phi = <k->1.61803</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
+            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
+            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.structs                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.structs"></h1>
+<p>
+    <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
+    The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a>, other structs or <a href="#references">references</a>.<br>
+    They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
+</p>
+<p>
+    Empty structs and <a href="#unnamed-types">unnamed structs</a> are allowed.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
+    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
+    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->struct</w-> <t->idk</t-> {
+            <t->uint</t-> a, b;        <c->// Ok</c->
+            <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
+            <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
+        }
+        <t->void</t-> <f->main</f->(){
+            <t->idk</t-> var;
+
+            var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
+            var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.routines                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.routines"></h1>
+<p>
+    <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
+    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>. They share the same <a href="#declarations.routine-parameters">parameters</a> and body declarations.
+</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.functions                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.functions"></h1>
+<p>
+    //TODO
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.operators                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.operators"></h1>
+
+
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.routine-parameters                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.routine-parameters"></h1>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.the-main-function                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.the-main-function"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.constructor-functions                              -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.constructor-functions"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.templates                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.templates"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.template-constraints                               -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.template-constraints"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.symbol-aliases                                     -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.symbol-aliases"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
