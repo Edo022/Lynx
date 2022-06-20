@@ -136,7 +136,7 @@
                     <a href="#template-constraints">       <code><w->when</w-></code></a>
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
                     <a href="#const-qualifier">            <code><t->const</t-></code></a>
-                    <a href="#operator-precedence">        <code><w->at</w-></code></a>
+                    <a href="#declarations.operator-precedence"><code><w->priority</w-></code></a>
                     <code><w->as</w-></code>
                     <code><w->to</w-></code>
                 </div>
@@ -287,7 +287,7 @@
     <ul class="summary-list">
         <li>
             <span><elm-><code>(</code><code>)</code></elm-></span>
-            <span>Groups an <a href="#expressions">expression</a>, or encloses a list of <a href="#routine-parameters">routine parameters</a>. Also used in <a href="#operator-precedence">operator precedence</a> and <a href="#template-constraints">template constraints.</a></span>
+            <span>Groups an <a href="#expressions">expression</a>, or encloses a list of <a href="#routine-parameters">routine parameters</a>. Also used for <a href="#declarations.operator-precedence">operator precedence</a> and <a href="#template-constraints">template constraints.</a></span>
         </li>
         <li>
             <span><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a></span>
@@ -397,9 +397,9 @@
             </span>
         </li>
         <li>
-            <span><a href="#operator-precedence"><code><w->at</w-></code></a></span>
+            <span><a href="#declarations.operator-precedence"><code><w->priority</w-></code></a></span>
             <span>
-                Defines the <a href="#operator-precedence">precedence</a> of an <a href="#operators">operator</a><br>
+                Defines the <a href="#declarations.operator-precedence">priority</a> of an <a href="#operators">operator</a><br>
                 <span class="meta-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
             </span>
         </li>
@@ -619,7 +619,7 @@
         </li>
         <li>
             <span><a href="#operators">Operator</a> signature</span>
-            <span>Defines the names, <a href="#return-statement">return type</a>, <a href="#routine-parameters">parameters</a> and priority of an <a href="#operators">operator</a></span>
+            <span>Defines the names, <a href="#return-statement">return type</a>, <a href="#routine-parameters">parameters</a>, <a href="#declarations.operator-precedence">priority</a> and <a href="#declarations.operator-precedence">associativity</a> of an <a href="#operators">operator</a></span>
         </li>
         <li>
             <span><a href="#routines">Routine</a> body</span>

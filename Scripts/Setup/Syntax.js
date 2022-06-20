@@ -59,13 +59,13 @@ var setup_syntax = {
 
         // For each tag
         let children = document.querySelectorAll(
-            'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,  B-RT-,  B-BL-,  B-BT-,  B-BR-,  B-LT-,  B-LR-,  B-LB-, '  +
-            'B-TRC-,  B-TBC-,  B-TLC- , B-RBC-,  B-RLC-, B-RTC-, B-BLC-, B-BTC-, B-BRC-, B-LTC-, B-LRC-, B-LBC-, ' +
-            'B-TR-B-, B-BR-B-, B-LT-B-, B-LR-B-, B-LB-B-, ' +
-            'B-TRCB-, B-BRCB-, B-LTCB-, B-LRCB-, B-LBCB-, ' +
-            'B-TR-T-, B-BR-T-, B-LT-T-, B-LR-T-, B-LB-T-, ' +
-            'B-TRCT-, B-BRCT-, B-LTCT-, B-LRCT-, B-LBCT-, ' +
-            'B-C-'
+            'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,   B-RT-,   B-BL-,   B-BT-,   B-BR-,   B-LT-,   B-LR-,   B-LB-, '   +
+            'B-TRC-,  B-TBC-,  B-TLC-,  B-RBC-,  B-RLC-,  B-RTC-,  B-BLC-,  B-BTC-,  B-BRC-,  B-LTC-,  B-LRC-,  B-LBC-, '  +
+            'B-TR-T-,          B-TL-T-, B-RB-T-, B-RL-T-, B-RT-T-, B-BL-T-, B-BT-T-, B-BR-T-, B-LT-T-, B-LR-T-, B-LB-T-, ' +
+            'B-TRCT-,          B-TLCT-, B-RBCT-, B-RLCT-, B-RTCT-, B-BLCT-, B-BTCT-, B-BRCT-, B-LTCT-, B-LRCT-, B-LBCT-, ' +
+            'B-TR-B-,          B-TL-B-, B-RB-B-, B-RL-B-, B-RT-B-, B-BL-B-, B-BT-B-, B-BR-B-, B-LT-B-, B-LR-B-, B-LB-B-, ' +
+            'B-TRCB-,          B-TLCB-, B-RBCB-, B-RLCB-, B-RTCB-, B-BLCB-, B-BTCB-, B-BRCB-, B-LTCB-, B-LRCB-, B-LBCB-, ' +
+            'B-C-, B-C--T-, B-C--B-'
         );
         for(let j = 0; j < children.length; ++j) {
             let tagName = children[j].tagName;
@@ -75,15 +75,13 @@ var setup_syntax = {
             let f = tagName.charCodeAt(2);
             let t = tagName.charCodeAt(3);
             let m = 0; switch(tagName[5]) { case 'T': m = -1; break; case 'B': m = 1; }; //! Y is inverted
-            let ma = (m && (tagName[2] == 'R' || tagName[2] == 'L')) ? (mfix * m) : 0;
-            let mb = (m && (tagName[3] == 'R' || tagName[3] == 'L')) ? (mfix * m) : 0;
             children[j].className += "syntax-arrow";
 
 
             // Connector
             if(tagName[2] == 'C') {
                 s =
-                    `M${ w * (1 - fix) },${ 0.5 * h }` +
+                    `M${ w * (1 - fix) },${ (0.5 + mfix / 2 * m) * h }` +
                     `l${ (margin + w * fix) * 2 },0`
                 ;
             }
@@ -93,6 +91,9 @@ var setup_syntax = {
             else {
                 // Calculate coordinates
                 // let r2 = r + mfix * Math.abs(m);
+                let ma = (m && (tagName[2] == 'R' || tagName[2] == 'L')) ? (mfix * m) : 0;
+                let mb = (m && (tagName[3] == 'R' || tagName[3] == 'L')) ? (mfix * m) : 0;
+
                 let r2 = r;
                 let
                     ax = (Math.cos(a[f]) * (1 + fix     ))      / 2 + 0.5,

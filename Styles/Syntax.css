@@ -308,7 +308,9 @@ syntax2- table tr > td {
     max-width: none;
     /**/width: fit-content; /* Set from JS */
 }
-syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-):not(b-tr-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-tr-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-) {
+
+
+syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-tr-t-):not(b-tl-t-):not(b-rb-t-):not(b-rl-t-):not(b-rt-t-):not(b-bl-t-):not(b-bt-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-tlct-):not(b-rbct-):not(b-rlct-):not(b-rtct-):not(b-blct-):not(b-btct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-):not(b-tr-b-):not(b-tl-b-):not(b-rb-b-):not(b-rl-b-):not(b-rt-b-):not(b-bl-b-):not(b-bt-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-tlcb-):not(b-rbcb-):not(b-rlcb-):not(b-rtcb-):not(b-blcb-):not(b-btcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-c-):not(b-c--t-):not(b-c--b-) {
     display: inline-block;
     box-sizing: border-box;
     text-align: center;
@@ -321,12 +323,12 @@ syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-
     min-height: calc(100% - 2 * var(--syntax-elm-margin));
     /**/height: calc(100% - 2 * var(--syntax-elm-margin));
 }
-syntax2- table tr > td.rowspan_2 > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-):not(b-tr-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-tr-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-) {
+syntax2- table tr > td.rowspan_2 > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-tr-t-):not(b-tl-t-):not(b-rb-t-):not(b-rl-t-):not(b-rt-t-):not(b-bl-t-):not(b-bt-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-tlct-):not(b-rbct-):not(b-rlct-):not(b-rtct-):not(b-blct-):not(b-btct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-):not(b-tr-b-):not(b-tl-b-):not(b-rb-b-):not(b-rl-b-):not(b-rt-b-):not(b-bl-b-):not(b-bt-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-tlcb-):not(b-rbcb-):not(b-rlcb-):not(b-rtcb-):not(b-blcb-):not(b-btcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-c-):not(b-c--t-):not(b-c--b-) {
     max-height: calc(200% - 2 * var(--syntax-elm-margin));
     min-height: calc(200% - 2 * var(--syntax-elm-margin));
     /**/height: calc(200% - 2 * var(--syntax-elm-margin));
 }
-syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-c-):not(b-e-):not(b-tr-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-tr-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-) > div {
+syntax2- table tr > td > *:not(b-tr-):not(b-tb-):not(b-tl-):not(b-rb-):not(b-rl-):not(b-rt-):not(b-bl-):not(b-bt-):not(b-br-):not(b-lt-):not(b-lr-):not(b-lb-):not(b-trc-):not(b-tbc-):not(b-tlc-):not(b-rbc-):not(b-rlc-):not(b-rtc-):not(b-blc-):not(b-btc-):not(b-brc-):not(b-ltc-):not(b-lrc-):not(b-lbc-):not(b-tr-t-):not(b-tl-t-):not(b-rb-t-):not(b-rl-t-):not(b-rt-t-):not(b-bl-t-):not(b-bt-t-):not(b-br-t-):not(b-lt-t-):not(b-lr-t-):not(b-lb-t-):not(b-trct-):not(b-tlct-):not(b-rbct-):not(b-rlct-):not(b-rtct-):not(b-blct-):not(b-btct-):not(b-brct-):not(b-ltct-):not(b-lrct-):not(b-lbct-):not(b-tr-b-):not(b-tl-b-):not(b-rb-b-):not(b-rl-b-):not(b-rt-b-):not(b-bl-b-):not(b-bt-b-):not(b-br-b-):not(b-lt-b-):not(b-lr-b-):not(b-lb-b-):not(b-trcb-):not(b-tlcb-):not(b-rbcb-):not(b-rlcb-):not(b-rtcb-):not(b-blcb-):not(b-btcb-):not(b-brcb-):not(b-ltcb-):not(b-lrcb-):not(b-lbcb-):not(b-c-):not(b-c--t-):not(b-c--b-) > div {
     display: inline-flex;
     text-align: center;
     align-items: center;
@@ -370,19 +372,14 @@ syntax2- > label2- {
 svg {
     overflow: visible;
 }
-b-tr-,   b-tb-,   b-tl-,
-b-rb-,   b-rl-,   b-rt-,
-b-bl-,   b-bt-,   b-br-,
-b-lt-,   b-lr-,   b-lb-,
-b-trc-,  b-tbc-,  b-tlc-,
-b-rbc-,  b-rlc-,  b-rtc-,
-b-blc-,  b-btc-,  b-brc-,
-b-ltc-,  b-lrc-,  b-lbc-,
-b-tr-b-, b-br-b-,  b-lt-b-,  b-lr-b-,  b-lb-b-,
-b-trcb-, b-brcb-,  b-ltcb-,  b-lrcb-,  b-lbcb-,
-b-tr-t-, b-br-t-,  b-lt-t-,  b-lr-t-,  b-lb-t-,
-b-trct-, b-brct-,  b-ltct-,  b-lrct-,  b-lbct-,
-b-c- {
+
+b-tr-,   b-tb-,   b-tl-,   b-rb-,   b-rl-,   b-rt-,   b-bl-,   b-bt-,   b-br-,   b-lt-,   b-lr-,   b-lb-,
+b-trc-,  b-tbc-,  b-tlc-,  b-rbc-,  b-rlc-,  b-rtc-,  b-blc-,  b-btc-,  b-brc-,  b-ltc-,  b-lrc-,  b-lbc-,
+b-tr-t-,          b-tl-t-, b-rb-t-, b-rl-t-, b-rt-t-, b-bl-t-, b-bt-t-, b-br-t-, b-lt-t-, b-lr-t-, b-lb-t-,
+b-trct-,          b-tlct-, b-rbct-, b-rlct-, b-rtct-, b-blct-, b-btct-, b-brct-, b-ltct-, b-lrct-, b-lbct-,
+b-tr-b-,          b-tl-b-, b-rb-b-, b-rl-b-, b-rt-b-, b-bl-b-, b-bt-b-, b-br-b-, b-lt-b-, b-lr-b-, b-lb-b-,
+b-trcb-,          b-tlcb-, b-rbcb-, b-rlcb-, b-rtcb-, b-blcb-, b-btcb-, b-brcb-, b-ltcb-, b-lrcb-, b-lbcb-,
+b-c-, b-c--t-, b-c--b- {
     display: inline-block;
     overflow: visible;
 

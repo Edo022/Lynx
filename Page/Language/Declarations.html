@@ -154,9 +154,9 @@
 </syntax2->
 
 <p>
-    By default, all enum elements behave exactly as if they were declared with the base type of the enum.<br>
+    By default, all enum elements behave exactly as if they were declared as const variables with type the base type of the enum.<br>
     When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
-    Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
+    Strict enums can only be assigned values of the same enum type, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
 </p>
 
 
@@ -224,7 +224,7 @@
 <h1 id="declarations.structs"></h1>
 <p>
     <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
-    The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a>, other structs or <a href="#references">references</a>.<br>
+    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including <a href="#arrays">arrays</a>, other structs and <a href="#references">references</a>.<br>
     They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
 </p>
 <p>
@@ -245,9 +245,9 @@
             <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
             <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
         }
+
         <t->void</t-> <f->main</f->(){
             <t->idk</t-> var;
-
             var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
             var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
         }
@@ -276,7 +276,18 @@
 <h1 id="declarations.routines"></h1>
 <p>
     <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
-    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>. They share the same <a href="#declarations.routine-parameters">parameters</a> and body declarations.
+    They are used to organize the module, provide features and prevent code duplication.<br>
+    The routine execution starts from its first <a href="#statements">statement</a> and ends after the first encountered <a href="#return-statements">return statement</a>.
+</p>
+<p>
+    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>.<br>
+    They use different signatures and <a href="#routine-calls">calling</a> syntaxes but share the same <a href="#declarations.routine-parameters">parameter</a> and body declarations.
+</p>
+<p>
+    Each routine <a href="#return-statement">returns</a> a single value when <a href="#routine-calls">called</a>.<br>
+    The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
+    Routines can <a href="#return-statement">return</a> any <a href="#types">type</a>, including <a href="#references">references</a>.<br>
+    The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
 </p>
 
 
@@ -298,13 +309,29 @@
 <!--------------------------------------------------------------------->
 <h1 id="declarations.functions"></h1>
 <p>
-    //TODO
+    <b>Functions</b> are a type of <b><a href="declarations.routines">routine</a></b> that requires parentheses to be called.<br>
+    They always use the infix notation and can take any number of <a href="#declarations.routine-parameters">parameters</a>.
+</p>
+<p>
+    Function <a href="#identifiers">identifiers</a> must be alphanumeric.
 </p>
 <syntax2->
     <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
     <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
     <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
 </syntax2->
+<example2->
+    <label2->Example - Add function</label2->
+    <div>
+        <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
+            <w->return</w-> a + b;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> n = </t-><f->add</f->(<k->4</k->, <k->6</k->)
+        }
+    </div>
+</example2->
 
 
 
@@ -322,15 +349,46 @@
 <!-- declarations.operators                                          -->
 <!--------------------------------------------------------------------->
 <h1 id="declarations.operators"></h1>
-
-
+<p>
+    <b>Operators</b> are a type of <b><a href="#declarations.routines">routine</a></b> that doesn't require parentheses to be <a href="#routine-calls">called</a> and can use <b>multiple <a href="#identifiers">identifiers</a></b>.<br>
+    Each <a href="#identifiers">identifier</a> can be prefix, infix or postfix, depending on where it is declared in the operator signature.<br>
+    Operators can take any number of <a href="#declarations.routine-parameters">parameters</a>, but they cannot be 0 and must be separated by exactly 1 <a href="#identifiers">identifier</a>.
+</p>
+<p>
+    Operator <a href="#identifiers">identifiers</a> can be alphanumeric or symbolic.<br>
+    Declaring consecutive <a href="#idnetifiers">identifiers</a> is not allowed.<br>
+    Operator precedence is explained in <a href="#declarations.operator-precedence">Operator precedence</a>.
+</p>
 <syntax2->
     <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
     <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
     <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
 </syntax2->
+<example2->
+    <label2->Example 1 - Promotion operator</label2->
+    <div>
+        <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
+            <w->return</w-> n;
+        }
 
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> r = <f->+</f->2;
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2 - Python-like ternary operator</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
+            <w->if</w->(condition) <w->return</w-> a;
+            <w->else</w-> <w->return</w-> b;
+        }
 
+        <t->void</t-> <f->main</f->(<t->bool</t-> <a->c</a->){
+            <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
+        }
+    </div>
+</example2->
 
 
 
@@ -347,6 +405,9 @@
 <!-- declarations.routine-parameters                                 -->
 <!--------------------------------------------------------------------->
 <h1 id="declarations.routine-parameters"></h1>
+<p>
+
+</p>
 <syntax2->
     <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
 </syntax2->
@@ -362,34 +423,83 @@
 
 
 
+<!--------------------------------------------------------------------->
+<!-- declarations.operator-precedence                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.operator-precedence"></h1>
+<p>
+    In <b>absence</b> of <b>parentheses</b>, the order in which <b><a href="#declarations.operators">operators</a></b> in the <b>same <a href="#expressions">expression</a></b> are <b><a href="#operator-calls">called</a></b> depends on their <b>priority</b> and <b>associativity</b>.<br>
+    Priority and associativity are specified in the <a href="#declarations.operators">operator signature</a> as a <a href="#compile-time-expressions">compile time</a> <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#expressions">expression</a>
+    ranging from <code><k->0</k-></code> to <code><k->15</k-></code>, followed by the <code><w->r</w-></code> or <code><w->l</w-></code> <a href="#meta-keywords">meta keyword</a>.<br>
+</p>
+<p>
+    The value indicates the priority.<br>
+    Operators declared with lower values have higher priority and are evaluated first.<br>
+    Left-associative operators are always evaluated before right-associative operators with the same priority.
+</p>
+<p>
+    The <code><w->r</w-></code> and <code><w->l</w-></code> <a href="#meta-keywords">meta keywords</a> indicate right and left associativity.<br>
+    Associativity defines the order in which operators with the same priority and associativity are evaluated.<br>
+    Right-associative operators are evaluated starting from the right, whilst left-associative operators are evaluated starting from the left.<br>
+</p>
+<example2->
+    <label2->Example 1 - Priority</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->r</w->) {
+            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->q</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->5</k-> <w->r</w->) {
+            <w->return</w-> b <f->-</f-> a;
+        }
+
+        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            <c->// Evaluated as ((a o (b p c)) q a)</c->
+            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2 - Associativity</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
+        }
+
+        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            <c->// Evaluated as ((a o b) p c)</c->
+            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 <!--------------------------------------------------------------------->
-<!-- declarations.the-main-function                                  -->
+<!-- declarations.specual-functions                                  -->
 <!--------------------------------------------------------------------->
-<h1 id="declarations.the-main-function"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.constructor-functions                              -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.constructor-functions"></h1>
+<h1 id="declarations.special-functions"></h1>
 
 
 
