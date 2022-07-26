@@ -29,6 +29,11 @@
     --bd-elm2:          hsl(210, 31%, 54%);
     --bd-elm3:          hsl(281, 31%, 54%);
     --bd-code:          hsl(212, 14%, 24%);
+    --bd-exp:           #85b4e0;
+    --bd-typ:           #3884dc;
+
+    --fg-sgr:           hsla(102, 5%, 95%, 75%);
+    --bg-sgr:           hsla(60, 90%, 44%, 5%);
 }
 
 
@@ -61,7 +66,7 @@
 
 /* Syntax element containters { */
     /* FIXME fix names */
-    elm-, sub-, stx-, elm2- {
+    elm-, sub-, stx-, elm2-, sgr-, exp-, typ- {
         display: inline-block;
         font-family: monospace, monospace;
         border: 1px solid;
@@ -73,11 +78,24 @@
         white-space: nowrap;
     }
 
-    elm-  { border-color: var(--bd-elm);  }
-    sub-  { border-color: var(--bd-elm2); border-style: dashed; }
-    stx-  { border-color: var(--bd-elm3); }
+    elm- {
+        font-style: italic; border-color: var(--bd-elm);
+    }
+
+
+    sub- { font-style: italic; border-color: var(--bd-elm2); border-style: dashed; }
+    stx- { font-style: italic; border-color: var(--bd-elm3); }
+    exp- { font-style: italic; border-color: var(--bd-exp); }
+    typ- { font-style: italic; border-color: var(--bd-typ); }
+
+    sgr- {
+        border-color:     transparent;
+        color:            var(--fg-sgr);
+        background-color: var(--bg-sgr);
+    }
 
     elm2-  {
+        font-style: italic;
         margin: 0;
         padding: 6px;
         border-color: var(--bd-elm);
