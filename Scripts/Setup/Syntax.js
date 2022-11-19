@@ -42,12 +42,20 @@ var setup_syntax = {
 
 
 
+    toDecimalPrecision : function(n, digits){
+        let int_digits = n.toFixed().length;
+        return n.toPrecision(int_digits + digits);
+    },
+
+
+
     // Create syntax path arrows with svg elements
     format_arrows : function(){
         // Calculate constants
         let margin = parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--syntax-arrow-margin').slice(0, -2));
-        let arrow_d = 5;                                                                                                 //!^ Remove 'px' suffix
-        let fix = 0.04, mfix = 0.3, r = 0.2;
+        let arrow_d = 5;    // Arrow head size                                                                           //!^ Remove 'px' suffix
+        let mfix = 0.3;     // Height difference of height locations
+        let r = 0.2;        // Arrow curve radius
 
         let a = Array();
             a['T'.charCodeAt(0)] = Math.PI * 1.5; //! T is inverted
@@ -68,21 +76,28 @@ var setup_syntax = {
             'B-C-, B-C--T-, B-C--B-'
         );
         for(let j = 0; j < children.length; ++j) {
-            let tagName = children[j].tagName;
-            let w = children[j].parentElement.clientWidth - margin * 2;
-            let h = children[j].clientHeight;
-            let s = '';
-            let f = tagName.charCodeAt(2);
-            let t = tagName.charCodeAt(3);
+            let tagName = children[j].tagName;                              // Name of the tag
+            let w = children[j].parentElement.clientWidth - margin * 2;     // SVG width
+            let h = children[j].clientHeight;                               // SVG height
+            let s = '';                                                     // Output path string
+            let f = tagName.charCodeAt(2);                                  // First position (From)
+            let t = tagName.charCodeAt(3);                                  // Second potision (To)
             let m = 0; switch(tagName[5]) { case 'T': m = -1; break; case 'B': m = 1; }; //! Y is inverted
-            children[j].className += "syntax-arrow";
+            children[j].className += "syntax-arrow";                        // ^ Height center location (1/0/-1 for top/center/bottom)
+
+
+            // Fix vertical height in non connecting arrows
+            if((tagName[3] == 'T' || tagName[3] == 'B') && tagName[4] != 'C'){
+                h -= margin * 2;
+                children[j].style.padding = "var(--syntax-arrow-margin) 0 var(--syntax-arrow-margin) 0";
+            }
 
 
             // Connector
             if(tagName[2] == 'C') {
                 s =
-                    `M${ w * (1 - fix) },${ (0.5 + mfix / 2 * m) * h }` +
-                    `l${ (margin + w * fix) * 2 },0`
+                    `M${ this.toDecimalPrecision(w * 1, 4) },${ this.toDecimalPrecision((0.5 + mfix / 2 * m) * h, 4) }` +
+                    `l${ this.toDecimalPrecision(margin * 2, 4) },0`
                 ;
             }
 
@@ -90,41 +105,43 @@ var setup_syntax = {
             // Arrows
             else {
                 // Calculate coordinates
-                // let r2 = r + mfix * Math.abs(m);
                 let ma = (m && (tagName[2] == 'R' || tagName[2] == 'L')) ? (mfix * m) : 0;
                 let mb = (m && (tagName[3] == 'R' || tagName[3] == 'L')) ? (mfix * m) : 0;
 
-                let r2 = r;
                 let
-                    ax = (Math.cos(a[f]) * (1 + fix     ))      / 2 + 0.5,
-                    aX = (Math.cos(a[f]) * (1 + fix - r2))      / 2 + 0.5,
-                    ay = (Math.sin(a[f]) * (1 + fix     ) + ma) / 2 + 0.5,
-                    aY = (Math.sin(a[f]) * (1 + fix - r2) + ma) / 2 + 0.5,
-                    bx = (Math.cos(a[t]) * (1 + fix     ))      / 2 + 0.5,
-                    bX = (Math.cos(a[t]) * (1 + fix - r2))      / 2 + 0.5,
-                    by = (Math.sin(a[t]) * (1 + fix     ) + mb) / 2 + 0.5,
-                    bY = (Math.sin(a[t]) * (1 + fix - r2) + mb) / 2 + 0.5,
+                    ax = (Math.cos(a[f]) * (1    ))      / 2 + 0.5,   // First  segment - x of beginning
+                    aX = (Math.cos(a[f]) * (1 - r))      / 2 + 0.5,   // First  segment - x of end
+                    ay = (Math.sin(a[f]) * (1    ) + ma) / 2 + 0.5,   // First  segment - y of beginning
+                    aY = (Math.sin(a[f]) * (1 - r) + ma) / 2 + 0.5,   // First  segment - y of end
+                    bx = (Math.cos(a[t]) * (1    ))      / 2 + 0.5,   // Second segment - x of beginning
+                    bX = (Math.cos(a[t]) * (1 - r))      / 2 + 0.5,   // Second segment - x of end
+                    by = (Math.sin(a[t]) * (1    ) + mb) / 2 + 0.5,   // Second segment - y of beginning
+                    bY = (Math.sin(a[t]) * (1 - r) + mb) / 2 + 0.5,   // Second segment - y of end
 
-                    cx = 0 / 2 + 0.5,
-                    cy = (ma ? ma : mb) / 2 + 0.5,
+                    cx = 0 / 2 + 0.5,                                       // Curve center - x
+                    cy = (ma ? ma : mb) / 2 + 0.5,                          // Curve center - y
 
-                    h0x = Math.cos(a[t] + Math.PI * 1.25),
-                    h0y = Math.sin(a[t] + Math.PI * 1.25),
-                    h1x = Math.cos(a[t] - Math.PI * 1.25),
-                    h1y = Math.sin(a[t] - Math.PI * 1.25)
+                    h0x = Math.cos(a[t] + Math.PI * 1.25),                  // Head - x of left  segment
+                    h0y = Math.sin(a[t] + Math.PI * 1.25),                  // Head - y of left  segment
+                    h1x = Math.cos(a[t] - Math.PI * 1.25),                  // Head - x of right segment
+                    h1y = Math.sin(a[t] - Math.PI * 1.25)                   // Head - y of right segment
                 ;
+
 
                 // Draw arrow
                 s =
-                    `M${ ax * w },${ ay * h }` +                            // Starting position
-                    `L${ aX * w },${ aY * h }` +                            // Draw starting segment
-                    `Q${ cx * w },${ cy * h } ${ bX * w },${ bY * h }` +    // Draw curve
-                    `L${ bx * w },${ by * h }`                              // Draw ending segment
+                    `M${ this.toDecimalPrecision(ax * w, 4) },${ this.toDecimalPrecision(ay * h, 4) }` +                // Starting position
+                    `L${ this.toDecimalPrecision(aX * w, 4) },${ this.toDecimalPrecision(aY * h, 4) }` +                // Draw starting segment
+                    `Q${ this.toDecimalPrecision(cx * w, 4) },${ this.toDecimalPrecision(cy * h, 4) }` +                // Draw first half of curve
+                    ` ${ this.toDecimalPrecision(bX * w, 4) },${ this.toDecimalPrecision(bY * h, 4) }` +                // Draw second hard of curve
+                    `L${ this.toDecimalPrecision(bx * w, 4) },${ this.toDecimalPrecision(by * h, 4) }`                  // Draw ending segment
                 ;
+
+                // Draw head
                 if(tagName[4] != 'C') s +=
-                    `m${ h0x * arrow_d },${ h0y * arrow_d }` +              // Starting position
-                    `L${ bx * w },${ by * h }` +                            // Draw head form 0 to O
-                    `l${ h1x * arrow_d },${ h1y * arrow_d }`                // Draw head from O to 1
+                    `m${ this.toDecimalPrecision(h0x * arrow_d, 4) },${ this.toDecimalPrecision(h0y * arrow_d, 4) }` +  // Starting position
+                    `L${ this.toDecimalPrecision(bx * w,        4) },${ this.toDecimalPrecision(by * h,        4) }` +  // Draw head form 0 to O
+                    `l${ this.toDecimalPrecision(h1x * arrow_d, 4) },${ this.toDecimalPrecision(h1y * arrow_d, 4) }`    // Draw head from O to 1
                 ;
             }
 

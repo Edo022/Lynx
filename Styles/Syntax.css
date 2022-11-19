@@ -18,7 +18,7 @@
     --syntax-line-h:      36px;
     --syntax-arrow-w:     36px; /* must be in pixels as it is used by js */
     --syntax-arrow-margin:6px;  /* must be in pixels as it is used by js */
-    --syntax-fg-arrow:         hsla(212, 14%, 24%, 100%);
+    --syntax-fg-arrow:         hsla(212, 14%, 24%, 900%);
 
     --syntax-elm-margin:         4px;
     --syntax-note-margin-top:    32px;
