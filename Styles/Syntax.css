@@ -14,6 +14,7 @@
     --syntax-label-h:           3ch;
     --syntax-label-padding:     2ch;
     --syntax-label-padding-top: 0.5ch;
+    --syntax-label-active:    hsl(0, 0%, 65%);
 
     --syntax-line-h:      36px;
     --syntax-arrow-w:     36px; /* must be in pixels as it is used by js */
@@ -26,8 +27,8 @@
 
 
     --bd-elm:           hsl(212, 14%, 20%);
-    --bd-elm2:          hsl(210, 31%, 54%);
-    --bd-elm3:          hsl(281, 31%, 54%);
+    --bd-sub:           hsl(210, 31%, 54%);
+    --bd-stx:           hsl(281, 31%, 54%);
     --bd-code:          hsl(212, 14%, 24%);
     --bd-exp:           #85b4e0;
     --bd-typ:           #3884dc;
@@ -63,10 +64,23 @@
 
 
 
+.syntax-glossary {
+    display: inline-block;
+    font-family: monospace, monospace;
+    width: 8em;
+    text-align: center;
+    padding: 0 4px 0 4px;
+    margin: 4px 2px 4px 2px;
+    border-radius: var(--code-decoration-r);
+    height: 2.1em;
+}
+
+
+
 
 /* Syntax element containters { */
-    /* FIXME fix names */
-    elm-, sub-, stx-, elm2-, sgr-, exp-, typ- {
+    elm-, even-elm-,                        /* elm-: General purpose element | even-elm-: elm- but the padding is the same across all sides and the beackground is transparent*/
+    wrd-, sub-, stx-, sgr-, exp-, typ- {    /* Word, Sub element, Syntactic element, Syntactic sugar, Expression, Type */
         display: inline-block;
         font-family: monospace, monospace;
         border: 1px solid;
@@ -78,15 +92,23 @@
         white-space: nowrap;
     }
 
-    elm- {
-        font-style: italic; border-color: var(--bd-elm);
+
+    elm-, even-elm- {
+        border-color: var(--bd-elm );
+    }
+    even-elm-  {
+        margin: 0;
+        padding: 6px;
+        border-color: var(--bd-elm);
+        background-color: transparent;
     }
 
 
-    sub- { font-style: italic; border-color: var(--bd-elm2); border-style: dashed; }
-    stx- { font-style: italic; border-color: var(--bd-elm3); }
-    exp- { font-style: italic; border-color: var(--bd-exp); }
-    typ- { font-style: italic; border-color: var(--bd-typ); }
+    wrd- { font-style: italic; border-color: var(--bd-elm ); }
+    sub- { font-style: italic; border-color: var(--bd-sub); border-style: dashed; }
+    stx- { font-style: italic; border-color: var(--bd-stx); }
+    exp- { font-style: italic; border-color: var(--bd-exp ); }
+    typ- { font-style: italic; border-color: var(--bd-typ ); }
 
     sgr- {
         border-color:     transparent;
@@ -94,13 +116,6 @@
         background-color: var(--bg-sgr);
     }
 
-    elm2-  {
-        font-style: italic;
-        margin: 0;
-        padding: 6px;
-        border-color: var(--bd-elm);
-        background-color: transparent;
-    }
 
     sup, sub {
         margin-left: 0.5ch;
@@ -166,6 +181,11 @@ syntax2-, example2- {
     max-width:  100%;
     /**/width:  100%;
     margin: var(--syntax-margin) 0 var(--syntax-margin) 0;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 example2- {
     font-family: monospace, monospace;
@@ -236,7 +256,7 @@ syntax2- > label2-:hover::after {
 
 example2- > label2-:active,
 syntax2- > label2-:active {
-    color: var(--fg-hidden);
+    color: var(--syntax-label-active);
 }
 example2- > label2-:active::after,
 syntax2- > label2-:active::after {
@@ -442,11 +462,11 @@ syntax-note- {
 
 syntax2- > table.sub,
 syntax2- > label2-.sub {
-    border-left-color: var(--bd-elm2);
+    border-left-color: var(--bd-sub);
     border-left-style: dashed;
 }
 
 syntax2- > table.stx,
 syntax2- > label2-.stx {
-    border-left-color: var(--bd-elm3);
+    border-left-color: var(--bd-stx);
 }

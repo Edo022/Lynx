@@ -287,6 +287,15 @@
 <p>
     //TODO move the "alphanumeric or symbolic" stuff here
 </p>
+<p>
+    <code class="syntax-glossary">x             </code> The literal character "x"<br>
+    <wrd- class="syntax-glossary">x             </wrd-> x is an identifier or another user-defined sequence of characters<br>
+    <sub- class="syntax-glossary">x             </sub-> x is a syntactic sub-element<br>
+    <stx- class="syntax-glossary">x             </stx-> x is a syntactic element<br>
+    <exp- class="syntax-glossary"><t->[t]</t-> x</exp-> x is an expression of type t<br>
+    <typ- class="syntax-glossary">x             </typ-> x is a type<br>
+    <sgr- class="syntax-glossary">x             </sgr-> x is syntactic sugar
+</p>
 
 <!--------------------------------------------------------------------->
 <!-- Preprocessor                                                    -->
@@ -405,15 +414,15 @@
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code><k->#include</k-></code></td>
+            <td><code>#include</code></td>
             <td><b-lr-></b-lr-></td>
             <td><code><space-></space-></code></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code><s->"</s-></code></td>
+            <td><code>"</code></td>
             <td><b-lr-></b-lr-></td>
             <td class="center"><elm->path/to/file</elm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code><s->"</s-></code></td>
+            <td><code>"</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
         </tr>
         <tr>
@@ -422,11 +431,11 @@
             <td></td>
             <td></td>
             <td><b-tr-></b-tr-></td>
-            <td><code><s->&lt;</s-></code></td>
+            <td><code>&lt;</code></td>
             <td><b-lr-></b-lr-></td>
             <td class="center"><elm->module name</elm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code><s->&gt;</s-></code></td>
+            <td><code>&gt;</code></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>
@@ -484,7 +493,7 @@
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code><sg->\</sg-></code></td>
+            <td><code>\</code></td>
             <td><b-lr-></b-lr-></td>
             <td><code><nl-></nl-></code></td>
             <td><b-lr-></b-lr-></td>
@@ -746,7 +755,7 @@
         </li>
         <li>
             <span><a href="#auto-specifier"><code><t->auto</t-></code></a></span>
-            <span>Can be used in place of the <a href="#types">type</a> of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> to declare it using the <a href="#types">type</a> of its initializer <a href="#values">value</a>.</span>
+            <span>Can be used in place of the <a href="#types">type</a> in the declaration of a <a href="#variables">variable</a>, a <a href="#routine-parameters">routine parameter</a> or a <a href="#routines">routine</a> to automatically use the best type based on its initializer <a href="#values">value</a> or return value.</span>
         </li>
         <li>
             <span><a href="#typeof-specifier"><code><t->typeof</t-></code></a></span>
@@ -1043,10 +1052,10 @@
         <th class="nowrap medium"><a href="#language-structure.directives">Directive</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#import-directive"><code><w->import</w-></code></a> directive</elm2->
-                <elm2-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm2->
-                <elm2-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</elm2->
-                <elm2-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</elm2->
+                <even-elm-><a href="#import-directive"><code><w->import</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#export-directive"><code><w->export</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</even-elm->
             </div>
         </div></td>
     </tr>
@@ -1054,21 +1063,21 @@
         <th class="nowrap medium"><a href="#language-structure.declarations">Declaration</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#enums"><code><w->enum</w-></code></a> declaration</elm2->
-                <elm2-><a href="#enums"><code><w->enum</w-></code></a> element declaration</elm2->
-                <elm2-><a href="#structs"><code><w->struct</w-></code></a> declaration</elm2->
-                <elm2-><a href="#structs"><code><w->struct</w-></code></a> member declaration</elm2->
+                <even-elm-><a href="#enums"><code><w->enum</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#enums"><code><w->enum</w-></code></a> element declaration</even-elm->
+                <even-elm-><a href="#structs"><code><w->struct</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#structs"><code><w->struct</w-></code></a> member declaration</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#functions">Function</a> declaration</elm2->
-                <elm2-><a href="#operators">Operator</a> declaration</elm2->
-                <elm2-><a href="#routine-parameters">Routine parameter</a></elm2->
+                <even-elm-><a href="#functions">Function</a> declaration</even-elm->
+                <even-elm-><a href="#operators">Operator</a> declaration</even-elm->
+                <even-elm-><a href="#routine-parameters">Routine parameter</a></even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</elm2->
-                <elm2-><a href="#templates"><code><w->template</w-></code></a> declaration</elm2->
-                <elm2-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</elm2->
-                <elm2-><a href="#variables">Variable</a> declaration</elm2->
+                <even-elm-><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#templates"><code><w->template</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#variables">Variable</a> declaration</even-elm->
             </div>
         </div></td>
     </tr>
@@ -1076,28 +1085,28 @@
         <th class="nowrap medium"><a href="#language-structure.statements">Statement</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#if-statement"><code><w->if</w-></code></a> statement</elm2->
-                <elm2-><a href="#match-statement"><code><w->match</w-></code></a> statement</elm2->
+                <even-elm-><a href="#if-statement"><code><w->if</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#match-statement"><code><w->match</w-></code></a> statement</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#while-loops"><code><w->while</w-></code></a> loop</elm2->
-                <elm2-><a href="#for-loops"><code><w->for</w-></code></a> loop</elm2->
-                <elm2-><a href="#once-statement"><code><w->once</w-></code></a> statement</elm2->
-                <elm2-><a href="#then-statement"><code><w->then</w-></code></a> statement</elm2->
-                <elm2-><a href="#break-statement"><code><w->break</w-></code></a> statement</elm2->
-                <elm2-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</elm2->
+                <even-elm-><a href="#while-loops"><code><w->while</w-></code></a> loop</even-elm->
+                <even-elm-><a href="#for-loops"><code><w->for</w-></code></a> loop</even-elm->
+                <even-elm-><a href="#once-statement"><code><w->once</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#then-statement"><code><w->then</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#break-statement"><code><w->break</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#return-statement"><code><w->return</w-></code></a> statement</elm2->
-                <elm2-><a href="#defer-statement"><code><w->defer</w-></code></a> statement</elm2->
+                <even-elm-><a href="#return-statement"><code><w->return</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#defer-statement"><code><w->defer</w-></code></a> statement</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#else-statement"><code><w->else</w-></code></a> statement</elm2->
-                <elm2-><a href="#expressions">Expression statement</a></elm2->
-                <elm2-><a href="#unnamed-scopes">Unnamed scope</a></elm2->
-                <elm2-><a href="#empty-statement">Empty statement</a></elm2->
-                <elm2-><a href="#inline-glsl">Inline GLSL</a></elm2->
-                <elm2-><a href="#inline-cpp">Inline C++</a></elm2->
+                <even-elm-><a href="#else-statement"><code><w->else</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#expressions">Expression statement</a></even-elm->
+                <even-elm-><a href="#unnamed-scopes">Unnamed scope</a></even-elm->
+                <even-elm-><a href="#empty-statement">Empty statement</a></even-elm->
+                <even-elm-><a href="#inline-glsl">Inline GLSL</a></even-elm->
+                <even-elm-><a href="#inline-cpp">Inline C++</a></even-elm->
             </div>
         </div></td>
     </tr>
@@ -1105,17 +1114,17 @@
         <th class="nowrap medium"><a href="#language-structure.expressions">Expression</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#literals">Literal</a></elm2->
-                <elm2-><a href="#try-expression"><code><w->try</w-></code> expression</a></elm2->
+                <even-elm-><a href="#literals">Literal</a></even-elm->
+                <even-elm-><a href="#try-expression"><code><w->try</w-></code> expression</a></even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#variables">Variable</a></elm2->
-                <elm2-><a href="#temporary-variables">Temporary variable</a></elm2->
-                <elm2-><a href="#routine-parameters">Routine parameter</a></elm2->
+                <even-elm-><a href="#variables">Variable</a></even-elm->
+                <even-elm-><a href="#temporary-variables">Temporary variable</a></even-elm->
+                <even-elm-><a href="#routine-parameters">Routine parameter</a></even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#function-calls">Function call</a></elm2->
-                <elm2-><a href="#operator-calls">Operator call</a></elm2->
+                <even-elm-><a href="#function-calls">Function call</a></even-elm->
+                <even-elm-><a href="#operator-calls">Operator call</a></even-elm->
             </div>
         </div></td>
     </tr>
@@ -1615,32 +1624,6 @@
     The <code>module</code> identifier is used to reference the <a href="#scopes">scope</a> of the current <a href="#modules">module</a>.<br>
     A path that starts from the module <a href="#scopes">scope</a> of the current <a href="#modules">module</a> or any of the <a href="#import-directive">imported</a> ones is called an absolute path.
 </p>
-<syntax2->
-    <label2->Syntax</label2->
-    <table>
-        <tr>
-            <td></td>
-            <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-        <tr>
-            <td><b-br-></b-br-><b-lr-></b-lr-></td>
-            <td><a href="#local-names"><elm- style="color: var(--fg-text)">name</elm-></a></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>.</code></td>
-            <td><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-        </tr>
-    </table>
-</syntax2->
 <example2->
     <label2->Example</label2->
     <div>
@@ -2946,7 +2929,7 @@
                     <td><b-lr-></b-lr-></td>
                     <td><code>{</code></td>
                     <td><loop-end-></loop-end-><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><elm2->element declaration</elm2-></td>
+                    <td><even-elm->element declaration</even-elm-></td>
                     <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
                     <td><code>;</code></td>
                     <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
@@ -3131,7 +3114,7 @@
                     <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
                     <td><code>{</code></td>
                     <td><loop-end-></loop-end-><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><elm2->member declaration</elm2-></td>
+                    <td><even-elm->member declaration</even-elm-></td>
                     <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
                     <td><code>;</code></td>
                     <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
@@ -4328,7 +4311,7 @@
     <left->
         <label- class="nobefore">Declaration syntax</label->
         <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm2-><elm->varaible 0</elm->, <elm->...</elm->, <elm->varaible n</elm-></elm2->;
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><even-elm-><elm->varaible 0</elm->, <elm->...</elm->, <elm->varaible n</elm-></even-elm->;
         </div>
     </left->
     <right->
@@ -4469,7 +4452,7 @@
     <left->
         <label-></label->
         <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
             <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
         </div>
     </left->
@@ -4718,10 +4701,10 @@
     <left->
         <label-></label->
         <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
-            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) { <elm->...</elm-> }
-            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<elm2-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></elm2->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
+            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
+            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
+            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
         </div>
     </left->
     <right->
@@ -6250,7 +6233,7 @@
             <td><b-br-></b-br-></td>
             <td><code>&lt;</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm->module name</elm-></td>
+            <td><wrd->module name</wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>&gt;</code></td>
             <td><b-lbc-></b-lbc-></td>
@@ -6278,23 +6261,23 @@
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>"</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm->path/to/module</elm-></td>
+            <td><wrd->path/to/module</wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>"</code></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>as</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
             <td><code>import</code></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+            <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>as</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><span><elm->name</elm-></elm-></td>
+            <td><span><wrd->name</wrd-></wrd-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>,</code></td>
@@ -6367,11 +6350,11 @@
             <td><b-lr-></b-lr-></td>
             <td><code>export</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+            <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>as</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>,</code></td>
@@ -6527,7 +6510,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>namespace</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>{</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
@@ -6602,7 +6585,7 @@
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
             <td><code>enum</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>:</code></td>
             <td><b-lr-></b-lr-></td>
@@ -6656,7 +6639,7 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>=</code></td>
             <td><b-lr-></b-lr-></td>
@@ -6720,7 +6703,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>struct</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
      </table>
@@ -6769,7 +6752,7 @@
             <td><b-lr-></b-lr-></td>
             <td><typ->type</typ-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>,</code></td>
             <td><b-lbc-></b-lbc-></td>
@@ -6848,7 +6831,7 @@
             <td><b-lr-></b-lr-></td>
             <td><typ->return type</typ-></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>(</code></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-br-></b-br-></td>
@@ -6879,7 +6862,7 @@
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span><span class="hidden">&nbsp;**</span></elm-></td>
+            <td><wrd-><span>name</span><span class="hidden">&nbsp;**</span></wrd-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -6952,7 +6935,7 @@
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><sgr->const</sgr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>=</code></td>
             <td><b-lr-></b-lr-></td>
@@ -7039,7 +7022,7 @@
             <td><b-lr-></b-lr-></td>
             <td><typ->type</typ-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><elm->name</elm-></td>
+            <td><wrd->name</wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>=</code></td>
             <td><b-lr-></b-lr-></td>
@@ -7088,11 +7071,11 @@
             <td><b-lr-></b-lr-></td>
             <td><code>alias</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>=</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>symbol<sup>path</sup></span></elm-></td>
+            <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>;</code></td>
             <td><b-lr-></b-lr-></td>
@@ -7235,7 +7218,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>&lt;</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>,</code></td>
             <td><b-lbc-></b-lbc-></td>
@@ -7534,7 +7517,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>(</code></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>in</code></td>
             <td><b-lr-></b-lr-></td>
@@ -7563,7 +7546,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>as</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><span>name</span></elm-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-ltc-></b-ltc-></td>
             <td></td>
             <td></td>
@@ -8077,7 +8060,7 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><elm->literal token</elm-></td>
+            <td><wrd->literal token</wrd-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -8117,12 +8100,21 @@
     <label2- class="stx" id="syntax--expression-variable"><a href="#variables">Variables</a></label2->
     <table class="stx">
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><elm->parent scope name<span class="hidden">&nbsp;*</span></elm-></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+            <td><wrd->parent scope name<span class="hidden">&nbsp;*</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>.</code></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><elm->name</elm-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-trc-></b-trc-></td>
+            <td><wrd->name</wrd-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -8161,7 +8153,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>$</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><elm->decimal digit [0-9]</elm-></td>
+            <td><wrd->decimal digit [0-9]</wrd-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -8193,7 +8185,7 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><elm->name</elm-></td>
+            <td><wrd->name</wrd-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -8233,11 +8225,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><elm->parent scope name<span class="hidden">&nbsp;*</span></elm-></td>
+            <td><wrd->parent scope name<span class="hidden">&nbsp;*</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>.</code></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><elm->name</elm-></td>
+            <td><wrd->name</wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>(</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
@@ -8291,17 +8283,15 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
-            <td><elm->name<span class="hidden">&nbsp**</span></elm-></td>
+            <td><b-brc-></b-brc-><b-lr-></b-lr-></td>
+            <td><wrd->name<span class="hidden">&nbsp**</span></wrd-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><elm->parent scope name<span class="hidden">&nbsp;*</span></elm-></td>
+            <td><wrd->parent scope name<span class="hidden">&nbsp;*</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>.</code></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-><b-trc-></b-trc-><b-lbc-></b-lbc-></td>
             <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
             <td><b-tb-></b-tb-><b-bt-></b-bt-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-></td>
@@ -8312,7 +8302,6 @@
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
-            <td><b-tr-></b-tr-></td>
             <td><exp->argument<span class="hidden">&nbsp**</span></exp-></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
@@ -8322,7 +8311,6 @@
         ** At least one name and one argument
     </syntax-note->
 </syntax2->
-<!-- FIXME namespaces before every name of the operator? -->
 
 
 
@@ -8407,7 +8395,7 @@
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><elm->name<sup>id</sup></elm-></td>
+            <td><wrd->name<sup>id</sup></wrd-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -8421,14 +8409,14 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><elm-><t->uint<sup>r</sup></t-></elm-></td>
+            <td><wrd-><t->uint<sup>r</sup></t-></wrd-></td>
             <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+            <td><wrd-><t->T<sup>type</sup></t-></wrd-></td>
             <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
             <td><code>[</code></td>
             <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
@@ -8466,7 +8454,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>(</code></td>
             <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+            <td><wrd-><t->T<sup>type</sup></t-></wrd-></td>
             <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
             <td><code>,</code></td>
             <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
@@ -8487,7 +8475,7 @@
         <table>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><elm->name<sup>id</sup></elm-></td>
+                <td><wrd->name<sup>id</sup></wrd-></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
         </table>
@@ -8508,11 +8496,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><elm->name<sup>id</sup></elm-></td>
+            <td><wrd->name<sup>id</sup></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>&lt;</code></td>
             <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+            <td><wrd-><t->T<sup>type</sup></t-></wrd-></td>
             <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
             <td><code>,</code></td>
             <td><loop-start-></loop-start-><branch-end-></branch-end-></td>

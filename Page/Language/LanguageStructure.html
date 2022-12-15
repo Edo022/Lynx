@@ -213,7 +213,7 @@
         </li>
         <li>
             <span><a href="#auto-specifier"><code><t->auto</t-></code></a></span>
-            <span>Can be used in place of the <a href="#types">type</a> of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> to declare it using the <a href="#types">type</a> of its initializer <a href="#values">value</a>.</span>
+            <span>Can be used in place of the <a href="#types">type</a> in the declaration of a <a href="#variables">variable</a>, a <a href="#routine-parameters">routine parameter</a> or a <a href="#routines">routine</a> to automatically use the best type based on its initializer <a href="#values">value</a> or return value.</span>
         </li>
         <li>
             <span><a href="#typeof-specifier"><code><t->typeof</t-></code></a></span>
@@ -510,10 +510,10 @@
         <th class="nowrap medium"><a href="#language-structure.directives">Directive</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#import-directive"><code><w->import</w-></code></a> directive</elm2->
-                <elm2-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm2->
-                <elm2-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</elm2->
-                <elm2-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</elm2->
+                <even-elm-><a href="#import-directive"><code><w->import</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#export-directive"><code><w->export</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</even-elm->
             </div>
         </div></td>
     </tr>
@@ -521,21 +521,21 @@
         <th class="nowrap medium"><a href="#language-structure.declarations">Declaration</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#enums"><code><w->enum</w-></code></a> declaration</elm2->
-                <elm2-><a href="#enums"><code><w->enum</w-></code></a> element declaration</elm2->
-                <elm2-><a href="#structs"><code><w->struct</w-></code></a> declaration</elm2->
-                <elm2-><a href="#structs"><code><w->struct</w-></code></a> member declaration</elm2->
+                <even-elm-><a href="#enums"><code><w->enum</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#enums"><code><w->enum</w-></code></a> element declaration</even-elm->
+                <even-elm-><a href="#structs"><code><w->struct</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#structs"><code><w->struct</w-></code></a> member declaration</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#functions">Function</a> declaration</elm2->
-                <elm2-><a href="#operators">Operator</a> declaration</elm2->
-                <elm2-><a href="#routine-parameters">Routine parameter</a></elm2->
+                <even-elm-><a href="#functions">Function</a> declaration</even-elm->
+                <even-elm-><a href="#operators">Operator</a> declaration</even-elm->
+                <even-elm-><a href="#routine-parameters">Routine parameter</a></even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</elm2->
-                <elm2-><a href="#templates"><code><w->template</w-></code></a> declaration</elm2->
-                <elm2-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</elm2->
-                <elm2-><a href="#variables">Variable</a> declaration</elm2->
+                <even-elm-><a href="#namespaces"><code><w->namespace</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#templates"><code><w->template</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</even-elm->
+                <even-elm-><a href="#variables">Variable</a> declaration</even-elm->
             </div>
         </div></td>
     </tr>
@@ -543,28 +543,28 @@
         <th class="nowrap medium"><a href="#language-structure.statements">Statement</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#if-statement"><code><w->if</w-></code></a> statement</elm2->
-                <elm2-><a href="#match-statement"><code><w->match</w-></code></a> statement</elm2->
+                <even-elm-><a href="#if-statement"><code><w->if</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#match-statement"><code><w->match</w-></code></a> statement</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#while-loops"><code><w->while</w-></code></a> loop</elm2->
-                <elm2-><a href="#for-loops"><code><w->for</w-></code></a> loop</elm2->
-                <elm2-><a href="#once-statement"><code><w->once</w-></code></a> statement</elm2->
-                <elm2-><a href="#then-statement"><code><w->then</w-></code></a> statement</elm2->
-                <elm2-><a href="#break-statement"><code><w->break</w-></code></a> statement</elm2->
-                <elm2-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</elm2->
+                <even-elm-><a href="#while-loops"><code><w->while</w-></code></a> loop</even-elm->
+                <even-elm-><a href="#for-loops"><code><w->for</w-></code></a> loop</even-elm->
+                <even-elm-><a href="#once-statement"><code><w->once</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#then-statement"><code><w->then</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#break-statement"><code><w->break</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#return-statement"><code><w->return</w-></code></a> statement</elm2->
-                <elm2-><a href="#defer-statement"><code><w->defer</w-></code></a> statement</elm2->
+                <even-elm-><a href="#return-statement"><code><w->return</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#defer-statement"><code><w->defer</w-></code></a> statement</even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#else-statement"><code><w->else</w-></code></a> statement</elm2->
-                <elm2-><a href="#expressions">Expression statement</a></elm2->
-                <elm2-><a href="#unnamed-scopes">Unnamed scope</a></elm2->
-                <elm2-><a href="#empty-statement">Empty statement</a></elm2->
-                <elm2-><a href="#inline-glsl">Inline GLSL</a></elm2->
-                <elm2-><a href="#inline-cpp">Inline C++</a></elm2->
+                <even-elm-><a href="#else-statement"><code><w->else</w-></code></a> statement</even-elm->
+                <even-elm-><a href="#expressions">Expression statement</a></even-elm->
+                <even-elm-><a href="#unnamed-scopes">Unnamed scope</a></even-elm->
+                <even-elm-><a href="#empty-statement">Empty statement</a></even-elm->
+                <even-elm-><a href="#inline-glsl">Inline GLSL</a></even-elm->
+                <even-elm-><a href="#inline-cpp">Inline C++</a></even-elm->
             </div>
         </div></td>
     </tr>
@@ -572,17 +572,17 @@
         <th class="nowrap medium"><a href="#language-structure.expressions">Expression</a></th>
         <td><div class="split-td-outer">
             <div class="split-td">
-                <elm2-><a href="#literals">Literal</a></elm2->
-                <elm2-><a href="#try-expression"><code><w->try</w-></code> expression</a></elm2->
+                <even-elm-><a href="#literals">Literal</a></even-elm->
+                <even-elm-><a href="#try-expression"><code><w->try</w-></code> expression</a></even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#variables">Variable</a></elm2->
-                <elm2-><a href="#temporary-variables">Temporary variable</a></elm2->
-                <elm2-><a href="#routine-parameters">Routine parameter</a></elm2->
+                <even-elm-><a href="#variables">Variable</a></even-elm->
+                <even-elm-><a href="#temporary-variables">Temporary variable</a></even-elm->
+                <even-elm-><a href="#routine-parameters">Routine parameter</a></even-elm->
             </div>
             <div class="split-td">
-                <elm2-><a href="#function-calls">Function call</a></elm2->
-                <elm2-><a href="#operator-calls">Operator call</a></elm2->
+                <even-elm-><a href="#function-calls">Function call</a></even-elm->
+                <even-elm-><a href="#operator-calls">Operator call</a></even-elm->
             </div>
         </div></td>
     </tr>
@@ -1082,32 +1082,6 @@
     The <code>module</code> identifier is used to reference the <a href="#scopes">scope</a> of the current <a href="#modules">module</a>.<br>
     A path that starts from the module <a href="#scopes">scope</a> of the current <a href="#modules">module</a> or any of the <a href="#import-directive">imported</a> ones is called an absolute path.
 </p>
-<syntax2->
-    <label2->Syntax</label2->
-    <table>
-        <tr>
-            <td></td>
-            <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-        <tr>
-            <td><b-br-></b-br-><b-lr-></b-lr-></td>
-            <td><a href="#local-names"><elm- style="color: var(--fg-text)">name</elm-></a></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>.</code></td>
-            <td><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-        </tr>
-    </table>
-</syntax2->
 <example2->
     <label2->Example</label2->
     <div>

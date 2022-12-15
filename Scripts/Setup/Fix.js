@@ -10,6 +10,7 @@ function capitalize(string) {
 
 var setup_fix = {
     // Add 0 width <sup> and <sub> elements to <elm-> tags as they usually have a <sup> tag inside and it screws up the vertical alignment
+    //FIXME REMOVE. no more sup or sub inside elements
     fix_elm_height : function(){
         let c = document.querySelectorAll('elm-');
         for(let i = 0; i < c.length; i++){
