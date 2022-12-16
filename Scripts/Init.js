@@ -1,7 +1,6 @@
 
 function move_to_view(){
-    let header = window.location.href;
-    window.location.replace(header);
+    document.getElementById(location.hash.slice(1)).scrollIntoView(true);
 }
 
 

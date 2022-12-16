@@ -51,6 +51,16 @@ var setup_index = {
 
 
 
+    on_location_changed : function(e) {
+        console.log(location.hash);
+    },
+
+
+
+
+
+
+
     check_active : function(active_id) {
         return !(Object.is(active_id, undefined) || active_id == null || !active_id.length || document.getElementById(active_id) == null);
     },
@@ -87,5 +97,8 @@ var setup_index = {
         // Setup scroll listener
         let right = document.querySelector('right-');
         right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
+
+        // Setup location change listener
+        window.addEventListener("beforeunload", setup_index.on_location_changed);
     }
 }

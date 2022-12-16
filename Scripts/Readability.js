@@ -94,7 +94,8 @@ var readability = {
             link.onload = view;
             link.setAttribute("href", linkStr);
             link.id = 'readability-css';
-            document.querySelector("head").appendChild(link);
+            let h = document.getElementsByTagName("head")[0];
+            h.appendChild(link, h);
         }
         else {
             e.setAttribute('href', linkStr)
