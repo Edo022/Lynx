@@ -1,0 +1,65 @@
+<!--------------------------------------------------------------------->
+<!-- Comments                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="comments"></h1>
+<p>
+    <b>Comments</b> are <b>portions of code</b> that are <b>intentionally ignored</b>.<br>
+    They can be used to provide informations or temporarily exclude lines of code.<br>
+    Comments are allowed to contain any sequence of unicode characters of any length.<br>
+</p>
+<p>
+    Single line comments start with <code>//</code> and end at the first newline character.<br>
+    Multiline comments start with <code>/*</code> and end with <code>*/</code>
+</p>
+<p>
+    Comments cannot be nested.
+    Not closing a comment is not an error.
+</p>
+
+<syntax2->
+    <label2->Syntax</label2->
+    <table>
+        <tr>
+            <td><b-br-></b-br-></td>
+            <td><code>//</code></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td><b-br-></b-br-></td>
+            <td><code><nl-></nl-></code></td>
+            <td><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td><b-tr-t-></b-tr-t-><b-br-b-></b-br-b-></td>
+            <td><elm->comment string</elm-></td>
+            <td><b-lr-t-></b-lr-t-><b-lr-b-></b-lr-b-><b-ltct-></b-ltct-><b-lbcb-></b-lbcb-></td>
+            <td><code><eof-></eof-></code></td>
+            <td><b-tr-></b-tr-><b-br-></b-br-><b-lr-></b-lr-></td>
+        </tr>
+        <tr>
+            <td><b-tr-></b-tr-></td>
+            <td><code>/*</code></td>
+            <td><b-ltc-></b-ltc-></td>
+            <td></td>
+            <td><b-tr-></b-tr-></td>
+            <td><code>*/</code></td>
+            <td><b-ltc-></b-ltc-></td>
+        </tr>
+    </table>
+</syntax2->
+<example2->
+    <label2->Example 1</label2->
+    <div>
+        <c->// Single line comment</c->
+
+        <c->/* Multi</c->
+        <c->line</c->
+        <c->comment */</c->
+    </div>
+    <label2->Example 2</label2->
+    <div>
+        <c->/* Multi line /* Another comment */ comment */</c->
+        <c->// ^ Ok</c->                          <ce->// ^ Error, unexpected token "comment"</ce->
+    </div>
+</example2->

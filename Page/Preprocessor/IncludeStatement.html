@@ -1,0 +1,70 @@
+<!--------------------------------------------------------------------->
+<!-- Include statement                                               -->
+<!--------------------------------------------------------------------->
+<h1 id="include-statement"></h1>
+<p>
+    The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
+    Any existent file can be included, regardless of its contents or extension.<br>
+    The path of the included file must be enclosed in <code>"</code> <code>"</code> characters.<br>
+    <a href="#standard-modules">Standard modules</a> are included using the <code>&lt;</code> <code>&gt;</code> characters.<br>
+    The <a href="#core-module">core module</a> cannot be included.
+</p>
+<p>
+    Absolute and relative paths are both supported.<br>
+    <code>~</code> is not recognized as the home directory but as the literal character <code>~</code>.<br>
+</p>
+<p>
+    The preprocessor supports the <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards of Glob patterns.<br>
+    Glob patterns that don't match any file are allowed and have no effect.<br>
+
+</p>
+<p>
+    <code>*</code>, <code>/</code>, <code>\</code> and <code>.</code> can be escaped by preceeding them with a <code>\</code> character.<br>
+    Unknown escape sequences generate a preprocessing error.<br> //TODO LINK
+    File paths can contain any character, including <code>"</code> and <code>&lt;</code> <code>&gt;</code>.
+</p>
+<syntax2->
+    <label2->Syntax</label2->
+    <table>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><code>#include</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td><code><space-></space-></code></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td><code>"</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td class="center"><elm->path/to/file</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><code>"</code></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-tr-></b-tr-></td>
+            <td><code>&lt;</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td class="center"><elm->module name</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><code>&gt;</code></td>
+            <td><b-ltc-></b-ltc-></td>
+        </tr>
+    </table>
+</syntax2->
+<example2->
+    <label2->Example</label2->
+    <div>
+        <k->#include</k-> <s->"/home/Photon/Lux/file.ilsh"</s-> <c->// Ok, absolute path</c->
+        <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
+        <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
+        <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
+        <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
+
+        <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
+        <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
+        <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
+    </div>
+</example2->

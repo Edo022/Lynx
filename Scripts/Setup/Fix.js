@@ -9,21 +9,6 @@ function capitalize(string) {
 
 
 var setup_fix = {
-    // Add 0 width <sup> and <sub> elements to <elm-> tags as they usually have a <sup> tag inside and it screws up the vertical alignment
-    //FIXME REMOVE. no more sup or sub inside elements
-    fix_elm_height : function(){
-        let c = document.querySelectorAll('elm-');
-        for(let i = 0; i < c.length; i++){
-            c[i].innerHTML +=
-                '<sup class="nobefore noafter" style="display: inline; margin-left: -100%;"></sup>' +
-                '<sub class="nobefore noafter" style="display: inline; margin-left: 100%;"></sub>'
-            ;
-        }
-    },
-
-
-
-
     fix_split_td_height : function(){
         let c = document.querySelectorAll('.split-td-outer');
         for(let i = 0; i < c.length; ++i) {
@@ -44,7 +29,6 @@ var setup_fix = {
 
 
     init : function() {
-        setup_fix.fix_elm_height();
         setup_fix.fix_split_td_height();
     }
 }

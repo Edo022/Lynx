@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+
+<html>
+<head>
+    <!-- HTML boilerplate -->
+    <title>Umbra | Lux</title>
+    <meta charset="UTF-8">
+    <meta name="author" content="Snek" />
+    <meta name="description" content="Umbra and Lux languages specification"/>
+    <link rel="icon" href="Logos/Lux.png" type="image/png">
+
+    <!-- Style -->
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no"/>
+    <link rel="stylesheet" type="text/css" href="Styles/Init.css" media="screen">
+</head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body onresize="ui_slider._onresize()">
+    <!--------------------------------------------------------------------->
+    <!-- Fix                                                             -->
+    <!--------------------------------------------------------------------->
+    <div id="main-mask" class="main-mask"></div>
+    <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
+    <!-- !                           ^ not a random value -->
+
+
+    <!--------------------------------------------------------------------->
+    <!-- Index                                                           -->
+    <!--------------------------------------------------------------------->
+    <left- class="hide-scrollbar" id="main-left">
+        #include "./Page/Index.html"
+    </left->
+
+    <right- id="main-right" class="hide-scrollbar"><div style="overflow: hidden; display: flex; flex-direction: column; max-width: 100%;">
+        <!--------------------------------------------------------------------->
+        <!-- Logo                                                            -->
+        <!--------------------------------------------------------------------->
+        <logo-top-></logo-top->
+        <logo- style="background-image: url('Logos/Photon.png');"></logo->
+
+        <main-scroll->
+            #include "./Page/Overview/main.html"
+            #include "./Page/Preprocessor/main.html"
+            #include "./Page/Language/main.html"
+
+
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Compilation                                                     -->
+            <!--------------------------------------------------------------------->
+            <h1 id="compilation"></h1>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Modules                                                         -->
+            <!--------------------------------------------------------------------->
+            <h1 id="modules"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Compilation phases and error types                              -->
+            <!--------------------------------------------------------------------->
+            <h1 id="compilation-phases-and-error-types"></h1>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Global initialization order                                     -->
+            <!--------------------------------------------------------------------->
+            <h1 id="global-initialization-order"></h1>
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Runtime performance                                             -->
+            <!--------------------------------------------------------------------->
+            <h1 id="runtime-performance"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Branching performance                                           -->
+            <!--------------------------------------------------------------------->
+            <h1 id="branching-performance"></h1>
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Value precomputation                                            -->
+            <!--------------------------------------------------------------------->
+            <h1 id="value-precomputation"></h1>
+
+
+
+
+
+
+
+
+            #include "./Page/CoreModule/main.html"
+            #include "./Page/StandardModules/main.html"
+            #include "./Page/QuickReferenceTabs/main.html"
+
+
+
+
+            <!--
+            //TODO
+            //module.x module.y module.z
+            module.pos.x
+            module.pos.y
+            module.pos.z
+            ^ coordinates in current workspace
+
+            sequence function //TODO
+            sequence(start, end, step)
+            -->
+
+
+
+
+
+            <!--------------------------------------------------------------------->
+            <!-- Complete examples                                               -->
+            <!--------------------------------------------------------------------->
+            <h1 id="complete-examples"></h1>
+
+        </main-scroll->
+    </div></right->
+
+
+    <!-- Page format -->
+    <script src="Scripts/Setup/Fix.js"></script>
+    <script src="Scripts/Setup/Syntax.js"></script>
+    <script src="Scripts/Setup/Index.js"></script>
+    <script src="Scripts/Setup/CopySyntax.js"></script>
+    <script src="Scripts/Init.js"></script>
+
+    <!-- Functionalities -->
+    <script src="Scripts/UI/Slider.js"></script>
+    <script src="Scripts/UI/CopyCode.js"></script>
+
+    <!-- Custom -->
+    <script src="Scripts/Custom/SummaryList.js"></script>
+
+    <!-- Other -->
+    <script src="Scripts/Readability.js"></script>
+
+    <script>
+        window.addEventListener('popstate', move_to_view);
+        document.addEventListener('DOMContentLoaded', init);
+        window.addEventListener('beforeunload', unload);
+        //<!--! view() called after readability css load -->
+        //TODO implement counter to manage more dynamic css loadings
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+<!--
+    TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+    TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
+-->
+
+<!--
+    TODO [[likely]] [[unlikely]]
+-->
