@@ -139,8 +139,8 @@ body {
         body > left- > index- {
             display: block;
 
-            min-width: 100%;
-            max-width: 100%;
+            min-width: calc(100% - var(--main-padding-l));
+            max-width: calc(100% - var(--main-padding-l));
         }
 
         /* Inedx elements */
@@ -149,8 +149,10 @@ body {
             background-color: var(--bg);
             white-space: nowrap;
             transition: background-color 0.2s cubic-bezier(.17,.84,.44,1);
+            transition: border-color     0.2s cubic-bezier(.17,.84,.44,1);
 
             border-radius: 10px;
+            border: 2px solid transparent;
             /**/width: 100%;
             /* max-width: Set from JS */}
 

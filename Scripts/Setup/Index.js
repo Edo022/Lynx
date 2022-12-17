@@ -51,19 +51,42 @@ var setup_index = {
 
 
 
-    on_location_changed : function(e) {
-        console.log(location.hash);
+
+
+
+
+
+    is_id_defined : function(id) {
+        return !(Object.is(id, undefined) || id == null || !id.length || document.getElementById(id) == null);
     },
 
 
 
 
-
-
-
-    check_active : function(active_id) {
-        return !(Object.is(active_id, undefined) || active_id == null || !active_id.length || document.getElementById(active_id) == null);
+    on_location_changed : function() {
+        // Reset the old element and highlight the new one
+        let old = window.sessionStorage.getItem('index.selected_id');
+        let new_ = `index--${ location.hash.slice(1) }`;
+        if(setup_index.is_id_defined(old)) {
+            document.getElementById(old).parentElement.style.backgroundColor = 'var(--bg)';
+        }
+        window.sessionStorage.setItem('index.selected_id', new_);
+        document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';
     },
+
+
+    on_scroll_changed : function(h, i) {
+        // Reset the old element and highlight the new one
+        let old = window.sessionStorage.getItem('index.active_id');
+        let new_ = `index--${ h[Math.max(i - 1, 0)].id }`;
+        if(setup_index.is_id_defined(old)) {
+            document.getElementById(old).parentElement.style.borderColor = 'transparent';
+        }
+        window.sessionStorage.setItem('index.active_id', new_)
+        document.getElementById(new_).parentElement.style.borderColor = 'var(--bg-index-active)';
+    },
+
+
 
 
     check_scroll : function(right){
@@ -73,16 +96,7 @@ var setup_index = {
             // Check if element is in view
             let view = right.getBoundingClientRect();
             if(h[i].getBoundingClientRect().top >= view.top + parseInt(getComputedStyle(document.body).getPropertyValue('--sep-4'))) {
-
-                // Reset the old element and highlight the new one
-                let old = window.sessionStorage.getItem('active_index');
-                let new_ = `index--${ h[Math.max(i - 1, 0)].id }`;
-                if(setup_index.check_active(old)) {
-                    document.getElementById(old).parentElement.style.removeProperty('background-color');
-                }
-                window.sessionStorage.setItem('active_index', new_)
-                document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';
-
+                setup_index.on_scroll_changed(h, i);
                 return;
             }
         }
@@ -93,12 +107,15 @@ var setup_index = {
 
     init : function(){
         setup_index.format();
+        setup_index.on_location_changed();
+
 
         // Setup scroll listener
         let right = document.querySelector('right-');
         right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
 
+
         // Setup location change listener
-        window.addEventListener("beforeunload", setup_index.on_location_changed);
+        window.addEventListener('hashchange', function(e){ setup_index.on_location_changed(); });
     }
 }
