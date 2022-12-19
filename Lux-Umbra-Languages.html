@@ -325,12 +325,12 @@
     Comments are allowed to contain any sequence of unicode characters of any length.<br>
 </p>
 <p>
-    Single line comments start with <code>//</code> and end at the first newline character.<br>
-    Multiline comments start with <code>/*</code> and end with <code>*/</code>
+    Single line comments start with <code>//</code> and end at the next newline character (\n).<br>
+    Multiline comments start with <code>/*</code> and end with <code>*/</code>.<br>
 </p>
 <p>
     Comments cannot be nested.
-    Not closing a comment is not an error.
+    Not closing a comment is allowed.
 </p>
 
 <syntax2->
@@ -350,9 +350,9 @@
             <td></td>
             <td><b-tr-t-></b-tr-t-><b-br-b-></b-br-b-></td>
             <td><elm->comment string</elm-></td>
-            <td><b-lr-t-></b-lr-t-><b-lr-b-></b-lr-b-><b-ltct-></b-ltct-><b-lbcb-></b-lbcb-></td>
-            <td><code><eof-></eof-></code></td>
-            <td><b-tr-></b-tr-><b-br-></b-br-><b-lr-></b-lr-></td>
+            <td><b-ltct-></b-ltct-><b-lbcb-></b-lbcb-></td>
+            <td></td>
+            <td><b-tr-></b-tr-><b-br-></b-br-></td>
         </tr>
         <tr>
             <td><b-tr-></b-tr-></td>
@@ -373,11 +373,13 @@
         <c->/* Multi</c->
         <c->line</c->
         <c->comment */</c->
+
+        <c->/* Another multiline comment</c->
     </div>
     <label2->Example 2</label2->
     <div>
         <c->/* Multi line /* Another comment */ comment */</c->
-        <c->// ^ Ok</c->                          <ce->// ^ Error, unexpected token "comment"</ce->
+                                         <ce->// ^ Error, unexpected token "comment"</ce->
     </div>
 </example2->
 <!--------------------------------------------------------------------->
@@ -386,24 +388,27 @@
 <h1 id="include-statement"></h1>
 <p>
     The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
-    Any existent file can be included, regardless of its contents or extension.<br>
+    Any existent file can be included, regardless of its content or extension.<br>
     The path of the included file must be enclosed in <code>"</code> <code>"</code> characters.<br>
     <a href="#standard-modules">Standard modules</a> are included using the <code>&lt;</code> <code>&gt;</code> characters.<br>
     The <a href="#core-module">core module</a> cannot be included.
 </p>
 <p>
     Absolute and relative paths are both supported.<br>
+    Relative paths are relative to the file the include statement is used in and any specified include path.<br>
     <code>~</code> is not recognized as the home directory but as the literal character <code>~</code>.<br>
+    <code>/</code> identifies the root directory.<br>
+    <code>.</code> identifies the current directory, while <code>..</code> identifies the parent directory.
 </p>
 <p>
-    The preprocessor supports the <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards of Glob patterns.<br>
-    Glob patterns that don't match any file are allowed and have no effect.<br>
-
+    The preprocessor supports the <code>**</code> (any sequence of characters including <code>/</code>), </code><code>*</code> (any sequence of characters but <code>/</code>) and <code>?</code> (any character) wildcards of Glob patterns.<br>
+    Glob patterns that don't match any file are allowed and have no effect.
 </p>
 <p>
-    <code>*</code>, <code>/</code>, <code>\</code> and <code>.</code> can be escaped by preceeding them with a <code>\</code> character.<br>
-    Unknown escape sequences generate a preprocessing error.<br> //TODO LINK
-    File paths can contain any character, including <code>"</code> and <code>&lt;</code> <code>&gt;</code>.
+    Files cannot be named <code>.</code> or <code>..</code> and their name cannot contain the <code>/</code> character.<br>
+    Any other character is allowed, including <code>*</code>, <code>?</code>, <code>"</code>, <code>&lt;</code> <code>&gt;</code> and <code>&bsol;</code>.<br>
+    These characters can be escaped by preceding them with a single <code>&bsol;</code> character.<br>
+    Unknown escape sequences generate a preprocessing error. //TODO LINK
 </p>
 <syntax2->
     <label2->Syntax</label2->
@@ -439,15 +444,16 @@
 <example2->
     <label2->Example</label2->
     <div>
-        <k->#include</k-> <s->"/home/Photon/Lux/file.ilsh"</s-> <c->// Ok, absolute path</c->
-        <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
-        <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
-        <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
-        <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
+        <k->#include</k-> <s->"/home/Photon/Lux/file.lux"</s->      <c->// Ok, absolute path</c->
+        <k->#include</k-> <s->"./file.lux"</s->                     <c->// Ok, relative path</c->
+        <k->#include</k-> <s->":</s-><sr->&bsol;</sr-><s->&bsol; why is this a file name</s-><sr->&bsol;</sr-><s->?"</s->  <c->// Ok, relative path</c->
+        <k->#include</k-> <s->"*.lux"</s->                          <c->// Ok, includes any file with lux extension in any include path</c->
+        <k->#include</k-> <s->"**/*.lux"</s->                       <c->// Ok, includes any file with lux extension in any include path, recursively</c->
+        <k->#include</k-> <s->&lt;math&gt;</s->                           <c->// Ok, includes the standard module "math"</c->
 
-        <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
-        <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
-        <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
+        <c->//#include ./file.ilsh</c->                    <ce->// Error, "" or &lt;&gt; are required</ce->
+        <c->//#include "./non_existent_file"</c->          <ce->// Error, non-glob patterns must correspond to an existing file</ce->
+        <c->//#include ""</c->                             <ce->// Error, file name not specified</ce->
     </div>
 </example2->
 <!--------------------------------------------------------------------->
@@ -466,10 +472,11 @@
 <h1 id="line-continuation-token"></h1>
 <p>
     The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line <a href="#comments">comments</a>, preprocessor directives and multi character <a href="#syntactic-elements">tokens</a> to be written across multiple lines.<br>
-    It consists of a <code>\</code> immediatly followed by a newline character.
+    It consists of a <code>&bsol;</code> immediatly followed by a newline character.
 </p>
 <p>
-    Line continuation tokens can be used inside <a href="#comments">comments</a> or other preprocessor directives and cannot be nested.
+    Line continuation tokens can be used inside <a href="#comments">comments</a> or preprocessor directives but cannot be nested.<br>
+    Using a line continuation token as the last character of a file is allowed and has no effect.
 </p>
 
 <syntax2->
@@ -477,7 +484,7 @@
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>\</code></td>
+            <td><code>&bsol;</code></td>
             <td><b-lr-></b-lr-></td>
             <td><code><nl-></nl-></code></td>
             <td><b-lr-></b-lr-></td>
@@ -488,33 +495,35 @@
 <example2->
     <label2->Example 1</label2->
     <div>
-        <c->// single line comment</c-><sg->\</sg->
+        <c->// single line comment</c-><sg->&bsol;</sg->
         <c->on two lines</c->
 
-        <c->// #include "path/to/file"</c->
-        <k->#include</k-> <s->"pat</s-><sg->\</sg->
-        <s->h/to/file</s-><sg->\</sg->
-        <s->"</s->
+        <c->// #include &lt;math&gt;</c->
+        <k->#include</k-> <s->&lt;ma</s-><sg->&bsol;</sg->
+        <s->th</s-><sg->&bsol;</sg->
+        <s->&gt;</s->
 
         <c->// void function() {</c->
         <c->//   uint var = 0, b = 0;</c->
         <c->//   var += b;</c->
         <c->// }</c->
-        <t->vo</t-><sg->\</sg->
-        <t->id</t-> <f->fun</f-><sg->\</sg->
+        <t->vo</t-><sg->&bsol;</sg->
+        <t->id</t-> <f->fun</f-><sg->&bsol;</sg->
         <f->ction</f->() {
-        <t->uint</t-> va<sg->\</sg->
+        <t->uint</t-> va<sg->&bsol;</sg->
         r = <k->0</k->, b = <k->0</k->;
-        v<sg->\</sg->
-        ar +<sg->\</sg->
+        v<sg->&bsol;</sg->
+        ar +<sg->&bsol;</sg->
+        <sg->&bsol;</sg->
         = <k->b</k->;
         }
     </div>
     <label2->Example 2</label2->
     <div>
         <ce->// Error, unexpected token "\"</ce->
-        <c->//void ma\</c->
-        <c->//in(){}</c->
+        <t->void</t-> ma&bsol;<sg->&bsol;</sg->
+
+        in(){}
         <ce->// Error,  unexpected token "in"</ce->
     </div>
 </example2->
@@ -569,8 +578,8 @@
     <code><space-></space-></code> <code><tab-></tab-></code> <code><nl-></nl-></code>
 </p>
 <p>
-    String <a href="#literals">literals</a> can contain any unicode character. They are converted to allowed characters during the compilation phase.<br> //TODO
-    Carriage return characters are ignored.
+    String <a href="#literals">literals</a> can contain any unicode character. They are converted to allowed characters during the compilation phase.//TODO<br>
+    Carriage return characters (\r) are ignored.
 </p>
 
 
@@ -593,15 +602,14 @@
 <!--------------------------------------------------------------------->
 <h1 id="syntactic-elements"></h1>
 <p>
-    <b>Syntactic elements</b>, also known as Tokens, are the fundamental elements of the source code of any program.<br>
+    <b>Syntactic elements</b>, or Tokens, are the fundamental elements of the source code of any program.<br>
     They are <b>sequences</b> of one or more <a href="#character-set">allowed <b>characters</b></a> that follow specific patterns.<br>
     One or more syntactic elements create a <a href="#semantic-elements">semantic element</a>.
 </p>
 <p>
     A syntactic element ends when a character that isn't allowed in its pattern is encountered.
     Syntactic elements can also be separated by any number of <code><tab-></tab-></code>, <code><space-></space-></code> and <code><nl-></nl-></code> characters or <a href="#comments">comments</a>.<br>
-    Those who that don't follow any of the specified patterns generate a syntactic error. //TODO LINK
-    //TODO sizeof
+    Sequences of characters that don't follow any of the recognizes patterns generate a syntactic error. //TODO LINK
 </p>
 <p>
     Syntactic elements are case sensitive, with the only exception of hexadecimal <a href="#literals">literals</a>.<br>
@@ -755,26 +763,26 @@
         </li>
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
-            <span>Exports symbols from the <a href="#modules">module</a>.</span>
+            <span>Exports symbols from the current <a href="#modules">module</a>.</span>
         </li>
     </ul><br>
     <li>Flow control keywords</li>
     <ul class="summary-list">
         <li>
             <span><a href="#if-statement"><code><w->if</w-></code></a></span>
-            <span>Changes execution path based on one <a href="#bool-type">condition</a>.</span>
+            <span>Used in the if selection statement.</span>
         </li>
         <li>
             <span><a href="#match-statement"><code><w->match</w-></code></a></span>
-            <span>Changes execution path based on the value of an <a href="#expressions">expression</a>.</span>
+            <span>Used in the match selection statement.</span>
         </li>
         <li>
             <span><a href="#for-loops"><code><w->for</w-></code></a></span>
-            <span>Executes a <a href="#statements">statement</a> an arbitrary number of times.</span>
+            <span>Used in the for loops.</span>
         </li>
         <li>
             <span><a href="#while-loops"><code><w->while</w-></code></a></span>
-            <span>Executes a <a href="#statements">statement</a> until its <a href="#boolean-type">condition</a> evaluates to <code><k->false</k-></code>.</span>
+            <span>Used in the while loops.</span>
         </li>
         <li>
             <span><a href="#while-loops"><code><w->do</w-></code></a></span>
@@ -782,23 +790,23 @@
         </li>
         <li>
             <span><a href="#continue-and-break-statements"><code><w->continue</w-></code></a></span>
-            <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
+            <span>Used to skip iterations.</span>
         </li>
         <li>
             <span><a href="#continue-and-break-statements"><code><w->break</w-></code></a></span>
-            <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
+            <span>Used to skip all the remaining iteration of one or more loops.</span>
         </li>
         <li>
             <span><a href="#once-statement"><code><w->once</w-></code></a></span>
-            <span>Executes a <a href="#statements">statement</a> only during the first iteration of the innermost enclosing <a href="#iteration">loop</a>.</span>
+            <span>Used to execute a statement during the first iteration.</span>
         </li>
         <li>
             <span><a href="#then-statement"><code><w->then</w-></code></a></span>
-            <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> executed at least one iteration and didn't stop through a <code><w->break</w-></code> statement.</span>
+            <span>Used to execute a statement based on the outcome of the preceding loop or if.</span>
         </li>
         <li>
             <span><a href="#else-statement"><code><w->else</w-></code></a></span>
-            <span>Executes a <a href="#statements">statement</a> if the <a href="#bool-type">condition</a> of the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code></a> statement evaluates to <code><k->false</k-></code>.</span>
+            <span>Used to execute a statement based on the outcome of the preceding loop or if.</span>
         </li>
         <li>
             <span><a href="#return-statement"><code><w->return</w-></code></a></span>
@@ -889,7 +897,7 @@
             </span>
         </li>
         <li>
-            <span><a href="#abbreviated-template-syntax"><code>?</code></a></span>
+            <span><a href="#abbreviated-template-syntax"><sgr->?</sgr-></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
                 <span class="meta-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
@@ -964,7 +972,7 @@
 <!--------------------------------------------------------------------->
 <!-- Literals                                                        -->
 <!--------------------------------------------------------------------->
-<h1 id="literal-tokens"></h1> //TODO RENAME
+<h1 id="literal-tokens"></h1>
 <p>
     <b>Literals</b> are a <b>special type</b> of <a href="#syntactic-elements"><b>syntactic element</b></a>, as they can contain both alphanumeric characters and <code>.</code>.<br>
     Their usage and syntax are explained in <a href="#literals">Literals</a>.
@@ -1170,11 +1178,14 @@
             <span><a href="#name-resolution">Symbol</a> path</span>
             <span>References a <a href="#symbols">symbol</a></span>
         </li>
+        <li>
+            <span><a href="#types">Type</a></span>
+            <span>Identifies a type. Part of declarations or <a href="#expressions">expressions</a></span>
+        </li>
     </ul>
 </ul>
 
 
-<!-- TODO build statement -->
 <!-- TODO auto scoping for enum values -->
 
 
@@ -1188,7 +1199,6 @@
 <p>
     <b>Directives</b> are instructions that <b>modify</b> the <a href="#modules">module</a> on a <b>semantic</b> level.<br>
     They are used to define which <a href="#name-resolution">symbols</a> are <a href="#import-directive">imported</a> and/or <a href="#export-directive">exported</a> and to programmatically generate code.
-    //TODO build directive
     //TODO shader directive
 </p>
 <ul>
@@ -1211,7 +1221,7 @@
     <ul class="summary-list">
         <li>
             <span><elm-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</elm-></span>
-            <span>Generates code in the corresponding language by compiling and running Umbra code during the compilation phase.</span>
+            <span>Generates code in the corresponding language by compiling and running Umbra code before the compilation phase. //TODO other languages</span>
         </li>
     </ul>
 </ul>
@@ -1260,7 +1270,7 @@
         </li>
         <li>
             <span><elm-><a href="#routine-parameters">Routine parameter</a></elm-></span>
-            <span>Defines the input values of a <a href="routines">routine</a></span>
+            <span>Defines an input values for a <a href="routines">routine</a>.</span>
         </li>
     </ul><br>
     <li>Other</li>
@@ -1271,7 +1281,7 @@
         </li>
         <li>
             <span><elm-><a href="#templates"><code><w->template</w-></code></a> declaration</elm-></span>
-            <span>Generates <a href="#enums">enum</a>, <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine call</a>.</span>
+            <span>Generates <a href="#enums">enum</a>, <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine calls</a>.</span>
         </li>
         <li>
             <span><elm-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</elm-></span>
@@ -1310,12 +1320,20 @@
     <li>Iteration</li>
     <ul class="summary-list">
         <li>
+            <span><elm-><a href="#for-loops"><code><w->for</w-></code></a> loop</elm-></span>
+            <span>Executes a <a href="#statements">statement</a> a fixed amount of times.</span>
+        </li>
+        <li>
             <span><elm-><a href="#while-loops"><code><w->while</w-></code></a> loop</elm-></span>
             <span>Executes a <a href="#statements">statement</a> until its condition evaluates to <a href="#boolean-type"><code><k->false</k-></code></a>.</span>
         </li>
         <li>
-            <span><elm-><a href="#for-loops"><code><w->for</w-></code></a> loop</elm-></span>
-            <span>Executes a <a href="#statements">statement</a> a fixed amount of times.</span>
+            <span><elm-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</elm-></span>
+            <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#break-statement"><code><w->break</w-></code></a> statement</elm-></span>
+            <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
         </li>
         <li>
             <span><elm-><a href="#once-statement"><code><w->once</w-></code></a> statement</elm-></span>
@@ -1324,14 +1342,6 @@
         <li>
             <span><elm-><a href="#then-statement"><code><w->then</w-></code></a> statement</elm-></span>
             <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> didn't stop through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and completed at least one iteration.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#break-statement"><code><w->break</w-></code></a> statement</elm-></span>
-            <span>Skips an arbitrary number of iterations of the innermost enclosing <a href="#iteration">loop</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#continue-statement"><code><w->continue</w-></code></a> statement</elm-></span>
-            <span>Skips all the remaining iterations of an arbitrary number of enclosing <a href="#iteration">loops</a>, starting from the innermost.</span>
         </li>
     </ul><br>
     <li>Non-local</li>
@@ -1349,7 +1359,7 @@
     <ul class="summary-list">
         <li>
             <span><elm-><a href="#else-statement"><code><w->else</w-></code></a> statement</elm-></span>
-            <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> didn't complete any iteration</a>.</span>
+            <span>Executes a <a href="#statements">statement</a> if the <a href="#bool-type">condition</a> of the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> evaluated to <code><t->false</t-></code> before the first iteration.</span>
         </li>
         <li>
             <span><elm-><a href="#expressions">Expression statement</a></elm-></span>
@@ -1593,7 +1603,7 @@
 </p>
 <p>
     The name is the <a href="#identifiers">identifier</a> that was used to declare the <a href="#declarations">symbol</a>, optionally followed, if the symbol is a <a href="#templates">template</a>,
-    by <elm-><code>&lt</code><code>&gt</code></elm-> tokens containing the <a href="#types">types</a> that identify the generated <a href="#declarations">symbol</a>.<br>
+    by <elm-><code>&lt;</code><code>&gt;</code></elm-> tokens containing the <a href="#types">types</a> that identify the generated <a href="#declarations">symbol</a>.<br>
     Names are used to reference <a href="#declarations">symbols</a> that are declared in the current <a href="#scopes">scope</a> or in one of the enclosing ones.
 </p>
 <p>
@@ -4334,7 +4344,7 @@
 <p>
     <b>Temporary variables</b> are a special set of identifiers that have <b>dynamic type</b> and don't need to be declared.<br>
     These identifiers are meant to replace local variables whose only purpose is holding values that don't need to be used more than a few times.<br>
-    A temporary variable is identified by the <code>$</code> character followed by an arbitrary number of decimal digits, which denote its name.<br>
+    A temporary variable is identified by the <code>$</code> character followed by a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>, which denotes its name.<br>
 </p>
 <p>
     They are always <b>function-level scoped</b> and cannot be used outside of function definitions.<br>
@@ -8127,7 +8137,7 @@
             <td><b-lr-></b-lr-></td>
             <td><code>$</code></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><wrd->decimal digits [0-9]</wrd-></td>
+            <td><exp-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></exp-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -8138,6 +8148,9 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
+    <syntax-note->
+        * Must be a literal
+    </syntax-note->
 </syntax2->
 
 
@@ -8258,7 +8271,7 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-brc-></b-brc-><b-lr-></b-lr-></td>
-            <td><wrd->name<span class="hidden">&nbsp**</span></wrd-></td>
+            <td><wrd->name<span class="hidden">&nbsp;**</span></wrd-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -8276,7 +8289,7 @@
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
-            <td><exp->argument<span class="hidden">&nbsp**</span></exp-></td>
+            <td><exp->argument<span class="hidden">&nbsp;**</span></exp-></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>

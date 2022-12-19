@@ -8,12 +8,12 @@
     Comments are allowed to contain any sequence of unicode characters of any length.<br>
 </p>
 <p>
-    Single line comments start with <code>//</code> and end at the first newline character.<br>
-    Multiline comments start with <code>/*</code> and end with <code>*/</code>
+    Single line comments start with <code>//</code> and end at the next newline character (\n).<br>
+    Multiline comments start with <code>/*</code> and end with <code>*/</code>.<br>
 </p>
 <p>
     Comments cannot be nested.
-    Not closing a comment is not an error.
+    Not closing a comment is allowed.
 </p>
 
 <syntax2->
@@ -33,9 +33,9 @@
             <td></td>
             <td><b-tr-t-></b-tr-t-><b-br-b-></b-br-b-></td>
             <td><elm->comment string</elm-></td>
-            <td><b-lr-t-></b-lr-t-><b-lr-b-></b-lr-b-><b-ltct-></b-ltct-><b-lbcb-></b-lbcb-></td>
-            <td><code><eof-></eof-></code></td>
-            <td><b-tr-></b-tr-><b-br-></b-br-><b-lr-></b-lr-></td>
+            <td><b-ltct-></b-ltct-><b-lbcb-></b-lbcb-></td>
+            <td></td>
+            <td><b-tr-></b-tr-><b-br-></b-br-></td>
         </tr>
         <tr>
             <td><b-tr-></b-tr-></td>
@@ -56,10 +56,12 @@
         <c->/* Multi</c->
         <c->line</c->
         <c->comment */</c->
+
+        <c->/* Another multiline comment</c->
     </div>
     <label2->Example 2</label2->
     <div>
         <c->/* Multi line /* Another comment */ comment */</c->
-        <c->// ^ Ok</c->                          <ce->// ^ Error, unexpected token "comment"</ce->
+                                         <ce->// ^ Error, unexpected token "comment"</ce->
     </div>
 </example2->

@@ -4,10 +4,11 @@
 <h1 id="line-continuation-token"></h1>
 <p>
     The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line <a href="#comments">comments</a>, preprocessor directives and multi character <a href="#syntactic-elements">tokens</a> to be written across multiple lines.<br>
-    It consists of a <code>\</code> immediatly followed by a newline character.
+    It consists of a <code>&bsol;</code> immediatly followed by a newline character.
 </p>
 <p>
-    Line continuation tokens can be used inside <a href="#comments">comments</a> or other preprocessor directives and cannot be nested.
+    Line continuation tokens can be used inside <a href="#comments">comments</a> or preprocessor directives but cannot be nested.<br>
+    Using a line continuation token as the last character of a file is allowed and has no effect.
 </p>
 
 <syntax2->
@@ -15,7 +16,7 @@
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>\</code></td>
+            <td><code>&bsol;</code></td>
             <td><b-lr-></b-lr-></td>
             <td><code><nl-></nl-></code></td>
             <td><b-lr-></b-lr-></td>
@@ -26,33 +27,35 @@
 <example2->
     <label2->Example 1</label2->
     <div>
-        <c->// single line comment</c-><sg->\</sg->
+        <c->// single line comment</c-><sg->&bsol;</sg->
         <c->on two lines</c->
 
-        <c->// #include "path/to/file"</c->
-        <k->#include</k-> <s->"pat</s-><sg->\</sg->
-        <s->h/to/file</s-><sg->\</sg->
-        <s->"</s->
+        <c->// #include &lt;math&gt;</c->
+        <k->#include</k-> <s->&lt;ma</s-><sg->&bsol;</sg->
+        <s->th</s-><sg->&bsol;</sg->
+        <s->&gt;</s->
 
         <c->// void function() {</c->
         <c->//   uint var = 0, b = 0;</c->
         <c->//   var += b;</c->
         <c->// }</c->
-        <t->vo</t-><sg->\</sg->
-        <t->id</t-> <f->fun</f-><sg->\</sg->
+        <t->vo</t-><sg->&bsol;</sg->
+        <t->id</t-> <f->fun</f-><sg->&bsol;</sg->
         <f->ction</f->() {
-        <t->uint</t-> va<sg->\</sg->
+        <t->uint</t-> va<sg->&bsol;</sg->
         r = <k->0</k->, b = <k->0</k->;
-        v<sg->\</sg->
-        ar +<sg->\</sg->
+        v<sg->&bsol;</sg->
+        ar +<sg->&bsol;</sg->
+        <sg->&bsol;</sg->
         = <k->b</k->;
         }
     </div>
     <label2->Example 2</label2->
     <div>
         <ce->// Error, unexpected token "\"</ce->
-        <c->//void ma\</c->
-        <c->//in(){}</c->
+        <t->void</t-> ma&bsol;<sg->&bsol;</sg->
+
+        in(){}
         <ce->// Error,  unexpected token "in"</ce->
     </div>
 </example2->

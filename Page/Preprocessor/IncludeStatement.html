@@ -4,24 +4,27 @@
 <h1 id="include-statement"></h1>
 <p>
     The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
-    Any existent file can be included, regardless of its contents or extension.<br>
+    Any existent file can be included, regardless of its content or extension.<br>
     The path of the included file must be enclosed in <code>"</code> <code>"</code> characters.<br>
     <a href="#standard-modules">Standard modules</a> are included using the <code>&lt;</code> <code>&gt;</code> characters.<br>
     The <a href="#core-module">core module</a> cannot be included.
 </p>
 <p>
     Absolute and relative paths are both supported.<br>
+    Relative paths are relative to the file the include statement is used in and any specified include path.<br>
     <code>~</code> is not recognized as the home directory but as the literal character <code>~</code>.<br>
+    <code>/</code> identifies the root directory.<br>
+    <code>.</code> identifies the current directory, while <code>..</code> identifies the parent directory.
 </p>
 <p>
-    The preprocessor supports the <code>*</code> (any sequence of characters) and <code>?</code> (any character) wildcards of Glob patterns.<br>
-    Glob patterns that don't match any file are allowed and have no effect.<br>
-
+    The preprocessor supports the <code>**</code> (any sequence of characters including <code>/</code>), </code><code>*</code> (any sequence of characters but <code>/</code>) and <code>?</code> (any character) wildcards of Glob patterns.<br>
+    Glob patterns that don't match any file are allowed and have no effect.
 </p>
 <p>
-    <code>*</code>, <code>/</code>, <code>\</code> and <code>.</code> can be escaped by preceeding them with a <code>\</code> character.<br>
-    Unknown escape sequences generate a preprocessing error.<br> //TODO LINK
-    File paths can contain any character, including <code>"</code> and <code>&lt;</code> <code>&gt;</code>.
+    Files cannot be named <code>.</code> or <code>..</code> and their name cannot contain the <code>/</code> character.<br>
+    Any other character is allowed, including <code>*</code>, <code>?</code>, <code>"</code>, <code>&lt;</code> <code>&gt;</code> and <code>&bsol;</code>.<br>
+    These characters can be escaped by preceding them with a single <code>&bsol;</code> character.<br>
+    Unknown escape sequences generate a preprocessing error. //TODO LINK
 </p>
 <syntax2->
     <label2->Syntax</label2->
@@ -57,14 +60,15 @@
 <example2->
     <label2->Example</label2->
     <div>
-        <k->#include</k-> <s->"/home/Photon/Lux/file.ilsh"</s-> <c->// Ok, absolute path</c->
-        <k->#include</k-> <s->"./file.ilsh"</s->                <c->// Ok, relative path</c->
-        <k->#include</k-> <s->"file.ilsh"</s->                  <c->// Ok, relative path</c->
-        <k->#include</k-> <s->"*.ilsh"</s->                     <c->// Ok, includes any file with ilsl extension in any include path</c->
-        <k->#include</k-> <s->&lt;math&gt;</s->                       <c->// Ok, includes the math standard module</c->
+        <k->#include</k-> <s->"/home/Photon/Lux/file.lux"</s->      <c->// Ok, absolute path</c->
+        <k->#include</k-> <s->"./file.lux"</s->                     <c->// Ok, relative path</c->
+        <k->#include</k-> <s->":</s-><sr->&bsol;</sr-><s->&bsol; why is this a file name</s-><sr->&bsol;</sr-><s->?"</s->  <c->// Ok, relative path</c->
+        <k->#include</k-> <s->"*.lux"</s->                          <c->// Ok, includes any file with lux extension in any include path</c->
+        <k->#include</k-> <s->"**/*.lux"</s->                       <c->// Ok, includes any file with lux extension in any include path, recursively</c->
+        <k->#include</k-> <s->&lt;math&gt;</s->                           <c->// Ok, includes the standard module "math"</c->
 
-        <c->//#include ./file.ilsh</c->                <ce->// Error, "" or &lt;&gt; are required</ce->
-        <c->//#include "./non_existent_file"</c->      <ce->// Error, non-glob patterns must exist</ce->
-        <c->//#include ""</c->                         <ce->// Error, file name not specified</ce->
+        <c->//#include ./file.ilsh</c->                    <ce->// Error, "" or &lt;&gt; are required</ce->
+        <c->//#include "./non_existent_file"</c->          <ce->// Error, non-glob patterns must correspond to an existing file</ce->
+        <c->//#include ""</c->                             <ce->// Error, file name not specified</ce->
     </div>
 </example2->
