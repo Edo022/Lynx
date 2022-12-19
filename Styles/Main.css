@@ -150,6 +150,7 @@ body {
             white-space: nowrap;
             transition: background-color 0.2s cubic-bezier(.17,.84,.44,1);
             transition: border-color     0.2s cubic-bezier(.17,.84,.44,1);
+            overflow-x: hidden;
 
             border-radius: 10px;
             border: 2px solid transparent;

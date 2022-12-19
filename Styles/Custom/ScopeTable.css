@@ -1,4 +1,6 @@
-
+:root {
+    --scope-table-left-container-w: 28ch;
+}
 
 
 .scope-table-container {
@@ -15,16 +17,17 @@
     vertical-align: top;
     overflow-x: scroll;
     display: inline-block;
-    max-width: calc(100% - 28ch);
+    max-width: calc(100% - var(--scope-table-left-container-w));
 }
 .scope-table-right {
     border-radius: 0 10px 10px 0;
     word-spacing: var(--word-spacing);
+    margin-bottom: 0;
 }
 .scope-table-left-container {
     vertical-align: top;
     display: inline-block;
-    max-width: fit-content;
+    max-width: var(--scope-table-left-container-w);
     border-bottom-left-radius: 10px;
 }
 .scope-table-left {

@@ -68,7 +68,8 @@ var setup_index = {
         let old = window.sessionStorage.getItem('index.selected_id');
         let new_ = `index--${ location.hash.slice(1) }`;
         if(setup_index.is_id_defined(old)) {
-            document.getElementById(old).parentElement.style.backgroundColor = 'var(--bg)';
+            // document.getElementById(old).parentElement.style.backgroundColor = 'var(--bg)';
+            document.getElementById(old).parentElement.style.removeProperty("background-color");
         }
         window.sessionStorage.setItem('index.selected_id', new_);
         document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';
@@ -80,7 +81,8 @@ var setup_index = {
         let old = window.sessionStorage.getItem('index.active_id');
         let new_ = `index--${ h[Math.max(i - 1, 0)].id }`;
         if(setup_index.is_id_defined(old)) {
-            document.getElementById(old).parentElement.style.borderColor = 'transparent';
+            // document.getElementById(old).parentElement.style.borderColor = 'transparent';
+            document.getElementById(old).parentElement.style.removeProperty("border-color");
         }
         window.sessionStorage.setItem('index.active_id', new_)
         document.getElementById(new_).parentElement.style.borderColor = 'var(--bg-index-active)';
