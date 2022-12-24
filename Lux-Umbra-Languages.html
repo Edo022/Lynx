@@ -637,7 +637,9 @@
                     <a href="#auto-specifier">          <code><t->auto</t-></code></a>
                     <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
+                    <a href="#import-directive">        <code><w->from</w-></code></a>
                     <a href="#import-directive">        <code><w->import</w-></code></a>
+                    <a href="#import-directive">        <code><w->include</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
                     <elm->                              <code>(</code><code>)</code></elm->
                     <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
@@ -727,7 +729,7 @@
 <h1 id="keywords"></h1>
 <p>
     <b>Keywords</b> are <b>built-in <a href="#syntactic-elements">syntactic elements</a></b> that perform hard coded actions or have <b>special meaning</b>.<br>
-    The language defines a total of 24 alphanumeric keywords and 5 symbolic keywords.<br>
+    The language defines a total of 26 alphanumeric keywords and 5 symbolic keywords.<br>
     Their usage is detailedly explained in their respective sections.
 </p>
 <ul>
@@ -758,12 +760,20 @@
             <span>Creates an alternative <a href="#name-resolution">path</a> for a <a href="#semantic-elements">symbol</a>.</span>
         </li>
         <li>
+            <span><a href="#import-directive"><code><w->from</w-></code></a></span>
+            <span>Introduces an <a href="#import-directive">import directive</a>.</span>
+        </li>
+        <li>
             <span><a href="#import-directive"><code><w->import</w-></code></a></span>
-            <span>Imports symbols from a <a href="#modules">module</a>.</span>
+            <span>Imports symbols from a <a href="#modules">module</a> preserving the module's <a href="#namespaces">namespace</a>.</span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
+            <span>Imports symbols from a <a href="#modules">module</a> without preserving the module's <a href="#namespaces">namespace</a>.</span>
         </li>
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
-            <span>Exports symbols from the current <a href="#modules">module</a>.</span>
+            <span>Defines which symbols can be exported from the current <a href="#modules">module</a>.</span>
         </li>
     </ul><br>
     <li>Flow control keywords</li>
@@ -1571,7 +1581,8 @@
             <td class="scope-table-n"><div></div></td>
         </tr>
     </table></div>
-
+</div>
+<div>
     <syntax-note->
         * Also applies to the respective <a href="templates">template</a>.<br>
         ** Declared in the routine signature, but part of the routine scope.
@@ -1610,11 +1621,11 @@
     Paths, instead, are used to reference <a href="#declarations">symbols</a> declared in <a href="#scopes">scopes</a> that are not parents of the current <a href="#scopes">scope</a>.<br>
     They consist of the names of the enclosing <a href="#scopes">scopes</a> of the <a href="#declarations">symbol</a> and the name of the <a href="#declarations">symbol</a> itself separated by <code>.</code> tokens, starting from the outermost.<br>
     The <code>.</code> token is used to access the children <a href="#declarations">symbols</a> of the <a href="#scopes">scope</a>.<br>
-    Paths work in the same way as file paths, with <a href="#scopes">scopes</a> and <a href="#declarations">symbol</a> acting like directories.
+    Paths work in the same way as file paths, with <a href="#scopes">scopes</a> acting like directories.
 </p>
 <p>
     The path of a symbol can start from any of its enclosing <a href="#scopes">scopes</a>.<br>
-    <a href="#declarations">Symbols</a> declared within unnamed <a href="#scopes">scopes</a> cannot be referenced from outside.<br>
+    <a href="#declarations">Symbols</a> declared within unnamed <a href="#scopes">scopes</a> cannot be referenced from the outside.<br>
     The <code>module</code> identifier is used to reference the <a href="#scopes">scope</a> of the current <a href="#modules">module</a>.<br>
     A path that starts from the module <a href="#scopes">scope</a> of the current <a href="#modules">module</a> or any of the <a href="#import-directive">imported</a> ones is called an absolute path.
 </p>
@@ -1660,10 +1671,10 @@
 <!--------------------------------------------------------------------->
 <h1 id="name-shadowing"></h1>
 <p>
-    <a href="#declarations"><b>Symbols</b></a> in <b>different enclosing <a href="#scopes">scopes</a></b> can be declared using the <b>same <a href="#identifiers">identifier</a></b>. This is known as <b>name shadowing</b>.<br>
+    <a href="#declarations"><b>Symbols</b></a> in <b>different <a href="#scopes">scopes</a></b> can be declared using the <b>same <a href="#identifiers">identifier</a></b>. This is known as <b>name shadowing</b>.<br>
 </p>
 <p>
-    When the <a href="#identifiers">identifier</a> is used as a <a href="#declarations">symbol</a> name or as the first name of a <a href="#declarations">symbol</a> <a href="#name-resolution">path</a>, the <a href="#declarations">symbol</a> declared in the innermost <a href="#scopes">scope</a>, relatively to where the <a href="#identifiers">identifier</a> is used, always takes precedence.
+    When the <a href="#identifiers">identifier</a> is used, the <a href="#declarations">symbol</a> declared in the innermost <a href="#scopes">scope</a>, relatively to where the <a href="#identifiers">identifier</a> is used, always takes precedence.
     This can be avoided by starting the <a href="#name-resolution">path</a> from a parent <a href="#scopes">scope</a> so that the <a href="#identifiers">identifier</a> is not ambiguous.<br>
     Any <a href="#identifiers">identifier</a> can be shadowed, including <a href="#primitive-types">primitive types</a>, the <a href="#name-resolution"><code>module</code></a> <a href="#identifiers">identifier</a> and <a href="#declarations">symbols</a> from the <a href="#core-module">core module</a>.
 </p>
@@ -1676,14 +1687,35 @@
                 <c->// n references module.s.*unnamed*.n</c->
             }
 
-            <c->// n references module.s.n</c->
             <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
                 <c->// n references module.s.n.n</c->
             }
+
+            <c->// n references module.s.n</c->
         }
     </div>
 </example2->
 
+<p>
+    The first declaration in a scope is the only one that actually shadows eventual identifiers in parent scopes. Subsequent declarations that use the same identifier will refer to the symbol declared in the same scope.<br>
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <c->// Ok, declares a struct with name "t"</c->
+        <w->strct</w-> t {
+            <t->int</t-> n;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->t</t-> t;            <c->// Ok, declares a variable with name "t" and type "module.t"</c->
+            <c->//t a;</c->          <ce->// Error, "t" is a variable and not a type</ce->
+            <c->//module.t t;</c->   <ce->// Error, redeclaration of "module.main.t"</ce->
+            module.<t->t</t-> a;     <c->// Ok, declares a variable with name "a" and type "module.t"</c->
+        }
+
+    </div>
+</example2->
 
 
 
@@ -1696,13 +1728,11 @@
 <!--------------------------------------------------------------------->
 <h1 id="multiple-declarations"></h1>
 <p> //TODO linkkk
-    Multiple symbols can be declared in the same scope using the same identifier.<br>
-    If the declared symbols are the type of semantic element, the behaviour of these declarations depend on it.<br>
-    If they are different types, a semantic error is generated. //TODO LINK
+    Some types of symbol can be declared multiple times in the same scope.<br>
 </p>
 <p>
     <code><w->namespace</w-></code>.<br>
-    Namespaces with the same absolute path merge their contents.<br>
+    All the declared namespaces with the same absolute path merge their contents.<br>
     <br>
     Functions.<br>
     Functions and function templates declared in the same scope using the same identifier create a function overloading.<br>
@@ -1736,27 +1766,6 @@
     </div>
 </example2->
 
-<p>
-    As for name shadowing, the first declaration is the only one that actually shadows the identifier. Subsequent usages of the identifier refer to the symbol declared in the same scope.<br>
-    Like single declarations, this doesn't apply to paths that start from a parent scope.
-</p>
-<example2->
-    <label2->Example</label2->
-    <div>
-        <c->// Ok, declares a struct with name "t"</c->
-        <w->strct</w-> t {
-            <t->int</t-> n;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->t</t-> t;            <c->// Ok, declares a variable with name "t" and type "module.t"</c->
-            <c->//t a;</c->          <ce->// Error, "t" is a variable and not a type</ce->
-            <c->//module.t t;</c->   <ce->// Error, redeclaration of "module.main.t"</ce->
-            module.<t->t</t-> a;     <c->// Ok, declares a variable with name "a" and type "module.t"</c->
-        }
-
-    </div>
-</example2->
 
 
 
@@ -1773,6 +1782,51 @@
 <h1 id="concepts"></h1>
 
 
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Left and right values                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="left-and-right-values"></h1>
+<p>
+    Values can be left values or right values.<br>
+    <b>Memory locations</b> which allow <b>changes</b> to their contents after being declared are considered <b>left values</b>.<br>
+    Any other value is a <b>right value</b>.
+</p>
+<div class="table-container"><table>
+    <tr>
+        <th>Left values</th>
+        <th>Right values</th>
+    </tr>
+    <tr>
+        <td>Non-const <a href="#functions">parameters</a> and <a href="#references">referece (<code>&</code>) parameters</a></td>
+        <td><a href="#const-qualifier">Const</a> parameters</td>
+    </tr>
+    <tr>
+        <td>Result of <a href="#element-indexing">element indexing operations</a> (<code>[</code><code>]</code> and <code>.</code>)</td>
+        <td>Result of <a href="#function-calls">function calls</a> and <a href="#operator-calls">operator calls</a></td>
+    </tr>
+    <tr>
+        <td>Non-const <a href="#variables">varibales</a></td>
+        <td><a href="#const-qualifier">Const</a> variables</td>
+    </tr>
+    <tr>
+        <td><a href="#temporary-variables">Temporary variables</a></td>
+        <td><a href="#enums">Enum</a> elements</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><a href="#literals">Literals</a></td>
+    </tr>
+</table></div>
+<p>
+    Left values can be used anywhere right values can.<br>
+    Left and right values are also called l-values and r-values.
+</p>
 
 
 
@@ -1820,8 +1874,8 @@
 <h1 id="undefined-behaviour"></h1>
 <p>
     Certain actions cause undefined behaviour.<br>
-    <b>Undefined behaviour</b> means that the <b>code <a href="#compilation">compiles</a> with no erros</b>, but the <b>runtime behaviour is unknown</b> and anything could happen.<br>
-    The <a href="#modules">module</a> could work just fine, or it could break and never run again. No one knows.
+    <b>Undefined behaviour</b> means that the <b>code <a href="#compilation">compiles</a> with no errors</b>, but the <b>runtime behaviour is unknown</b> and anything could happen.<br>
+    The software could break, have bugs or work just fine. One cannot know.
 </p>
 <p>
     As with <a href="#undefined-values">undefined values</a>, the <a href="#modules">module</a> is responsible for preventing or documenting undefined behaviours.
@@ -1876,8 +1930,34 @@
     For consistency reasons, cases in which a <a href="#routine">routine</a> is runtime but it doesn't actually need to run during runtime,
     either by containing empty <a href="#inline-cpp">inline C++</a> or <a href="#inline-glsl">inline GLSL</a> statements or
     by containing runtime <a href="#routine-calls">routine calls</a> that are empty or have the aforementioned properties,
-    are not considered suitable for compile time <a href="#routine-calls">calls</a>, even though it would be perfectly possible to determine their <a href="#return-statement">return value</a> and operations on reference <a href="#routine-parameters">parameters</a> during the <a href="#compilation">compilation</a> process.
+    are not considered suitable for compile time <a href="#routine-calls">calls</a>, even though it would be possible to determine their <a href="#return-statement">return value</a> and operations on reference <a href="#routine-parameters">parameters</a> during the <a href="#compilation">compilation</a> process.
 </p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->from</w-> <s->&lt;random&gt;</s-> <w->include</w-> rand;
+
+        <w->enum</w-> q : <t->bool</t-> {
+            to_be,
+            not_to_be
+        }
+
+        <c->// Suitable for compile time calls</c->
+        <t->bool</t-> <f->add_1</f->(<t->ulong</t-> <a->n</a->) {
+            <w->return</w-> n <f->+</f-> <k->1</k->;
+        }
+
+
+        <t->bool</t-> <f->f</f->(<t->ulong</t-> <a->n</a->) {
+            <t->ulong</t-> a = <k->True</k->;
+
+            <c->// return q[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
+            <c->// return q[add_1(n)];</c->   <ce->// Error, the routine call is not compile time</ce->
+            <c->// return q[rand(2)];</c->    <ce->// Error, the routine "random.rand" is not suitable for compile time calls</ce->
+            <w->return</w-> q<f->[</f->n<f->]</f->;             <c->// Ok</c->
+        }
+    </div>
+</example2->
 <p>
     Notice that compile time expressions are not required to run during compile time, and they don't affect <a href="#value-precomputation">optimizations</a> in any way.<br>
     Compile time expressions are exclusively used to determine which <a href="#expressions">expressions</a> can be used in contexts where a compile time value is required.
@@ -1887,7 +1967,8 @@
     therefore is not possible to accidentally modify the program behaviour by inadvertently executing <a href="#routines">routines</a> that are not supposed to be executed during the <a href="#compilation">compilation</a> process.
 </p>
 <p>
-    //TODO build directive
+    //TODO template<t = ulong> t random(t from, t to)
+    //TODO template<t = ulong> t random(t to) //from 0
 </p>
 
 
@@ -1903,103 +1984,6 @@
 
 
 
-
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE -->
-<!-- FIXME UPDATE seriously -->
-<!--------------------------------------------------------------------->
-<!-- Left and right values                                           -->
-<!--------------------------------------------------------------------->
-<h1 id="left-and-right-values"></h1>
-<p>
-    Values can either be left values or right values.<br>
-    <b>Memory locations</b> which allow <b>changes</b> to their <b>value</b> after being declared are considered <b>left values</b>.<br>
-    Any other value is a <b>right value</b>.
-</p>
-<div class="table-container"><table>
-    <tr>
-        <th>Left values</th>
-        <th>Right values</th>
-    </tr>
-    <tr>
-        <td>Non-const <a href="#functions">parameters</a> and <a href="#references">referece (<code>&</code>) parameters</a></td>
-        <td><a href="#const-qualifier">Const</a> parameters</td>
-    </tr>
-    <tr>
-        <td>Result of the <a href="#special-operators">field (<code>[</code><code>]</code>)</a> and <a href="#special-operators">subscription (<code>.</code>)</a> operators</td>
-        <td>Result of <a href="#common-operators">common</a>, <a href="#assignment-operators">assignment</a>, <a href="#special-operators">grouping</a>, <a href="#special-operators">ternary</a> and <a href="#common-operators">relational</a> operators</td>
-    </tr>
-    <tr>
-        <td>Non-const <a href="#variables">varibales</a></td>
-        <td><a href="#const-qualifier">Const</a> variables</td>
-    </tr>
-    <tr>
-        <td><a href="#temporary-variables">Temporary variables</a></td>
-        <td><a href="#enums">Enum</a> elements</td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>Result of <a href="#function-calls">function calls</a></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>Result of <a href="#constructors">constructors</a></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td><a href="#literals">Literals</a></td>
-    </tr>
-</table></div>
-<p>
-    Left values can be used anywhere right values can.<br>
-    Left and right values are also called l-values and r-values.
-</p>
 <!--------------------------------------------------------------------->
 <!-- Directives                                                      -->
 <!--------------------------------------------------------------------->
