@@ -1,0 +1,19 @@
+
+split-example-container- {
+    display: flex;
+    min-width: 100%;
+}
+
+split-example-container-left- {
+    display: inline-block;
+    /**/width: 50%;
+    max-width: calc(50% - var(--def-margin) / 2);
+    margin-right: calc(var(--def-margin) / 2);
+}
+
+split-example-container-right- {
+    display: inline-block;
+    max-width: calc(50% - var(--def-margin) / 2);
+    /**/width: 50%;
+    margin-left: calc(var(--def-margin) / 2);
+}

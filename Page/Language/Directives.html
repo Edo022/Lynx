@@ -17,12 +17,84 @@
 <!--------------------------------------------------------------------->
 <h1 id="import-directive"></h1>
 <p>
+    The <b>Import directive</b> allows the <a href="#modules">module</a> to <b>access</b> and <b>rename <a href="#name-resolution">symbols</a></b> declared in <b>other modules</b>.<br>
+    Only <a href="#name-resolution">symbols</a> exported using the <a href="#export-directive">Export directive</a> can be imported.
+</p>
+<p>
+    When an Import directive is used, it creates a new namespace inside the <a href="#root-scope">root scope</a> (.) containing the imported <a href="#name-resolution">symbols</a>, both renamed as specified in the directive.<br>
+    Anything these <a href="#name-resolution">symbols</a> depend on is automatically copied but not accessible unless intentionally imported.<br>
+    New module namespaces always generate a <a href="#symbol-aliases">Symbol alias</a> for consistency reasons.<br>
+    Using <a href="#symbol-aliases">Symbol aliases</a> allows import directives to follow the same <a href="#name-shadowing">Name shadowing</a> rules that apply to <a href="#declarations">Symbol declarations</a>.
+</p>
+<p>
+    If the <a href="#modules">module</a> you are importing <a href="#name-resolution">symbols</a> from doesn't specify an export identifier, the name of the file without its extensions is used.<br>
+    The <code>*</code> character can be used to import all the <a href="#name-resolution">symbols</a> inside the <a href="#modules">module</a>. <code>*</code> doesn't allow renaming.
 
 </p>
 <syntax2->
     <label2- id="copy.syntax--import-directive">Import syntax</label2->
 </syntax2->
 
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example</label2->
+            <div>
+                <c->// [module "main.ubr"]</c->
+
+                <t->int</t-> math;
+                <w->from</w-> <s->&lt;math&gt;</s-> <w->import</w-> <f->sum</f->;
+                <w->from </w-><s->&lt;io&gt;</s-> <w->import</w-> <f->print</f-> <w->as</w-> write;
+
+                <t->void</t-> <f->main</f->(){
+                    io.<f->write</f->(math.<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Equivalent code</label2->
+            <div>
+                <c->// From the root scope's perspective,</c->
+                <c->// this is what the program looks like</c->
+
+                . {
+                    <w->namespace</w-> math {
+                        <c->// sum function...</c->
+                    }
+
+                    <w->namespace</w-> io {
+                        <c->// write function (print) ...</c->
+                    }
+
+                    <w->namespace</w-> module {
+                        <w->int</w-> math;
+                        <w->alias</w-> math <w->as</w-> math;
+                        <w->alias</w-> io <w->as</w-> io;
+
+                        <t->void</t-> <f->main</f->(){
+                            io.<f->write</f->(math.<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
+                        }
+                    }
+                }
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
 
 
 
@@ -42,12 +114,28 @@
 <!--------------------------------------------------------------------->
 <h1 id="export-directive"></h1>
 <p>
-
+    The <b>Export directive</b> specifies which <b>symbols other modules</b> are allowed to <b>use</b> when importing from the current module.<br>
+    Only symbols declared in the module scope or symbols whose parent scopes are all namespaces can be exported.
+</p>
+<p>
+    It is possible to define an export identifier which will be used by the other modules to name the namespace containing the imported symbols.<br>
+    If an export identifier is not specified, the name of the file without its extensions is be used.<br>
+    If the file has a name that is not a valid identifier, a custom export identifier must be specified.
 </p>
 <syntax2->
     <label2- id="copy.syntax--export-directive">Export syntax</label2->
 </syntax2->
 
+<p>
+    The Export directive doesn't allow changes to the <a href="#identifiers">names</a> of parent <a href="#namespaces">namespaces</a>, but it can be used in conjunction with <a href="#symbol-aliases">Symbol aliases</a>
+    and <a href="#namespaces">Namespaces</a> to create clean interfaces while preserving the internal structure of the <a href="#modules">module</a>.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+
+    </div>
+</example2->
 
 
 

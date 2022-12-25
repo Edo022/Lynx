@@ -538,7 +538,9 @@
 <!-- Language structure                                              -->
 <!--------------------------------------------------------------------->
 <h1 id="language-structure"></h1>
-
+<p>
+    //TODO this works as a summary for the elements of the language
+</p>
 
 
 
@@ -637,8 +639,6 @@
                     <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
                     <a href="#import-directive">        <code><w->from</w-></code></a>
-                    <a href="#import-directive">        <code><w->import</w-></code></a>
-                    <a href="#import-directive">        <code><w->include</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
                     <elm->                              <code>(</code><code>)</code></elm->
                     <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
@@ -761,14 +761,6 @@
         <li>
             <span><a href="#import-directive"><code><w->from</w-></code></a></span>
             <span>Introduces an <a href="#import-directive">import directive</a>.</span>
-        </li>
-        <li>
-            <span><a href="#import-directive"><code><w->import</w-></code></a></span>
-            <span>Imports symbols from a <a href="#modules">module</a> preserving the module's <a href="#namespaces">namespace</a>.</span>
-        </li>
-        <li>
-            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
-            <span>Imports symbols from a <a href="#modules">module</a> without preserving the module's <a href="#namespaces">namespace</a>.</span>
         </li>
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
@@ -944,6 +936,20 @@
             <span>
                 Defines the <a href="#declarations.operator-precedence">priority</a> of an <a href="#operators">operator</a><br>
                 <span class="meta-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
+            </span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->import</w-></code></a></span>
+            <span>
+                Imports symbols from a <a href="#modules">module</a> while preserving the container <a href="#namespaces">namespace</a>.<br>
+                <span class="meta-keyword-constraint">[When used inside an <a href="#import-directive">Import directive</a>]</span>.
+            </span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
+            <span>
+                Imports symbols from a <a href="#modules">module</a> without preserving the container <a href="#namespaces">namespace</a>.<br>
+                <span class="meta-keyword-constraint">[When used inside an <a href="#import-directive">Import directive</a>]</span>.
             </span>
         </li>
         <li>
@@ -2002,12 +2008,84 @@
 <!--------------------------------------------------------------------->
 <h1 id="import-directive"></h1>
 <p>
+    The <b>Import directive</b> allows the <a href="#modules">module</a> to <b>access</b> and <b>rename <a href="#name-resolution">symbols</a></b> declared in <b>other modules</b>.<br>
+    Only <a href="#name-resolution">symbols</a> exported using the <a href="#export-directive">Export directive</a> can be imported.
+</p>
+<p>
+    When an Import directive is used, it creates a new namespace inside the <a href="#root-scope">root scope</a> (.) containing the imported <a href="#name-resolution">symbols</a>, both renamed as specified in the directive.<br>
+    Anything these <a href="#name-resolution">symbols</a> depend on is automatically copied but not accessible unless intentionally imported.<br>
+    New module namespaces always generate a <a href="#symbol-aliases">Symbol alias</a> for consistency reasons.<br>
+    Using <a href="#symbol-aliases">Symbol aliases</a> allows import directives to follow the same <a href="#name-shadowing">Name shadowing</a> rules that apply to <a href="#declarations">Symbol declarations</a>.
+</p>
+<p>
+    If the <a href="#modules">module</a> you are importing <a href="#name-resolution">symbols</a> from doesn't specify an export identifier, the name of the file without its extensions is used.<br>
+    The <code>*</code> character can be used to import all the <a href="#name-resolution">symbols</a> inside the <a href="#modules">module</a>. <code>*</code> doesn't allow renaming.
 
 </p>
 <syntax2->
     <label2- id="copy.syntax--import-directive">Import syntax</label2->
 </syntax2->
 
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example</label2->
+            <div>
+                <c->// [module "main.ubr"]</c->
+
+                <t->int</t-> math;
+                <w->from</w-> <s->&lt;math&gt;</s-> <w->import</w-> <f->sum</f->;
+                <w->from </w-><s->&lt;io&gt;</s-> <w->import</w-> <f->print</f-> <w->as</w-> write;
+
+                <t->void</t-> <f->main</f->(){
+                    io.<f->write</f->(math.<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Equivalent code</label2->
+            <div>
+                <c->// From the root scope's perspective,</c->
+                <c->// this is what the program looks like</c->
+
+                . {
+                    <w->namespace</w-> math {
+                        <c->// sum function...</c->
+                    }
+
+                    <w->namespace</w-> io {
+                        <c->// write function (print) ...</c->
+                    }
+
+                    <w->namespace</w-> module {
+                        <w->int</w-> math;
+                        <w->alias</w-> math <w->as</w-> math;
+                        <w->alias</w-> io <w->as</w-> io;
+
+                        <t->void</t-> <f->main</f->(){
+                            io.<f->write</f->(math.<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
+                        }
+                    }
+                }
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
 
 
 
@@ -2027,12 +2105,28 @@
 <!--------------------------------------------------------------------->
 <h1 id="export-directive"></h1>
 <p>
-
+    The <b>Export directive</b> specifies which <b>symbols other modules</b> are allowed to <b>use</b> when importing from the current module.<br>
+    Only symbols declared in the module scope or symbols whose parent scopes are all namespaces can be exported.
+</p>
+<p>
+    It is possible to define an export identifier which will be used by the other modules to name the namespace containing the imported symbols.<br>
+    If an export identifier is not specified, the name of the file without its extensions is be used.<br>
+    If the file has a name that is not a valid identifier, a custom export identifier must be specified.
 </p>
 <syntax2->
     <label2- id="copy.syntax--export-directive">Export syntax</label2->
 </syntax2->
 
+<p>
+    The Export directive doesn't allow changes to the <a href="#identifiers">names</a> of parent <a href="#namespaces">namespaces</a>, but it can be used in conjunction with <a href="#symbol-aliases">Symbol aliases</a>
+    and <a href="#namespaces">Namespaces</a> to create clean interfaces while preserving the internal structure of the <a href="#modules">module</a>.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+
+    </div>
+</example2->
 
 
 
@@ -5945,8 +6039,8 @@
     When arrays are used with unary operators, the operation is performed on all the elements of the array and the return value is an array of the same length,
     containing the results of the operations.
 </p>
-<div style="min-width: 100%; display: flex;">
-    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
+<split-example-container->
+    <split-example-container-left->
         <example2- style="margin: 0;">
             <label2->Example</label2->
             <div>
@@ -5960,8 +6054,8 @@
 
             </div>
         </example2->
-    </div>
-    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
+    </split-example-container-left->
+    <split-example-container-right->
         <example2- style="margin: 0;">
             <label2->Equivalent code</label2->
             <div>
@@ -5975,16 +6069,16 @@
                 }
             </div>
         </example2->
-    </div>
-</div>
+    </split-example-container-right->
+</split-example-container->
 
 <p>
     When arrays are used as both the first and second operand of binary operators, the arrays must have identical length.
     The operation is performed between each element of the first operand and the respective element of the second operand,
     and the return value is an array of the same length containing the results of the operations.
 </p>
-<div style="min-width: 100%; display: flex;">
-    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
+<split-example-container->
+    <split-example-container-left->
         <example2- style="margin: 0;">
             <label2->Example</label2->
             <div>
@@ -5997,8 +6091,8 @@
 
             </div>
         </example2->
-    </div>
-    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
+    </split-example-container-left->
+    <split-example-container-right->
         <example2- style="margin: 0;">
             <label2->Equivalent code</label2->
             <div>
@@ -6011,16 +6105,16 @@
                 }
             </div>
         </example2->
-    </div>
-</div>
+    </split-example-container-right->
+</split-example-container->
 
 <p>
     When an array is used as the first operand of binary operators and a value of its base type is used as the second operand,
     the operation is performed between each element of the first operand and the value of second operand.
     The return value is an array of the same length of the first operand containing the results of the operations.
 </p>
-<div style="min-width: 100%; display: flex;">
-    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
+<split-example-container->
+    <split-example-container-left->
         <example2- style="margin: 0;">
             <label2->Example</label2->
             <div>
@@ -6033,8 +6127,8 @@
 
             </div>
         </example2->
-    </div>
-    <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
+    </split-example-container-left->
+    <split-example-container-right->
         <example2- style="margin: 0;">
             <label2->Equivalent code</label2->
             <div>
@@ -6047,8 +6141,8 @@
                 }
             </div>
         </example2->
-    </div>
-</div>
+    </split-example-container-right->
+</split-example-container->
 <!--------------------------------------------------------------------->
 <!-- Standard modules                                                -->
 <!--------------------------------------------------------------------->
@@ -6277,21 +6371,35 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-br-></b-br-></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><code>as</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td><wrd->name</wrd-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><code>export</code></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
             <td><code>*</code></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
+            <td><b-br-></b-br-><b-tr-></b-tr-></td>
             <td><code>;</code></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><code>export</code></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+            <td></td>
+            <td></td>
+            <td><b-tr-></b-tr-><b-br-></b-br-></td>
             <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><code>as</code></td>

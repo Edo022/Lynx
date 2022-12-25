@@ -4,7 +4,9 @@
 <!-- Language structure                                              -->
 <!--------------------------------------------------------------------->
 <h1 id="language-structure"></h1>
-
+<p>
+    //TODO this works as a summary for the elements of the language
+</p>
 
 
 
@@ -103,8 +105,6 @@
                     <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
                     <a href="#import-directive">        <code><w->from</w-></code></a>
-                    <a href="#import-directive">        <code><w->import</w-></code></a>
-                    <a href="#import-directive">        <code><w->include</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
                     <elm->                              <code>(</code><code>)</code></elm->
                     <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
@@ -227,14 +227,6 @@
         <li>
             <span><a href="#import-directive"><code><w->from</w-></code></a></span>
             <span>Introduces an <a href="#import-directive">import directive</a>.</span>
-        </li>
-        <li>
-            <span><a href="#import-directive"><code><w->import</w-></code></a></span>
-            <span>Imports symbols from a <a href="#modules">module</a> preserving the module's <a href="#namespaces">namespace</a>.</span>
-        </li>
-        <li>
-            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
-            <span>Imports symbols from a <a href="#modules">module</a> without preserving the module's <a href="#namespaces">namespace</a>.</span>
         </li>
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
@@ -410,6 +402,20 @@
             <span>
                 Defines the <a href="#declarations.operator-precedence">priority</a> of an <a href="#operators">operator</a><br>
                 <span class="meta-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
+            </span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->import</w-></code></a></span>
+            <span>
+                Imports symbols from a <a href="#modules">module</a> while preserving the container <a href="#namespaces">namespace</a>.<br>
+                <span class="meta-keyword-constraint">[When used inside an <a href="#import-directive">Import directive</a>]</span>.
+            </span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
+            <span>
+                Imports symbols from a <a href="#modules">module</a> without preserving the container <a href="#namespaces">namespace</a>.<br>
+                <span class="meta-keyword-constraint">[When used inside an <a href="#import-directive">Import directive</a>]</span>.
             </span>
         </li>
         <li>
