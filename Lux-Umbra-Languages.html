@@ -2009,22 +2009,26 @@
 <h1 id="import-directive"></h1>
 <p>
     The <b>Import directive</b> allows the <a href="#modules">module</a> to <b>access</b> and <b>rename <a href="#name-resolution">symbols</a></b> declared in <b>other modules</b>.<br>
-    Only <a href="#name-resolution">symbols</a> exported using the <a href="#export-directive">Export directive</a> can be imported.
+    Only <a href="#name-resolution">symbols</a> exported using the <a href="#export-directive">Export directive</a> and their children can be imported.<br>
+    The <code>*</code> character can be used to import all the <a href="#name-resolution">symbols</a> inside the <a href="#modules">module</a>. <code>*</code> doesn't allow renaming.<br>
 </p>
 <p>
-    When an Import directive is used, it creates a new namespace inside the <a href="#root-scope">root scope</a> (.) containing the imported <a href="#name-resolution">symbols</a>, both renamed as specified in the directive.<br>
-    Anything these <a href="#name-resolution">symbols</a> depend on is automatically copied but not accessible unless intentionally imported.<br>
-    New module namespaces always generate a <a href="#symbol-aliases">Symbol alias</a> for consistency reasons.<br>
-    Using <a href="#symbol-aliases">Symbol aliases</a> allows import directives to follow the same <a href="#name-shadowing">Name shadowing</a> rules that apply to <a href="#declarations">Symbol declarations</a>.
-</p>
-<p>
-    If the <a href="#modules">module</a> you are importing <a href="#name-resolution">symbols</a> from doesn't specify an export identifier, the name of the file without its extensions is used.<br>
-    The <code>*</code> character can be used to import all the <a href="#name-resolution">symbols</a> inside the <a href="#modules">module</a>. <code>*</code> doesn't allow renaming.
-
+    When an Import directive is used, it creates a new namespace inside the <a href="#root-scope">root scope</a> (.) containing the imported <a href="#name-resolution">symbols</a>, renamed as specified in the directive.<br>
+    Anything these <a href="#name-resolution">symbols</a> depend on is automatically imported but not accessible unless intentionally stated.<br>
 </p>
 <syntax2->
     <label2- id="copy.syntax--import-directive">Import syntax</label2->
 </syntax2->
+<p>
+    When the <code><w->import</w-></code> <a href="#keywords">keyword</a> is used, the container <a href="#namespaces">namespace</a> is preserved.<br>
+    The new <a href="#namespaces">namespace</a> is created using the export <a href="#identifiers">identifier</a> of the <a href="#modules">module</a> you are importing from, or, if not specified, the name of the file without its extensions.<br>
+    The container <a href="#namespaces">namespace</a> can also be renamed.<br>
+    <a href="#namespaces">Namespaces</a> created through the <code><w->import</w-></code> <a href="#keywords">keyword</a> always generate a <a href="#symbol-aliases">Symbol alias</a> for consistency reasons.<br>
+    Using <a href="#symbol-aliases">Symbol aliases</a> allows import directives to follow the same <a href="#name-shadowing">Name shadowing</a> rules that apply to <a href="#declarations">Symbol declarations</a>.
+</p>
+<p>
+    When the <code><w->include</w-></code> <a href="#keywords">keyword</a> is used, the container <a href="#namespaces">namespace</a> is not preserved and the <a href="#name-resolution">symbols</a> are placed directly inside the <a href="#modules">module</a> <a href="#namespaces">namespace</a>.
+</p>
 
 <split-example-container->
     <split-example-container-left->
@@ -2034,11 +2038,11 @@
                 <c->// [module "main.ubr"]</c->
 
                 <t->int</t-> math;
-                <w->from</w-> <s->&lt;math&gt;</s-> <w->import</w-> <f->sum</f->;
-                <w->from </w-><s->&lt;io&gt;</s-> <w->import</w-> <f->print</f-> <w->as</w-> write;
+                <w->from</w-> <s->&lt;math&gt;</s-> <w->include</w-> <f->sum</f->;
+                <w->from </w-><s->&lt;io&gt;</s-> <w->import</w-> <f->print</f-> <w->as</w-> <f->write</f->;
 
                 <t->void</t-> <f->main</f->(){
-                    io.<f->write</f->(math.<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
+                    io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
                 }
 
 
@@ -2064,7 +2068,7 @@
                 <c->// this is what the program looks like</c->
 
                 . {
-                    <w->namespace</w-> math {
+                    <w->namespace</w-> module { <c->// Merges with the current module</c->
                         <c->// sum function...</c->
                     }
 
@@ -2078,7 +2082,7 @@
                         <w->alias</w-> io <w->as</w-> io;
 
                         <t->void</t-> <f->main</f->(){
-                            io.<f->write</f->(math.<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
+                            io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
                         }
                     }
                 }
@@ -2105,26 +2109,64 @@
 <!--------------------------------------------------------------------->
 <h1 id="export-directive"></h1>
 <p>
-    The <b>Export directive</b> specifies which <b>symbols other modules</b> are allowed to <b>use</b> when importing from the current module.<br>
-    Only symbols declared in the module scope or symbols whose parent scopes are all namespaces can be exported.
+    The <b>Export directive</b> allows the module to <b>state and rename</b> the <b><a href="#name-resolution">symbols</a> other <a href="#modules">modules</a></b> are allowed to <b>use</b> when importing from the current <a href="#modules">module</a>.<br>
+    Only <a href="#namespaces">namespaces</a>, <a href="#enums">enums</a>, <a href="#structs">structs</a>, <a href="#routines">routines</a>, <a href="#variables">variables</a> and <a href="#templates">templates</a>
+    declared in the <a href="#modules">module</a> <a href="#scopes">scope</a> or whose parent <a href="#scopes">scopes</a> are only <a href="#namespaces">namespaces</a> can be exported.<br>
+    Any additional <a href="#name-resolution">symbol</a> upon which an exported <a href="#name-resolution">symbol</a> depends is automatically exported but hidden from the other <a href="#modules">modules</a>.
 </p>
 <p>
-    It is possible to define an export identifier which will be used by the other modules to name the namespace containing the imported symbols.<br>
-    If an export identifier is not specified, the name of the file without its extensions is be used.<br>
-    If the file has a name that is not a valid identifier, a custom export identifier must be specified.
+    The <code>*</code> character can be used to export all the <a href="#name-resolution">symbols</a> inside the <a href="#modules">module</a>. <code>*</code> doesn't allow renaming.
+</p>
+<p>
+    It is possible to define an export <a href="#identifiers">identifier</a> which will be used by the other <a href="#modules">modules</a> to name the <a href="#namespaces">namespace</a> containing the imported <a href="#name-resolution">symbols</a>.<br>
+    If an export <a href="#identifiers">identifier</a> is not specified, the name of the file without its extensions is be used.<br>
+    If the file has a name that is not a valid <a href="#identifiers">identifier</a>, a custom export <a href="#identifiers">identifier</a> must be specified.
 </p>
 <syntax2->
     <label2- id="copy.syntax--export-directive">Export syntax</label2->
 </syntax2->
 
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->float</t-> pi = <k->3.14</k->;   <c->// Automatically exported as it is required by the "getTau" function, but not accessible</c->
+
+        <t->float</t-> <f->getTau</f->(){
+            <w->return</w-> <k->pi</k-><f->*</f-><k->2</k->;
+        }
+
+        <w->export</w-> <w->as</w-> notPi;
+        <w->export</w-> <f->getTau</f->;
+    </div>
+</example2->
+
 <p>
-    The Export directive doesn't allow changes to the <a href="#identifiers">names</a> of parent <a href="#namespaces">namespaces</a>, but it can be used in conjunction with <a href="#symbol-aliases">Symbol aliases</a>
-    and <a href="#namespaces">Namespaces</a> to create clean interfaces while preserving the internal structure of the <a href="#modules">module</a>.
+    While the Export directive doesn't preserve the parent <a href="#namespaces">namespaces</a> of a <a href="#name-resolution">symbol</a> nor can it add new ones, it can be used in conjunction with <a href="#symbol-aliases">Symbol aliases</a>
+    and <a href="#namespaces">Namespaces</a> to create a clean interface while preserving the internal structure of the <a href="#modules">module</a>.
 </p>
 <example2->
     <label2->Example</label2->
     <div>
+        <w->from</w-> <s->&lt;math&gt;</s-> <w->import</w-> <f->pow</f->;
 
+        <t->float</t-> pi = <k->3.14</k->
+
+        <t->float</t-> <f->cube_v</f->(<t->float</t-> <a->side</a->) { <w->return</w-> math.<p->pow</p->(side, <k->3</k->) }
+        <t->float</t-> <f->cube_s</f->(<t->float</t-> <a->side</a->) { <w->return</w-> math.<p->pow</p->(side, <k->2</k->) <f->*</f-> <k->6</k->; }
+
+        <t->float</t-> <f->sphere_v</f->(<t->float</t-> <a->r</a->) { <w->return</w-> <k->pi</k-><f->/</f-><k->3</k-><f->*</f-><k->4</k-><f->*</f->math.<f->pow</f->(r, <k->3</k->); }
+        <t->float</t-> <f->sphere_s</f->(<t->float</t-> <a->r</a->) { <w->return</w-> <k->pi</k-><f->*</f-><k->4</k-><f->*</f->math.<f->pow</f->(r, <k->2</k->); }
+
+
+        <w->namespace</w-> volume {
+            <w->alias</w-> <f->cube_v</f-> <w->as</w-> <f->cube</f->;
+            <w->alias</w-> <f->sphere_v</f-> <w->as</w-> <f->sphere</f->;
+        }
+        <w->namespace</w-> surface {
+            <w->alias</w-> <f->cube_s</f-> <w->as</w-> <f->cube</f->;
+            <w->alias</w-> <f->sphere_s</f-> <w->as</w-> <f->sphere</f->;
+        }
+        <w->export</w-> volume, surface;
     </div>
 </example2->
 
