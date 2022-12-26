@@ -1,6 +1,11 @@
 
 function move_to_view(){
-    document.getElementById(location.hash.slice(1)).scrollIntoView(true);
+    let hash = location.hash.slice(1);
+    let id = hash;
+    if(hash.length == 0 || hash == null || document.getElementById(id) == null) id = "overview";
+
+    console.log(id);
+    document.getElementById(id).scrollIntoView(true);
 }
 
 

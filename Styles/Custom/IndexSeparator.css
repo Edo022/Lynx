@@ -1,0 +1,9 @@
+
+index-separator- {
+    display: block;
+    background-color: var(--fg-separator);
+    min-height: 5px;
+    min-width: 100%;
+    border-radius: 2.5px;
+    margin: 20px 0 20px 0;
+}

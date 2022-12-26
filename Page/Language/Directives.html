@@ -36,7 +36,8 @@
     Using <a href="#symbol-aliases">Symbol aliases</a> allows import directives to follow the same <a href="#name-shadowing">Name shadowing</a> rules that apply to <a href="#declarations">Symbol declarations</a>.
 </p>
 <p>
-    When the <code><w->include</w-></code> <a href="#keywords">keyword</a> is used, the container <a href="#namespaces">namespace</a> is not preserved and the <a href="#name-resolution">symbols</a> are placed directly inside the <a href="#modules">module</a> <a href="#namespaces">namespace</a>.
+    When the <code><w->include</w-></code> <a href="#keywords">keyword</a> is used, the container <a href="#namespaces">namespace</a> is not preserved and the <a href="#name-resolution">symbols</a> are placed directly inside the <a href="#modules">module</a> <a href="#namespaces">namespace</a>.<br>
+    The <code><w->include</w-></code> <a href="#keywords">keyword</a> doesn't generate any <a href="#symbol-aliases">Symbol alias</a>.
 </p>
 
 <split-example-container->
@@ -46,14 +47,13 @@
             <div>
                 <c->// [module "main.ubr"]</c->
 
-                <t->int</t-> math;
+                <t->int</t-> io;
                 <w->from</w-> <s->&lt;math&gt;</s-> <w->include</w-> <f->sum</f->;
                 <w->from </w-><s->&lt;io&gt;</s-> <w->import</w-> <f->print</f-> <w->as</w-> <f->write</f->;
 
                 <t->void</t-> <f->main</f->(){
                     io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
                 }
-
 
 
 
@@ -86,9 +86,8 @@
                     }
 
                     <w->namespace</w-> module {
-                        <w->int</w-> math;
-                        <w->alias</w-> math <w->as</w-> math;
-                        <w->alias</w-> io <w->as</w-> io;
+                        <w->int</w-> io;
+                        <w->alias</w-> .io <w->as</w-> io;
 
                         <t->void</t-> <f->main</f->(){
                             io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
@@ -128,7 +127,7 @@
 </p>
 <p>
     It is possible to define an export <a href="#identifiers">identifier</a> which will be used by the other <a href="#modules">modules</a> to name the <a href="#namespaces">namespace</a> containing the imported <a href="#name-resolution">symbols</a>.<br>
-    If an export <a href="#identifiers">identifier</a> is not specified, the name of the file without its extensions is be used.<br>
+    If an export <a href="#identifiers">identifier</a> is not specified, the name of the file without its extensions is used.<br>
     If the file has a name that is not a valid <a href="#identifiers">identifier</a>, a custom export <a href="#identifiers">identifier</a> must be specified.
 </p>
 <syntax2->
