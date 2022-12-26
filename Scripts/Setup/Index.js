@@ -4,8 +4,13 @@ var setup_index = {
     // Indent and enumerate index elements
     format_elm : function(elm, depth, last){
         let children = elm.children;
+        let separators = 0;
         for(let i = 0; i < children.length; i++){
             let c = children[i];
+            if(c.tagName == 'INDEX-SEPARATOR-') {
+                separators += 1;
+                continue;
+            }
             if(c.tagName == 'INDEXD-' || c.tagName == 'INDEXH-') {
                 let id = c.innerHTML;
                 if(id.length == 0) {
@@ -13,7 +18,7 @@ var setup_index = {
                     continue;
                 }
                 let name = capitalize(id.split('.').pop()).replaceAll('-', ' ');
-                let num = (c.tagName == 'INDEXH-' ? last : (last + i + '.'));
+                let num = (c.tagName == 'INDEXH-' ? last : (last + (i - separators) + '.'));
 
                 // Fix index
                 c.innerHTML =
@@ -38,7 +43,7 @@ var setup_index = {
                 console.debug(`[${ id }] - loaded to ${ num }`);
             }
             else if(c.tagName == 'INDEX-') {
-                setup_index.format_elm(c, depth + 1, last + i + '.');
+                setup_index.format_elm(c, depth + 1, last + (i - separators) + '.');
             }
         }
     },
