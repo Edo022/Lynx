@@ -75,17 +75,17 @@
                 <indexd->language-structure.statements</indexd->
                 <indexd->language-structure.expressions</indexd->
             </index->
+        </index->
+        <index-><indexh->concepts</indexh->
             <index-><indexh->scopes</indexh->
                 <indexd->name-resolution</indexd->
                 <indexd->name-shadowing</indexd->
                 <indexd->multiple-declarations</indexd->
             </index->
-            <index-><indexh->concepts</indexh->
-                <indexd->left-and-right-values</indexd->
-                <indexd->undefined-values</indexd->
-                <indexd->undefined-behaviour</indexd->
-                <indexd->compile-time-expressions</indexd->
-            </index->
+            <indexd->left-and-right-values</indexd->
+            <indexd->undefined-values</indexd->
+            <indexd->undefined-behaviour</indexd->
+            <indexd->compile-time-expressions</indexd->
         </index->
     </index->
 
@@ -1082,8 +1082,7 @@
         <td><div class="split-td-outer">
             <div class="split-td">
                 <even-elm-><a href="#import-directive"><code><w->import</w-></code></a> directive</even-elm->
-                <even-elm-><a href="#export-directive"><code><w->export</w-></code></a> directive</even-elm->
-                <even-elm-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</even-elm->
+                <even-elm-><a href="#export-directive">Export</a> directive</even-elm->
                 <even-elm-><a href="#construct-directive"><code><w->construct</w-></code></a> directive</even-elm->
             </div>
         </div></td>
@@ -1236,7 +1235,6 @@
 <p>
     <b>Directives</b> are instructions that <b>modify</b> the <a href="#modules">module</a> on a <b>semantic</b> level.<br>
     They are used to define which <a href="#name-resolution">symbols</a> are <a href="#import-directive">imported</a> and/or <a href="#export-directive">exported</a> and to programmatically generate code.
-    //TODO shader directive
 </p>
 <ul>
     <li>Module interface</li>
@@ -1246,12 +1244,8 @@
             <span><a href="#import-directive">Imports</a> <a href="#symbols">symbols</a> from a <a href="#modules">module</a>.</span>
         </li>
         <li>
-            <span><elm-><a href="#export-directive"><code><w->export</w-></code></a> directive</elm-></span>
+            <span><elm-><a href="#export-directive">Export</a> directive</elm-></span>
             <span>Defines the <a href="#symbols">symbols</a> the <a href="#modules">module</a> provides when <a href="#import-directive">imported</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#shader-directive"><code><w->shader</w-></code></a> directive</elm-></span>
-            <span>Imports a Lux <a href="#modules">module</a> as shader. //TODO</span>
         </li>
     </ul>
     <li>Code generation</li>
@@ -1470,6 +1464,21 @@
         </li>
     </ul>
 </ul>
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Concepts                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="concepts"></h1>
 
 
 
@@ -1792,21 +1801,6 @@
         <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
     </div>
 </example2->
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Concepts                                                        -->
-<!--------------------------------------------------------------------->
-<h1 id="concepts"></h1>
 
 
 
@@ -2322,14 +2316,14 @@
 <example2->
     <label2->Example</label2->
     <div>
-        <t->uint</t-> var= <k->0</k->;               <c->// Ok, var has value 0</c->
-        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya ha value 5.0</c->
+        <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
         <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
     </div>
 </example2->
 <p>
     Variables can be <a href="#references">references</a>.<br>
-    The <a href="#const-qualifier"><code><t->const</t-></code> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
 </p>
 
 
@@ -6495,23 +6489,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--shader-directive"><a href="#shader-directive">Shader directive</a></label2->
-    <table class="stx">
-        <tr>
-            <td></td>
-        </tr>
-    </table>
-</syntax2->
 
 
 
