@@ -74,7 +74,7 @@
     One or more syntactic elements create a <a href="#semantic-elements">semantic element</a>.
 </p>
 <p>
-    A syntactic element ends when a character that isn't allowed in its pattern is encountered.
+    A syntactic element ends when a character that isn't allowed in its pattern is encountered. //TODO   ".:"    "(?"    and similar cases
     Syntactic elements can also be separated by any number of <code><tab-></tab-></code>, <code><space-></space-></code> and <code><nl-></nl-></code> characters or <a href="#comments">comments</a>.<br>
     Sequences of characters that don't follow any of the recognizes patterns generate a syntactic error. //TODO LINK
 </p>
@@ -125,6 +125,7 @@
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
+                    <a href="#reflection">                   <code>:</code></a>
                 </div>
             </div></td>
         </tr>
@@ -194,7 +195,7 @@
 <h1 id="keywords"></h1>
 <p>
     <b>Keywords</b> are <b>built-in <a href="#syntactic-elements">syntactic elements</a></b> that perform hard coded actions or have <b>special meaning</b>.<br>
-    The language defines a total of 26 alphanumeric keywords and 5 symbolic keywords.<br>
+    The language defines a total of 26 alphanumeric keywords and 6 symbolic keywords.<br>
     Their usage is detailedly explained in their respective sections.
 </p>
 <ul>
@@ -307,7 +308,11 @@
         </li>
         <li>
             <span><a href="#name-resolution"><code>.</code></a></span>
-            <span>Concatenates 2 ore more <a href="#local-names">local names</a> to form a symbol <a href="#name-resolution">path</a>.
+            <span>Concatenates 2 or more <a href="#identifiers">identifiers</a> to form a <a href="#name-resolution">symbol path</a>.
+        </li>
+        <li>
+            <span><a href="#reflection"><code>:</code></a></span>
+            <span>Concatenates 2 or more <a href="#identifiers">identifiers</a> and <a href="#name-resolution">symbol paths</a> to form a <a href="#reflection">Reflection path</a>. Also used for <a href="#enums">Enum</a> <a href="#auto-scoping">auto scoping</a>.</span>
         </li>
     </ul>
 </ul>
@@ -508,11 +513,11 @@
 <!--------------------------------------------------------------------->
 <h1 id="semantic-elements"></h1>
 <p>
-    <b>Semantic elements</b> are <b>sequences</b> of one or more <a href="#syntactic-elements"><b>syntactic elements</b></a> that follow specific patterns defined by the syntax of the language.<br>
+    <b>Semantic elements</b> are <b>sequences</b> of one or more <a href="#syntactic-elements"><b>syntactic elements</b></a> or other semantic elements that follow specific patterns.<br>
     They define the contents and interface of the <a href="#modules">module</a>.
 </p>
 <p>
-    Semantic elements are divided in 4 categories:
+    Semantic elements are divided in 6 categories:
 </p>
 
 
@@ -600,6 +605,20 @@
             </div>
         </div></td>
     </tr>
+    <tr>
+        <th class="nowrap medium"><a href="#language-structure.symbol-paths">Symbol paths</a></th>
+        <td><div class="split-td-outer">
+            <div class="split-td">
+                <even-elm-><a href="#symbol-paths">Standard symbol path</a></even-elm->
+                <even-elm-><a href="#primitive-types">Primitive type path</a></even-elm->
+            </div>
+            <div class="split-td">
+                <even-elm-><a href="#reflection">Reflection path</a></even-elm->
+                <even-elm-><a href="#references">Reference type path</a></even-elm->
+                <even-elm-><a href="#addresses">Address type path</a></even-elm->
+            </div>
+        </div></td>
+    </tr>
 </table></div>
 
 
@@ -653,14 +672,6 @@
         <li>
             <span><a href="#while-loops">While</a> signature</span>
             <span>Defines the <a href="boolean-type">condition</a> of a <a href="while-loops">while loop</a></span>
-        </li>
-        <li>
-            <span><a href="#name-resolution">Symbol</a> path</span>
-            <span>References a <a href="#symbols">symbol</a></span>
-        </li>
-        <li>
-            <span><a href="#types">Type</a></span>
-            <span>Identifies a type. Part of declarations or <a href="#expressions">expressions</a></span>
         </li>
     </ul>
 </ul>
@@ -910,6 +921,50 @@
 </ul>
 
 
+
+
+
+
+<!-- TODO RENAME SYMBOL PATHS as they aren't just for symbols -->
+<!--------------------------------------------------------------------->
+<!-- Symbol paths                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="language-structure.symbol-paths"></h1>
+<p>
+    Symbol paths reference user defined <a href="#name-resolution">symbols</a>, generated compile time informations or default symbols that have no declaration.<br>
+    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a>.
+</p>
+<ul>
+    <li>Symbol paths</li>
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#symbol-paths">Standard symbol path</a></elm-></span>
+            <span>References a user-defined <a href="@name-resolution">symbol</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#primitive-types">Primitive type paths</a></elm-></span>
+            <span>References a <a href="#primitive-types">primitive type</a>.</span>
+        </li>
+    </ul><br>
+    <li>?? paths</li> //TODO
+    <ul class="summary-list">
+        <li>
+            <span><elm-><a href="#reflection-path">Reflection path</a></elm-></span>
+            <span>Accesses compile time informations about a symbol</span>
+        </li>
+        <li>
+            <span><elm-><a href="#references">Reference type paths</a></elm-></span>
+            <span>References a <a href="#references">reference type</a>.</span>
+        </li>
+        <li>
+            <span><elm-><a href="#addresses">Address type paths</a></elm-></span>
+            <span>References an <a href="#addresses">address type</a>.</span>
+        </li>
+    </ul>
+</ul>
+<p>
+    <a href="#types">Type</a> paths are a subcategory of symbol paths that point to symbols suitable to be used as types.
+</p>
 
 
 
