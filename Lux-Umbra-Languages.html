@@ -201,6 +201,14 @@
         <index-><indexh->reflection</indexh->
         </index->
         <indexd->inline-glsl</indexd->
+        <index-><indexh->misc</indexh->
+        </index->
+        <index-><indexh->reflection</indexh->
+        </index->
+        <index-><indexh->syntactic-sugar</indexh->
+        </index->
+        <index-><indexh->inline-glsl</indexh->
+        </index->
     </index->
 
 
@@ -692,8 +700,6 @@
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
                     <a href="#import-directive">        <code><w->from</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
-                    <elm->                              <code>(</code><code>)</code></elm->
-                    <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
                 </div>
                 <div class="split-td">
                     <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -708,6 +714,10 @@
                     <a href="#else-statement">               <code><w->else</w-></code></a>
                     <a href="#return-statement">             <code><w->return</w-></code></a>
                     <a href="#defer-statement">              <code><w->defer</w-></code></a>
+                </div>
+                <div class="split-td">
+                    <elm->                              <code>(</code><code>)</code></elm->
+                    <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
@@ -723,16 +733,23 @@
                     <a href="#templates">                  <elm-><code>&lt;</code><code>&gt;</code></elm-></a>
                     <a href="#template-constraints">       <code><w->when</w-></code></a>
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
-                    <a href="#const-qualifier">            <code><t->const</t-></code></a>
-                    <a href="#declarations.operator-precedence"><code><w->priority</w-></code></a>
-                    <code><w->as</w-></code>
-                    <code><w->to</w-></code>
                 </div>
                 <div class="split-td">
                     <a href="#references"><code>&</code></a>
                     <code>*</code>
                     <a href="#temp  orary-variables"><code>$</code></a>
                     <code>=</code> //TODO
+                </div>
+                <div class="split-td">
+                    <a href="#const-qualifier">            <code><t->const</t-></code></a>
+                    <a href="#declarations.operator-precedence"><code><w->priority</w-></code></a>
+                    <a href="#import-directive"><code><w->import</w-></code></a>
+                    <a href="#import-directive"><code><w->include</w-></code></a>
+                    <code><w->as</w-></code>
+                    <code><w->to</w-></code>
+                    <a href="#temporary-variables"><code>$</code></a>
+                    <code>=</code>
+                    <a href="#element-indexing"><elm-><code>[</code><code>]</code></elm-></a>
                 </div>
             </div></td>
         </tr>
@@ -5279,23 +5296,25 @@
 
 
 
+
+<!--------------------------------------------------------------------->
+<!-- Misc                                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="misc"></h1>
 <!--------------------------------------------------------------------->
 <!-- Reflection                                                      -->
 <!--------------------------------------------------------------------->
 <h1 id="reflection"></h1>
 
 
-
-
-
-
-
-
 <!--------------------------------------------------------------------->
 <!-- Inline GLSL                                                     -->
 <!--------------------------------------------------------------------->
 <h1 id="inline-glsl"></h1>
-
+<!--------------------------------------------------------------------->
+<!-- Syntactic sugar                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="syntactic-sugar"></h1>
 
 
 
