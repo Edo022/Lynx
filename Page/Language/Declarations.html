@@ -23,95 +23,6 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Namespaces                                                      -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.namespaces"></h1>
-<p>
-    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
-    The <a href="#name-resolution">symbol</a> categories they can contain are the same as their parent <a href="#scopes">scope</a>.<br>
-    They cannot contain <a href="#statements">statements</a>.
-</p>
-<p>
-    Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
-    Unnamed namespaces are allowed. Empty namespaces are also allowed.
-</p>
-<syntax2->
-    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
-</syntax2->
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <w->namespace</w-> a {
-            <t->int</t-> n = <k->4</k->;
-        }
-        <w->namespace</w-> {
-            <t->int</t-> n = <k->4</k->;
-        }
-
-        <t->int</t-> n2 = a.<k->n</k->;
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.variables                                          -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.variables"></h1>
-<p>
-    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
-    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
-</p>
-<p>
-    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
-</p>
-<syntax2->
-    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
-</syntax2->
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
-        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
-        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
-    </div>
-</example2->
-<p>
-    Variables can be <a href="#references">references</a>.<br>
-    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
-</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
 <!-- declarations.types                                              -->
 <!--------------------------------------------------------------------->
 <h1 id="declarations.types"></h1>
@@ -138,12 +49,12 @@
 <p>
     <b>Enums</b> are used to <b>group named <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
     The base <a href="#types">type</a> of an enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>, or an enum type.<br>
-    Elements are declared in the same way as <a href="#variables">variables</a>, but neither the type is not specified explicitly.
+    Elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly.
 </p>
 <p>
     Elements of integral enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
     Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
-    Multiple elements can have the same <a href="#values">value</a>, but each element can only be declared once.<br>
+    Multiple elements can have the same <a href="#values">value</a>, but each <a href="#identifiers">identifier</a> can only be declared once.<br>
     Empty enums and <a href="#unnamed-types">unnamed enums</a> are allowed. //FIXME inline declarations
 </p>
 <syntax2->
@@ -224,7 +135,7 @@
 <h1 id="declarations.structs"></h1>
 <p>
     <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
-    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including <a href="#arrays">arrays</a>, other structs and <a href="#references">references</a>.<br>
+    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including <a href="#templates">template</a> <a href="#structs">structs</a> and <a href="#enums">enums</a>, other structs, <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
     They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
 </p>
 <p>
@@ -497,7 +408,7 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- declarations.specual-functions                                  -->
+<!-- declarations.special-functions                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="declarations.special-functions"></h1>
 
@@ -505,6 +416,76 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.misc                                               -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.misc"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Namespaces                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.namespaces"></h1>
+<p>
+    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
+    The <a href="#name-resolution">symbol</a> categories they can contain are the same as their parent <a href="#scopes">scope</a>.<br>
+    They cannot contain <a href="#statements">statements</a>.
+</p>
+<p>
+    Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
+    Unnamed namespaces are allowed. Empty namespaces are also allowed.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->namespace</w-> a {
+            <t->int</t-> n = <k->4</k->;
+        }
+        <w->namespace</w-> {
+            <t->int</t-> n = <k->4</k->;
+        }
+
+        <t->int</t-> n2 = a.<k->n</k->;
+    </div>
+</example2->
 
 
 
@@ -569,6 +550,40 @@
 
 
 
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- declarations.variables                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="declarations.variables"></h1>
+<p>
+    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
+    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
+</p>
+<p>
+    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
+</p>
+<syntax2->
+    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
+        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
+    </div>
+</example2->
+<p>
+    Variables can be <a href="#references">references</a>.<br>
+    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+</p>
 
 
 
