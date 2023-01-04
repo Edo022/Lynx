@@ -5,77 +5,218 @@
 <!--------------------------------------------------------------------->
 <h1 id="routines"></h1>
 <p>
-    //TODO UPADTE DESCRIPTION
-    //TODO UPDATE ALL LINKS TO FUNCTIONS
+    <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
+    They are used to organize the module, provide features and prevent code duplication.<br>
+    The routine execution starts from its first <a href="#statements">statement</a> and ends after the first encountered <a href="#return-statements">return statement</a>.
 </p>
+<p>
+    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>.<br>
+    They use different signatures and <a href="#routine-calls">calling</a> syntaxes but share the same <a href="#declarations.routine-parameters">parameter</a> and body declarations.
+</p>
+<p>
+    Each routine <a href="#return-statement">returns</a> a single value when <a href="#routine-calls">called</a>.<br>
+    The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
+    Routines can <a href="#return-statement">return</a> any <a href="#types">type</a>, including <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
+    The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
+</p>
+
+
+
 
 
 <!--------------------------------------------------------------------->
 <!-- Functions                                                       -->
 <!--------------------------------------------------------------------->
 <h1 id="functions"></h1>
-<p>
-    <b>Functions</b> are the <b>main component</b> of the language.<br>
-    They contain the statements that will be executed during run time and manage inputs and outputs of the shader.
-</p>
+
+
 
 
 <!--------------------------------------------------------------------->
-<!-- Function definitions                                            -->
+<!-- Function declarations                                           -->
 <!--------------------------------------------------------------------->
-<h1 id="function-definitions"></h1> <!-- TODO REMOVE -->
+<h1 id="function-declarations"></h1>
 <p>
-    A <b>function definition</b> consists of its <b>type</b> and <b>name</b> followed by a <b>list of arguments</b> and its statements enclosed in <code>{</code><code>}</code> delimiters.
+    <b>Functions</b> are a type of <b><a href="declarations.routines">routine</a></b> that requires parentheses to be called.<br>
+    They always use the infix notation and can take any number of <a href="#declarations.routine-parameters">parameters</a>.
 </p>
 <p>
-    A function can take an arbitrary number of parameters of any type. Paramters are declared like variables and behave in the same exact way.<br>
-    The expressions used to call the function are called arguments.<br>
-    Each argument must be implicitly convertible to the type of the parameter.<br>
-    Functions are allowed to take no arguments.
+    Function <a href="#identifiers">identifiers</a> must be alphanumeric.
 </p>
-<p>
-    There is no function overloading.
-</p>
-
-<syntax->
-    <left->
-        <label-></label->
-        <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
-        </div>
-    </left->
-    <right->
-        <label->Parameter syntax</label->
-        <div>
-            <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm->
-        </div>
-    </right->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
 <example2->
-    <label2->Example</label2->
+    <label2->Example - Add function</label2->
     <div>
-        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
+        <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
+            <w->return</w-> a + b;
+        }
 
         <t->void</t-> <f->main</f->(){
-            <t->int</t-> var = <k->0</k->;
-            <f->fun</f->(<k->var</k->);
+            <t->int</t-> n = </t-><f->add</f->(<k->4</k->, <k->6</k->)
         }
     </div>
 </example2->
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- The main function                                               -->
+<!--------------------------------------------------------------------->
+<h1 id="the-main-function"></h1>
 <p>
-    See
-    <a href="#runtime-statements">Runtime statements</a>,
-    <a href="#types">Types</a>
+    The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
+    Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
+</p>
+<p>
+    The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
+    The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
+    It can also be called by other functions or itself, but it cannot be a template.<br>
 </p>
 
 
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
-<!-- Reference parameters                                            -->
+<!-- Operators                                                       -->
 <!--------------------------------------------------------------------->
-<h1 id="reference-parameters"></h1>
+<h1 id="operators"></h1>
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator declarations                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-declarations"></h1>
+<p>
+    <b>Operators</b> are a type of <b><a href="#declarations.routines">routine</a></b> that doesn't require parentheses to be <a href="#routine-calls">called</a> and can use <b>multiple <a href="#identifiers">identifiers</a></b>.<br>
+    Each <a href="#identifiers">identifier</a> can be prefix, infix or postfix, depending on where it is declared in the operator signature.<br>
+    Operators can take any number of <a href="#declarations.routine-parameters">parameters</a>, but they cannot be 0 and must be separated by exactly 1 <a href="#identifiers">identifier</a>.
+</p>
+<p>
+    Operator <a href="#identifiers">identifiers</a> can be alphanumeric or symbolic.<br>
+    Declaring consecutive <a href="#idnetifiers">identifiers</a> is not allowed.<br>
+    Operator precedence is explained in <a href="#declarations.operator-precedence">Operator precedence</a>.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+<example2->
+    <label2->Example 1 - Promotion operator</label2->
+    <div>
+        <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
+            <w->return</w-> n;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> r = <f->+</f->2;
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2 - Python-like ternary operator</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
+            <w->if</w->(condition) <w->return</w-> a;
+            <w->else</w-> <w->return</w-> b;
+        }
+
+        <t->void</t-> <f->main</f->(<t->bool</t-> <a->c</a->){
+            <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator precedence                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-precedence"></h1>
+<p>
+    In <b>absence</b> of <b>parentheses</b>, the order in which <b><a href="#declarations.operators">operators</a></b> in the <b>same <a href="#expressions">expression</a></b> are <b><a href="#operator-calls">called</a></b> depends on their <b>priority</b> and <b>associativity</b>.<br>
+    Priority and associativity are specified in the <a href="#declarations.operators">operator signature</a> as a <a href="#compile-time-expressions">compile time</a> <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#expressions">expression</a>
+    ranging from <code><k->0</k-></code> to <code><k->15</k-></code>, followed by the <code><w->r</w-></code> or <code><w->l</w-></code> <a href="#meta-keywords">meta keyword</a>.<br>
+</p>
+<p>
+    The value indicates the priority.<br>
+    Operators declared with lower values have higher priority and are evaluated first.<br>
+    Left-associative operators are always evaluated before right-associative operators with the same priority.
+</p>
+<p>
+    The <code><w->r</w-></code> and <code><w->l</w-></code> <a href="#meta-keywords">meta keywords</a> indicate right and left associativity.<br>
+    Associativity defines the order in which operators with the same priority and associativity are evaluated.<br>
+    Right-associative operators are evaluated starting from the right, whilst left-associative operators are evaluated starting from the left.<br>
+</p>
+<example2->
+    <label2->Example 1 - Priority</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->r</w->) {
+            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->q</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->5</k-> <w->r</w->) {
+            <w->return</w-> b <f->-</f-> a;
+        }
+
+        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            <c->// Evaluated as ((a o (b p c)) q a)</c->
+            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2 - Associativity</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
+        }
+
+        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            <c->// Evaluated as ((a o b) p c)</c->
+            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Routine parameters                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="routine-parameters"></h1>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
+</syntax2->
 <p>
     By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
     If a parameter name is preceeded by a <b><code>&</code></b> <a href="#syntactic-elements">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
@@ -110,99 +251,7 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Function calls                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="function-calls"></h1>
-<p>
-    <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
-    A function call must provide an argument for each parameter of the function.<br>
-    Reference parameters (<a href="#references"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
-</p>
-<p>
-    The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>
-    //TODO templates
-    //TODO functions are called with *function reference* and a list of parameters. not just their name
-</p>
-
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
-            <elm->name<sup>id</sup></elm->()
-        </div>
-    </fill->
-</syntax->
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
-        <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
-
-        <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
-        <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
-
-        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
-        <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
-
-        <t->void</t-> <f->main</f->(){
-            <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
-            n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
-        }
-    </div>
-</example2->
-//TODO update example
-
-
-<!--------------------------------------------------------------------->
-<!-- Unnamed scopes                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="unnamed-scopes"></h1>
-<p>
-    //TODO
-</p>
-
-
-<!--------------------------------------------------------------------->
-<!-- The main function                                               -->
-<!--------------------------------------------------------------------->
-<h1 id="the-main-function"></h1>
-<p>
-    The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
-    Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
-</p>
-<p>
-    The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
-    The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
-    It can also be called by other functions or itself, but it cannot be a template.<br>
-</p>
 
 
 
 
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Operators                                                       -->
-<!--------------------------------------------------------------------->
-<h1 id="operators"></h1>
-
-
-<!--------------------------------------------------------------------->
-<!-- Operator definitions                                            -->
-<!--------------------------------------------------------------------->
-<h1 id="operator-definitions"></h1>
-
-
-<!--------------------------------------------------------------------->
-<!-- Operator calls                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="operator-calls"></h1>

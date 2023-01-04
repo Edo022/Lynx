@@ -183,137 +183,29 @@
 <!--------------------------------------------------------------------->
 <h1 id="enums"></h1>
 <p>
-    <b>Enums</b> are used to <b>group named <a href="#literals">literals</a></b> of the same <a href="#types">type</a>.<br>
-    The base <a href="#types">type</a> of the enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>.<br>
-    Elements are declared in the same way as <a href="#variables">variables</a>, but neither the <a href="#types">type nor the <a href="#const-qualifier">const qualifier</a> are specified explicitly.<br>
-    The initializer values are implicitly converted to the base <a href="#types">type</a> of the enum.
+    <b>Enums</b> are used to <b>group named <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
+    The base <a href="#types">type</a> of an enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>, or an enum type.<br>
+    Elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly.
 </p>
-<syntax->
-    <left->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>}</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>enum</code></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>:</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>{</code></td>
-                    <td><loop-end-></loop-end-><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><even-elm->element declaration</even-elm-></td>
-                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
-                    <td><code>;</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><code>strict</code></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </left->
-    <right->
-        <label->Element declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><code>=</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>r</sup></t-></elm-></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </right->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
 <p>
-    Elements of integral enums which are not initialized have the <a href="#values">value</a> of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
+    Elements of integral enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
     Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
-    Multiple elements can have the same <a href="#values">value</a>, but each element can only be declared once.<br>
-    Empty enums, <a href="#unnamed-types">unnamed enums</a> and trailing element <code>;</code> are allowed.
+    Multiple elements can have the same <a href="#values">value</a>, but each <a href="#identifiers">identifier</a> can only be declared once.<br>
+    Empty enums and <a href="#unnamed-types">unnamed enums</a> are allowed. //FIXME inline declarations
 </p>
+<syntax2->
+    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
+    <label2- id="copy.syntax--enum-declaration-body">Enum body</label2->
+    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
+</syntax2->
+
+<p>
+    By default, all enum elements behave exactly as if they were declared as const variables with type the base type of the enum.<br>
+    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
+    Strict enums can only be assigned values of the same enum type, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
+</p>
+
 
 <example2->
     <label2->Example 1</label2->
@@ -341,14 +233,8 @@
         }
     </div>
 </example2->
-
-<p>
-    By default, all enums behave exactly as their base <a href="#types">types</a>, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
-    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
-    Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
-</p>
 <example2->
-    <label2->Example</label2->
+    <label2->Example 3</label2->
     <div>
         <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
             pi  = <k->3.14159</k->;
@@ -365,6 +251,22 @@
 </example2->
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Aggregate types                                                 -->
 <!--------------------------------------------------------------------->
@@ -376,135 +278,53 @@
 <!--------------------------------------------------------------------->
 <h1 id="structs"></h1>
 <p>
-    <b>Structs</b> are used to <b>group named <a href="#values">values</a></b> of <b>different <a href="#types">types</a></b>.<br>
-    The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a> and other structs.<br>
+    <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
+    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including <a href="#templates">template</a> <a href="#structs">structs</a> and <a href="#enums">enums</a>, other structs, <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
     They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
-    As with <a href="#variables">variables</a>, uninitialized members cannot be used within <a href="#expressions">expressions</a>. Struct <a href="#values">values</a> must also be fully initialized before they can be used in <a href="#expressions">expressions</a>.
 </p>
 <p>
-    Empty structs, <a href="#unnamed-types">unnamed structs</a> and trailing element <code>;</code> are allowed.<br>
-    Struct initializer <a href="#values">values</a> are explained in <a href="#constructors">Constructors</a>.
+    Empty structs and <a href="#unnamed-types">unnamed structs</a> are allowed.
 </p>
-<syntax->
-    <left->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>}</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>struct</code></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>{</code></td>
-                    <td><loop-end-></loop-end-><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><even-elm->member declaration</even-elm-></td>
-                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
-                    <td><code>;</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </left->
-    <right->
-        <label->Member declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-c-></branch-c-><branch-tr-></branch-tr-><branch-end-></branch-end-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </right->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
+    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
+    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
+</syntax2->
 
 <example2->
-        <label2->Example</label2->
+    <label2->Example</label2->
     <div>
         <w->struct</w-> <t->idk</t-> {
             <t->uint</t-> a, b;        <c->// Ok</c->
             <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
             <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
         }
+
         <t->void</t-> <f->main</f->(){
             <t->idk</t-> var;
-
             var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
             var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
-            <c->//var.b = var.c[0];     </c-><ce->// Error, var.c is uninitialized</ce->
         }
     </div>
 </example2->
-<p>
-    See
-    <a href="#primitive-types">Primitive types</a>,
-    <a href="#arrays">Arrays</a>,
-    <a href="#enums">Enums</a>
-</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!--------------------------------------------------------------------->
@@ -690,111 +510,6 @@
     Passing <code><t->viod</t-></code> to a <a href="#templates">template</a> parameter is allowed.
 </p>
 
-
-<!--------------------------------------------------------------------->
-<!-- Typename                                                         -->
-<!--------------------------------------------------------------------->
-<h1 id="typename"></h1>
-<p>
-    <b>Typenames</b> are special <a href="#types">types</a> that can <b>store</b> the <a href="#name-resolution">complete name</a> of any <b><a href="#types">type</a></b> to allow type <a href="#common-operator">comparisons</a>.<br>
-    When a <a href="#types">type</a> is passed to a <a href="#function-definitions">function parameter</a> or anywhere a <code><t->typename</t-></code> <a href="#values">value</a> is required, it is interpreted as a <code><t->typename</t-></code>.<br>
-    <code><t->typename</t-></code> <a href="#constructors">constructors</a> are allowed, as well as <code><t->typename</t-></code> <a href="#structs">struct</a> elements, <code><t->typename</t-></code> <a href="#tuples">tuple</a> elements and <code><t->typename</t-></code> <a href="#arrays">arrays</a>.
-</p>
-<p>
-    All <code><t->typename</t-></code> values must be known at <a href="#compile-time-expressions">compile time</a>, and they cannot be used to declare <a href="#semantic-elements">symbols</a> or call <a href="#constructors">constructors</a> (for these, <a href="#templates">templates</a> are used).<br>
-    Passing <code><t->typename</t-></code> to a <a href="#templates">template</a> parameter is allowed.<br>
-    <code><t->typename</t-></code> is a valid <code><t->typename</t-></code> <a href="#values">value</a>.
-</p>
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
-        <c->t1 t2 = int;</c->              <ce->// Error, typename cannot be used to declare symbols</ce->
-
-        <t->auto</t-> <f->main</f->(){
-            <w->return</w-> <t->typename</t->(<t->typeof</t->(<f->main</f->)) <f->==</f-> <k->t1</k->;         <c->// Ok, returns false</c->
-        }
-    </div>
-</example2->
-
-//TODO
-//TODO
-//TODO FINISH UPDATING TYPES
-//TODO
-//TODO
-//TODO UPDATE ALL SYNTAXES WITH SYNTAX HIGHLIGHTING AND THE PURPLE THING
-//TODO ALL THE WAY DOWN TO TYPES
-//TODO UPDATE SYNTAX-SPECIFIC TOKENS USAGES
-//TODO
-//TODO
-//TODO ADD TYPOGRAPHICAL CONVENTIONS
-//TODO ADD OBJECT STORAGE DURATION/LIFETIME IN LANGUAGE CONCEPTS
-//TODO
-//TODO
-//TODO ADD ALIGNMENT OF TYPES
-//TODO
-//TODO
-<!--------------------------------------------------------------------->
-<!-- Element indexing                                                -->
-<!--------------------------------------------------------------------->
-<h1 id="element-indexing"></h1>
-<p>
-    <b>Elements</b> of <b><a href="#structs">structs</a></b>, <b><a href="#enums">enums</a></b> <b><a href="#arrays">arrays</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced
-    and accessed by referencing their parent object or semantic element and specifying the <b>index</b> of the element between <elm-><code>[</code><code>]</code></elm-> tokens.<br>
-    Only <a href="#arrays">arrays</a> can use <a href="#compile-time-expressions">runtime values</a> as indices. All the other types must use <a href="#compile-time-expressions">compile time expressions</a>
-</p>
-<p>
-    The return value is an <a href="#left-and-right-values">r-value</a> for <a href="#enums">enums</a> and an <a href="#left-and-right-values">l-value</a> for any other type.
-    In the latter case, modifying the return value also changes the original element.<br>
-</p>
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->symbol<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>[</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->u32<sup>r</sup></t-></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>]</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <k->struct</k-> s {
-            <t->double</t-> a;
-            <t->float</t->  b;
-        }
-        <k->enum</k-> e {
-            a, b;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            (<t->int</t->, <t->float</t->) var1;
-            <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
-            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
-
-            <t->s</t-> var2;
-            <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
-            <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
-
-            <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
-        }
-    </div>
-</example2->
-<p>
-    //TODO add array examples
-    //TODO add compile time errors examples
-</p>
 
 
 
@@ -1337,53 +1052,3 @@
 </example2->
 
 
-<!--------------------------------------------------------------------->
-<!-- Unnamed types                                                   -->
-<!--------------------------------------------------------------------->
-<h1 id="unnamed-types"></h1>
-<p>
-    When an <a href="#enums">enum</a> or <a href="#structs">struct</a> doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the <a href="#types">type</a> and the <a href="#semantic-elements">symbol</a> in the same construct.<br>
-    Similarly to the C syntax, the <a href="#types">type</a> <a href="#identifiers">identifier</a> is not specified and the definition is used as <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a>.
-</p>
-<p>
-    Any <a href="#semantic-elements">symbol</a> defined inside these <a href="#types">types</a> can still be referenced through the <a href="#typeof-specifier"><code><t->typeof</t-></code></a> and <a href="#typeof-specifier"><code><t->auto</t-></code></a> specifiers.<br>
-    Elements of <a href="#enums">enums</a> and <a href="#structs">structs</a> can be <a href="#element-indexing">indexed</a> and <a href="#name-resolution">accessed</a> normally.<br>
-    Defining an unnamed type without also declaring the <a href="#semantic-elements">symbol</a> is not allowed.
-</p>
-<example2->
-    <label2->Example 1</label2->
-    <div>
-        <w->strict enum</w-> : <t->bool</t-> {
-            on = <k->true</k->;
-            off = <k->false</k->;
-        } grasses;
-
-        <t->void</t-> <f->main</f->(){
-            grasses = <t->typeof</t->(grasses).<k->on</k->;
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
-    <div>
-        <w->struct</w-> {
-            <t->uint</t-> a, b;
-            <w->enum</w-> : <t->int</t-> {
-                idk1;
-                idk2;
-            } c;
-        } <f->fun</f->(){
-            <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed constructor of unnamed struct</c->
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->auto</t-> var <f->=</f-> <f->fun</f->();
-
-            <c->// Both are allowed</c->
-            var.c <f->=</f-> <t->typeof</t->(var.c).<k->idk1</k->;
-            var.c <f->=</f-> <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
-
-            <t->typeof</t->(var.a) a <f->=</f-> <k->0</k->;
-        }
-    </div>
-</example2->

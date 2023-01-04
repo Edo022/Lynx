@@ -110,26 +110,6 @@
             <indexd->export-directive</indexd->
             <indexd->construct-directive</indexd->
         </index->
-        <index-><indexh->declarations</indexh->
-            <index-><indexh->declarations.types</indexh->
-                <indexd->declarations.enums</indexd->
-                <indexd->declarations.structs</indexd->
-            </index->
-            <index-><indexh->declarations.routines</indexh->
-                <indexd->declarations.functions</indexd->
-                <indexd->declarations.operators</indexd->
-                <indexd->declarations.routine-parameters</indexd->
-                <indexd->declarations.operator-precedence</indexd->
-                <indexd->declarations.special-functions</indexd->
-            </index->
-            <index-><indexh->declarations.misc</indexh->
-                <indexd->declarations.namespaces</indexd->
-                <indexd->declarations.templates</indexd->
-                <indexd->declarations.template-constraints</indexd->
-                <indexd->declarations.symbol-aliases</indexd->
-                <indexd->declarations.variables</indexd->
-            </index->
-        </index->
         <index-><indexh->types</indexh->
             <index-><indexh->primitive-types</indexh->
                 <indexd->integral-types</indexd->
@@ -144,42 +124,42 @@
             </index->
             <index-><indexh->special-types</indexh->
                 <indexd->void</indexd->
-                <indexd->typename</indexd->
             </index->
-            <indexd->element-indexing</indexd->
             <indexd->implicit-conversions</indexd->
             <indexd->auto-specifier</indexd->
             <indexd->typeof-specifier</indexd->
-            <indexd->unnamed-types</indexd->
         </index->
-        <index-><indexh->values</indexh->
+        <index-><indexh->expressions</indexh->
             <index-><indexh->inline-values</indexh->
                 <indexd->literals</indexd->
-                <indexd->constructors</indexd->
+                <indexd->try-expression</indexd->
+                <indexd->inline-declarations</indexd->
             </index->
             <index-><indexh->stored-values</indexh->
-                <indexd->variables</indexd-> <indexd->temporary-variables</indexd->
+                <indexd->variables</indexd->
+                <indexd->temporary-variables</indexd->
+                <indexd->routine-parameters</indexd->
+            </index->
+            <index-><indexh->routine-calls</indexh->
+                <indexd->function-calls</indexd->
+                <indexd->operator-calls</indexd->
             </index->
         </index->
         <index-><indexh->routines</indexh->
             <index-><indexh->functions</indexh->
-                <indexd->function-definitions</indexd->
-                <indexd->reference-parameters</indexd->
-                <indexd->function-calls</indexd->
-                <indexd->unnamed-scopes</indexd->
+                <indexd->function-declarations</indexd->
                 <indexd->the-main-function</indexd->
             </index->
             <index-><indexh->operators</indexh->
-                <indexd->operator-definitions</indexd->
-                <indexd->operator-calls</indexd->
+                <indexd->operator-declarations</indexd->
+                <indexd->operator-precedence</indexd->
             </index->
+            <indexd->routine-parameters</indexd->
         </index->
         <index-><indexh->templates</indexh->
             <indexd->abbreviated-template-syntax</indexd->
             <indexd->template-constraints</indexd->
         </index->
-        <indexd->const-qualifier</indexd->
-        <indexd->symbol-aliases</indexd->
         <index-><indexh->statements</indexh->
             <index-><indexh->selection</indexh->
                     <indexd->if-statement</indexd->
@@ -198,16 +178,15 @@
             </index->
             <indexd->else-statement</indexd->
         </index->
-        <index-><indexh->reflection</indexh->
-        </index->
-        <indexd->inline-glsl</indexd->
         <index-><indexh->misc</indexh->
+            <indexd->declarations.namespaces</indexd->
+            <indexd->symbol-aliases</indexd->
+            <indexd->inline-glsl</indexd->
         </index->
         <index-><indexh->reflection</indexh->
         </index->
         <index-><indexh->syntactic-sugar</indexh->
-        </index->
-        <index-><indexh->inline-glsl</indexh->
+            <indexd->const-qualifier</indexd->
         </index->
     </index->
 
@@ -749,7 +728,6 @@
                     <code><w->to</w-></code>
                     <a href="#temporary-variables"><code>$</code></a>
                     <code>=</code>
-                    <a href="#element-indexing"><elm-><code>[</code><code>]</code></elm-></a>
                 </div>
             </div></td>
         </tr>
@@ -1052,13 +1030,6 @@
             <span>
                 Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values<br>
                 <span class="meta-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
-            </span>
-        </li>
-        <li>
-            <span><a href="#element-indexing"><elm-><code>[</code><code>]</code></elm-></a></span>
-            <span>
-                Used to access elements of <a href="#structs">structs</a> or <a href="#enums">enums</a>.<br>
-                <span class="meta-keyword-constraint">[When used after an expression of <a href="#structs">struct</a> or <a href="#enums">enum</a> type]</span>.
             </span>
         </li>
     </ul>
@@ -2349,598 +2320,6 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Declarations                                                    -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations"></h1>
-<p>
-    This section explains the declaration syntax and usage of each category of user-declared <a href="#semantic-elements">semantic elements</a>, also known as <a href="#name-resolution">symbols</a>.
-</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.types                                              -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.types"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.enums                                              -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.enums"></h1>
-<p>
-    <b>Enums</b> are used to <b>group named <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
-    The base <a href="#types">type</a> of an enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>, or an enum type.<br>
-    Elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly.
-</p>
-<p>
-    Elements of integral enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
-    Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
-    Multiple elements can have the same <a href="#values">value</a>, but each <a href="#identifiers">identifier</a> can only be declared once.<br>
-    Empty enums and <a href="#unnamed-types">unnamed enums</a> are allowed. //FIXME inline declarations
-</p>
-<syntax2->
-    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
-    <label2- id="copy.syntax--enum-declaration-body">Enum body</label2->
-    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
-</syntax2->
-
-<p>
-    By default, all enum elements behave exactly as if they were declared as const variables with type the base type of the enum.<br>
-    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
-    Strict enums can only be assigned values of the same enum type, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
-</p>
-
-
-<example2->
-    <label2->Example 1</label2->
-    <div>
-        <w->enum</w-> <t->e</t-> : <t->int</t-> {
-            a, b;              <c->// Ok, a = 0, b = 1</c->
-            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
-            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
-    <div>
-        <w->enum</w-> <t->c</t-> : <t->double</t-> {
-            pi = <k->3.14159</k->;      <c->// Ok</c->
-            e  = <k->2.71828</k->;      <c->// Ok</c->
-            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
-            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
-            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 3</label2->
-    <div>
-        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
-            pi  = <k->3.14159</k->;
-            e   = <k->2.71828</k->;
-            phi = <k->1.61803</k->;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
-            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
-            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
-        }
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.structs                                            -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.structs"></h1>
-<p>
-    <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
-    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including <a href="#templates">template</a> <a href="#structs">structs</a> and <a href="#enums">enums</a>, other structs, <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
-    They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
-</p>
-<p>
-    Empty structs and <a href="#unnamed-types">unnamed structs</a> are allowed.
-</p>
-<syntax2->
-    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
-    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
-    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
-</syntax2->
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <w->struct</w-> <t->idk</t-> {
-            <t->uint</t-> a, b;        <c->// Ok</c->
-            <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
-            <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->idk</t-> var;
-            var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
-            var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
-        }
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.routines                                           -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.routines"></h1>
-<p>
-    <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
-    They are used to organize the module, provide features and prevent code duplication.<br>
-    The routine execution starts from its first <a href="#statements">statement</a> and ends after the first encountered <a href="#return-statements">return statement</a>.
-</p>
-<p>
-    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>.<br>
-    They use different signatures and <a href="#routine-calls">calling</a> syntaxes but share the same <a href="#declarations.routine-parameters">parameter</a> and body declarations.
-</p>
-<p>
-    Each routine <a href="#return-statement">returns</a> a single value when <a href="#routine-calls">called</a>.<br>
-    The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
-    Routines can <a href="#return-statement">return</a> any <a href="#types">type</a>, including <a href="#references">references</a>.<br>
-    The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
-</p>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.functions                                          -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.functions"></h1>
-<p>
-    <b>Functions</b> are a type of <b><a href="declarations.routines">routine</a></b> that requires parentheses to be called.<br>
-    They always use the infix notation and can take any number of <a href="#declarations.routine-parameters">parameters</a>.
-</p>
-<p>
-    Function <a href="#identifiers">identifiers</a> must be alphanumeric.
-</p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
-    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
-    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
-</syntax2->
-<example2->
-    <label2->Example - Add function</label2->
-    <div>
-        <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
-            <w->return</w-> a + b;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->int</t-> n = </t-><f->add</f->(<k->4</k->, <k->6</k->)
-        }
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.operators                                          -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.operators"></h1>
-<p>
-    <b>Operators</b> are a type of <b><a href="#declarations.routines">routine</a></b> that doesn't require parentheses to be <a href="#routine-calls">called</a> and can use <b>multiple <a href="#identifiers">identifiers</a></b>.<br>
-    Each <a href="#identifiers">identifier</a> can be prefix, infix or postfix, depending on where it is declared in the operator signature.<br>
-    Operators can take any number of <a href="#declarations.routine-parameters">parameters</a>, but they cannot be 0 and must be separated by exactly 1 <a href="#identifiers">identifier</a>.
-</p>
-<p>
-    Operator <a href="#identifiers">identifiers</a> can be alphanumeric or symbolic.<br>
-    Declaring consecutive <a href="#idnetifiers">identifiers</a> is not allowed.<br>
-    Operator precedence is explained in <a href="#declarations.operator-precedence">Operator precedence</a>.
-</p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
-    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
-    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
-</syntax2->
-<example2->
-    <label2->Example 1 - Promotion operator</label2->
-    <div>
-        <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
-            <w->return</w-> n;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->int</t-> r = <f->+</f->2;
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 2 - Python-like ternary operator</label2->
-    <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
-            <w->if</w->(condition) <w->return</w-> a;
-            <w->else</w-> <w->return</w-> b;
-        }
-
-        <t->void</t-> <f->main</f->(<t->bool</t-> <a->c</a->){
-            <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
-        }
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.routine-parameters                                 -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.routine-parameters"></h1>
-<p>
-
-</p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
-</syntax2->
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.operator-precedence                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.operator-precedence"></h1>
-<p>
-    In <b>absence</b> of <b>parentheses</b>, the order in which <b><a href="#declarations.operators">operators</a></b> in the <b>same <a href="#expressions">expression</a></b> are <b><a href="#operator-calls">called</a></b> depends on their <b>priority</b> and <b>associativity</b>.<br>
-    Priority and associativity are specified in the <a href="#declarations.operators">operator signature</a> as a <a href="#compile-time-expressions">compile time</a> <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#expressions">expression</a>
-    ranging from <code><k->0</k-></code> to <code><k->15</k-></code>, followed by the <code><w->r</w-></code> or <code><w->l</w-></code> <a href="#meta-keywords">meta keyword</a>.<br>
-</p>
-<p>
-    The value indicates the priority.<br>
-    Operators declared with lower values have higher priority and are evaluated first.<br>
-    Left-associative operators are always evaluated before right-associative operators with the same priority.
-</p>
-<p>
-    The <code><w->r</w-></code> and <code><w->l</w-></code> <a href="#meta-keywords">meta keywords</a> indicate right and left associativity.<br>
-    Associativity defines the order in which operators with the same priority and associativity are evaluated.<br>
-    Right-associative operators are evaluated starting from the right, whilst left-associative operators are evaluated starting from the left.<br>
-</p>
-<example2->
-    <label2->Example 1 - Priority</label2->
-    <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
-            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
-        }
-
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->r</w->) {
-            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
-        }
-
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->q</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->5</k-> <w->r</w->) {
-            <w->return</w-> b <f->-</f-> a;
-        }
-
-        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
-            <c->// Evaluated as ((a o (b p c)) q a)</c->
-            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 2 - Associativity</label2->
-    <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
-            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
-        }
-
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
-            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
-        }
-
-        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
-            <c->// Evaluated as ((a o b) p c)</c->
-            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
-        }
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.special-functions                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.special-functions"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.misc                                               -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.misc"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Namespaces                                                      -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.namespaces"></h1>
-<p>
-    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
-    The <a href="#name-resolution">symbol</a> categories they can contain are the same as their parent <a href="#scopes">scope</a>.<br>
-    They cannot contain <a href="#statements">statements</a>.
-</p>
-<p>
-    Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
-    Unnamed namespaces are allowed. Empty namespaces are also allowed.
-</p>
-<syntax2->
-    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
-</syntax2->
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <w->namespace</w-> a {
-            <t->int</t-> n = <k->4</k->;
-        }
-        <w->namespace</w-> {
-            <t->int</t-> n = <k->4</k->;
-        }
-
-        <t->int</t-> n2 = a.<k->n</k->;
-    </div>
-</example2->
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.templates                                          -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.templates"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.template-constraints                               -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.template-constraints"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.symbol-aliases                                     -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.symbol-aliases"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- declarations.variables                                          -->
-<!--------------------------------------------------------------------->
-<h1 id="declarations.variables"></h1>
-<p>
-    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
-    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
-</p>
-<p>
-    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
-</p>
-<syntax2->
-    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
-</syntax2->
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
-        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
-        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
-    </div>
-</example2->
-<p>
-    Variables can be <a href="#references">references</a>.<br>
-    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
-</p>
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
 <!-- Types                                                           -->
 <!--------------------------------------------------------------------->
 <h1 id="types"></h1>
@@ -3123,137 +2502,29 @@
 <!--------------------------------------------------------------------->
 <h1 id="enums"></h1>
 <p>
-    <b>Enums</b> are used to <b>group named <a href="#literals">literals</a></b> of the same <a href="#types">type</a>.<br>
-    The base <a href="#types">type</a> of the enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>.<br>
-    Elements are declared in the same way as <a href="#variables">variables</a>, but neither the <a href="#types">type nor the <a href="#const-qualifier">const qualifier</a> are specified explicitly.<br>
-    The initializer values are implicitly converted to the base <a href="#types">type</a> of the enum.
+    <b>Enums</b> are used to <b>group named <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
+    The base <a href="#types">type</a> of an enum can be specified after its name and it must be one of the <a href="#primitive-types">primitive types</a>, or an enum type.<br>
+    Elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly.
 </p>
-<syntax->
-    <left->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>}</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>enum</code></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>:</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>{</code></td>
-                    <td><loop-end-></loop-end-><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><even-elm->element declaration</even-elm-></td>
-                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
-                    <td><code>;</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><code>strict</code></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </left->
-    <right->
-        <label->Element declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><code>=</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>r</sup></t-></elm-></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </right->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
 <p>
-    Elements of integral enums which are not initialized have the <a href="#values">value</a> of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
+    Elements of integral enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if they are the first.<br>
     Elements of <a href="#boolean-type">boolean</a> and <a href="#floating-point-types">floating point</a> enums must always be initialized.<br>
-    Multiple elements can have the same <a href="#values">value</a>, but each element can only be declared once.<br>
-    Empty enums, <a href="#unnamed-types">unnamed enums</a> and trailing element <code>;</code> are allowed.
+    Multiple elements can have the same <a href="#values">value</a>, but each <a href="#identifiers">identifier</a> can only be declared once.<br>
+    Empty enums and <a href="#unnamed-types">unnamed enums</a> are allowed. //FIXME inline declarations
 </p>
+<syntax2->
+    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
+    <label2- id="copy.syntax--enum-declaration-body">Enum body</label2->
+    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
+</syntax2->
+
+<p>
+    By default, all enum elements behave exactly as if they were declared as const variables with type the base type of the enum.<br>
+    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
+    Strict enums can only be assigned values of the same enum type, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
+</p>
+
 
 <example2->
     <label2->Example 1</label2->
@@ -3281,14 +2552,8 @@
         }
     </div>
 </example2->
-
-<p>
-    By default, all enums behave exactly as their base <a href="#types">types</a>, much like a <a href="#symbol-aliases">symbol alias</a>.<br>
-    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
-    Strict enums only allow values of the same enum, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
-</p>
 <example2->
-    <label2->Example</label2->
+    <label2->Example 3</label2->
     <div>
         <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
             pi  = <k->3.14159</k->;
@@ -3305,6 +2570,22 @@
 </example2->
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Aggregate types                                                 -->
 <!--------------------------------------------------------------------->
@@ -3316,135 +2597,53 @@
 <!--------------------------------------------------------------------->
 <h1 id="structs"></h1>
 <p>
-    <b>Structs</b> are used to <b>group named <a href="#values">values</a></b> of <b>different <a href="#types">types</a></b>.<br>
-    The members are declared in the same way as <a href="#variables">variables</a>, and they can be of any <a href="#types">type</a>, including <a href="#tuples">tuples</a>, <a href="#arrays">arrays</a> and other structs.<br>
+    <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
+    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including <a href="#templates">template</a> <a href="#structs">structs</a> and <a href="#enums">enums</a>, other structs, <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
     They cannot be <a href="#const-qualifier"><code><t->const</t-></code></a> and cannot have initializer values.<br>
-    As with <a href="#variables">variables</a>, uninitialized members cannot be used within <a href="#expressions">expressions</a>. Struct <a href="#values">values</a> must also be fully initialized before they can be used in <a href="#expressions">expressions</a>.
 </p>
 <p>
-    Empty structs, <a href="#unnamed-types">unnamed structs</a> and trailing element <code>;</code> are allowed.<br>
-    Struct initializer <a href="#values">values</a> are explained in <a href="#constructors">Constructors</a>.
+    Empty structs and <a href="#unnamed-types">unnamed structs</a> are allowed.
 </p>
-<syntax->
-    <left->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>}</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>struct</code></td>
-                    <td><branch-cr-></branch-cr-><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>{</code></td>
-                    <td><loop-end-></loop-end-><branch-tr-></branch-tr-><b-lr-></b-lr-></td>
-                    <td><even-elm->member declaration</even-elm-></td>
-                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
-                    <td><code>;</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </left->
-    <right->
-        <label->Member declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><branch-c-></branch-c-><branch-tr-></branch-tr-><branch-end-></branch-end-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </right->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->name<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
+    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
+    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
+    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
+</syntax2->
 
 <example2->
-        <label2->Example</label2->
+    <label2->Example</label2->
     <div>
         <w->struct</w-> <t->idk</t-> {
             <t->uint</t-> a, b;        <c->// Ok</c->
             <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
             <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
         }
+
         <t->void</t-> <f->main</f->(){
             <t->idk</t-> var;
-
             var.a = <k->4</k->;              <c->// Ok, var = (4, ?, ?)</c->
             var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
-            <c->//var.b = var.c[0];     </c-><ce->// Error, var.c is uninitialized</ce->
         }
     </div>
 </example2->
-<p>
-    See
-    <a href="#primitive-types">Primitive types</a>,
-    <a href="#arrays">Arrays</a>,
-    <a href="#enums">Enums</a>
-</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!--------------------------------------------------------------------->
@@ -3630,111 +2829,6 @@
     Passing <code><t->viod</t-></code> to a <a href="#templates">template</a> parameter is allowed.
 </p>
 
-
-<!--------------------------------------------------------------------->
-<!-- Typename                                                         -->
-<!--------------------------------------------------------------------->
-<h1 id="typename"></h1>
-<p>
-    <b>Typenames</b> are special <a href="#types">types</a> that can <b>store</b> the <a href="#name-resolution">complete name</a> of any <b><a href="#types">type</a></b> to allow type <a href="#common-operator">comparisons</a>.<br>
-    When a <a href="#types">type</a> is passed to a <a href="#function-definitions">function parameter</a> or anywhere a <code><t->typename</t-></code> <a href="#values">value</a> is required, it is interpreted as a <code><t->typename</t-></code>.<br>
-    <code><t->typename</t-></code> <a href="#constructors">constructors</a> are allowed, as well as <code><t->typename</t-></code> <a href="#structs">struct</a> elements, <code><t->typename</t-></code> <a href="#tuples">tuple</a> elements and <code><t->typename</t-></code> <a href="#arrays">arrays</a>.
-</p>
-<p>
-    All <code><t->typename</t-></code> values must be known at <a href="#compile-time-expressions">compile time</a>, and they cannot be used to declare <a href="#semantic-elements">symbols</a> or call <a href="#constructors">constructors</a> (for these, <a href="#templates">templates</a> are used).<br>
-    Passing <code><t->typename</t-></code> to a <a href="#templates">template</a> parameter is allowed.<br>
-    <code><t->typename</t-></code> is a valid <code><t->typename</t-></code> <a href="#values">value</a>.
-</p>
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->typename</t-> t1 = <t->typename</t->;   <c->// Ok</c->
-        <c->t1 t2 = int;</c->              <ce->// Error, typename cannot be used to declare symbols</ce->
-
-        <t->auto</t-> <f->main</f->(){
-            <w->return</w-> <t->typename</t->(<t->typeof</t->(<f->main</f->)) <f->==</f-> <k->t1</k->;         <c->// Ok, returns false</c->
-        }
-    </div>
-</example2->
-
-//TODO
-//TODO
-//TODO FINISH UPDATING TYPES
-//TODO
-//TODO
-//TODO UPDATE ALL SYNTAXES WITH SYNTAX HIGHLIGHTING AND THE PURPLE THING
-//TODO ALL THE WAY DOWN TO TYPES
-//TODO UPDATE SYNTAX-SPECIFIC TOKENS USAGES
-//TODO
-//TODO
-//TODO ADD TYPOGRAPHICAL CONVENTIONS
-//TODO ADD OBJECT STORAGE DURATION/LIFETIME IN LANGUAGE CONCEPTS
-//TODO
-//TODO
-//TODO ADD ALIGNMENT OF TYPES
-//TODO
-//TODO
-<!--------------------------------------------------------------------->
-<!-- Element indexing                                                -->
-<!--------------------------------------------------------------------->
-<h1 id="element-indexing"></h1>
-<p>
-    <b>Elements</b> of <b><a href="#structs">structs</a></b>, <b><a href="#enums">enums</a></b> <b><a href="#arrays">arrays</a></b> and <b><a href="#tuples">tuples</a></b> can be referenced
-    and accessed by referencing their parent object or semantic element and specifying the <b>index</b> of the element between <elm-><code>[</code><code>]</code></elm-> tokens.<br>
-    Only <a href="#arrays">arrays</a> can use <a href="#compile-time-expressions">runtime values</a> as indices. All the other types must use <a href="#compile-time-expressions">compile time expressions</a>
-</p>
-<p>
-    The return value is an <a href="#left-and-right-values">r-value</a> for <a href="#enums">enums</a> and an <a href="#left-and-right-values">l-value</a> for any other type.
-    In the latter case, modifying the return value also changes the original element.<br>
-</p>
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm->symbol<sup>id</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>[</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->u32<sup>r</sup></t-></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>]</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <k->struct</k-> s {
-            <t->double</t-> a;
-            <t->float</t->  b;
-        }
-        <k->enum</k-> e {
-            a, b;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            (<t->int</t->, <t->float</t->) var1;
-            <k->var1</k->[<k->0</k->];                        <c->// Complete name: module.main.var1[0]</c->
-            <k->var1</k->[<k->var1</k->[<k->0</k->] <f->/</f-> <k->2</k->];              <c->// Complete name: module.main.var1[1]</c->
-
-            <t->s</t-> var2;
-            <k->var2</k->[<k->0</k->] <f->=</f-> <k->1</k->;                    <c->// Complete name: module.main.var2.a</c->
-            <k->var2</k->[<k->var1</k->[<k->1</k->] <f->-</f-> <k->var1</k->[<k->2</k->]] <f->=</f-> <k->1</k->;    <c->// Complete name: module.main.var2.b</c->
-
-            <t->e</t->[<k->0</k->];                           <c->// Complete name: module.e.a</c->
-        }
-    </div>
-</example2->
-<p>
-    //TODO add array examples
-    //TODO add compile time errors examples
-</p>
 
 
 
@@ -4277,62 +3371,12 @@
 </example2->
 
 
-<!--------------------------------------------------------------------->
-<!-- Unnamed types                                                   -->
-<!--------------------------------------------------------------------->
-<h1 id="unnamed-types"></h1>
-<p>
-    When an <a href="#enums">enum</a> or <a href="#structs">struct</a> doesn't have to be explicitly referenced more than once, <b>unnamed types</b> can be used to define both the <a href="#types">type</a> and the <a href="#semantic-elements">symbol</a> in the same construct.<br>
-    Similarly to the C syntax, the <a href="#types">type</a> <a href="#identifiers">identifier</a> is not specified and the definition is used as <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a>.
-</p>
-<p>
-    Any <a href="#semantic-elements">symbol</a> defined inside these <a href="#types">types</a> can still be referenced through the <a href="#typeof-specifier"><code><t->typeof</t-></code></a> and <a href="#typeof-specifier"><code><t->auto</t-></code></a> specifiers.<br>
-    Elements of <a href="#enums">enums</a> and <a href="#structs">structs</a> can be <a href="#element-indexing">indexed</a> and <a href="#name-resolution">accessed</a> normally.<br>
-    Defining an unnamed type without also declaring the <a href="#semantic-elements">symbol</a> is not allowed.
-</p>
-<example2->
-    <label2->Example 1</label2->
-    <div>
-        <w->strict enum</w-> : <t->bool</t-> {
-            on = <k->true</k->;
-            off = <k->false</k->;
-        } grasses;
-
-        <t->void</t-> <f->main</f->(){
-            grasses = <t->typeof</t->(grasses).<k->on</k->;
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
-    <div>
-        <w->struct</w-> {
-            <t->uint</t-> a, b;
-            <w->enum</w-> : <t->int</t-> {
-                idk1;
-                idk2;
-            } c;
-        } <f->fun</f->(){
-            <w->return</w-> (<k->1</k->, <k->1</k->, <k->0</k->); <c->// Ok, unnamed constructor of unnamed struct</c->
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->auto</t-> var <f->=</f-> <f->fun</f->();
-
-            <c->// Both are allowed</c->
-            var.c <f->=</f-> <t->typeof</t->(var.c).<k->idk1</k->;
-            var.c <f->=</f-> <t->typeof</t->(<t->typeof</t->(<f->fun</f->).c).<k->idk2</k->;
-
-            <t->typeof</t->(var.a) a <f->=</f-> <k->0</k->;
-        }
-    </div>
-</example2->
 
 
 <!--------------------------------------------------------------------->
-<!-- Values                                                          -->
+<!-- Expressions                                                     -->
 <!--------------------------------------------------------------------->
-<h1 id="values"></h1>
+<h1 id="expressions"></h1>
 
 
 <!--------------------------------------------------------------------->
@@ -4442,79 +3486,28 @@
 </p>
 
 
+
+
 <!--------------------------------------------------------------------->
-<!-- Constructors                                                    -->
+<!-- Try expression                                                  -->
 <!--------------------------------------------------------------------->
-<h1 id="constructors"></h1>
+<h1 id="try-expression"></h1>
 <p>
-    <b>Constructors</b> are used to <b>create <a href="#left-and-right-values">r-values</a></b> of the <b>specified type</b>.<br>
-    Their syntax is the same as <a href="#functions">functions</a>, but the name is the type of the returned r-value and the parameters are the expressions used to initiaze it.<br>
-    Constructors can be used in place of any expression of compatible type. Their return value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
-</p>
-<p>
-    The values used to create the r-value are also implicitly converted.<br>
-    Flattening constructors is not allowed.<br>
-    <a href="typeof-specifier"><code><w->typeof</w-></code></a> can used as type.
-</p>
-<p>
-    //FIXME no specific syntax
-    //FIXME constructors are called by referencing the type and listing the elements between () tokens
 </p>
 
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><code>)</code></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><elm-><t->T</t-><sup>type</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>(</code></td>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm-><t->U<sup>r</sup></t-></elm-></td>
-                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <w->struct</w-> s {
-            <t->int</t-> a;
-            <t->float</t-> b;
-        };
-        <t->void</t-> <f->f</f->(<t->s</t-> <a->a</a->, (<t->int</t->[<k->2</k->], <t->s</t->) <a->b</a->){}
 
-        <t->void</t-> <f->main</f->(){
-            <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
-            <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->); <!-- TODO REMOVE BASEOF -->
-        }
-    </div>
-</example2->
+
+
+<!--------------------------------------------------------------------->
+<!-- Inline declarations                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="inline-declarations"></h1>
+<p>
+</p>
+
+
+
+
 
 
 
@@ -4533,6 +3526,30 @@
 <!-- Variables                                                       -->
 <!--------------------------------------------------------------------->
 <h1 id="variables"></h1>
+<p>
+    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
+    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
+</p>
+<p>
+    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
+</p>
+<syntax2->
+    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
+        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
+    </div>
+</example2->
+<p>
+    Variables can be <a href="#references">references</a>.<br>
+    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+</p>
+
 <p>
     A <b>variable declaration</b> consists of the <b>type</b>, the <b>name</b> and an optional <code>=</code> followed by an <b>expression</b> of a compatible type that is used to inizialize it.<br>
     If an initializer expression is not specified, the value of the variable is undefined.<br>
@@ -4644,118 +3661,23 @@
 
 
 
+<!--------------------------------------------------------------------->
+<!-- Routine parameters                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="routine-parameters"></h1>
+<p></p>
+
 
 
 
 
 <!--------------------------------------------------------------------->
-<!-- Routines                                                        -->
+<!-- Routine calls                                                   -->
 <!--------------------------------------------------------------------->
-<h1 id="routines"></h1>
-<p>
-    //TODO UPADTE DESCRIPTION
-    //TODO UPDATE ALL LINKS TO FUNCTIONS
-</p>
+<h1 id="routine-calls"></h1>
+<p></p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Functions                                                       -->
-<!--------------------------------------------------------------------->
-<h1 id="functions"></h1>
-<p>
-    <b>Functions</b> are the <b>main component</b> of the language.<br>
-    They contain the statements that will be executed during run time and manage inputs and outputs of the shader.
-</p>
-
-
-<!--------------------------------------------------------------------->
-<!-- Function definitions                                            -->
-<!--------------------------------------------------------------------->
-<h1 id="function-definitions"></h1> <!-- TODO REMOVE -->
-<p>
-    A <b>function definition</b> consists of its <b>type</b> and <b>name</b> followed by a <b>list of arguments</b> and its statements enclosed in <code>{</code><code>}</code> delimiters.
-</p>
-<p>
-    A function can take an arbitrary number of parameters of any type. Paramters are declared like variables and behave in the same exact way.<br>
-    The expressions used to call the function are called arguments.<br>
-    Each argument must be implicitly convertible to the type of the parameter.<br>
-    Functions are allowed to take no arguments.
-</p>
-<p>
-    There is no function overloading.
-</p>
-
-<syntax->
-    <left->
-        <label-></label->
-        <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->() { <elm->...</elm-> }
-        </div>
-    </left->
-    <right->
-        <label->Parameter syntax</label->
-        <div>
-            <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space-></space-><elm->name<sup>id</sup></elm->
-        </div>
-    </right->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {}
-
-        <t->void</t-> <f->main</f->(){
-            <t->int</t-> var = <k->0</k->;
-            <f->fun</f->(<k->var</k->);
-        }
-    </div>
-</example2->
-<p>
-    See
-    <a href="#runtime-statements">Runtime statements</a>,
-    <a href="#types">Types</a>
-</p>
-
-
-<!--------------------------------------------------------------------->
-<!-- Reference parameters                                            -->
-<!--------------------------------------------------------------------->
-<h1 id="reference-parameters"></h1>
-<p>
-    By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
-    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#syntactic-elements">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
-</p>
-<p>
-    Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
-    Notice that in this case, the <code>&</code> <a href="#syntactic-elements">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
-</p>
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
-            arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
-            arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->uint</t-> a, b;
-            <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
-            <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
-        }
-
-        <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
-    </div>
-</example2->
-
-<p>
-    See
-    <a href="#const-qualifier">Const qualifier</a>,
-    <a href="#literals">Literals</a>
-</p>
 
 
 <!--------------------------------------------------------------------->
@@ -4804,13 +3726,104 @@
 //TODO update example
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
-<!-- Unnamed scopes                                                  -->
+<!-- Function calls                                                  -->
 <!--------------------------------------------------------------------->
-<h1 id="unnamed-scopes"></h1>
+<h1 id="function-calls"></h1>
+<p></p>
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-calls"></h1>
+<p></p>
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Routines                                                        -->
+<!--------------------------------------------------------------------->
+<h1 id="routines"></h1>
 <p>
-    //TODO
+    <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
+    They are used to organize the module, provide features and prevent code duplication.<br>
+    The routine execution starts from its first <a href="#statements">statement</a> and ends after the first encountered <a href="#return-statements">return statement</a>.
 </p>
+<p>
+    There are 2 types of routines: <a href="#declarations.functions">Functions</a> and <a href="#declarations.operators">Operators</a>.<br>
+    They use different signatures and <a href="#routine-calls">calling</a> syntaxes but share the same <a href="#declarations.routine-parameters">parameter</a> and body declarations.
+</p>
+<p>
+    Each routine <a href="#return-statement">returns</a> a single value when <a href="#routine-calls">called</a>.<br>
+    The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
+    Routines can <a href="#return-statement">return</a> any <a href="#types">type</a>, including <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
+    The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
+</p>
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Functions                                                       -->
+<!--------------------------------------------------------------------->
+<h1 id="functions"></h1>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Function declarations                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="function-declarations"></h1>
+<p>
+    <b>Functions</b> are a type of <b><a href="declarations.routines">routine</a></b> that requires parentheses to be called.<br>
+    They always use the infix notation and can take any number of <a href="#declarations.routine-parameters">parameters</a>.
+</p>
+<p>
+    Function <a href="#identifiers">identifiers</a> must be alphanumeric.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+<example2->
+    <label2->Example - Add function</label2->
+    <div>
+        <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
+            <w->return</w-> a + b;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> n = </t-><f->add</f->(<k->4</k->, <k->6</k->)
+        }
+    </div>
+</example2->
+
+
+
 
 
 <!--------------------------------------------------------------------->
@@ -4835,25 +3848,174 @@
 
 
 
-
-
-
 <!--------------------------------------------------------------------->
 <!-- Operators                                                       -->
 <!--------------------------------------------------------------------->
 <h1 id="operators"></h1>
 
 
+
 <!--------------------------------------------------------------------->
-<!-- Operator definitions                                            -->
+<!-- Operator declarations                                           -->
 <!--------------------------------------------------------------------->
-<h1 id="operator-definitions"></h1>
+<h1 id="operator-declarations"></h1>
+<p>
+    <b>Operators</b> are a type of <b><a href="#declarations.routines">routine</a></b> that doesn't require parentheses to be <a href="#routine-calls">called</a> and can use <b>multiple <a href="#identifiers">identifiers</a></b>.<br>
+    Each <a href="#identifiers">identifier</a> can be prefix, infix or postfix, depending on where it is declared in the operator signature.<br>
+    Operators can take any number of <a href="#declarations.routine-parameters">parameters</a>, but they cannot be 0 and must be separated by exactly 1 <a href="#identifiers">identifier</a>.
+</p>
+<p>
+    Operator <a href="#identifiers">identifiers</a> can be alphanumeric or symbolic.<br>
+    Declaring consecutive <a href="#idnetifiers">identifiers</a> is not allowed.<br>
+    Operator precedence is explained in <a href="#declarations.operator-precedence">Operator precedence</a>.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
+    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
+    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
+</syntax2->
+<example2->
+    <label2->Example 1 - Promotion operator</label2->
+    <div>
+        <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
+            <w->return</w-> n;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> r = <f->+</f->2;
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2 - Python-like ternary operator</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
+            <w->if</w->(condition) <w->return</w-> a;
+            <w->else</w-> <w->return</w-> b;
+        }
+
+        <t->void</t-> <f->main</f->(<t->bool</t-> <a->c</a->){
+            <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator precedence                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-precedence"></h1>
+<p>
+    In <b>absence</b> of <b>parentheses</b>, the order in which <b><a href="#declarations.operators">operators</a></b> in the <b>same <a href="#expressions">expression</a></b> are <b><a href="#operator-calls">called</a></b> depends on their <b>priority</b> and <b>associativity</b>.<br>
+    Priority and associativity are specified in the <a href="#declarations.operators">operator signature</a> as a <a href="#compile-time-expressions">compile time</a> <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#expressions">expression</a>
+    ranging from <code><k->0</k-></code> to <code><k->15</k-></code>, followed by the <code><w->r</w-></code> or <code><w->l</w-></code> <a href="#meta-keywords">meta keyword</a>.<br>
+</p>
+<p>
+    The value indicates the priority.<br>
+    Operators declared with lower values have higher priority and are evaluated first.<br>
+    Left-associative operators are always evaluated before right-associative operators with the same priority.
+</p>
+<p>
+    The <code><w->r</w-></code> and <code><w->l</w-></code> <a href="#meta-keywords">meta keywords</a> indicate right and left associativity.<br>
+    Associativity defines the order in which operators with the same priority and associativity are evaluated.<br>
+    Right-associative operators are evaluated starting from the right, whilst left-associative operators are evaluated starting from the left.<br>
+</p>
+<example2->
+    <label2->Example 1 - Priority</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->r</w->) {
+            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->q</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->5</k-> <w->r</w->) {
+            <w->return</w-> b <f->-</f-> a;
+        }
+
+        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            <c->// Evaluated as ((a o (b p c)) q a)</c->
+            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
+        }
+    </div>
+</example2->
+<example2->
+    <label2->Example 2 - Associativity</label2->
+    <div>
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->+</f-> b <f->*</f-> b;
+        }
+
+        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+            <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
+        }
+
+        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+            <c->// Evaluated as ((a o b) p c)</c->
+            <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
+        }
+    </div>
+</example2->
+
+
+
+
 
 
 <!--------------------------------------------------------------------->
-<!-- Operator calls                                                  -->
+<!-- Routine parameters                                              -->
 <!--------------------------------------------------------------------->
-<h1 id="operator-calls"></h1>
+<h1 id="routine-parameters"></h1>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
+</syntax2->
+<p>
+    By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
+    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#syntactic-elements">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
+</p>
+<p>
+    Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
+    Notice that in this case, the <code>&</code> <a href="#syntactic-elements">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
+</p>
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
+            arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
+            arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->uint</t-> a, b;
+            <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
+            <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
+        }
+
+        <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
+    </div>
+</example2->
+
+<p>
+    See
+    <a href="#const-qualifier">Const qualifier</a>,
+    <a href="#literals">Literals</a>
+</p>
+
+
+
+
+
+
 
 
 
@@ -5073,91 +4235,6 @@
 <h1 id="template-constraints"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Const qualifier                                                 -->
-<!--------------------------------------------------------------------->
-<h1 id="const-qualifier"></h1>
-<p>
-    The <code><t->const</t-></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
-    Const references are not allowed, as well as const functions, const struct members and const tuple elements.<br>
-</p>
-<p>
-    As opposed to GLSL, const symbols can be initialized using non-const expressions.<br>
-    The qualifier doesn't affect compiler optimizations or the GLSL output in any way.
-</p>
-<p>
-    Passing a const identifier as argument of reference parameters is not allowed and will result in a semantic error.<br>
-    Const variables cannot have undefined value.
-</p>
-
-<example2->
-    <label2-></label2->
-    <div>
-        <w->struct</w-> <t->s</t-> {
-            <t->uint</t-> a;            <c->// Ok, non-const member</c->
-            <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
-        }
-        <t->s const</t-> var;           <c->// Ok, const global variable</c->
-
-        <c->//double const fun(){}              </c-><ce->// Error, functions cannot be const</ce->
-        <c->//double fun(double const &arg){}   </c-><ce->// Error, references cannot be const</ce->
-
-        <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
-            <c->//uint const a;                 </c-><ce->// Error, uninitialized const</ce->
-            <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
-            <t->uint const</t-> b = arg, c;          <c->// Ok</c->
-            <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
-            c = <k->a</k-> + b;                      <c->// Ok</c->
-        }
-    </div>
-</example2->
-<p>
-    See
-    <a href="#compiler-optimizations">Compiler optimizations</a>
-</p>
-
-<!--------------------------------------------------------------------->
-<!-- Symbol aliases                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="symbol-aliases"></h1>
-<p>
-    <b>Symbol aliases</b> are <b>alternative names</b> for symbols.
-    Symbols can be aliased using the <code><w->alias</w-></code> keyword.<br>
-    Any declared symbol can be aliased, including modules, generated functions and other aliases.
-</p>
-<p>
-    An alias is not simply replaced like a <a href="#macros">macro</a> but it identifies the symbol itself in a unique way.<br>
-    Once an alias is declared, the alias and the symbol it aliases can be used interchangeably.
-</p>
-<p>
-    Variables can be aliased before their declaration, but the alias can only be used after the declaration of the variable.
-</p>
-
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            alias <elm->name<sup>id</sup></elm-> = <elm->symbol<sup>id</sup></elm->;
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example 1</label2->
-    <div>
-        <w->namespace</w-> n {
-            <t->void</t-> <f->f</f->(){}
-        }
-        <w->alias</w-> n2 = n;        <c->// Ok, n2 = module.n</c->
-        <w->alias</w-> f2 = n2.<f->f</f->;    <c->// Ok, f2 = (module.n2).f = module.n.f</c->
-        <w->alias</w-> f3 = n2.<f->f2</f->;   <c->// Ok, f2 = (module.n2).(module.f2) = module.n.f</c->
-
-        <t->void</t-> <f->main</f->(){
-            <f->f2</f->();            <c->// Ok, calls n.f()</c->
-            <f->f3</f->();            <c->// Ok, calls n.f()</c->
-        }
-    </div>
-</example2->
-
 
 <!--------------------------------------------------------------------->
 <!-- Statements                                                      -->
@@ -5301,10 +4378,123 @@
 <!-- Misc                                                            -->
 <!--------------------------------------------------------------------->
 <h1 id="misc"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
-<!-- Reflection                                                      -->
+<!-- Namespaces                                                      -->
 <!--------------------------------------------------------------------->
-<h1 id="reflection"></h1>
+<h1 id="declarations.namespaces"></h1>
+<p>
+    <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
+    The <a href="#name-resolution">symbol</a> categories they can contain are the same as their parent <a href="#scopes">scope</a>.<br>
+    They cannot contain <a href="#statements">statements</a>.
+</p>
+<p>
+    Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
+    Unnamed namespaces are allowed. Empty namespaces are also allowed.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->namespace</w-> a {
+            <t->int</t-> n = <k->4</k->;
+        }
+        <w->namespace</w-> {
+            <t->int</t-> n = <k->4</k->;
+        }
+
+        <t->int</t-> n2 = a.<k->n</k->;
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Symbol aliases                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="symbol-aliases"></h1>
+<p>
+    <b>Symbol aliases</b> are <b>alternative names</b> for symbols.
+    Symbols can be aliased using the <code><w->alias</w-></code> keyword.<br>
+    Any declared symbol can be aliased, including modules, generated functions and other aliases.
+</p>
+<p>
+    An alias is not simply replaced like a <a href="#macros">macro</a> but it identifies the symbol itself in a unique way.<br>
+    Once an alias is declared, the alias and the symbol it aliases can be used interchangeably.
+</p>
+<p>
+    Variables can be aliased before their declaration, but the alias can only be used after the declaration of the variable.
+</p>
+
+<syntax->
+    <fill->
+        <label-></label->
+        <div>
+            alias <elm->name<sup>id</sup></elm-> = <elm->symbol<sup>id</sup></elm->;
+        </div>
+    </fill->
+</syntax->
+<example2->
+    <label2->Example 1</label2->
+    <div>
+        <w->namespace</w-> n {
+            <t->void</t-> <f->f</f->(){}
+        }
+        <w->alias</w-> n2 = n;        <c->// Ok, n2 = module.n</c->
+        <w->alias</w-> f2 = n2.<f->f</f->;    <c->// Ok, f2 = (module.n2).f = module.n.f</c->
+        <w->alias</w-> f3 = n2.<f->f2</f->;   <c->// Ok, f2 = (module.n2).(module.f2) = module.n.f</c->
+
+        <t->void</t-> <f->main</f->(){
+            <f->f2</f->();            <c->// Ok, calls n.f()</c->
+            <f->f3</f->();            <c->// Ok, calls n.f()</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!--------------------------------------------------------------------->
@@ -5312,9 +4502,66 @@
 <!--------------------------------------------------------------------->
 <h1 id="inline-glsl"></h1>
 <!--------------------------------------------------------------------->
+<!-- Reflection                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="reflection"></h1>
+
+
+<!--------------------------------------------------------------------->
 <!-- Syntactic sugar                                                 -->
 <!--------------------------------------------------------------------->
 <h1 id="syntactic-sugar"></h1>
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Const qualifier                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="const-qualifier"></h1>
+<p>
+    The <code><t->const</t-></code> qualifier can be used to <b>prevent</b> named values to be <b>modified</b> after their declaration.<br>
+    Const references are not allowed, as well as const functions, const struct members and const tuple elements.<br>
+</p>
+<p>
+    As opposed to GLSL, const symbols can be initialized using non-const expressions.<br>
+    The qualifier doesn't affect compiler optimizations or the GLSL output in any way.
+</p>
+<p>
+    Passing a const identifier as argument of reference parameters is not allowed and will result in a semantic error.<br>
+    Const variables cannot have undefined value.
+</p>
+
+<example2->
+    <label2-></label2->
+    <div>
+        <w->struct</w-> <t->s</t-> {
+            <t->uint</t-> a;            <c->// Ok, non-const member</c->
+            <c->//uint const b;    </c-><ce->// Error, struct members cannot be const</ce->
+        }
+        <t->s const</t-> var;           <c->// Ok, const global variable</c->
+
+        <c->//double const fun(){}              </c-><ce->// Error, functions cannot be const</ce->
+        <c->//double fun(double const &arg){}   </c-><ce->// Error, references cannot be const</ce->
+
+        <t->double</t-> <f->fun</f->(<t->double</t-> <a->arg</a->) {            <c->// Ok, const parameter</c->
+            <c->//uint const a;                 </c-><ce->// Error, uninitialized const</ce->
+            <t->uint const</t-> a = <k->4</k->;               <c->// Ok</c->
+            <t->uint const</t-> b = arg, c;          <c->// Ok</c->
+            <c->//a = 2;                        </c-><ce->// Error, cannot assign values to const variables</ce->
+            c = <k->a</k-> + b;                      <c->// Ok</c->
+        }
+    </div>
+</example2->
+<p>
+    See
+    <a href="#compiler-optimizations">Compiler optimizations</a>
+</p>
+
 
 
 

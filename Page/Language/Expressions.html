@@ -1,9 +1,9 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Values                                                          -->
+<!-- Expressions                                                     -->
 <!--------------------------------------------------------------------->
-<h1 id="values"></h1>
+<h1 id="expressions"></h1>
 
 
 <!--------------------------------------------------------------------->
@@ -113,79 +113,28 @@
 </p>
 
 
+
+
 <!--------------------------------------------------------------------->
-<!-- Constructors                                                    -->
+<!-- Try expression                                                  -->
 <!--------------------------------------------------------------------->
-<h1 id="constructors"></h1>
+<h1 id="try-expression"></h1>
 <p>
-    <b>Constructors</b> are used to <b>create <a href="#left-and-right-values">r-values</a></b> of the <b>specified type</b>.<br>
-    Their syntax is the same as <a href="#functions">functions</a>, but the name is the type of the returned r-value and the parameters are the expressions used to initiaze it.<br>
-    Constructors can be used in place of any expression of compatible type. Their return value is converted following the <a href="#implicit-conversions">implicit conversions</a> rules.
-</p>
-<p>
-    The values used to create the r-value are also implicitly converted.<br>
-    Flattening constructors is not allowed.<br>
-    <a href="typeof-specifier"><code><w->typeof</w-></code></a> can used as type.
-</p>
-<p>
-    //FIXME no specific syntax
-    //FIXME constructors are called by referencing the type and listing the elements between () tokens
 </p>
 
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><code>)</code></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><elm-><t->T</t-><sup>type</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>(</code></td>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><elm-><t->U<sup>r</sup></t-></elm-></td>
-                    <td><branch-t-></branch-t-><b-lr-></b-lr-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <w->struct</w-> s {
-            <t->int</t-> a;
-            <t->float</t-> b;
-        };
-        <t->void</t-> <f->f</f->(<t->s</t-> <a->a</a->, (<t->int</t->[<k->2</k->], <t->s</t->) <a->b</a->){}
 
-        <t->void</t-> <f->main</f->(){
-            <f->f</f->(<t->s</t->(<k->5</k->, <k->1</k->), (<t->int</t->[<k->2</k->], <t->s</t->)(<t->int</t->[<k->2</k->](<k->1</k->, <k->2</k->), <t->s</t->(<k->6</k->, <k->0.5</k->)));
-            <t->int</t-> n = <t->baseof</t->(<f->f</f->.b[<k->0</k->])(<k->8</k->); <!-- TODO REMOVE BASEOF -->
-        }
-    </div>
-</example2->
+
+
+<!--------------------------------------------------------------------->
+<!-- Inline declarations                                             -->
+<!--------------------------------------------------------------------->
+<h1 id="inline-declarations"></h1>
+<p>
+</p>
+
+
+
+
 
 
 
@@ -204,6 +153,30 @@
 <!-- Variables                                                       -->
 <!--------------------------------------------------------------------->
 <h1 id="variables"></h1>
+<p>
+    <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
+    Multiple variables of the same <a href="#types">type</a> can be declared in one declaration. If an initializer <a href="#expressions">expression</a> is not specified, the variable has <a href="#undefined-values">undefined value</a>.<br>
+</p>
+<p>
+    Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
+</p>
+<syntax2->
+    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
+</syntax2->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
+        <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
+        <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
+    </div>
+</example2->
+<p>
+    Variables can be <a href="#references">references</a>.<br>
+    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+</p>
+
 <p>
     A <b>variable declaration</b> consists of the <b>type</b>, the <b>name</b> and an optional <code>=</code> followed by an <b>expression</b> of a compatible type that is used to inizialize it.<br>
     If an initializer expression is not specified, the value of the variable is undefined.<br>
@@ -314,6 +287,102 @@
 </p>
 
 
+
+<!--------------------------------------------------------------------->
+<!-- Routine parameters                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="routine-parameters"></h1>
+<p></p>
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Routine calls                                                   -->
+<!--------------------------------------------------------------------->
+<h1 id="routine-calls"></h1>
+<p></p>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Function calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="function-calls"></h1>
+<p>
+    <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
+    A function call must provide an argument for each parameter of the function.<br>
+    Reference parameters (<a href="#references"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
+</p>
+<p>
+    The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>
+    //TODO templates
+    //TODO functions are called with *function reference* and a list of parameters. not just their name
+</p>
+
+<syntax->
+    <fill->
+        <label-></label->
+        <div>
+            <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
+            <elm->name<sup>id</sup></elm->()
+        </div>
+    </fill->
+</syntax->
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
+        <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
+
+        <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
+        <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
+
+        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+        <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
+
+        <t->void</t-> <f->main</f->(){
+            <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
+            n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
+        }
+    </div>
+</example2->
+//TODO update example
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Function calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="function-calls"></h1>
+<p></p>
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-calls"></h1>
+<p></p>
 
 
 
