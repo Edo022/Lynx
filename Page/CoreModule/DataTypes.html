@@ -1,0 +1,180 @@
+<!--------------------------------------------------------------------->
+<!-- Data types                                                      -->
+<!--------------------------------------------------------------------->
+<h1 id="core.data-types"></h1>
+<p>
+    //TODO
+</p>
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Arrays                                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="core.arrays"></h1>
+<p>
+    <b>Arrays</b> are used to <b>group unnamed<a href="#values">values</a></b> of the <b>same <a href="#types">type</a></b>.<br>
+    Unlike other <a href="#aggregate-types">aggregate types</a>, they don't need to be declared.<br>
+    Arrays can use any base <a href="#types">type</a>, including <a href="#structs">structs</a>, <a href="#tuples">tuples</a> and other arrays.<br>
+    An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
+</p>
+<p>
+    Array symbols are declared by <a href="#name-resolution">referencing</a> the base <a href="#types">type</a> and specifying the length in <code>[</code><code>]</code> <a href="#syntactic-elements">tokens</a>.<br>
+    In <a href="#variables">variables</a> and <a href="#array-parameters">array parameters</a> the <code>[</code><code>]</code> can be left empty to let the inizializer value determine the length.
+    When this syntax is used, the initializer value becomes required and must be an <a href="#implicit-conversions">implicitly convertible</a> array of the same length and number of dimensions</a>.
+</p>
+<p>
+    Array <a href="#types">types</a> are determined by their lenght, base <a href="#types">type</a> and number of dimensions.<br>
+    The length of each dimension must be known at compile time and cannot be <code><k->0</k-></code>.<br>
+    In Lux, dynamic arrays are not supported. In Umbra, they are provided by the <a href="#array">array</a> standard module.<br>
+    Element access is explained in <a href="#element-indexing">Element indexing</a>.
+</p>
+<syntax->
+    <fill->
+        <label- class="nobefore">Declaration syntax</label->
+        <div>
+            <table>
+                <tr>
+                    <td><c->none</c-></td>
+                </tr>
+            </table>
+        </div>
+    </fill->
+</syntax->
+<syntax->
+    <fill->
+        <label- class="nobefore">Referencing syntax</label->
+        <div>
+            <table>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><elm-><t->uint<sup>r</sup></t-></elm-></td>
+                    <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><b-lr-></b-lr-></td>
+                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
+                    <td><code>[</code></td>
+                    <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
+                    <td><code>]</code></td>
+                    <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </fill->
+</syntax->
+<example2->
+    <label2->Example</label->
+    <div>
+        <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
+            <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
+            <w->else</w-> <w->return</w-> n[<k->0</k->];
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Tuples                                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="core.tuples"></h1>
+<p>
+    <b>Tuples</b> are used to <b>group unnamed <a href="#values">values</a></b> of <b>different <a href="#values">types</a></b>.<br>
+    As with <a href="#arrays">arrays</a>, they don't need to be declared in order to be referenced.<br>
+    Tuples can contain elements of any <a href="#types">type</a>, including <a href="#arrays">arrays</a> and other tuples.<br>
+</p>
+<p>
+    Any sequence of <a href="#types">types</a> enclosed in <elm-><code>(</code><code>)</code></elm-> tokens is interpreted as a tuple type.<br>
+    The type of a tuple is determined by the <a href="#types">type</a> and order of its elements. If these are identical to another tuple, the tuples have the same type.
+</p>
+<p>
+    Tuples cannot have 0 elements.<br>
+    Element access is explained in <a href="#element-indexing">Element indexing</a>.
+</p>
+<syntax->
+    <fill->
+        <label- class="nobefore">Declaration syntax</label->
+        <div>
+            <table>
+                <tr>
+                    <td><c->none</c-></td>
+                </tr>
+            </table>
+        </div>
+    </fill->
+</syntax->
+<syntax->
+    <fill->
+        <label- class="nobefore">Referencing syntax</label->
+        <div>
+            <table>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><code>)</code></td>
+                    <td><b-lr-></b-lr-></td>
+                </tr>
+                <tr>
+                    <td><b-lr-></b-lr-></td>
+                    <td><code>(</code></td>
+                    <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
+                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
+                    <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
+                    <td><code>,</code></td>
+                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td><loop-connector-></loop-connector-></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </fill->
+</syntax->
+<example2->
+    <label2->Example</label2->
+    <div>
+        (<t->int</t->, <t->int</t->) <f->func</f->((<t->uint</t->, <t->bool</t->, <t->float</t->) <a->a</a->, <t->uint</t-> <a->b</a->){
+            <w->return</w-> (<k->0</k->, a[<k->1</k->] ? a[<k->0</k->] : b * a[<k->2</k->]);
+        };
+
+        <t->void</t-> <f->main</f->(){
+            (<t->int</t->) n = (<f->func</f->((<k->9</k->, <k->true</k->, <k->0.5</k->), <k->5</k->)[<k->1</k->]);
+        }
+    </div>
+</example2->

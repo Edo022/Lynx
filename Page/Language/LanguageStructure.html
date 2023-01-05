@@ -105,6 +105,8 @@
                     <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
                     <a href="#import-directive">        <code><w->from</w-></code></a>
+                    <a href="#import-directive">        <code><w->import</w-></code></a>
+                    <a href="#import-directive">        <code><w->include</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
                 </div>
                 <div class="split-td">
@@ -149,8 +151,6 @@
                 <div class="split-td">
                     <a href="#const-qualifier">            <code><t->const</t-></code></a>
                     <a href="#declarations.operator-precedence"><code><w->priority</w-></code></a>
-                    <a href="#import-directive"><code><w->import</w-></code></a>
-                    <a href="#import-directive"><code><w->include</w-></code></a>
                     <code><w->as</w-></code>
                     <code><w->to</w-></code>
                     <a href="#temporary-variables"><code>$</code></a>
@@ -236,6 +236,14 @@
         <li>
             <span><a href="#import-directive"><code><w->from</w-></code></a></span>
             <span>Introduces an <a href="#import-directive">import directive</a>.</span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->import</w-></code></a></span>
+            <span>Imports symbols from a <a href="#modules">module</a> while preserving the container <a href="#namespaces">namespace</a>.</span>
+        </li>
+        <li>
+            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
+            <span>Imports symbols from a <a href="#modules">module</a> without preserving the container <a href="#namespaces">namespace</a>.</span>
         </li>
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
@@ -415,20 +423,6 @@
             <span>
                 Defines the <a href="#declarations.operator-precedence">priority</a> of an <a href="#operators">operator</a><br>
                 <span class="meta-keyword-constraint">[When used at the end of the signature of an <a href="#operators">operator</a> or <a href="#templates">operator template</a> declaration]</span>.
-            </span>
-        </li>
-        <li>
-            <span><a href="#import-directive"><code><w->import</w-></code></a></span>
-            <span>
-                Imports symbols from a <a href="#modules">module</a> while preserving the container <a href="#namespaces">namespace</a>.<br>
-                <span class="meta-keyword-constraint">[When used inside an <a href="#import-directive">Import directive</a>]</span>.
-            </span>
-        </li>
-        <li>
-            <span><a href="#import-directive"><code><w->include</w-></code></a></span>
-            <span>
-                Imports symbols from a <a href="#modules">module</a> without preserving the container <a href="#namespaces">namespace</a>.<br>
-                <span class="meta-keyword-constraint">[When used inside an <a href="#import-directive">Import directive</a>]</span>.
             </span>
         </li>
         <li>
