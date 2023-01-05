@@ -14,9 +14,11 @@
     They use different signatures and <a href="#routine-calls">calling</a> syntaxes but share the same <a href="#declarations.routine-parameters">parameter</a> and body declarations.
 </p>
 <p>
-    Each routine <a href="#return-statement">returns</a> a single value when <a href="#routine-calls">called</a>.<br>
+    Each routine can <a href="#return-statement">return</a> a single value when <a href="#routine-calls">called</a>.<br>
     The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
-    Routines can <a href="#return-statement">return</a> any <a href="#types">type</a>, including <a href="#references">references</a> and <a href="#addresses">addresses</a>.<br>
+    Routines that don't return a value have to be declared using the <code><w->void</w-></code> keyword.
+</p>
+<p>
     The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
 </p>
 

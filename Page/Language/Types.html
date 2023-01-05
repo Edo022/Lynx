@@ -324,33 +324,6 @@
 
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Special types                                                   -->
-<!--------------------------------------------------------------------->
-<h1 id="special-types"></h1>
-
-
-<!--------------------------------------------------------------------->
-<!-- Void                                                            -->
-<!--------------------------------------------------------------------->
-<h1 id="void"></h1>
-<p>
-    The <code><t->void</t-></code> <a href="#types">type</a> is a special <a href="#types">type</a>. It is exclusively used to define <a href="#functions">functions</a> that don't <a href="#return-statement">return</a> any <a href="#values">value</a>.<br>
-    It cannot store <a href="#values">values</a> like other <a href="#types">types</a>, but it can be used as value of <a href="#typename">typename</a> <a href="#semantic-elements">symbols</a>.
-</p>
-<p>
-    Passing <code><t->viod</t-></code> to a <a href="#templates">template</a> parameter is allowed.
-</p>
-
-
-
-
 <!--------------------------------------------------------------------->
 <!-- Implicit conversions                                            -->
 <!--------------------------------------------------------------------->
@@ -761,26 +734,11 @@
 <h1 id="auto-specifier"></h1>
 <p>
     The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#semantic-elements">symbol</a>.<br>
-    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value, if its is a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if it is a <a href="#functions">function</a>.<br>
+    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#functions">function</a>.<br>
 </p>
 <p>
-    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> members declarations or <a href="#function-definitions">function parameters</a>.<br>
-    <code><t->auto</t-></code> <a href="#constructors">constructors</a> are equivalent to <a href="#constructors">unnamed constructors</a>.
+    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.
 </p>
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr->
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>auto</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr->
-            </table>
-        </div>
-    </fill->
-</syntax->
 <example2->
     <label2->Example 1</label2->
     <div>
@@ -796,13 +754,8 @@
         }
     </div>
 </example2->
-<example2->
-    <label2->Example 2</label2->
-    <div>
-        <t->auto</t-> a <f->=</f-> <t->int</t->[<k->4</k->](<k->1</k->, <k->1</k->, <k->0</k->, <k->1</k->);     <c->// Ok, a has type int[4] and value (1, 1, 0, 1)</c->
-        <t->auto</t-> <t->const</t-> b <f->=</f-> <f->!</f-><k->a</k->;               <c->// Ok, b has type bool[4] and value (false, false, true, false)</c->
-    </div>
-</example2->
+
+
 
 
 <!--------------------------------------------------------------------->
@@ -811,12 +764,8 @@
 <h1 id="typeof-specifier"></h1>
 <p>
     The <b><code><t->typeof</t-></code></b> specifier is used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#expressions">expression</a></b> that is passed to it.<br>
-    Passing a <a href="#types">type</a> to <code><t->typeof</t-></code> returns <code><t->typename</t-></code>.
-</p>
-<p>
-    The <a href="#values">value</a> passed to <code><t->typeof</t-></code> can be <a href="#compile-time-expressions">runtime</a>.
-    <code><t->typeof</t-></code> <a href="#constructors">constructors</a> are allowed.<br>
-    Circular dependencies are a semantic error. //TODO LINK
+    The <a href="#expressions">expression</a> is exclusively used to determine the type and never evaluated.<br>
+    Circular dependencies generate a semantic error. //TODO LINK
 </p>
 
 <syntax->
@@ -845,8 +794,8 @@
         <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
         <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
-            <t->int</t-> a[<k->2</k->] = (<k->1</k->, <k->2</k->);      <c->// a has type int[2]</c->
-            <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int[2]</c->
+            <t->int</t-> a = <k->1</k->;              <c->// a has type int</c->
+            <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int</c->
         }
     </div>
 </example2->
