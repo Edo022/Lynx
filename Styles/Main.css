@@ -215,7 +215,11 @@ body {
         }/*
     }*/
 
-    .h1, .h2, .h3, .h4 { font-weight: bold; display: block; }
+    .h1, .h2, .h3, .h4 {
+        font-weight: bold;
+        display: block;
+        line-height: 1em;
+    }
     .h1 { font-size: var(--font-size-xxx-large); }
     .h2 { font-size: var(--font-size-xx-large);  }
     .h3 { font-size: var(--font-size-x-large);   }

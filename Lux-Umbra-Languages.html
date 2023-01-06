@@ -115,9 +115,9 @@
                 <indexd->integral-types</indexd->
                 <indexd->floating-point-types</indexd->
                 <indexd->boolean-type</indexd->
-                <indexd->enums</indexd->
             </index->
-            <index-><indexh->aggregate-types</indexh->
+            <index-><indexh->user-defined-types</indexh->
+                <indexd->enums</indexd->
                 <indexd->structs</indexd->
             </index->
             <indexd->implicit-conversions</indexd->
@@ -170,7 +170,12 @@
                 <indexd->return-statement</indexd->
                 <indexd->defer-statement</indexd->
             </index->
-            <indexd->else-statement</indexd->
+            <index-><indexh->statements.misc</indexh->
+                <indexd->else-statement</indexd->
+                <indexd->expression-statement</indexd->
+                <indexd->empty-statement</indexd->
+                <indexd->unnamed-scope</indexd->
+            </index->
         </index->
         <index-><indexh->misc</indexh->
             <indexd->declarations.namespaces</indexd->
@@ -2491,6 +2496,32 @@
 </p>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- User defined types                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="user-defined-types"></h1>
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Enums                                                           -->
 <!--------------------------------------------------------------------->
@@ -2569,23 +2600,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Aggregate types                                                 -->
-<!--------------------------------------------------------------------->
-<h1 id="aggregate-types"></h1>
-
-
 <!--------------------------------------------------------------------->
 <!-- Structs                                                         -->
 <!--------------------------------------------------------------------->
@@ -2646,7 +2660,7 @@
     Conversions are not allowed in <a href="#function-templates">function template</a> calls and inizializer values of <a href="auto-specifier">auto</a> <a href="#semantic-elements">symbols</a>.
 </p>
 <p>
-    <a href="#primitive-types">Primitive types</a> are all implicitly convertible between them.<br>
+    <a href="#primitive-types">Primitive types</a> and non-<code><w->strict</w-></code> <a href="#enums">enums</a> are all implicitly convertible to each other.<br>
     In Lux, some conversions have <a href="#undefined-values">undefined result</a>.<br>
     In Umbra, the same conversions cause <a href="#undefined-behaviour">undefined behaviour</a>.<br>
     The result of the conversions follow these rules:
@@ -3046,10 +3060,11 @@
 <h1 id="auto-specifier"></h1>
 <p>
     The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#semantic-elements">symbol</a>.<br>
-    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#functions">function</a>.<br>
+    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#routines">routine</a>.<br>
 </p>
 <p>
-    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.
+    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.<br>
+    The <a href="#types">types</a> of the <a href="#expressions">expressions</a> returned from an <code><t->auto</t-></code> <a href="#routines">routine</a> must match.
 </p>
 <example2->
     <label2->Example 1</label2->
@@ -3080,26 +3095,10 @@
     Circular dependencies generate a semantic error. //TODO LINK
 </p>
 
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code><t->typeof</t-></code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>(</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T</t-><sup>r</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>)</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--typeof">Syntax</label2->
+</syntax2->
+
 <example2->
     <label2->Example 1</label2->
     <div>
@@ -3286,55 +3285,11 @@
     </div>
 </example2->
 <p>
-    Variables can be <a href="#references">references</a>.<br>
     The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
 </p>
 
-<p>
-    A <b>variable declaration</b> consists of the <b>type</b>, the <b>name</b> and an optional <code>=</code> followed by an <b>expression</b> of a compatible type that is used to inizialize it.<br>
-    If an initializer expression is not specified, the value of the variable is undefined.<br>
-    Evaluating an expression that can result in an undefined value is considered a logical error and will stop the compilation process.<br>
-    Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
-</b>
-<p>
-    Differently from other symbols, each stored value <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.<br>
-    Multiple variables of the same type can be declared in one instruction.
-</p>
 
-<syntax->
-    <left->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><even-elm-><elm->varaible 0</elm->, <elm->...</elm->, <elm->varaible n</elm-></even-elm->;
-        </div>
-    </left->
-    <right->
-        <label->Variable syntax</label->
-        <div>
-            <c->/* Undefined value   */</c->  <elm->name<sup>id</sup></elm->
-            <c->/* Inizializer value */</c->  <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a>   */</c->  const <space></space><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
-        </div>
-    </right->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
-        <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
-        <t->bool</t-> var$, var3 = nya;     <c->// Ok, var$ has undefined value, var2 has value true</c->
-        <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
-    </div>
-</example2->
-<p>
-    There are no pointers or reference variables.
-</p>
-<p>
-    See
-    <a href="#types">Types</a>,
-    <a href="#expressions">Expressions</a>,
-    <a href="#functions">Functions</a>
-</p>
+
 
 
 <!--------------------------------------------------------------------->
@@ -3435,15 +3390,10 @@
     //TODO functions are called with *function reference* and a list of parameters. not just their name
 </p>
 
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
-            <elm->name<sup>id</sup></elm->()
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--expression-function-call">Syntax</label2->
+</syntax2->
+
 
 <example2->
     <label2->Example</label2->
@@ -3470,35 +3420,17 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Function calls                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="function-calls"></h1>
-<p></p>
-
-
-
-
-
-
 <!--------------------------------------------------------------------->
 <!-- Operator calls                                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="operator-calls"></h1>
-<p></p>
+<p>
 
+</p>
 
-
+<syntax2->
+    <label2- id="copy.syntax--expression-operator-call">Syntax</label2->
+</syntax2->
 
 
 <!--------------------------------------------------------------------->
@@ -3838,28 +3770,14 @@
     //TODO ADD STRUCT TEMPLATES
 </p>
 
-<syntax->
-    <left->
-        <label-></label->
-        <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
-            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
-            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
-        </div>
-    </left->
-    <right->
-        <label->Parameter syntax</label->
-        <div>
-            <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
-            <c->/* Normal parameters */</c->    ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> ?<elm->type<sup>id</sup></elm-> &<elm->name<sup>id</sup></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      ?<elm->type<sup>id</sup></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
-        </div>
-    </right->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--template-enum-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-struct-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-function-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-operator-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-declaration-signature">Syntax</label2->
+    <label2- id="copy.syntax--template-declaration-constraint">Syntax</label2->
+</syntax2->
 
 <p>
     Any function with one or more generic type parameters is considered a function template.<br>
@@ -3928,14 +3846,6 @@
 <p>
     Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
 </p>
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->);
-        </div>
-    </fill->
-</syntax->
 <example2->
     <label2->Example</label2->
     <div>
@@ -4081,16 +3991,9 @@
 <p>
     There is no default return value.
 </p>
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            return<space-></space-><elm-><t->T<sup>r</sup></t-></elm->;     <c->// Non-void functions</c->
-            return;           <c->// Void functions</c->
-        </div>
-    </fill->
-</syntax->
-<p>
+<syntax2->
+    <label2- id="copy.syntax--statement-return">Syntax</label2->
+</syntax2-><p>
     //TODO EXAMPLE
 </p>
 
@@ -4104,12 +4007,52 @@
 
 
 <!--------------------------------------------------------------------->
+<!-- Misc                                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="statements.misc"></h1>
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
 <!-- Else statement                                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="else-statement"></h1>
 
 
 
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Expression statement                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="expression-statement"></h1>
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Empty statement                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="empty-statement"></h1>
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Unnamed scope                                                   -->
+<!--------------------------------------------------------------------->
+<h1 id="unnamed-scope"></h1>
 
 
 
@@ -4197,14 +4140,10 @@
     Variables can be aliased before their declaration, but the alias can only be used after the declaration of the variable.
 </p>
 
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            alias <elm->name<sup>id</sup></elm-> = <elm->symbol<sup>id</sup></elm->;
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--symbol-alias-declaration">Syntax</label2->
+</syntax2->
+
 <example2->
     <label2->Example 1</label2->
     <div>
@@ -5196,7 +5135,6 @@
 <p>
     Some <b>special cases</b> of <b>integral operations</b> have <b>undefined</b> result:
 </p>
-</table></div>
 <div class="table-container"><table>
     <tr>
         <th>Operation (special cases)</th>
@@ -5350,86 +5288,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="core.arrays"></h1>
 <p>
-    <b>Arrays</b> are used to <b>group unnamed<a href="#values">values</a></b> of the <b>same <a href="#types">type</a></b>.<br>
-    Unlike other <a href="#aggregate-types">aggregate types</a>, they don't need to be declared.<br>
-    Arrays can use any base <a href="#types">type</a>, including <a href="#structs">structs</a>, <a href="#tuples">tuples</a> and other arrays.<br>
-    An array of arrays is called a multidimensional array. There is no limit to the number of dimensions an array can have.<br>
 </p>
-<p>
-    Array symbols are declared by <a href="#name-resolution">referencing</a> the base <a href="#types">type</a> and specifying the length in <code>[</code><code>]</code> <a href="#syntactic-elements">tokens</a>.<br>
-    In <a href="#variables">variables</a> and <a href="#array-parameters">array parameters</a> the <code>[</code><code>]</code> can be left empty to let the inizializer value determine the length.
-    When this syntax is used, the initializer value becomes required and must be an <a href="#implicit-conversions">implicitly convertible</a> array of the same length and number of dimensions</a>.
-</p>
-<p>
-    Array <a href="#types">types</a> are determined by their lenght, base <a href="#types">type</a> and number of dimensions.<br>
-    The length of each dimension must be known at compile time and cannot be <code><k->0</k-></code>.<br>
-    In Lux, dynamic arrays are not supported. In Umbra, they are provided by the <a href="#array">array</a> standard module.<br>
-    Element access is explained in <a href="#element-indexing">Element indexing</a>.
-</p>
-<syntax->
-    <fill->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><c->none</c-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><elm-><t->uint<sup>r</sup></t-></elm-></td>
-                    <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
-                    <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-                    <td><code>[</code></td>
-                    <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-                    <td><code>]</code></td>
-                    <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example</label->
-    <div>
-        <t->uint</t->[<k->4</k->] <f->func</f->(<t->float</t->[<k->4</k->] n){
-            <w->if</w->(n[<k->3</k->]) <w->return</w-> n * <k->4</k->;
-            <w->else</w-> <w->return</w-> n[<k->0</k->];
-        }
-    </div>
-</example2->
-
 
 
 
@@ -5442,78 +5301,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="core.tuples"></h1>
 <p>
-    <b>Tuples</b> are used to <b>group unnamed <a href="#values">values</a></b> of <b>different <a href="#values">types</a></b>.<br>
-    As with <a href="#arrays">arrays</a>, they don't need to be declared in order to be referenced.<br>
-    Tuples can contain elements of any <a href="#types">type</a>, including <a href="#arrays">arrays</a> and other tuples.<br>
 </p>
-<p>
-    Any sequence of <a href="#types">types</a> enclosed in <elm-><code>(</code><code>)</code></elm-> tokens is interpreted as a tuple type.<br>
-    The type of a tuple is determined by the <a href="#types">type</a> and order of its elements. If these are identical to another tuple, the tuples have the same type.
-</p>
-<p>
-    Tuples cannot have 0 elements.<br>
-    Element access is explained in <a href="#element-indexing">Element indexing</a>.
-</p>
-<syntax->
-    <fill->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><c->none</c-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><code>)</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>(</code></td>
-                    <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-                    <td><elm-><t->T<sup>type</sup></t-></elm-></td>
-                    <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-                    <td><code>,</code></td>
-                    <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td><loop-connector-></loop-connector-></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        (<t->int</t->, <t->int</t->) <f->func</f->((<t->uint</t->, <t->bool</t->, <t->float</t->) <a->a</a->, <t->uint</t-> <a->b</a->){
-            <w->return</w-> (<k->0</k->, a[<k->1</k->] ? a[<k->0</k->] : b * a[<k->2</k->]);
-        };
-
-        <t->void</t-> <f->main</f->(){
-            (<t->int</t->) n = (<f->func</f->((<k->9</k->, <k->true</k->, <k->0.5</k->), <k->5</k->)[<k->1</k->]);
-        }
-    </div>
-</example2->
 <!--------------------------------------------------------------------->
 <!-- Standard modules                                                -->
 <!--------------------------------------------------------------------->
@@ -5616,6 +5404,34 @@
     <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
 </syntax-note->
 
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2- class="qrt">
+    <label2- id="syntax--typeof" class="stx"><a href="#modules">Typeof</a></label2->
+    <table class="stx">
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->typeof</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->(</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><exp->expression</exp-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->)</elm-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+    </table>
+</syntax2->
 
 
 
@@ -6471,11 +6287,11 @@
             <td><b-lr-></b-lr-></td>
             <td><code>alias</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><code>=</code></td>
-            <td><b-lr-></b-lr-></td>
             <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->as</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>;</code></td>
             <td><b-lr-></b-lr-></td>
@@ -7146,14 +6962,12 @@
     <label2- class="sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label2->
     <table class="sub">
         <tr>
-            <tr>
-                <td><b-lr-></b-lr-></td>
-                <td><code>then</code></td>
-                <td><b-lr-></b-lr-></td>
-                <td><sub->statement</sub-></td>
-                <td><b-lr-></b-lr-></td>
-            </tr>
-            </tr>
+            <td><b-lr-></b-lr-></td>
+            <td><code>then</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td><sub->statement</sub-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
     </table>
 </syntax2->
 
@@ -7174,24 +6988,22 @@
     <label2- class="sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label2->
     <table class="sub">
         <tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><b-lr-></b-lr-></td>
-                <td><code>return</code></td>
-                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                <td><exp-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></exp-></td>
-                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                <td><code>;</code></td>
-                <td><b-lr-></b-lr-></td>
-            </tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><code>return</code></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><exp-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></exp-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><code>;</code></td>
+            <td><b-lr-></b-lr-></td>
         </tr>
     </table>
     <syntax-note->

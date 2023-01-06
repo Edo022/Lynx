@@ -78,28 +78,14 @@
     //TODO ADD STRUCT TEMPLATES
 </p>
 
-<syntax->
-    <left->
-        <label-></label->
-        <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
-            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) { <elm->...</elm-> }
-            ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->(<even-elm-><elm->parameter 0</elm->, <elm->...</elm->, <elm->parameter n</elm-></even-elm->) when(<elm-><t->bool<sup>r</sup></t-></elm->) { <elm->...</elm-> }
-        </div>
-    </left->
-    <right->
-        <label->Parameter syntax</label->
-        <div>
-            <c->/* Normal parameters */</c->    <elm-><t->U<sup>type</sup></t-></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> <elm-><t->U<sup>type</sup></t-></elm-> &<elm->name<sup>id</sup></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      <elm-><t->U<sup>type</sup></t-></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
-            <c->/* Normal parameters */</c->    ?<elm->type<sup>id</sup></elm-><space-></space-><elm->name<sup>id</sup></elm->
-            <c->/* <a href="#references"><c->Reference parameters</c-></a> */</c-> ?<elm->type<sup>id</sup></elm-> &<elm->name<sup>id</sup></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a> */</c->      ?<elm->type<sup>id</sup></elm-><space-></space->const<space></space><elm->name<sup>id</sup></elm->
-        </div>
-    </right->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--template-enum-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-struct-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-function-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-operator-declaration">Syntax</label2->
+    <label2- id="copy.syntax--template-declaration-signature">Syntax</label2->
+    <label2- id="copy.syntax--template-declaration-constraint">Syntax</label2->
+</syntax2->
 
 <p>
     Any function with one or more generic type parameters is considered a function template.<br>
@@ -168,14 +154,6 @@
 <p>
     Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
 </p>
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <elm->name<sup>id</sup></elm->&lt;<elm-><elm-><t->T0<sup>type</sup></t-></elm->, <elm-><t->...<sup>type</sup></t-></elm->, <elm-><t->Tn<sup>type</sup></t-></elm-></elm->&gt;(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm-><t->...<sup>r</sup></t-></elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->);
-        </div>
-    </fill->
-</syntax->
 <example2->
     <label2->Example</label2->
     <div>

@@ -179,6 +179,32 @@
 </p>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- User defined types                                              -->
+<!--------------------------------------------------------------------->
+<h1 id="user-defined-types"></h1>
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Enums                                                           -->
 <!--------------------------------------------------------------------->
@@ -257,23 +283,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Aggregate types                                                 -->
-<!--------------------------------------------------------------------->
-<h1 id="aggregate-types"></h1>
-
-
 <!--------------------------------------------------------------------->
 <!-- Structs                                                         -->
 <!--------------------------------------------------------------------->
@@ -334,7 +343,7 @@
     Conversions are not allowed in <a href="#function-templates">function template</a> calls and inizializer values of <a href="auto-specifier">auto</a> <a href="#semantic-elements">symbols</a>.
 </p>
 <p>
-    <a href="#primitive-types">Primitive types</a> are all implicitly convertible between them.<br>
+    <a href="#primitive-types">Primitive types</a> and non-<code><w->strict</w-></code> <a href="#enums">enums</a> are all implicitly convertible to each other.<br>
     In Lux, some conversions have <a href="#undefined-values">undefined result</a>.<br>
     In Umbra, the same conversions cause <a href="#undefined-behaviour">undefined behaviour</a>.<br>
     The result of the conversions follow these rules:
@@ -734,10 +743,11 @@
 <h1 id="auto-specifier"></h1>
 <p>
     The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#semantic-elements">symbol</a>.<br>
-    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#functions">function</a>.<br>
+    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#routines">routine</a>.<br>
 </p>
 <p>
-    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.
+    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.<br>
+    The <a href="#types">types</a> of the <a href="#expressions">expressions</a> returned from an <code><t->auto</t-></code> <a href="#routines">routine</a> must match.
 </p>
 <example2->
     <label2->Example 1</label2->
@@ -768,26 +778,10 @@
     Circular dependencies generate a semantic error. //TODO LINK
 </p>
 
-<syntax->
-    <fill->
-        <label- class="nobefore">Referencing syntax</label->
-        <div>
-            <table>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code><t->typeof</t-></code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>(</code></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><elm-><t->T</t-><sup>r</sup></elm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><code>)</code></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--typeof">Syntax</label2->
+</syntax2->
+
 <example2->
     <label2->Example 1</label2->
     <div>

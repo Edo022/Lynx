@@ -72,6 +72,34 @@
 
 
 
+<syntax2- class="qrt">
+    <label2- id="syntax--typeof" class="stx"><a href="#modules">Typeof</a></label2->
+    <table class="stx">
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->typeof</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->(</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><exp->expression</exp-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->)</elm-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+    </table>
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -915,11 +943,11 @@
             <td><b-lr-></b-lr-></td>
             <td><code>alias</code></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><code>=</code></td>
-            <td><b-lr-></b-lr-></td>
             <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><elm->as</elm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
             <td><code>;</code></td>
             <td><b-lr-></b-lr-></td>
@@ -1590,14 +1618,12 @@
     <label2- class="sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label2->
     <table class="sub">
         <tr>
-            <tr>
-                <td><b-lr-></b-lr-></td>
-                <td><code>then</code></td>
-                <td><b-lr-></b-lr-></td>
-                <td><sub->statement</sub-></td>
-                <td><b-lr-></b-lr-></td>
-            </tr>
-            </tr>
+            <td><b-lr-></b-lr-></td>
+            <td><code>then</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td><sub->statement</sub-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
     </table>
 </syntax2->
 
@@ -1618,24 +1644,22 @@
     <label2- class="sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label2->
     <table class="sub">
         <tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                <td><b-lbc-></b-lbc-></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><b-lr-></b-lr-></td>
-                <td><code>return</code></td>
-                <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                <td><exp-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></exp-></td>
-                <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                <td><code>;</code></td>
-                <td><b-lr-></b-lr-></td>
-            </tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><code>return</code></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><exp-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></exp-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><code>;</code></td>
+            <td><b-lr-></b-lr-></td>
         </tr>
     </table>
     <syntax-note->

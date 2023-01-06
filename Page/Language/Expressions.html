@@ -164,55 +164,11 @@
     </div>
 </example2->
 <p>
-    Variables can be <a href="#references">references</a>.<br>
     The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
 </p>
 
-<p>
-    A <b>variable declaration</b> consists of the <b>type</b>, the <b>name</b> and an optional <code>=</code> followed by an <b>expression</b> of a compatible type that is used to inizialize it.<br>
-    If an initializer expression is not specified, the value of the variable is undefined.<br>
-    Evaluating an expression that can result in an undefined value is considered a logical error and will stop the compilation process.<br>
-    Variables with undefined value can still be passed to reference arguments of functions or be assigned a value.
-</b>
-<p>
-    Differently from other symbols, each stored value <b>must be declared</b> before being used. Variables <b>cannot be redeclared</b> and their <b>type cannot be changed</b> after the declaration.<br>
-    Multiple variables of the same type can be declared in one instruction.
-</p>
 
-<syntax->
-    <left->
-        <label- class="nobefore">Declaration syntax</label->
-        <div>
-            <elm-><t->T<sup>type</sup></t-></elm-><space-></space-><even-elm-><elm->varaible 0</elm->, <elm->...</elm->, <elm->varaible n</elm-></even-elm->;
-        </div>
-    </left->
-    <right->
-        <label->Variable syntax</label->
-        <div>
-            <c->/* Undefined value   */</c->  <elm->name<sup>id</sup></elm->
-            <c->/* Inizializer value */</c->  <elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
-            <c->/* <a href="#const-qualifier"><c->Const qualifier</c-></a>   */</c->  const <space></space><elm->name<sup>id</sup></elm-> = <elm-><t->T<sup>r</sup></t-></elm->
-        </div>
-    </right->
-</syntax->
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->uint</t-> variable = <k->0</k->;         <c->// Ok, variable has value 0</c->
-        <t->float</t-> nya = <k->5</k-> + <k->variable</k->;  <c->// Ok, nya ha value 5.0</c->
-        <t->bool</t-> var$, var3 = nya;     <c->// Ok, var$ has undefined value, var2 has value true</c->
-        <c->//b var_2 = var$;          </c-><ce->// Error. The syntax is correct, but undefined values (var$) cannot be used inside expressions</ce->
-    </div>
-</example2->
-<p>
-    There are no pointers or reference variables.
-</p>
-<p>
-    See
-    <a href="#types">Types</a>,
-    <a href="#expressions">Expressions</a>,
-    <a href="#functions">Functions</a>
-</p>
+
 
 
 <!--------------------------------------------------------------------->
@@ -313,15 +269,10 @@
     //TODO functions are called with *function reference* and a list of parameters. not just their name
 </p>
 
-<syntax->
-    <fill->
-        <label-></label->
-        <div>
-            <elm->name<sup>id</sup></elm->(<elm-><elm-><t->T0<sup>r</sup></t-></elm->, <elm->...</elm->, <elm-><t->Tn<sup>r</sup></t-></elm-></elm->)
-            <elm->name<sup>id</sup></elm->()
-        </div>
-    </fill->
-</syntax->
+<syntax2->
+    <label2- id="copy.syntax--expression-function-call">Syntax</label2->
+</syntax2->
+
 
 <example2->
     <label2->Example</label2->
@@ -348,32 +299,14 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Function calls                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="function-calls"></h1>
-<p></p>
-
-
-
-
-
-
 <!--------------------------------------------------------------------->
 <!-- Operator calls                                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="operator-calls"></h1>
-<p></p>
+<p>
 
+</p>
 
-
+<syntax2->
+    <label2- id="copy.syntax--expression-operator-call">Syntax</label2->
+</syntax2->
