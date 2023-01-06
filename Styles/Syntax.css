@@ -191,8 +191,7 @@ syntax2-, example2- {
     user-select: none;
 }
 example2- {
-    font-family: monospace, monospace;
-    font-size: var(--font-size-code);
+    font-size: var(--font-size-medium);
     white-space: pre;
 }
 example2-.qrt, syntax2-.qrt {
@@ -219,9 +218,12 @@ syntax2- > label2- {
     position: relative;
     padding: var(--syntax-label-padding-top) var(--syntax-label-padding) 0 var(--syntax-label-padding);
     font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: var(--font-size-medium);
 
-    min-width: fit-content;
-    max-width: fit-content;
+    min-width: 0;
+    max-width: calc(100% - var(--code-decoration-r));
     /**/width: fit-content;
     min-height: var(--syntax-label-h);
     max-height: var(--syntax-label-h);
@@ -300,6 +302,7 @@ example2- > div {
     font-size: var(--font-size-code);
     line-height: var(--example-line-h);
     letter-spacing: 0;
+    font-size: var(--font-size-code);
     overflow: auto;
     white-space: pre;
     padding: 0 var(--syntax-table-padding) 0 var(--syntax-table-padding);
@@ -322,7 +325,7 @@ syntax2- table tbody {
     flex-direction: column;
     padding:  var(--syntax-table-padding) 0 var(--syntax-table-padding) 0;
     margin: 0 var(--syntax-table-padding) 0 var(--syntax-table-padding);
-    overflow-x: hidden;
+    overflow: auto;
 
     min-width:  calc(100% - 2 * var(--syntax-table-padding));
     max-width:  calc(100% - 2 * var(--syntax-table-padding));
@@ -330,9 +333,6 @@ syntax2- table tbody {
     min-height: calc(100% - 2 * var(--syntax-table-padding));
     max-height: calc(100% - 2 * var(--syntax-table-padding));
     /**/height: calc(100% - 2 * var(--syntax-table-padding));
-}
-syntax2- table tbody:hover {
-    overflow-x: auto;
 }
 syntax2- table tr > td {
     display: inline-block;
