@@ -2525,9 +2525,10 @@
 <!--------------------------------------------------------------------->
 <h1 id="enums"></h1>
 <p>
-    <b>Enums</b> are used to <b>group named <a href="#compile-time-values">compile time</a> <a href="#left-and-right-values">r-values</a></b> of the same <a href="#types">type</a>.<br>
+    <b>Enums</b> are used to create <b>new types</b> whose allowed values are a <b>subset</b> of the possible values of their <b>base <a href="#types">type</a></b> and can only be set throught their names.<br>
     The base <a href="#types">type</a> of an enum is specified after its name and, differently from most languages, it can be any type, including <a href="#structs">structs</a> or other enums.<br>
-    Elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly and their initializer values must be <a href="#compile-time-values">known at compile time</a>.
+    Enum elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly and their initializer values must be <a href="#compile-time-values">known at compile time</a>.<br>
+    These elements identify the allowed values.
 </p>
 <p>
     Elements of <a href="#integral-types">integral</a> enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if first.<br>
@@ -2535,6 +2536,7 @@
     Multiple elements can have identical <a href="#values">values</a>, but each <a href="#identifiers">identifier</a> can only be declared once.<br>
     Empty enums are allowed.
 </p>
+
 <syntax2->
     <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
     <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
@@ -2543,9 +2545,9 @@
 </syntax2->
 
 <p>
-    By default, all enum elements behave exactly as if they were declared as const variables with type the base type of the enum.<br>
-    When <a href="#implicit-conversions">implicit conversions</a> from other <a href="#types">types</a> are undesirable, enums can be declared as <code><w->strict</w-></code>.<br>
-    Strict enums can only be assigned values of the same enum type, but can still be <a href="#implicit-conversions">implicitly converted</a> to other <a href="#types">types</a>.
+    All enum elements behave like <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variables</a>.<br>
+    Their value cannot be modified but it can be read and used anywhere a <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variable</a> can.<br>
+    Enums whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are <a href="#implitit-conversions">implicitly convertible</a> to any <a href="#primitive-types">primitive type</a>, following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
 </p>
 
 
