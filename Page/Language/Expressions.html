@@ -76,11 +76,6 @@
         <td class="center" colspan="4"><code>true|false</code></td>
     </tr>
 </table></div>
-<p>
-    The special double literals <code><k->inf</k-></code> and <code><k->nan</k-></code> are correctly converted between <code><k->float</k-></code> and <code><k->double</k-></code>.<br>
-    Converting them to other types has <b>undefined</b> result. See <a href="#implicit-conversions">Implicit conversions</a>.<br>
-    Operations with those literals are explained in <a href="#standard-operators">Standard operators</a>.
-</p>
 <example2->
     <label2->Example</label2->
     <div>
@@ -89,7 +84,7 @@
         <t->float</t-> f1 = <k->0x0d.aAb4</k->;  <c->// Ok</c->
         <t->float</t-> f2 = <k->inf</k->;        <c->// Ok</c->
         <t->float</t-> f3 = <k->nan</k->;        <c->// Ok</c->
-        <c->float f4 = AAAB4;      </c-><ce->// Error, invalid decimal literal</ce->
+        <c->float f4 = AAAB4;      </c-><ce->// Error, undeclared identifier "AAAB4"</ce->
         <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
         <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
     </div>
@@ -115,12 +110,104 @@
 
 
 
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Function calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="function-calls"></h1>
+<p>
+    <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
+    A function call must provide an argument for each parameter of the function.<br>
+    Reference parameters (<a href="#references"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
+</p>
+<p>
+    The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>
+    //TODO templates
+    //TODO functions are called with *function reference* and a list of parameters. not just their name
+</p>
+
+<syntax2->
+    <label2- id="copy.syntax--expression-function-call">Syntax</label2->
+</syntax2->
+
+
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
+        <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
+
+        <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
+        <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
+
+        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+        <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
+
+        <t->void</t-> <f->main</f->(){
+            <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
+            n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
+        }
+    </div>
+</example2->
+//TODO update example
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Operator calls                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="operator-calls"></h1>
+<p>
+
+</p>
+
+<syntax2->
+    <label2- id="copy.syntax--expression-operator-call">Syntax</label2->
+</syntax2->
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Try expression                                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="try-expression"></h1>
 <p>
 </p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -240,73 +327,3 @@
 <!--------------------------------------------------------------------->
 <h1 id="exp.routine-parameters"></h1>
 <p></p>
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Routine calls                                                   -->
-<!--------------------------------------------------------------------->
-<h1 id="routine-calls"></h1>
-<p></p>
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Function calls                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="function-calls"></h1>
-<p>
-    <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
-    A function call must provide an argument for each parameter of the function.<br>
-    Reference parameters (<a href="#references"><code>&</code></a>) only allow <a href="#left-and-right-values">l-values</a> as arguments.
-</p>
-<p>
-    The result is returned by the function through the return statement, which is detailedly explained in <a href="#return-statement">Return statement</a>
-    //TODO templates
-    //TODO functions are called with *function reference* and a list of parameters. not just their name
-</p>
-
-<syntax2->
-    <label2- id="copy.syntax--expression-function-call">Syntax</label2->
-</syntax2->
-
-
-<example2->
-    <label2->Example</label2->
-    <div>
-        <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
-        <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
-
-        <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
-        <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
-
-        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
-        <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
-
-        <t->void</t-> <f->main</f->(){
-            <t->uint</t-> n = <f->empty_function_3</f->();       <c->// Ok</c->
-            n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
-        }
-    </div>
-</example2->
-//TODO update example
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Operator calls                                                  -->
-<!--------------------------------------------------------------------->
-<h1 id="operator-calls"></h1>
-<p>
-
-</p>
-
-<syntax2->
-    <label2- id="copy.syntax--expression-operator-call">Syntax</label2->
-</syntax2->
