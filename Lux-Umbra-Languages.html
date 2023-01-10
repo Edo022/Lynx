@@ -683,6 +683,8 @@
                     <a href="#import-directive">        <code><w->import</w-></code></a>
                     <a href="#import-directive">        <code><w->include</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
+                    <a href="#boolean-type">            <code><k->true</k-></code></a>
+                    <a href="#boolean-type">            <code><k->false</k-></code></a>
                 </div>
                 <div class="split-td">
                     <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -701,6 +703,7 @@
                 <div class="split-td">
                     <elm->                              <code>(</code><code>)</code></elm->
                     <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
+                    <elm-><code>"</code><code>"</code></elm->
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
@@ -713,7 +716,7 @@
             <td><div class="split-td-outer">
                 <div class="split-td">
                     <a href="#templates">                  <code><w->template</w-></code></a>
-                    <a href="#templates">                  <elm-><code>&lt;</code><code>&gt;</code></elm-></a>
+                    <elm-><code>&lt;</code><code>&gt;</code></elm->
                     <a href="#template-constraints">       <code><w->when</w-></code></a>
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
                 </div>
@@ -778,7 +781,7 @@
 <h1 id="keywords"></h1>
 <p>
     <b>Keywords</b> are <b>built-in <a href="#syntactic-elements">syntactic elements</a></b> that perform hard coded actions or have <b>special meaning</b>.<br>
-    The language defines a total of 26 alphanumeric keywords and 6 symbolic keywords.<br>
+    The language defines a total of 28 alphanumeric keywords and 6 symbolic keywords.<br>
     Their usage is detailedly explained in their respective sections.
 </p>
 <ul>
@@ -823,6 +826,14 @@
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
             <span>Defines which symbols can be exported from the current <a href="#modules">module</a>.</span>
+        </li>
+        <li>
+            <span><a href="#boolean-type"><code><k->true</k-></code></a></span>
+            <span>Identifies the <a href="boolean-type">boolean</a> value true.</span>
+        </li>
+        <li>
+            <span><a href="#boolean-type"><code><k->false</k-></code></a></span>
+            <span>Identifies the <a href="boolean-type">boolean</a> value false.</span>
         </li>
     </ul><br>
     <li>Flow control keywords</li>
@@ -884,7 +895,11 @@
         </li>
         <li>
             <span><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a></span>
-            <span>Declares a new <a href="#scopes">scope</a>. Used to declare most <a href="#semantic-elements">semantic elements.</a></span>
+            <span>Declares a new <a href="#scopes">scope</a>. Used to declare most <a href="#semantic-elements">semantic elements</a>.</span>
+        </li>
+        <li>
+            <span><elm-><code>"</code><code>"</code></elm-></span>
+            <span>Delimits a <a href="#literals">string literal</a>. Also used in <a href="#import-directive">import directives</a>.</span>
         </li>
     </ul><br>
     <li>Separators</li>
@@ -946,10 +961,10 @@
             </span>
         </li>
         <li>
-            <span><a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> </span>
+            <span><elm-><code>&lt;</code><code>&gt;</code></elm-></span>
             <span>
-                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a></a><br>
-                <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword or after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a>]</span>.
+                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a>. Also used in <a href="#import-directive">import directives</a>.<br>
+                <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword, after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a> or around the module name in an <a href="#import-directive">import directive</a>]</span>.
             </span>
         </li>
         <li>
@@ -2525,7 +2540,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="enums"></h1>
 <p>
-    <b>Enums</b> are used to create <b>new types</b> whose allowed values are a <b>subset</b> of the possible values of their <b>base <a href="#types">type</a></b> and can only be set throught their names.<br>
+    <b>Enums</b> are used to create <b>new types</b> whose allowed values are a <b>subset</b> of the possible values of their <b>base <a href="#types">type</a></b> and can only be used throught their names.<br>
     The base <a href="#types">type</a> of an enum is specified after its name and, differently from most languages, it can be any type, including <a href="#structs">structs</a> or other enums.<br>
     Enum elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly and their initializer values must be <a href="#compile-time-values">known at compile time</a>.<br>
     These elements identify the allowed values.
@@ -2545,9 +2560,13 @@
 </syntax2->
 
 <p>
-    All enum elements behave like <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variables</a>.<br>
+    Enum elements behave like <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variables</a>.<br>
     Their value cannot be modified but it can be read and used anywhere a <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variable</a> can.<br>
-    Enums whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are <a href="#implitit-conversions">implicitly convertible</a> to any <a href="#primitive-types">primitive type</a>, following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
+</p>
+<p>
+    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
+    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
+    following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
 </p>
 
 
@@ -2555,41 +2574,27 @@
     <label2->Example 1</label2->
     <div>
         <w->enum</w-> <t->e</t-> : <t->int</t-> {
-            a, b;              <c->// Ok, a = 0, b = 1</c->
-            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
-            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
+            a, b;              <c->// a = 0, b = 1</c->
+            c = <k->-266250</k->;       <c->// c = -266250</c->
+            d, e = <k->0</k->;          <c->// d = -266249, e = 0</c->
+        }
+
+        <t->float</t-> <f->main</f->(){
+            <w->return</w-> e.<k->c</k->; <c->// Implicitly convert e to float</c->
         }
     </div>
 </example2->
 <example2->
     <label2->Example 2</label2->
     <div>
-        <w->enum</w-> <t->c</t-> : <t->double</t-> {
-            pi = <k->3.14159</k->;      <c->// Ok</c->
-            e  = <k->2.71828</k->;      <c->// Ok</c->
-            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
+        <w->struct</w-> <t->s</t-> {
+            <t->uint</t-> n1, n2;
         }
 
-        <t->void</t-> <f->main</f->(){
-            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
-            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
-            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 3</label2->
-    <div>
-        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
-            pi  = <k->3.14159</k->;
-            e   = <k->2.71828</k->;
-            phi = <k->1.61803</k->;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
-            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
-            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        <w->enum</w-> <t->e</t-> : <t->s</t-> {
+            a = (<k->10</k->, <k->90</k->),
+            b = (<k->8</k->, <k->140</k->),
+            c = (<k->50</k->, <k->60</k->)
         }
     </div>
 </example2->
@@ -2661,7 +2666,9 @@
 </p>
 <p>
     <a href="#primitive-types">Primitive types</a> are all implicitly convertible to each other.<br>
-    <a href="#enums">Enums</a> whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>.<br>
+    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
+    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
+    following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
 </p>
 <p>
     In Lux, some conversions have <a href="#undefined-values">undefined result</a>.<br>
@@ -5800,22 +5807,7 @@
     <label2- class="sub" id="syntax--enum-declaration-signature"><a href="#enums">Enum signature</a></label2->
     <table class="sub">
         <tr>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><code>strict</code></td>
-            <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-></td>
             <td><code>enum</code></td>
             <td><b-lr-></b-lr-></td>
             <td><wrd-><span>name</span></wrd-></td>

@@ -210,7 +210,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="enums"></h1>
 <p>
-    <b>Enums</b> are used to create <b>new types</b> whose allowed values are a <b>subset</b> of the possible values of their <b>base <a href="#types">type</a></b> and can only be set throught their names.<br>
+    <b>Enums</b> are used to create <b>new types</b> whose allowed values are a <b>subset</b> of the possible values of their <b>base <a href="#types">type</a></b> and can only be used throught their names.<br>
     The base <a href="#types">type</a> of an enum is specified after its name and, differently from most languages, it can be any type, including <a href="#structs">structs</a> or other enums.<br>
     Enum elements are declared in the same way as <a href="#variables">variables</a>, but the type is not specified explicitly and their initializer values must be <a href="#compile-time-values">known at compile time</a>.<br>
     These elements identify the allowed values.
@@ -230,9 +230,13 @@
 </syntax2->
 
 <p>
-    All enum elements behave like <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variables</a>.<br>
+    Enum elements behave like <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variables</a>.<br>
     Their value cannot be modified but it can be read and used anywhere a <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variable</a> can.<br>
-    Enums whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are <a href="#implitit-conversions">implicitly convertible</a> to any <a href="#primitive-types">primitive type</a>, following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
+</p>
+<p>
+    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
+    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
+    following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
 </p>
 
 
@@ -240,41 +244,27 @@
     <label2->Example 1</label2->
     <div>
         <w->enum</w-> <t->e</t-> : <t->int</t-> {
-            a, b;              <c->// Ok, a = 0, b = 1</c->
-            c = <k->-266250</k->;       <c->// Ok, c = -266250</c->
-            d, e = <k->0</k->;          <c->// Ok, d = -266249, e = 0</c->
+            a, b;              <c->// a = 0, b = 1</c->
+            c = <k->-266250</k->;       <c->// c = -266250</c->
+            d, e = <k->0</k->;          <c->// d = -266249, e = 0</c->
+        }
+
+        <t->float</t-> <f->main</f->(){
+            <w->return</w-> e.<k->c</k->; <c->// Implicitly convert e to float</c->
         }
     </div>
 </example2->
 <example2->
     <label2->Example 2</label2->
     <div>
-        <w->enum</w-> <t->c</t-> : <t->double</t-> {
-            pi = <k->3.14159</k->;      <c->// Ok</c->
-            e  = <k->2.71828</k->;      <c->// Ok</c->
-            <c->//phi;             </c-><ce->// Error, uninitialized non-integral enum value</ce->
+        <w->struct</w-> <t->s</t-> {
+            <t->uint</t-> n1, n2;
         }
 
-        <t->void</t-> <f->main</f->(){
-            <t->c</t-> a = <k->c.pi</k->;        <c->// Ok</c->
-            <t->c</t-> b = <k->3.14159</k->;     <c->// Ok</c->
-            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
-        }
-    </div>
-</example2->
-<example2->
-    <label2->Example 3</label2->
-    <div>
-        <w->strict enum</w-> <t->c</t-> : <t->double</t-> {
-            pi  = <k->3.14159</k->;
-            e   = <k->2.71828</k->;
-            phi = <k->1.61803</k->;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->c</t-> a = <k->c.phi</k->;       <c->// Ok</c->
-            <c->//c b = 1.61803;   </c-><ce->// Error, cannot convert from double to strict enum</ce->
-            <t->int</t-> c = <k->a</k->;         <c->// Ok, implicit conversion from c (double) to int</c->
+        <w->enum</w-> <t->e</t-> : <t->s</t-> {
+            a = (<k->10</k->, <k->90</k->),
+            b = (<k->8</k->, <k->140</k->),
+            c = (<k->50</k->, <k->60</k->)
         }
     </div>
 </example2->
@@ -346,7 +336,9 @@
 </p>
 <p>
     <a href="#primitive-types">Primitive types</a> are all implicitly convertible to each other.<br>
-    <a href="#enums">Enums</a> whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>.<br>
+    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
+    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
+    following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
 </p>
 <p>
     In Lux, some conversions have <a href="#undefined-values">undefined result</a>.<br>

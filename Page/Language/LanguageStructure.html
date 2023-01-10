@@ -108,6 +108,8 @@
                     <a href="#import-directive">        <code><w->import</w-></code></a>
                     <a href="#import-directive">        <code><w->include</w-></code></a>
                     <a href="#export-directive">        <code><w->export</w-></code></a>
+                    <a href="#boolean-type">            <code><k->true</k-></code></a>
+                    <a href="#boolean-type">            <code><k->false</k-></code></a>
                 </div>
                 <div class="split-td">
                     <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -126,6 +128,7 @@
                 <div class="split-td">
                     <elm->                              <code>(</code><code>)</code></elm->
                     <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
+                    <elm-><code>"</code><code>"</code></elm->
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
@@ -138,7 +141,7 @@
             <td><div class="split-td-outer">
                 <div class="split-td">
                     <a href="#templates">                  <code><w->template</w-></code></a>
-                    <a href="#templates">                  <elm-><code>&lt;</code><code>&gt;</code></elm-></a>
+                    <elm-><code>&lt;</code><code>&gt;</code></elm->
                     <a href="#template-constraints">       <code><w->when</w-></code></a>
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
                 </div>
@@ -203,7 +206,7 @@
 <h1 id="keywords"></h1>
 <p>
     <b>Keywords</b> are <b>built-in <a href="#syntactic-elements">syntactic elements</a></b> that perform hard coded actions or have <b>special meaning</b>.<br>
-    The language defines a total of 26 alphanumeric keywords and 6 symbolic keywords.<br>
+    The language defines a total of 28 alphanumeric keywords and 6 symbolic keywords.<br>
     Their usage is detailedly explained in their respective sections.
 </p>
 <ul>
@@ -248,6 +251,14 @@
         <li>
             <span><a href="#export-directive"><code><w->export</w-></code></a></span>
             <span>Defines which symbols can be exported from the current <a href="#modules">module</a>.</span>
+        </li>
+        <li>
+            <span><a href="#boolean-type"><code><k->true</k-></code></a></span>
+            <span>Identifies the <a href="boolean-type">boolean</a> value true.</span>
+        </li>
+        <li>
+            <span><a href="#boolean-type"><code><k->false</k-></code></a></span>
+            <span>Identifies the <a href="boolean-type">boolean</a> value false.</span>
         </li>
     </ul><br>
     <li>Flow control keywords</li>
@@ -309,7 +320,11 @@
         </li>
         <li>
             <span><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a></span>
-            <span>Declares a new <a href="#scopes">scope</a>. Used to declare most <a href="#semantic-elements">semantic elements.</a></span>
+            <span>Declares a new <a href="#scopes">scope</a>. Used to declare most <a href="#semantic-elements">semantic elements</a>.</span>
+        </li>
+        <li>
+            <span><elm-><code>"</code><code>"</code></elm-></span>
+            <span>Delimits a <a href="#literals">string literal</a>. Also used in <a href="#import-directive">import directives</a>.</span>
         </li>
     </ul><br>
     <li>Separators</li>
@@ -371,10 +386,10 @@
             </span>
         </li>
         <li>
-            <span><a href="#templates"><elm-><code>&lt;</code><code>&gt;</code></elm-></a> </span>
+            <span><elm-><code>&lt;</code><code>&gt;</code></elm-></span>
             <span>
-                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a></a><br>
-                <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword or after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a>]</span>.
+                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a>. Also used in <a href="#import-directive">import directives</a>.<br>
+                <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword, after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a> or around the module name in an <a href="#import-directive">import directive</a>]</span>.
             </span>
         </li>
         <li>
