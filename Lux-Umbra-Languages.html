@@ -261,7 +261,7 @@
 
     <index-separator-></index-separator->
 
-    <indexd->complete-examples</indexd->
+    <indexd->omitted-features</indexd->
     <indexh-></indexh->
 </index->
     </left->
@@ -2050,8 +2050,8 @@
         <w->from</w-> <s->&lt;random&gt;</s-> <w->include</w-> rand;
 
         <w->enum</w-> q : <t->bool</t-> {
-            to_be,
-            not_to_be
+            to_be     = <k->0</k->,
+            not_to_be = <k->1</k->
         }
 
         <c->// Suitable for compile time calls</c->
@@ -2549,8 +2549,8 @@
 </syntax2->
 
 <p>
-    Enum elements behave like <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variables</a>.<br>
-    Their value cannot be modified but it can be read and used anywhere a <a href="#const-qualifier"><code><t->const</t-></code></a> <a href="#variables">variable</a> can.<br>
+    Enum elements are <a href="#constant-values">constant values</a>.
+    Expressions with enum type
 </p>
 <p>
     <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
@@ -7768,10 +7768,10 @@
 
 
 
-            <!--------------------------------------------------------------------->
-            <!-- Complete examples                                               -->
-            <!--------------------------------------------------------------------->
-            <h1 id="complete-examples"></h1>
+<!--------------------------------------------------------------------->
+<!-- Omitted features                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="omitted-features"></h1>
 
         </main-scroll->
     </div></right->
@@ -7808,12 +7808,6 @@
 
 
 
-
-
-<!--
-    TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
-    TODO COMPLETE EXAMPLES CONTAINING ANYTHING ANY POSSIBLE SYNTAX AND USAGE
--->
 
 <!--
     TODO [[likely]] [[unlikely]]
