@@ -1225,20 +1225,12 @@
 
 
 <p>
-    <a href="#enums">enums</a>, <a href="#structs">structs</a>, <a href="#routines">routines</a>, <a href="#templates">templates</a> and the <a href="#while-loops"><code><w->while</w-></code> loop</a>
+    <a href="#structs">structs</a>, <a href="#routines">routines</a>, <a href="#templates">templates</a> and the <a href="#while-loops"><code><w->while</w-></code> loop</a>
     are divided in sub-elements in order to provide a clear and concise syntax.<br>
 </p>
 <ul>
     <li>Declaration sub-elements</li>
     <ul class="summary-list">
-        <li>
-            <span><a href="#enums">Enum</a> signature</span>
-            <span>Defines the name of an <a href="#enums">enum</a> and the <a href="#primitive-types">primitive type</a> it derives from.</span>
-        </li>
-        <li>
-            <span><a href="#enums">Enum</a> body</span>
-            <span>Contains the <a href="#enums">enum</a> elements and other allowed declarations.</span>
-        </li>
         <li>
             <span><a href="#structs">Struct</a> signature</span>
             <span>Defines the name of a <a href="#structs">struct</a>.</span>
@@ -1278,7 +1270,6 @@
 </ul>
 
 
-<!-- TODO auto scoping for enum values -->
 
 
 
@@ -1368,7 +1359,7 @@
         </li>
         <li>
             <span><elm-><a href="#templates"><code><w->template</w-></code></a> declaration</elm-></span>
-            <span>Generates <a href="#enums">enum</a>, <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine calls</a>.</span>
+            <span>Generates <a href="#structs">struct</a>, <a href="#functions">function</a> or <a href="#operators">operator</a> declarations based on the explicit <a href="#templates">template</a> arguments or the <a href="#types">types</a> used in the <a href="#routine-calls">routine calls</a>.</span>
         </li>
         <li>
             <span><elm-><a href="#symbol-aliases"><code><w->alias</w-></code></a> declaration</elm-></span>
@@ -2030,8 +2021,8 @@
     <ul>
         <li>
             A <a href="#routine">routine</a> is suitable for compile time <a href="#routine-calls">calls</a> if it is not declared with the <a href="#runtime-qualifier"><code><w->runtime</w-></code> qualifier</a>,
-            all of the <a href="#routine-calls">routine calls</a> within its body are compile time and
-            it doesn't contain <a href="#inline-cpp">inline C++</a> or <a href="#inline-glsl">inline GLSL</a> statements.
+            it doesn't contain <a href="#inline-cpp">inline C++</a> or <a href="#inline-glsl">inline GLSL</a> statements and
+            every <a href="#routine-calls">routine call</a> within its body, including constructors and destructor called implicitly or not, are compile time.
         </li>
         <li>
             A <a href="#routine-calls">routine call</a> is compile time if the <a href="#routines">routine</a> is suitable for compile time <a href="#routine-calls">calls</a> and
@@ -2072,7 +2063,7 @@
         <t->bool</t-> <f->f</f->(<t->ulong</t-> <a->n</a->) {
             <t->ulong</t-> a = <k->True</k->;
 
-            <c->// return q[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
+            <c->// return q:elms[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
             <c->// return q[add_1(n)];</c->   <ce->// Error, the routine call is not compile time</ce->
             <c->// return q[rand(2)];</c->    <ce->// Error, the routine "random.rand" is not suitable for compile time calls</ce->
             <w->return</w-> q<f->[</f->n<f->]</f->;             <c->// Ok</c->
@@ -2554,8 +2545,6 @@
 
 <syntax2->
     <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--enum-declaration-signature">Enum signature</label2->
-    <label2- id="copy.syntax--enum-declaration-body">Enum body</label2->
     <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
 </syntax2->
 
@@ -3798,7 +3787,6 @@
 </p>
 
 <syntax2->
-    <label2- id="copy.syntax--template-enum-declaration">Syntax</label2->
     <label2- id="copy.syntax--template-struct-declaration">Syntax</label2->
     <label2- id="copy.syntax--template-function-declaration">Syntax</label2->
     <label2- id="copy.syntax--template-operator-declaration">Syntax</label2->
@@ -5420,7 +5408,6 @@
     * A
     <a href="#syntax--namespace-declaration">   namespace</a>,
     <a href="#syntax--enum-declaration">        enum</a>,
-    <a href="#syntax--template-declaration">    enum template</a>,
     <a href="#syntax--struct-declaration">      struct</a>,
     <a href="#syntax--template-declaration">    struct template</a>,
     <a href="#syntax--function-declaration">    function</a>,
@@ -5798,16 +5785,6 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->enum signature</sub-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->enum body</sub-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-    </table>
-    <label2- class="sub" id="syntax--enum-declaration-signature"><a href="#enums">Enum signature</a></label2->
-    <table class="sub">
-        <tr>
-            <td><b-lr-></b-lr-></td>
             <td><code>enum</code></td>
             <td><b-lr-></b-lr-></td>
             <td><wrd-><span>name</span></wrd-></td>
@@ -5815,12 +5792,6 @@
             <td><code>:</code></td>
             <td><b-lr-></b-lr-></td>
             <td><typ->base type</typ-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-    </table>
-    <label2- class="sub" id="syntax--enum-declaration-body"><a href="#enums">Enum body</a></label2->
-    <table class="sub">
-        <tr>
             <td><b-lr-></b-lr-></td>
             <td><code>{</code></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -5832,6 +5803,14 @@
         <tr>
             <td></td>
             <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
             <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
@@ -5841,12 +5820,21 @@
         <tr>
             <td></td>
             <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td><b-rtc-></b-rtc-></td>
             <td><stx->enum element</stx-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
+
     </table>
     <label2- class="stx" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label2->
     <table class="stx">
@@ -5890,7 +5878,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
@@ -5995,7 +5982,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
@@ -6204,7 +6190,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a>,
         <a href="#syntax--variables">variable</a> or a
@@ -6327,31 +6312,6 @@
 
 
 <syntax2- class="qrt">
-    <label2- class="stx" id="syntax--template-enum-declaration"><a href="#templates">Enum template declaration</a></label2->
-    <table class="stx">
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->enum signature</sub-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><sub->template constraint</sub-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->enum body</sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-        </tr>
-    </table>
     <label2- class="stx" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label2->
     <table class="stx">
         <tr>
@@ -7129,7 +7089,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a>,
         <a href="#syntax--variables">variable</a> or a

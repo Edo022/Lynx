@@ -250,15 +250,12 @@ Template layer
 
 
 Adds:
-    Enum template
     Struct template
     Function template
     Operator template
 
 
 Descending:
-    Enum template
-        replaced with the generated enum declarations
     Struct template
         replaced with the generated struct declarations
     Function template

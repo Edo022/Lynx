@@ -49,7 +49,6 @@
     * A
     <a href="#syntax--namespace-declaration">   namespace</a>,
     <a href="#syntax--enum-declaration">        enum</a>,
-    <a href="#syntax--template-declaration">    enum template</a>,
     <a href="#syntax--struct-declaration">      struct</a>,
     <a href="#syntax--template-declaration">    struct template</a>,
     <a href="#syntax--function-declaration">    function</a>,
@@ -427,16 +426,6 @@
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->enum signature</sub-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->enum body</sub-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-    </table>
-    <label2- class="sub" id="syntax--enum-declaration-signature"><a href="#enums">Enum signature</a></label2->
-    <table class="sub">
-        <tr>
-            <td><b-lr-></b-lr-></td>
             <td><code>enum</code></td>
             <td><b-lr-></b-lr-></td>
             <td><wrd-><span>name</span></wrd-></td>
@@ -444,12 +433,6 @@
             <td><code>:</code></td>
             <td><b-lr-></b-lr-></td>
             <td><typ->base type</typ-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-    </table>
-    <label2- class="sub" id="syntax--enum-declaration-body"><a href="#enums">Enum body</a></label2->
-    <table class="sub">
-        <tr>
             <td><b-lr-></b-lr-></td>
             <td><code>{</code></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -461,6 +444,14 @@
         <tr>
             <td></td>
             <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
             <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
@@ -470,12 +461,21 @@
         <tr>
             <td></td>
             <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td><b-rtc-></b-rtc-></td>
             <td><stx->enum element</stx-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
+
     </table>
     <label2- class="stx" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label2->
     <table class="stx">
@@ -519,7 +519,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
@@ -624,7 +623,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
@@ -833,7 +831,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a>,
         <a href="#syntax--variables">variable</a> or a
@@ -956,31 +953,6 @@
 
 
 <syntax2- class="qrt">
-    <label2- class="stx" id="syntax--template-enum-declaration"><a href="#templates">Enum template declaration</a></label2->
-    <table class="stx">
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->enum signature</sub-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><sub->template constraint</sub-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><sub->enum body</sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-        </tr>
-    </table>
     <label2- class="stx" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label2->
     <table class="stx">
         <tr>
@@ -1758,7 +1730,6 @@
     <syntax-note->
         * An
         <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--template-declaration">enum template</a>,
         <a href="#syntax--struct-declaration">struct</a>,
         <a href="#syntax--template-declaration">struct template</a>,
         <a href="#syntax--variables">variable</a> or a
