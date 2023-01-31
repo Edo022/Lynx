@@ -89,6 +89,122 @@
 
 
 
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Default values                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="default-values"></h1>
+<p>
+    <b>Default values</b> are used to <b>initialize</b> the routine parameter <b>when no argument is provided</b>.<br>
+    They are defined in the same way as <a href="#variables">variable initializer values</a>.<br>
+    Both normal and <a href="#reference-parameters">reference parameters</a> can have default values.
+</p>
+<p>
+    A function can have multiple parameters <b>with</b> a default value, but they must all be declared <b>after</b> the <b>last</b> parameter that <b>doesn't have one</b>.<br>
+    Parameters of <a href="#operators">operators</a> cannot have default value.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->import</w-> <s->&lt;math&gt;</s->;
+        <t->double</t-> <f->pow</f->(<t->double</t-> <a->a</a->, <t->double</t-> <a->b</a-> = <k->2</k->) {
+            <w->return</w-> math.<f->pow</f->(a, b);
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <f->pow</f->(<k->3</k->, <k->3</k->);  <c->// Returns 27</c->
+            <f->pow</f->(<k->3</k->);     <c->// Returns 9</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Parameter packs                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="parameter-packs"></h1>
+<p>
+    <b>Parameter packs</b> allow <a href="#functions">functions</a> to take an <b>arbitrary number</b> of <b>arguments</b>.<br>
+    They are decalred in the same way as <a href="#routine-parameters">routine parameters</a>, but their name is followed by the <code>...</code> <a href="#meta-keywords">meta keyword</a> and their type can be a <a href="#template-parameter-packs">template parameter pack</a>.<br>
+    When a <a href="#template-parameter-packs">template parameter pack</a> is used as type, each element of the parameter pack can have a different type. The types are defined by the passed arguments.<br>
+    When a <a href="#types">type</a> or a type <a href="#templates">template parameter</a> is used, all the arguments have the same type. The type is determined by following the implicit conversion rules for template routine calls.//TODO link
+</p>
+<p>
+    Parameter packs take zero or more arguments and can only be used as arguments in routine calls or template paths.<br>
+    The taken arguments are the ones that remain after all the routine parameters have been assigned their argument. Parameters with default values take priority over the arguments.<br>
+    Arguments and parameter pack elements are all initialized in the same order they were declared.
+</p>
+<p>
+    Each <a href="#funcitons">function</a> can only use a single parameter pack.<br>
+    <a href="#operators">Operators</a> cannot use parameter packs.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-parameter-pack">Declaration syntax</label2->
+</syntax2->
+<example2->
+    <label2->Example 1</label2->
+    <div>
+        <w->struct</w-> <t->NoArg</t-> { };
+
+        <c->// This function returns the value of the argument in the middle, or a value of type NoArg if an even number of arguments is passed</c->
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->..., <w->type</w-> <t->v</t->&gt; <t->auto</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->c</a->..., <t->v</t-> <a->r</a->) {
+            <w->return</w-> <f->get_middle_arg</f->(c);
+        }
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->&gt; <t->NoArg</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->r</a->) {
+            <w->return</w-> { };
+        }
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->get_middle_arg</f->(<t->t</t-> <a->c</a->) {
+            <w->return</w-> c;
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <t->auto</t-> a = <f->get_middle_arg</f->(<k->5</k->, <k->false</k->, <k->1</k->, <k->17</k->, <k->true</k->);  <c->// a has type ulong and value 1</c->
+            <t->auto</t-> b = <f->get_middle_arg</f->(<k->1</k->, <k->2</k->);                   <c->// b has type NoArg</c->
+        }
+    </div>
+</example2->
+<p>
+    Parameter packs can be used in conjunction with the <a href="#abbreviated-template-syntax">abbreviated template syntax</a>.<br>
+    This is explained in <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.
+</p>
+<example2->
+    <label2->Example 2 - Summation function</label2->
+    <div>
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t->... <a->vals</a->...) {
+            <w->return</w-> a <f->+</f-> <f->sum</f->(vals);
+        }
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t-> <a->b</a->) {
+            <w->return</w-> a <f->+</f-> b;
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> n = <k->5</k->;
+            <t->float</t-> r = <f->sum</f->(<k->5.9</k->, <k->n</k->, <k->1</k->, <k->true</k->);  <c->// r has value 12.9</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Operators                                                       -->
 <!--------------------------------------------------------------------->
@@ -216,44 +332,90 @@
 <!-- Routine parameters                                              -->
 <!--------------------------------------------------------------------->
 <h1 id="routine-parameters"></h1>
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Parameter delcarations                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="parameter-declarations"></h1>
+<p>
+    Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
+    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference</a> or a <a href="#parameter-packs">parameter pack</a>.
+</p>
+<p>
+    They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
+    As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
+</p>
 <syntax2->
     <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
 </syntax2->
-<p>
-    By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
-    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#syntactic-elements">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
-</p>
-<p>
-    Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
-    Notice that in this case, the <code>&</code> <a href="#syntactic-elements">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
-</p>
-
 <example2->
     <label2->Example</label2->
     <div>
-        <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
-            arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
-            arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
+        <t->int</t-> <f->add</f->(<t->uint</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+            <w->return</w-> a <f->+</f-> b;
         }
 
         <t->void</t-> <f->main</f->(){
-            <t->uint</t-> a, b;
-            <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
-            <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
+            <t->uint</t-> a = <k->5</k->;
+            <t->uint</t-> r = <f->add</f->(<k->a</k->, <k->6</k->);
         }
-
-        <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
     </div>
 </example2->
 
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Reference parameters                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="reference-parameters"></h1>
 <p>
-    See
-    <a href="#const-qualifier">Const qualifier</a>,
-    <a href="#literals">Literals</a>
+    <b>Reference parameters</b> use the <b>address of the argument</b> as <b>initializer value</b> instead of the argument itself. This doesn't apply to their <a href="#default-values">default value</a>.<br>
+    They are declared by preceding the name of the parameter with the <code>&</code> <a href="#meta-keywords">meta keyword</a>.<br>
 </p>
+<p>
+    Reference parameters can only be of <a href="#pointer-types">pointer type</a> and the passed arguments must be <a href="#left-and-right-values">l-values</a>.<br>
+    Inside the <a href="#routines">routine</a>, reference parameters act exactly as normal parameters.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->halve</f->(<t->float</t->* &<a->n</a->) {
+            *n <f->/=</f-> <k->2</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->float</t-> n = <k->8</k->;    <c->// n has value 8</c->
+            <f->halve</f->(<k->n</k->);       <c->// n has value 4</c->
+            <c->//halve(8);</c->     <ce->// Error, 8 is not an l-value</ce->
+        }
+    </div>
+</example2->
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Routine overloarding                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="routine-overloading"></h1>

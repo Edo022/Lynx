@@ -141,12 +141,18 @@
             <index-><indexh->functions</indexh->
                 <indexd->function-declarations</indexd->
                 <indexd->the-main-function</indexd->
+                <indexd->default-values</indexd->
+                <indexd->parameter-packs</indexd->
             </index->
             <index-><indexh->operators</indexh->
                 <indexd->operator-declarations</indexd->
                 <indexd->operator-precedence</indexd->
             </index->
-            <indexd->routine-parameters</indexd->
+            <index-><indexh->routine-parameters</indexh->
+                <indexd->parameter-declarations</indexd->
+                <indexd->reference-parameters</indexd->
+            </index->
+            <indexd->routine-overloading</indexd->
         </index->
         <index-><indexh->templates</indexh->
             <indexd->abbreviated-template-syntax</indexd->
@@ -1419,7 +1425,7 @@
         </li>
         <li>
             <span><elm-><a href="#then-statement"><code><w->then</w-></code></a> statement</elm-></span>
-            <span>Executes a <a href="#statements">statement</a> if the immediatly preceeding <a href="#iteration">loop</a> didn't stop through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and completed at least one iteration.</span>
+            <span>Executes a <a href="#statements">statement</a> if the immediatly preceding <a href="#iteration">loop</a> didn't stop through a <a href="#break-statement"><code><w->break</w-></code> statement</a> and completed at least one iteration.</span>
         </li>
     </ul><br>
     <li>Non-local</li>
@@ -1437,7 +1443,7 @@
     <ul class="summary-list">
         <li>
             <span><elm-><a href="#else-statement"><code><w->else</w-></code></a> statement</elm-></span>
-            <span>Executes a <a href="#statements">statement</a> if the <a href="#bool-type">condition</a> of the immediatly preceeding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> evaluated to <code><t->false</t-></code> before the first iteration.</span>
+            <span>Executes a <a href="#statements">statement</a> if the <a href="#bool-type">condition</a> of the immediatly preceding <a href="#iteration">loop</a> or <a href="#if-statement"><code><w->if</w-></code> statement</a> evaluated to <code><t->false</t-></code> before the first iteration.</span>
         </li>
         <li>
             <span><elm-><a href="#expressions">Expression statement</a></elm-></span>
@@ -2537,7 +2543,7 @@
     These elements identify the allowed values.
 </p>
 <p>
-    Elements of <a href="#integral-types">integral</a> enums which are not initialized are given the value of the preceeding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if first.<br>
+    Elements of <a href="#integral-types">integral</a> enums which are not initialized are given the value of the preceding element + <code><k->1</k-></code>, or <code><k->0</k-></code> if first.<br>
     Elements of enums with any other base <a href="#types">type</a> must always be initialized.<br>
     Multiple elements can have identical <a href="#values">values</a>, but each <a href="#identifiers">identifier</a> can only be declared once.<br>
     Empty enums are allowed.
@@ -3538,6 +3544,122 @@
 
 
 
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Default values                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="default-values"></h1>
+<p>
+    <b>Default values</b> are used to <b>initialize</b> the routine parameter <b>when no argument is provided</b>.<br>
+    They are defined in the same way as <a href="#variables">variable initializer values</a>.<br>
+    Both normal and <a href="#reference-parameters">reference parameters</a> can have default values.
+</p>
+<p>
+    A function can have multiple parameters <b>with</b> a default value, but they must all be declared <b>after</b> the <b>last</b> parameter that <b>doesn't have one</b>.<br>
+    Parameters of <a href="#operators">operators</a> cannot have default value.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->import</w-> <s->&lt;math&gt;</s->;
+        <t->double</t-> <f->pow</f->(<t->double</t-> <a->a</a->, <t->double</t-> <a->b</a-> = <k->2</k->) {
+            <w->return</w-> math.<f->pow</f->(a, b);
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <f->pow</f->(<k->3</k->, <k->3</k->);  <c->// Returns 27</c->
+            <f->pow</f->(<k->3</k->);     <c->// Returns 9</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Parameter packs                                                 -->
+<!--------------------------------------------------------------------->
+<h1 id="parameter-packs"></h1>
+<p>
+    <b>Parameter packs</b> allow <a href="#functions">functions</a> to take an <b>arbitrary number</b> of <b>arguments</b>.<br>
+    They are decalred in the same way as <a href="#routine-parameters">routine parameters</a>, but their name is followed by the <code>...</code> <a href="#meta-keywords">meta keyword</a> and their type can be a <a href="#template-parameter-packs">template parameter pack</a>.<br>
+    When a <a href="#template-parameter-packs">template parameter pack</a> is used as type, each element of the parameter pack can have a different type. The types are defined by the passed arguments.<br>
+    When a <a href="#types">type</a> or a type <a href="#templates">template parameter</a> is used, all the arguments have the same type. The type is determined by following the implicit conversion rules for template routine calls.//TODO link
+</p>
+<p>
+    Parameter packs take zero or more arguments and can only be used as arguments in routine calls or template paths.<br>
+    The taken arguments are the ones that remain after all the routine parameters have been assigned their argument. Parameters with default values take priority over the arguments.<br>
+    Arguments and parameter pack elements are all initialized in the same order they were declared.
+</p>
+<p>
+    Each <a href="#funcitons">function</a> can only use a single parameter pack.<br>
+    <a href="#operators">Operators</a> cannot use parameter packs.
+</p>
+<syntax2->
+    <label2- id="copy.syntax--routine-declaration-parameter-pack">Declaration syntax</label2->
+</syntax2->
+<example2->
+    <label2->Example 1</label2->
+    <div>
+        <w->struct</w-> <t->NoArg</t-> { };
+
+        <c->// This function returns the value of the argument in the middle, or the type NoArg if an even number of arguments is passed</c->
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->..., <w->type</w-> <t->v</t->&gt; <t->auto</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->c</a->..., <t->v</t-> <a->r</a->) {
+            <w->return</w-> <f->get_middle_arg</f->(c);
+        }
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->&gt; <t->NoArg</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->r</a->) {
+            <w->return</w-> { };
+        }
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->get_middle_arg</f->(<t->t</t-> <a->c</a->) {
+            <w->return</w-> c;
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <t->auto</t-> a = <f->get_middle_arg</f->(<k->5</k->, <k->false</k->, <k->1</k->, <k->17</k->, <k->true</k->);  <c->// a has type ulong and value 1</c->
+            <t->auto</t-> b = <f->get_middle_arg</f->(<k->1</k->, <k->2</k->);                   <c->// b has type NoArg</c->
+        }
+    </div>
+</example2->
+<p>
+    Parameter packs can be used in conjunction with the <a href="#abbreviated-template-syntax">abbreviated template syntax</a>.<br>
+    This is explained in <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.
+</p>
+<example2->
+    <label2->Example 2 - Summation function</label2->
+    <div>
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t->... <a->vals</a->...) {
+            <w->return</w-> a <f->+</f-> <f->sum</f->(vals);
+        }
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t-> <a->b</a->) {
+            <w->return</w-> a <f->+</f-> b;
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> n = <k->5</k->;
+            <t->float</t-> r = <f->sum</f->(<k->5.9</k->, <k->n</k->, <k->1</k->, <k->true</k->);  <c->// r has value 12.9</c->
+        }
+    </div>
+</example2->
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Operators                                                       -->
 <!--------------------------------------------------------------------->
@@ -3665,47 +3787,93 @@
 <!-- Routine parameters                                              -->
 <!--------------------------------------------------------------------->
 <h1 id="routine-parameters"></h1>
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Parameter delcarations                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="parameter-declarations"></h1>
+<p>
+    Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
+    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference</a> or a <a href="#parameter-packs">parameter pack</a>.
+</p>
+<p>
+    They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
+    As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
+</p>
 <syntax2->
     <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
 </syntax2->
-<p>
-    By <b>default</b>, the arguments are passed <b>by value</b>, which means that when the function is called, the value of each argument is <b>copied</b> in the corresponding parameter and the function <b>cannot access</b> the original variable.<br>
-    If a parameter name is preceeded by a <b><code>&</code></b> <a href="#syntactic-elements">token</a>, instead, the argument is passed <b>by reference</b>, allowing the function to <b>access and modify</b> its value
-</p>
-<p>
-    Declaring a reference parameter as const is a syntax error and passing an <a href="#left-and-right-values">r-value</a> as argument of a reference parameter is a semantic error.<br>
-    Notice that in this case, the <code>&</code> <a href="#syntactic-elements">token</a> is not part of the type nor part of the name, but a language feature that is used exclusively within parameter declarations.
-</p>
-
 <example2->
     <label2->Example</label2->
     <div>
-        <t->void</t-> <f->fun1</f->(<t->uint</t-> <a->arg1</a->, <t->uint</t-> &<a->arg2</a->) {
-            arg1 = <k->0</k->;     <c->// c_doesn't modify main.a, but the local argument in which its value was copied</c->
-            arg2 = <k->0</k->;     <c->// c_modifies main.b</c->
+        <t->int</t-> <f->add</f->(<t->uint</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+            <w->return</w-> a <f->+</f-> b;
         }
 
         <t->void</t-> <f->main</f->(){
-            <t->uint</t-> a, b;
-            <f->fun1</f->(a, b);   <c->// a keeps an undefined value, b is set to 0</c->
-            <c->//fun1(a, 5); </c-><ce->// Error, cannot pass literals to reference parameters</ce->
+            <t->uint</t-> a = <k->5</k->;
+            <t->uint</t-> r = <f->add</f->(<k->a</k->, <k->6</k->);
         }
-
-        <c->//void fun2(const int &arg1){} </c-><ce->// Error, references cannot be const</ce->
     </div>
 </example2->
 
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Reference parameters                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="reference-parameters"></h1>
 <p>
-    See
-    <a href="#const-qualifier">Const qualifier</a>,
-    <a href="#literals">Literals</a>
+    <b>Reference parameters</b> use the <b>address of the argument</b> as <b>initializer value</b> instead of the argument itself. This doesn't apply to their <a href="#default-values">default value</a>.<br>
+    They are declared by preceding the name of the parameter with the <code>&</code> <a href="#meta-keywords">meta keyword</a>.<br>
 </p>
+<p>
+    Reference parameters can only be of <a href="#pointer-types">pointer type</a> and the passed arguments must be <a href="#left-and-right-values">l-values</a>.<br>
+    Inside the <a href="#routines">routine</a>, reference parameters act exactly as normal parameters.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <t->void</t-> <f->halve</f->(<t->float</t->* &<a->n</a->) {
+            *n <f->/=</f-> <k->2</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->float</t-> n = <k->8</k->;    <c->// n has value 8</c->
+            <f->halve</f->(<k->n</k->);       <c->// n has value 4</c->
+            <c->//halve(8);</c->     <ce->// Error, 8 is not an l-value</ce->
+        }
+    </div>
+</example2->
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Routine overloarding                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="routine-overloading"></h1>
 
 
 
@@ -6128,35 +6296,6 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="stx" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label2->
-    <table class="stx">
-        <tr>
-            <td></td>
-            <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><typ->type</typ-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><sgr->const</sgr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>=</code></td>
-            <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[type]</t->&nbsp;value</exp-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-        </tr>
-    </table>
     <label2- class="sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label2->
     <table class="sub">
         <tr>
@@ -6195,10 +6334,80 @@
         <a href="#syntax--variables">variable</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
 
-        ** At least one name and one parameter declaration
+        ** At least one name and one parameter declaration.
     </syntax-note->
 </syntax2->
 
+
+
+<syntax2->
+    <label2- class="stx" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label2->
+    <table class="stx">
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><typ->type</typ-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>&<span class="hidden">&nbsp;*</span></code></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><wrd-><span>name</span></wrd-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>=</code></td>
+            <td><b-lr-></b-lr-></td>
+            <td><exp-><t->[type]</t->&nbsp;value</exp-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+        </tr>
+    </table>
+    <syntax-note->
+        * Only if type is a <a href="#pointer-types">pointer type</a>.
+    </syntax-note->
+</syntax2->
+
+
+
+
+<syntax2->
+    <label2- class="stx" id="syntax--routine-declaration-parameter-pack"><a href="#parameter-packs">Parameter pack</a></label2->
+    <table class="stx">
+        <tr>
+            <td><b-br-></b-br-></td>
+            <td><wrd->template parameter pack</wrd-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><typ->type</typ-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>&<span class="hidden">&nbsp;*</span></code></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><wrd-><span>name</span></wrd-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><code>...</code></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+    </table>
+    <syntax-note->
+        * Only if type is a <a href="#pointer-types">pointer type</a>.
+    </syntax-note->
+</syntax2->
 
 
 
