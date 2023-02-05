@@ -234,11 +234,10 @@ body {
 
 
 
-ol > ol > *, ul > ol > *,
-ol > ul > *, ul > ul > * {
+ul > ul > * {
     margin-left: var(--list-indentation);
 }
-ul, li {
+ul, ul > li {
     list-style-type: disc;
     list-style-position: outside;
 }

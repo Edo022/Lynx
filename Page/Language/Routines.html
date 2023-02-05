@@ -419,3 +419,155 @@
 <!-- Routine overloarding                                            -->
 <!--------------------------------------------------------------------->
 <h1 id="routine-overloading"></h1>
+<p style="margin-bottom: 0;">
+    <b>Routine overloading</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and the value of any compile time value accessible from their declaration.<br>
+    This is achieved by declaring the same routine multiple times. Each declaration must be <b>unique</b> and can differ by:
+</p>
+<ul><ul>
+    <li>Number of parameters (and position of the parameters for operators)</li>
+    <li>Types of the parameters</li>
+    <li>Suitability constraints</li>
+</ul></ul>
+<br>
+<p style="margin-bottom: 0;">
+    Declarations that have less than <i>#a</i> parameters or more than <i>#a</i> parameters without a default value (and for operators, those whose position of the parameters don't match with the position of the arguments in the operator call) are discarded.<br>
+    <span class="small hidden">[with <i>#a</i> = number of passed arguments]</span><br>
+    <br>
+    The remaining declarations are organized in categories and the best one is chosen from one of these.<br>
+    The categories are checked one at a time, starting from the first. If no declaration is found, the next category is checked.<br>
+    If 2 or more declarations are found withing the same category, the routine call is ambiguous and a semantic error is generated.<br>
+    If no declaration is found after all the categories have been checked, a suitable declaration doesn't exist and a semantic error is generated.
+</p>
+<ol style="list-style: lower-alpha;">
+    <li>Declarations that can take all the parameters without performing implicit conversions.</li>
+    <li>Declarations that can take all the parameters by performing one or more constness-only implicit conversions.</li>
+    <li>Declarations that can take all the parameters by performing one or more implicit conversions of any kind.</li>
+</ol>
+<br>
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example 1</label2->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->void</t-> <f->f</f->(<t->int</t-> <t->const@</t-> <a->p</a->){
+                    io.<f->print</f->(<s->"a"</s->);
+                }
+                <t->void</t-> <f->f</f->(<t->int@</t-> <a->p</a->){
+                    io.<f->print</f->(<s->"b"</s->);
+                }
+                <t->void</t-> <f->f</f->(<t->ulong</t-> <a->p</a->){
+                    io.<f->print</f->(<s->"c"</s->);
+                }
+
+
+                <t->void</t-> <f->main</f->(){
+                    <t->const</t-> <t->int</t-> n1;
+                    <t->int</t->       n2;
+                    <t->float</t->     n3;
+
+                    <f->f</f->(@n1);   <c->// No implicit conversions</c->
+                    <f->f</f->(@n2);   <c->// 1 constness-only implicit conversion</c->
+                    <f->f</f->(@n3);   <c->// 1 implicit conversion</c->
+                    <f->f</f->(<k->0.5</k->);   <c->// No implicit conversions</c->
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                a
+                b
+                c
+                c<cursor-></cursor->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
+<p style="margin-bottom: 0;">
+    Declarations with parameter packs and/or templates undergo an additional instantiation phase before the best declaration is chosen, in which these features are replaced with standard types and parameters.<br>
+    Generated declarations whose number of arguments and argument types are identical to the ones in declarations already defined by the user and any declaration whose suitability constraint is not satisfied are discarded
+</p>
+<ol style="list-style: decimal;">
+    <li>
+        Each declaration that uses a function parameter pack and has <i>#a</i> or less parameters has its parameter pack replaced with the exact number of parameters of the correct type in order to bring the total to exactly <i>#a</i>.<br>
+        <span class="small hidden">[with <i>#a</i> = number of passed arguments]
+    </li>
+    <li>
+        Each declaration that uses template types in its parameters has these types replaced with the correct type, following the implicit conversion rules for template calls.
+    </li>
+</ol>
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example 2</label2->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->void</t-> <f->f</f->(?<t->t</t->... <a->args</a->...){
+                    io.<f->print</f->(<s->"More than one argument provided"</s->);
+                }
+                <t->void</t-> <f->f</f->(?<t->t</t-> <a->arg</a->) {
+                    io.<f->print</f->(<s->"The first argument is not a double"</s->);
+                }
+                <t->void</t-> <f->f</f->(<t->double</t-> <a->arg</a->) {
+                    io.<f->print</f->(<s->"The first argument is a double"</s->);
+                }
+
+
+                <t->void</t-> <f->main</f->(){
+                    <f->f</f->(<k->1</k->);
+                    <f->f</f->(<k->1.0</k->);
+                    <f->f</f->(<k->1.0</k->, <k->2</k->);
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                The first argument is not a double
+                The first argument is a double
+                More than one argument provided<cursor-></cursor->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->

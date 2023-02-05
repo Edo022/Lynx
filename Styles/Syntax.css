@@ -473,3 +473,22 @@ syntax2- > table.stx,
 syntax2- > label2-.stx {
     border-left-color: var(--bd-stx);
 }
+
+
+
+
+
+
+cursor- {
+    display: inline;
+}
+cursor-::after {
+    content: "█";
+    animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
