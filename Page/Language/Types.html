@@ -409,8 +409,37 @@
 <!--------------------------------------------------------------------->
 <h1 id="const-qualifier"></h1>
 <p>
-    The const qualifier is used to reference const pointers.
+    When used between the base type and the <code>@</code> keyword of a pointer type, the <b><code><t->const</t-></code> qualifier</b> indicates that the type is a <b>const pointer</b>.<br>
+    Data accessed by dereferencing a <code><t->const</t-></code> pointer value cannot be modified.<br>
+    Non-<code><t->const</t-></code> pointers are implicitly convertible to their respective <code><t->const</t-></code> pointer type. This is explained in <a href="implicit-conversions">Implicit coversions</a>.
 </p>
+<p>
+    <b><code><w->const</w-></code></b> can also be used before the name of a <b>variable</b> or <b>routine parameter</b> to <b>prevent them from being modified</b> after their declaration, although this doesn't turn the type of the symbol into a const type.<br>
+    The address of <code><w->const</w-></code> variables or <code><w->const</w-></code> routine parameters is always returned as a <code><t->const</t-></code> pointer.
+</p>
+<example2->
+    <label2->Example 1 - Const pointer</label2->
+    <div>
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> var = <k->8</k->;
+            <t->int const@</t-> ptr = @<k->var</k->;
+
+            <k->var</k-> <f->=</f-> <k->9</k->;     <c->// Ok</c->
+            <c->//@ptr = 9;</c->  <ce->// Error, cannot modify data pointed by const pointers</ce->
+        }
+    </div>
+    <label2->Example 2 - Const variable</label2->
+    <div>
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> var <w->const</w-> = <k->8</k->;
+
+            <c->var = 9;</c->  <ce->// Error, cannot modify const variables</ce->
+        }
+    </div>
+</example2->
+
+
+
 
 
 
