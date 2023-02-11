@@ -116,7 +116,10 @@
                 <indexd->floating-point-types</indexd->
                 <indexd->boolean-type</indexd->
             </index->
-            <indexd->enums</indexd->
+            <index-><indexh->enums</indexh->
+                <indexd->struct-enums</indexd->
+                <indexd->automatic-enum-scoping</indexd->
+            </index->
             <index-><indexh->structs</indexh->
                 <indexd->struct-methods</indexd->
                 <indexd->constructor-functions</indexd->
@@ -2548,18 +2551,14 @@
 </syntax2->
 
 <p>
-    Enum elements are <a href="#constant-values">constant values</a>.
-    Expressions with enum type
-</p>
-<p>
-    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
-    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
-    following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
+    Enum elements are <a href="#constant-values">constant values</a>.<br>
+    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to any type their base type is implicitly convertible to and the base type itself.<br>
+    This is detailedly explained in <a href="#implicit-conversions">Implicit conversions</a>.
 </p>
 
 
 <example2->
-    <label2->Example 1</label2->
+    <label2->Example</label2->
     <div>
         <w->enum</w-> <t->e</t-> : <t->int</t-> {
             a, b;              <c->// a = 0, b = 1</c->
@@ -2572,8 +2571,35 @@
         }
     </div>
 </example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Struct enums                                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="struct-enums"></h1>
+<p style="margin-bottom: 0;">
+    Enums with a <b>struct</b> as <b>base type</b> behave <b>slightly differently</b> than standard enums:<br>
+</p>
+<ul><ul>
+    <li>Elements are initialized through one of the constructors of the base type and destroyed before the process ends as if they were global variables.</li>
+    <li>The size of the type is always 8 bytes, regardless of the size of the base struct.</li>
+    <li>Struct methods declared in the base struct are not inherited.</li>
+    <li>Creating or destroying enum values doesn't call constructors or destructors declared in the base struct.</li>
+</ul></ul>
 <example2->
-    <label2->Example 2</label2->
+    <label2->Example</label2->
     <div>
         <w->struct</w-> <t->s</t-> {
             <t->uint</t-> n1, n2;
@@ -2586,6 +2612,78 @@
         }
     </div>
 </example2->
+
+
+
+
+
+
+
+
+
+
+
+
+
+//TODO improve wording
+<!--------------------------------------------------------------------->
+<!-- Automatic enum scoping                                          -->
+<!--------------------------------------------------------------------->
+<h1 id="automatic-enum-scoping"></h1>
+<p>
+    <b>Automatic enum scoping</b> can be used to <b>skip</b> the idenfiers of <b>parent scopes</b> in a symbol path and reference an enum element through its name alone.<br>
+    This is done by replacing the path to the element with a single <code>.</code> keyword.<br>
+    Automatic scoping can only be used where the only accepted values are of a specific enum type.
+</p>
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example</label2->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->enum</t-> day : <t->uint</t-> {
+                    <k->mon</k->, <k->two</k->, <k->wed</k->, <k->thu</k->, <k->fri</k->, <k->sat</k->, <k->sun</k->;
+                }
+
+                <t->void</t-> <f->check_day</f->(<t->day</t-> <a->d</a->) {
+                    <w->match</w-> d {
+                        .<k->mon</k-> to .<k->fri</k-> { io.<f->print</f->(<s->"TwT"</s->); }
+                        .<k->sat</k-> or .<k->sun</k-> { io.<f->print</f->(<s->"OwO"</s->); }
+                    }
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <f->check_day</f->(.<k->sun</k->);
+                    <f->check_day</f->(.<k->mon</k->);
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                OwO
+                TwT<cursor-></cursor->
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
+
 
 
 
@@ -2743,7 +2841,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="const-qualifier"></h1>
 <p>
-    When used between the base type and the <code><w->@</w-></code> keyword of a pointer type, the <b><code><t->const</t-></code> qualifier</b> indicates that the type is a <b>const pointer</b>.<br>
+    When used between the base type and the <code>@</code> keyword of a pointer type, the <b><code><t->const</t-></code> qualifier</b> indicates that the type is a <b>const pointer</b>.<br>
     Data accessed by dereferencing a <code><t->const</t-></code> pointer value cannot be modified.<br>
     Non-<code><t->const</t-></code> pointers are implicitly convertible to their respective <code><t->const</t-></code> pointer type. This is explained in <a href="implicit-conversions">Implicit coversions</a>.
 </p>
