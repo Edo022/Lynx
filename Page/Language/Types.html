@@ -305,7 +305,7 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->enum</t-> day : <t->uint</t-> {
+                <t->enum</t-> <t->day</t-> : <t->uint</t-> {
                     <k->mon</k->, <k->two</k->, <k->wed</k->, <k->thu</k->, <k->fri</k->, <k->sat</k->, <k->sun</k->;
                 }
 
@@ -359,12 +359,12 @@
 <!--------------------------------------------------------------------->
 <h1 id="structs"></h1>
 <p>
-    <b>Structs</b> are used to <b>group named memory locations</b> of <b>different <a href="#types">types</a></b>.<br>
-    The members are declared in the same way as <a href="#variables">variables</a> and can be of any <a href="#types">type</a>, including other structs.<br>
-    They cannot be <a href="#const-qualifier"><sgr>const</sgr></a> and cannot have initializer values.<br>
+    <b>Structs</b> are used to <b>create</b> new <b>types</b> composed by 0 or more separate members that can have differing type.<br>
+    The members are declared in the same way as <a href="#variables">variables</a> but cannot have initializer values.
 </p>
 <p>
-    Empty structs and <a href="#unnamed-types">unnamed structs</a> are allowed.
+    Empty structs are allowed.<br>
+    Struct members can be of any <a href="#types">type</a>, including other structs.
 </p>
 <syntax2->
     <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
@@ -379,7 +379,6 @@
         <w->struct</w-> <t->idk</t-> {
             <t->uint</t-> a, b;        <c->// Ok</c->
             <t->double</t->[<k->4</k->] c;      <c->// Ok</c->
-            <c->//double const d; </c-><ce->// Error, struct members cannot be const</ce->
         }
 
         <t->void</t-> <f->main</f->(){
@@ -403,6 +402,66 @@
 <!-- Struct methods                                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="struct-methods"></h1>
+<p>
+    <b>Structs</b> can contain <b>functions</b>. These functions are called <b>methods</b>.<br>
+    They are part of the struct scope and are called in the same way as standard functions.
+</p>
+<p>
+    Struct methods can access the members of the value they are called on, and the special identifier <code>this</code> can be used to reference the value itself.<br>
+    If the value they are called on is a constant, <code>this</code> and all the members are also constants. Attempting to change their value generates a semantic error.
+</p>
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example</label2->
+            <div>
+                <c->// 2D uint vector</c->
+                <w->struct</w-> <t->uint2</t-> {
+                    <t->uint</t-> x, y;
+
+                    <t->void</t-> <f->print</f->(){
+                        io.<f->print</f->(<s->"x:"</s-> <f->+</f-> <t->str</t->(x));
+                        io.<f->print</f->(<s->"\ny: "</s-> <f->+</f-> <t->str</t->(this.y));
+                        <c->// Notice that this. is not required when accessing members</c->
+                    }
+
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <t->uint2</t-> v = (<k->15</k->, <k->9</k->);
+                    <k->v</k->.<f->print</f->();
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                x: 15
+                y: 9<cursor-></cursor->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
+
+
+
+
 
 
 
@@ -417,6 +476,10 @@
 <!-- Constructor functions                                           -->
 <!--------------------------------------------------------------------->
 <h1 id="constructor-functions"></h1>
+<p>
+
+</p>
+
 
 
 
