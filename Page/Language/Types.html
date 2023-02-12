@@ -408,7 +408,8 @@
 </p>
 <p>
     Struct methods can access the members of the value they are called on, and the special identifier <code>this</code> can be used to reference the value itself.<br>
-    If the value they are called on is a constant, <code>this</code> and all the members are also constants. Attempting to change their value generates a semantic error.
+    If the value they are called on is a constant, <code>this</code> and all the members are also constants. Attempting to change their value generates a semantic error.<br>
+    Template methods are allowed.
 </p>
 <split-example-container->
     <split-example-container-left->
@@ -428,7 +429,7 @@
                 }
 
                 <t->void</t-> <f->main</f->(){
-                    <t->uint2</t-> v = (<k->15</k->, <k->9</k->);
+                    <t->uint2</t-> v = { <k->15</k->, <k->9</k-> };
                     <k->v</k->.<f->print</f->();
                 }
             </div>
@@ -473,13 +474,58 @@
 
 
 <!--------------------------------------------------------------------->
-<!-- Constructor functions                                           -->
+<!-- Constructor function                                            -->
 <!--------------------------------------------------------------------->
-<h1 id="constructor-functions"></h1>
+<h1 id="constructor-function"></h1>
 <p>
-
+    The <b>constructor</b> function is a <b>special</b> struct <b>method</b> used to <b>initialize</b> the struct <b>members</b> that is called each time a value of its parent struct type is created.<br>
+    It has <b>no name</b> and <b>no explicit return type</b>. Constructor calls always return an l-value of type their parent struct.<br>
+    Differently from other struct methods, the constructor can modify members when called on constant values.
 </p>
+<p>
+    Each struct can only have one constructor, but it can be overloaded.<br>
+    Template constructors are allowed, although it is not possible to reference a specific template through the <elm-><code>&lt;</code><code>&gt;</code></elm->
+    meta keyword while creating a new value, meaning that the declaration is chosen solely based on the passed arguments.<br>
+    Constructors cannot be called after the value has been created, but each constructor declaration can call other declarations in the same struct.
+</p>
+<p>
+    By default, each struct contains one implicit constructor that takes a reference parameter for each member in the same order in which they were declared and initializes them by copying the value from their respective parameter.<br>
+    This constructor is not present in structs declared using the <code><w->nodefault</w-></code> meta keyword.<br>
+    Constructors are allowed to take no arguments.
+</p>
+<example2->
+    <label2->Example</label2->
+    <div>
+        <w->struct</w-> <t->uint2</t-> {
+            <t->uint</t-> x, y;
+        }
 
+
+        <w->struct</w-> <t->uint3</t-> <w->nodefault</w-> {
+            <t->uint</t-> x, y, z;
+
+            <f->constructor</f->(<t->uint2</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+                x <f->=</f-> a.x;
+                y <f->=</f-> a.y;
+                z <f->=</f-> b;
+            }
+
+            <f->constructor</f->(<t->uint</t-> <a->a</a->, <t->uint2</t-> <a->b</a->) {
+                x <f->=</f-> a;
+                y <f->=</f-> b.x;
+                z <f->=</f-> b.y;
+            }
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <t->uint2</t-> a = { <k->1</k->, <k->2</k-> };     <c->// Default constructor</c->
+            <t->uint3</t-> b = { <k->a</k->, <k->5</k-> };     <c->// User-defined constructor</c->
+            <t->uint3</t-> c = { <k->5</k->, <k->a</k-> };     <c->// User-defined constructor</c->
+            <c->//uint3 d = (1, 2, 3);</c->  <ce->// Error, no suitable constructor declaration</ce->
+        }
+    </div>
+</example2->
 
 
 
