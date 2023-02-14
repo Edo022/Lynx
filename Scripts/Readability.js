@@ -1,24 +1,34 @@
 
 let readability_highlighted = false;
+let rec_i = 0;
 
 var readability = {
-
-    // Returns all the text nodes in the document
-    textNodesUnder : function(el){
-        var n, a=[], walk=document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
-        while(n=walk.nextNode()) a.push(n);
-        return a;
-    },
-
-
     // Highlights half of each word to make them more readable
     highlight : function(){
-        let walk = document.createTreeWalker(document.documentElement, NodeFilter.SHOW_TEXT, null, false);
+        let walk = document.createTreeWalker(
+            document.documentElement,
+            NodeFilter.SHOW_TEXT,
+            { acceptNode(node) {
+                checkParent = function(node){
+                    if(node.parentElement == null) return NodeFilter.FILTER_ACCEPT;
+                    switch(node.parentElement.tagName) {
+                        case 'EXAMPLE2-': return NodeFilter.FILTER_REJECT;
+                        case 'SYNTAX2-':  return NodeFilter.FILTER_REJECT;
+                        case 'TITLE':     return NodeFilter.FILTER_REJECT;
+                        case 'STYLE':     return NodeFilter.FILTER_REJECT;
+                        default:          return checkParent(node.parentElement);
+                    }
+                }
+
+                // Skip empty elements
+                if(/^\s*$/.test(node.textContent)) return NodeFilter.FILTER_REJECT;
+                return checkParent(node);
+            }}
+        );
         let n, lastOld = null, lastNew = null;
         while(n = walk.nextNode()) {
 
             // Load new elements
-            if(/^\s*$/.test(n.textContent) | n.parentElement.tagName == 'TITLE' | n.parentElement.tagName == 'STYLE') continue; // Skip empty elements, tab title and styles
             let w = n.textContent.split(/((?<=[a-z]+)(?=[^a-z]+)|(?<=[^a-z]+)(?=[a-z]+))/i);
             //!                           ^ word-to-symbol       ^ symbol-to-word
             let span = document.createElement('span');

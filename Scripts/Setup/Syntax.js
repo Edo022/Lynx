@@ -187,7 +187,7 @@ var setup_syntax = {
 
 
     // Fix code indentation because apparently HTML5+CSS3 can't do that
-    format_code : function() {
+    indent_code : function() {
         let c = document.querySelectorAll('example2-');
         for(let i = 0; i < c.length; i++){
             let divs = c[i].querySelectorAll('div');
@@ -201,12 +201,28 @@ var setup_syntax = {
 
 
 
+    // Even out the height of right and left example tags
+    even_heights : function() {
+        let c = document.querySelectorAll('split-example-container-');
+        for(let i = 0; i < c.length; i++){
+            let l = c[i].querySelectorAll('split-example-container-left-') [0].querySelectorAll('div')[0];
+            let r = c[i].querySelectorAll('split-example-container-right-')[0].querySelectorAll('div')[0];
+
+            if(r.clientHeight < l.clientHeight) r.style.minHeight = r.style.maxHeight = `${ l.clientHeight }px` //TODO this doesnt work properly
+            if(l.clientHeight < r.clientHeight) l.style.minHeight = l.style.maxHeight = `${ r.clientHeight }px` //TODO this doesnt work properly
+        }
+    },
+
+
+
+
 
 
 
     init : function() {
         setup_syntax.even_widths();
         setup_syntax.format_arrows();
-        setup_syntax.format_code();
+        setup_syntax.indent_code();
+        setup_syntax.even_heights();
     }
 }

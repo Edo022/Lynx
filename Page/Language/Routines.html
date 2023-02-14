@@ -479,29 +479,7 @@
         <example2->
             <label2->Output</label2->
             <div>
-                a
-                b
-                c
-                c<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                abcc<cursor-></cursor->
             </div>
         </example2->
     </split-example-container-right->
@@ -527,13 +505,13 @@
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
                 <t->void</t-> <f->f</f->(?<t->t</t->... <a->args</a->...){
-                    io.<f->print</f->(<s->"More than one argument provided"</s->);
+                    io.<f->print</f->(<s->"More than one argument provided\n"</s->);
                 }
                 <t->void</t-> <f->f</f->(?<t->t</t-> <a->arg</a->) {
-                    io.<f->print</f->(<s->"The first argument is not a double"</s->);
+                    io.<f->print</f->(<s->"The first argument is not a double\n"</s->);
                 }
                 <t->void</t-> <f->f</f->(<t->double</t-> <a->arg</a->) {
-                    io.<f->print</f->(<s->"The first argument is a double"</s->);
+                    io.<f->print</f->(<s->"The first argument is a double\n"</s->);
                 }
 
 
@@ -551,22 +529,8 @@
             <div>
                 The first argument is not a double
                 The first argument is a double
-                More than one argument provided<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                More than one argument provided
+                <cursor-></cursor->
             </div>
         </example2->
     </split-example-container-right->

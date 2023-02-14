@@ -305,7 +305,7 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->enum</t-> <t->day</t-> : <t->uint</t-> {
+                <w->enum</w-> <t->day</t-> : <t->uint</t-> {
                     <k->mon</k->, <k->two</k->, <k->wed</k->, <k->thu</k->, <k->fri</k->, <k->sat</k->, <k->sun</k->;
                 }
 
@@ -318,6 +318,7 @@
 
                 <t->void</t-> <f->main</f->(){
                     <f->check_day</f->(.<k->sun</k->);
+                    io.print("\n");
                     <f->check_day</f->(.<k->mon</k->);
                 }
             </div>
@@ -329,19 +330,6 @@
             <div>
                 OwO
                 TwT<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
         </example2->
     </split-example-container-right->
@@ -441,20 +429,6 @@
             <div>
                 x: 15
                 y: 9<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
         </example2->
     </split-example-container-right->
@@ -478,8 +452,8 @@
 <!--------------------------------------------------------------------->
 <h1 id="constructor-function"></h1>
 <p>
-    The <b>constructor</b> function is a <b>special</b> struct <b>method</b> used to <b>initialize</b> the struct <b>members</b> that is called each time a value of its parent struct type is created.<br>
-    It has <b>no name</b> and <b>no explicit return type</b>. Constructor calls always return an l-value of type their parent struct.<br>
+    The <b>constructor</b> function is a <b>special</b> struct <b>method</b> that is called each time a value of its parent struct type is created.<br>
+    It has <b>no name</b> and <b>no explicit return type</b> and it's declared using the <code><w->constructor</w-></code> meta keyword. Constructor calls always return an l-value of type their parent struct.<br>
     Differently from other struct methods, the constructor can modify members when called on constant values.
 </p>
 <p>
@@ -504,13 +478,13 @@
         <w->struct</w-> <t->uint3</t-> <w->nodefault</w-> {
             <t->uint</t-> x, y, z;
 
-            <f->constructor</f->(<t->uint2</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+            <w->constructor</w->(<t->uint2</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
                 x <f->=</f-> a.x;
                 y <f->=</f-> a.y;
                 z <f->=</f-> b;
             }
 
-            <f->constructor</f->(<t->uint</t-> <a->a</a->, <t->uint2</t-> <a->b</a->) {
+            <w->constructor</w->(<t->uint</t-> <a->a</a->, <t->uint2</t-> <a->b</a->) {
                 x <f->=</f-> a;
                 y <f->=</f-> b.x;
                 z <f->=</f-> b.y;
@@ -540,7 +514,55 @@
 <!-- Destructor function                                             -->
 <!--------------------------------------------------------------------->
 <h1 id="destructor-function"></h1>
+<p>
+    The <b>destructor</b> function is a <b>special</b> struct <b>method</b> that is called each time a value of its parent struct type is destroyed.<br>
+    It has <b>no name</b> and <b>no return value</b> and it's declared using the <code><w->destructor</w-></code> meta keyword.<br>
+</p>
+<p>
+    Each struct can only have one destructor. It cannot be overloaded and cannot take any argument, nor can it be called explicitly.<br>
+    Template destructors are not allowed.<br>
+    There is no default destructor.
+</p>
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example</label2->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+                <t->int</t-> last = <k->0</k->;
 
+                <w->struct</w-> <t->s</t-> {
+                    <t->float</t-> n;
+                    <t->int</t-> i;
+
+                    <w->constructor</w->(<t->float</t-> <a->n</a->){
+                        i <f->=</f-> last<f->++</f->;
+                        this.n <f->=</f-> n;
+                    }
+
+                    <w->destructor</w->(){
+                        io.<f->print</f->(<s->"Destroyed instance n."</s-> <f->+</f-> <t->str</t->(i) <f->+</f-> <s->"\n"</s->);
+                    }
+                }
+
+
+                <t->void</t-> <f->main</f->(){
+                    <t->s</t-> var = { <k->0.5</k-> };
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                Destroyed instance n.0
+                Destroyed instance n.1
+                <cursor-></cursor->
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
 
 
 

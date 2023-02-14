@@ -3,14 +3,11 @@
 
 <html>
 <head>
-    <!-- HTML boilerplate -->
     <title>Umbra | Lux</title>
     <meta charset="UTF-8">
     <meta name="author" content="Snek" />
     <meta name="description" content="Umbra and Lux languages specification"/>
     <link rel="icon" href="Logos/Lux.png" type="image/png">
-
-    <!-- Style -->
     <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, width=device-width, user-scalable=no"/>
     <link rel="stylesheet" type="text/css" href="Styles/Init.css" media="screen">
 </head>
@@ -31,17 +28,8 @@
 
 
 <body onresize="ui_slider._onresize()">
-    <!--------------------------------------------------------------------->
-    <!-- Fix                                                             -->
-    <!--------------------------------------------------------------------->
     <div id="main-mask" class="main-mask"></div>
     <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
-    <!-- !                           ^ not a random value -->
-
-
-    <!--------------------------------------------------------------------->
-    <!-- Index                                                           -->
-    <!--------------------------------------------------------------------->
     <left- class="hide-scrollbar" id="main-left">
 <index- class="hide-scrollbar"><indexh-></indexh->
     <index-><indexh->overview</indexh->
@@ -283,17 +271,12 @@
     </left->
 
     <right- id="main-right" class="hide-scrollbar"><div style="overflow: hidden; display: flex; flex-direction: column; max-width: 100%;">
-        <!--------------------------------------------------------------------->
-        <!-- Logo                                                            -->
-        <!--------------------------------------------------------------------->
         <logo-top-></logo-top->
         <logo- style="background-image: url('Logos/Photon.png');"></logo->
 
         <main-scroll->
 
-<!--------------------------------------------------------------------->
-<!-- Overview                                                        -->
-<!--------------------------------------------------------------------->
+
 <div style="margin-top: var(--main-padding-r);"></div>
 <h1 id="overview"></h1>
 <p>
@@ -316,25 +299,10 @@
 <p><a href="#quick-reference-tabs">Quick reference tabs</a></p>
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Language logos                                                  -->
-<!--------------------------------------------------------------------->
 <logo- style="background-image: url('Logos/Lux.png');"></logo->
 <logo- style="background-image: url('Logos/Umbra.png');"></logo->
 
 
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Typographical conventions                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="typographical-conventions"></h1>
 <p>
     //TODO move the "alphanumeric or symbolic" stuff here
@@ -350,11 +318,6 @@
 </p>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Preprocessor                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="preprocessor"></h1>
 <p>
     The <b>preprocessing</b> phase <b>precedes</b> the code <b>compilation</b>.<br> //TODO
@@ -368,11 +331,6 @@
 </p>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Comments                                                        -->
-<!--------------------------------------------------------------------->
 <h1 id="comments"></h1>
 <p>
     <b>Comments</b> are <b>portions of code</b> that are <b>intentionally ignored</b>.<br>
@@ -437,9 +395,9 @@
                                          <ce->// ^ Error, unexpected token "comment"</ce->
     </div>
 </example2->
-<!--------------------------------------------------------------------->
-<!-- Include statement                                               -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="include-statement"></h1>
 <p>
     The <b>include statement</b> is used to <b>paste code</b> from other files.<br>
@@ -511,19 +469,19 @@
         <c->//#include ""</c->                             <ce->// Error, file name not specified</ce->
     </div>
 </example2->
-<!--------------------------------------------------------------------->
-<!-- Macros                                                          -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="macros"></h1>
 //TODO
-<!--------------------------------------------------------------------->
-<!-- Conditionals                                                    -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="conditionals"></h1>
 //TODO
-<!--------------------------------------------------------------------->
-<!-- Line continuation token                                         -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="line-continuation-token"></h1>
 <p>
     The <b>line continuation token</b> can be used to <b>merge multiple lines</b> and allow single line <a href="#comments">comments</a>, preprocessor directives and multi character <a href="#syntactic-elements">tokens</a> to be written across multiple lines.<br>
@@ -583,39 +541,17 @@
     </div>
 </example2->
 
-<!--------------------------------------------------------------------->
-<!-- Language                                                        -->
-<!--------------------------------------------------------------------->
+
 
 <h1 id="language-|-summary"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Language structure                                              -->
-<!--------------------------------------------------------------------->
 <h1 id="language-structure"></h1>
 <p>
     //TODO this works as a summary for the elements of the language
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Character set                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="character-set"></h1>
 <p>
     After the <a href="#preprocessor">preprocessing phase</a>, only a <b>small number</b> of <b>characters</b> are left.<br>
@@ -641,23 +577,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Syntactic elements                                              -->
-<!--------------------------------------------------------------------->
 <h1 id="syntactic-elements"></h1>
 <p>
     <b>Syntactic elements</b>, or Tokens, are the fundamental elements of the source code of any program.<br>
@@ -777,23 +696,6 @@
 </table></div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- keywords                                                        -->
-<!--------------------------------------------------------------------->
 <h1 id="keywords"></h1>
 <p>
     <b>Keywords</b> are <b>built-in <a href="#syntactic-elements">syntactic elements</a></b> that perform hard coded actions or have <b>special meaning</b>.<br>
@@ -944,23 +846,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Meta keywords                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="meta-keywords"></h1>
 <p>
     <b>Meta keywords</b> are <a href="#syntactic-elements">syntactic elements</a> that only have meaning when <b>combined</b> with other <a href="#keywords"><b>keywords</b></a> or <a href="#semantic-elements">semantic elements</a>.<br>
@@ -1063,18 +948,6 @@
 </ul>
 
 
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Literals                                                        -->
-<!--------------------------------------------------------------------->
 <h1 id="literal-tokens"></h1>
 <p>
     <b>Literals</b> are a <b>special type</b> of <a href="#syntactic-elements"><b>syntactic element</b></a>, as they can contain both alphanumeric characters and <code>.</code>.<br>
@@ -1082,23 +955,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Identifiers                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="identifiers"></h1>
 <p>
     <b>Identifiers</b> are used to <b>name and reference <a href="#semantic-elements">symbols</a></b>.<br>
@@ -1111,23 +967,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Semantic elements                                               -->
-<!--------------------------------------------------------------------->
 <h1 id="semantic-elements"></h1>
 <p>
     <b>Semantic elements</b> are <b>sequences</b> of one or more <a href="#syntactic-elements"><b>syntactic elements</b></a> or other semantic elements that follow specific patterns.<br>
@@ -1286,14 +1125,6 @@
 </ul>
 
 
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Directives                                                      -->
-<!--------------------------------------------------------------------->
 <h1 id="language-structure.directives"></h1>
 <p>
     <b>Directives</b> are instructions that <b>modify</b> the <a href="#modules">module</a> on a <b>semantic</b> level.<br>
@@ -1321,11 +1152,6 @@
 </ul>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Declarations                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="language-structure.declarations"></h1>
 <p>
     <b>Declarations</b> define user-defined elements, such as <a href="#structs">structs</a>, <a href="#enums">enums</a>, <a href="#routines">routines</a>, <a href="#namespaces">namespaces</a>, <a href="#templates">templates</a>, <a href="#symbol-aliases">symbol aliases and <a href="#variables">variables</a>.</a><br>
@@ -1389,11 +1215,6 @@
 </ul>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Statements                                                      -->
-<!--------------------------------------------------------------------->
 <h1 id="language-structure.statements"></h1>
 <p>
     <b>Statements</b> perform actions during runtime. They define the behaviour of each <a href="#routines">routine</a>, their return value and runtime performance.<br>
@@ -1479,11 +1300,6 @@
 </ul>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Expressions                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="language-structure.expressions"></h1>
 <p>
     <b>Expressions</b> generate values. They are mostly used to declare <a href="#name-resolution">symbols</a> and call <a href="#routines">routines</a>.
@@ -1530,13 +1346,6 @@
 
 
 
-
-
-
-<!-- TODO RENAME SYMBOL PATHS as they aren't just for symbols -->
-<!--------------------------------------------------------------------->
-<!-- Symbol paths                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="language-structure.symbol-paths"></h1>
 <p>
     Symbol paths reference user defined <a href="#name-resolution">symbols</a>, generated compile time informations or default symbols that have no declaration.<br>
@@ -1575,36 +1384,9 @@
 </p>
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Concepts                                                        -->
-<!--------------------------------------------------------------------->
 <h1 id="concepts"></h1>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Scopes                                                          -->
-<!--------------------------------------------------------------------->
 <h1 id="scopes"></h1>
 <p>
     <b>Scopes</b> define the <a href="#name-resolution"><b>path</b></a> to the <b>symbols</b> declared within them.<br>
@@ -1733,23 +1515,6 @@
 </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Name resolution                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="name-resolution"></h1>
 <p>
     <b><a href="#semantic-elements.declarations">User defined elements</a></b>, or <a href="#declarations">Symbols</a>, can be referenced to use them as <a href="#types">types</a>, access their value or perform <a href="#routine-calls">routine calls</a>.
@@ -1795,23 +1560,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Name shadowing                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="name-shadowing"></h1>
 <p>
     <a href="#declarations"><b>Symbols</b></a> in <b>different <a href="#scopes">scopes</a></b> can be declared using the <b>same <a href="#identifiers">identifier</a></b>. This is known as <b>name shadowing</b>.<br>
@@ -1861,14 +1609,6 @@
 </example2->
 
 
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Multiple declarations                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="multiple-declarations"></h1>
 <p> //TODO linkkk
     Some types of symbol can be declared multiple times in the same scope.<br>
@@ -1910,15 +1650,6 @@
 </example2->
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Left and right values                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="left-and-right-values"></h1>
 <p>
     Values can be left values or right values.<br>
@@ -1957,18 +1688,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Undefined values                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="undefined-values"></h1>
 <p>
     <b>Any unknown value</b> of any <a href="#types">type</a> is an <b>undefined value</b>.<br>
@@ -1982,23 +1701,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Undefined behaviour                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="undefined-behaviour"></h1>
 <p>
     Certain actions cause undefined behaviour.<br>
@@ -2010,23 +1712,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Compile time expression                                         -->
-<!--------------------------------------------------------------------->
 <h1 id="compile-time-expressions"></h1>
 <p>
     <b>Compile time expressions</b> are <a href="#expressions">expressions</a> that can be <b>calculated during</b> the <a href="#compilation"><b>compilation</b></a> phase.<br>
@@ -2115,23 +1800,10 @@
 
 <h1 id="language-|-details"></h1>
 
-<!--------------------------------------------------------------------->
-<!-- Directives                                                      -->
-<!--------------------------------------------------------------------->
+
 <h1 id="directives"></h1>
 
 
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Import directive                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="import-directive"></h1>
 <p>
     The <b>Import directive</b> allows the <a href="#modules">module</a> to <b>access</b> and <b>rename <a href="#name-resolution">symbols</a></b> declared in <b>other modules</b>.<br>
@@ -2171,18 +1843,6 @@
                 <t->void</t-> <f->main</f->(){
                     io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
                 }
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
         </example2->
     </split-example-container-left->
@@ -2217,21 +1877,6 @@
 </split-example-container->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Export directive                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="export-directive"></h1>
 <p>
     The <b>Export directive</b> allows the module to <b>state and rename</b> the <b><a href="#name-resolution">symbols</a> other <a href="#modules">modules</a></b> are allowed to <b>use</b> when importing from the current <a href="#modules">module</a>.<br>
@@ -2296,23 +1941,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Construct directive                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="construct-directive"></h1>
 <p>
 
@@ -2322,24 +1950,6 @@
 </syntax2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Types                                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="types"></h1>
 <p>
     <b>Data types</b> define how <b><a href="#values">values</a></b> are <b>interpreted</b> during runtime and how they can be used within <a href="#expressions">expressions</a>.<br>
@@ -2355,9 +1965,6 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Primitive types                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="primitive-types"></h1>
 <p>Lux and Umbra feature <b>7 primitive types</b>, which can be used to define more complex types such as <a href="#structs">structs</a>, <a href="#arrays">arrays</a> and <a href="#tuples">tuples</a>.</p>
 <p>
@@ -2409,9 +2016,6 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Integral types                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="integral-types"></h1>
 <p>
     <code><t->int</t-></code>, <code><t->uint</t-></code>, <code><t->long</t-></code>, <code><t->ulong</t-></code>.<br>
@@ -2447,9 +2051,6 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Floating point types                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="floating-point-types"></h1>
 <p>
     <code><t->float</t-></code>, <code><t->double</t-></code>.<br>
@@ -2491,9 +2092,6 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Boolean type                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="boolean-type"></h1>
 <p>
     <code><t->bool</t-></code>.<br>
@@ -2516,21 +2114,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Enums                                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="enums"></h1>
 <p>
     <b>Enums</b> are used to create <b>new types</b> whose allowed values are a <b>subset</b> of the possible values of their <b>base <a href="#types">type</a></b> and can only be used throught their names.<br>
@@ -2573,21 +2156,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Struct enums                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="struct-enums"></h1>
 <p style="margin-bottom: 0;">
     Enums with a <b>struct</b> as <b>base type</b> behave <b>slightly differently</b> than standard enums:<br>
@@ -2626,9 +2194,9 @@
 
 
 //TODO improve wording
-<!--------------------------------------------------------------------->
-<!-- Automatic enum scoping                                          -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="automatic-enum-scoping"></h1>
 <p>
     <b>Automatic enum scoping</b> can be used to <b>skip</b> the idenfiers of <b>parent scopes</b> in a symbol path and reference an enum element through its name alone.<br>
@@ -2642,7 +2210,7 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->enum</t-> <t->day</t-> : <t->uint</t-> {
+                <w->enum</w-> <t->day</t-> : <t->uint</t-> {
                     <k->mon</k->, <k->two</k->, <k->wed</k->, <k->thu</k->, <k->fri</k->, <k->sat</k->, <k->sun</k->;
                 }
 
@@ -2655,6 +2223,7 @@
 
                 <t->void</t-> <f->main</f->(){
                     <f->check_day</f->(.<k->sun</k->);
+                    io.print("\n");
                     <f->check_day</f->(.<k->mon</k->);
                 }
             </div>
@@ -2666,34 +2235,12 @@
             <div>
                 OwO
                 TwT<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
         </example2->
     </split-example-container-right->
 </split-example-container->
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Structs                                                         -->
-<!--------------------------------------------------------------------->
 <h1 id="structs"></h1>
 <p>
     <b>Structs</b> are used to <b>create</b> new <b>types</b> composed by 0 or more separate members that can have differing type.<br>
@@ -2727,17 +2274,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Struct methods                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="struct-methods"></h1>
 <p>
     <b>Structs</b> can contain <b>functions</b>. These functions are called <b>methods</b>.<br>
@@ -2778,45 +2314,16 @@
             <div>
                 x: 15
                 y: 9<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
         </example2->
     </split-example-container-right->
 </split-example-container->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Constructor function                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="constructor-function"></h1>
 <p>
-    The <b>constructor</b> function is a <b>special</b> struct <b>method</b> used to <b>initialize</b> the struct <b>members</b> that is called each time a value of its parent struct type is created.<br>
-    It has <b>no name</b> and <b>no explicit return type</b>. Constructor calls always return an l-value of type their parent struct.<br>
+    The <b>constructor</b> function is a <b>special</b> struct <b>method</b> that is called each time a value of its parent struct type is created.<br>
+    It has <b>no name</b> and <b>no explicit return type</b> and it's declared using the <code><w->constructor</w-></code> meta keyword. Constructor calls always return an l-value of type their parent struct.<br>
     Differently from other struct methods, the constructor can modify members when called on constant values.
 </p>
 <p>
@@ -2841,13 +2348,13 @@
         <w->struct</w-> <t->uint3</t-> <w->nodefault</w-> {
             <t->uint</t-> x, y, z;
 
-            <f->constructor</f->(<t->uint2</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+            <w->constructor</w->(<t->uint2</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
                 x <f->=</f-> a.x;
                 y <f->=</f-> a.y;
                 z <f->=</f-> b;
             }
 
-            <f->constructor</f->(<t->uint</t-> <a->a</a->, <t->uint2</t-> <a->b</a->) {
+            <w->constructor</w->(<t->uint</t-> <a->a</a->, <t->uint2</t-> <a->b</a->) {
                 x <f->=</f-> a;
                 y <f->=</f-> b.x;
                 z <f->=</f-> b.y;
@@ -2865,89 +2372,70 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Destructor function                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="destructor-function"></h1>
+<p>
+    The <b>destructor</b> function is a <b>special</b> struct <b>method</b> that is called each time a value of its parent struct type is destroyed.<br>
+    It has <b>no name</b> and <b>no return value</b> and it's declared using the <code><w->destructor</w-></code> meta keyword.<br>
+</p>
+<p>
+    Each struct can only have one destructor. It cannot be overloaded and cannot take any argument, nor can it be called explicitly.<br>
+    Template destructors are not allowed.<br>
+    There is no default destructor.
+</p>
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example</label2->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+                <t->int</t-> last = <k->0</k->;
+
+                <w->struct</w-> <t->s</t-> {
+                    <t->float</t-> n;
+                    <t->int</t-> i;
+
+                    <w->constructor</w->(<t->float</t-> <a->n</a->){
+                        i <f->=</f-> last<f->++</f->;
+                        this.n <f->=</f-> n;
+                    }
+
+                    <w->destructor</w->(){
+                        io.<f->print</f->(<s->"Destroyed instance n."</s-> <f->+</f-> <t->str</t->(i) <f->+</f-> <s->"\n"</s->);
+                    }
+                }
 
 
+                <t->void</t-> <f->main</f->(){
+                    <t->s</t-> var = { <k->0.5</k-> };
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                Destroyed instance n.0
+                Destroyed instance n.1
+                <cursor-></cursor->
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
 
 
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Special types                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="special-types"></h1>
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Void type                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="void-type"></h1>
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Pointer types                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="pointer-types"></h1>
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Function types                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="function-types"></h1>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Const qualifier                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="const-qualifier"></h1>
 <p>
     When used between the base type and the <code>@</code> keyword of a pointer type, the <b><code><t->const</t-></code> qualifier</b> indicates that the type is a <b>const pointer</b>.<br>
@@ -2980,21 +2468,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Implicit conversions                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="implicit-conversions"></h1>
 <p>
     <b>Implicit conversions</b> are performed when an <b><a href="#expressions">expression</a></b> of the <b>incorrect <a href="#types">type</a></b> is used in place of the expected one.<br>
@@ -3015,7 +2488,6 @@
     //TODO it only works on  floating points. integers throw exceptions anyway
 </p>
 <div class="table-container"><table>
-    <!-- integer -->
         <tr>
             <th colspan="2">From / To</th>
             <th><t->uint</t-></th>
@@ -3170,9 +2642,6 @@
             <fake-td></fake-td>
             <fake-td></fake-td>
         </tr>
-
-
-    <!-- floating point -->
         <tr>
             <th colspan="2">From / To</th>
             <th><t->uint</t-></th>
@@ -3360,8 +2829,6 @@
             <fake-td></fake-td>
             <td class="center wrap conv-cell-n" rowspan="1">undefined</td>
         </tr>
-
-    <!-- bool -->
         <tr>
             <th colspan="2">From / To</th>
             <th><t->uint</t-></th>
@@ -3398,12 +2865,6 @@
 </table></div>
 
 
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Auto specifier                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="auto-specifier"></h1>
 <p>
     The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#semantic-elements">symbol</a>.<br>
@@ -3430,11 +2891,6 @@
 </example2->
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Typeof specifier                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="typeof-specifier"></h1>
 <p>
     The <b><code><t->typeof</t-></code></b> specifier is used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#expressions">expression</a></b> that is passed to it.<br>
@@ -3466,17 +2922,9 @@
 </example2->
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Expressions                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="expressions"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Inline values                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="inline-values"></h1>
 <p>
     Inline values are <a href="#right-and-left-values">r-values</a> that are explicitly created and used within a single <a href="#runtime-statements">runtime statement</a>.<br>
@@ -3488,9 +2936,9 @@
 
 
 //FIXME ADD CONSTANTS (values generated from constructors)
-<!--------------------------------------------------------------------->
-<!-- Literals and constants                                          -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="literals-and-constants"></h1>
 <p>
     <b>Literals</b> are used to <b>create</b> compile time known <b><a href="#left-and-right-values">r-values</a></b>.<br>
@@ -3580,16 +3028,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Function calls                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="function-calls"></h1>
 <p>
     <b>Functions</b> are <b>called</b> using their <b>name</b> and a list of <b>arguments</b>.<br>
@@ -3628,13 +3066,6 @@
 //TODO update example
 
 
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Operator calls                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="operator-calls"></h1>
 <p>
 
@@ -3645,63 +3076,17 @@
 </syntax2->
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Try expression                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="try-expression"></h1>
 <p>
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Stored values                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="stored-values"></h1>
 <p>
     <b>Stored values</b> are <b>named memory locations</b> that can contain values of the specified type.<br>
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Variables                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="variables"></h1>
 <p>
     <b>Variables</b> are <b>named memory locations</b> used to <b>store values</b> of the corresponding <a href="#types">type</a>.<br>
@@ -3727,12 +3112,6 @@
 </p>
 
 
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Temporary variables                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="temporary-variables"></h1>
 <p>
     <b>Temporary variables</b> are a special set of identifiers that have <b>dynamic type</b> and don't need to be declared.<br>
@@ -3793,17 +3172,10 @@
 </p>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Routine parameters                                              -->
-<!--------------------------------------------------------------------->
 <h1 id="exp.routine-parameters"></h1>
 <p></p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Routines                                                        -->
-<!--------------------------------------------------------------------->
 <h1 id="routines"></h1>
 <p>
     <b>Routines</b> are the <b>main component</b> of the <b>language</b>. They contain the <a href="#statements"><b>statements</b></a> that will be executed during runtime.<br>
@@ -3824,20 +3196,9 @@
 </p>
 
 
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Functions                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="functions"></h1>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Function declarations                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="function-declarations"></h1>
 <p>
     <b>Functions</b> are a type of <b><a href="declarations.routines">routine</a></b> that requires parentheses to be called.<br>
@@ -3865,12 +3226,6 @@
 </example2->
 
 
-
-
-
-<!--------------------------------------------------------------------->
-<!-- The main function                                               -->
-<!--------------------------------------------------------------------->
 <h1 id="the-main-function"></h1>
 <p>
     The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
@@ -3883,21 +3238,6 @@
 </p>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Default values                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="default-values"></h1>
 <p>
     <b>Default values</b> are used to <b>initialize</b> the routine parameter <b>when no argument is provided</b>.<br>
@@ -3924,16 +3264,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Parameter packs                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="parameter-packs"></h1>
 <p>
     <b>Parameter packs</b> allow <a href="#functions">functions</a> to take an <b>arbitrary number</b> of <b>arguments</b>.<br>
@@ -3999,23 +3329,9 @@
 </example2->
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Operators                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="operators"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Operator declarations                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="operator-declarations"></h1>
 <p>
     <b>Operators</b> are a type of <b><a href="#declarations.routines">routine</a></b> that doesn't require parentheses to be <a href="#routine-calls">called</a> and can use <b>multiple <a href="#identifiers">identifiers</a></b>.<br>
@@ -4059,16 +3375,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Operator precedence                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="operator-precedence"></h1>
 <p>
     In <b>absence</b> of <b>parentheses</b>, the order in which <b><a href="#declarations.operators">operators</a></b> in the <b>same <a href="#expressions">expression</a></b> are <b><a href="#operator-calls">called</a></b> depends on their <b>priority</b> and <b>associativity</b>.<br>
@@ -4125,22 +3431,9 @@
 </example2->
 
 
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Routine parameters                                              -->
-<!--------------------------------------------------------------------->
 <h1 id="routine-parameters"></h1>
 
 
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Parameter delcarations                                          -->
-<!--------------------------------------------------------------------->
 <h1 id="parameter-declarations"></h1>
 <p>
     Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
@@ -4168,17 +3461,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Reference parameters                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="reference-parameters"></h1>
 <p>
     <b>Reference parameters</b> use the <b>address of the argument</b> as <b>initializer value</b> instead of the argument itself. This doesn't apply to their <a href="#default-values">default value</a>.<br>
@@ -4204,21 +3486,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Routine overloarding                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="routine-overloading"></h1>
 <p style="margin-bottom: 0;">
     <b>Routine overloading</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and the value of any compile time value accessible from their declaration.<br>
@@ -4280,29 +3547,7 @@
         <example2->
             <label2->Output</label2->
             <div>
-                a
-                b
-                c
-                c<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                abcc<cursor-></cursor->
             </div>
         </example2->
     </split-example-container-right->
@@ -4328,13 +3573,13 @@
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
                 <t->void</t-> <f->f</f->(?<t->t</t->... <a->args</a->...){
-                    io.<f->print</f->(<s->"More than one argument provided"</s->);
+                    io.<f->print</f->(<s->"More than one argument provided\n"</s->);
                 }
                 <t->void</t-> <f->f</f->(?<t->t</t-> <a->arg</a->) {
-                    io.<f->print</f->(<s->"The first argument is not a double"</s->);
+                    io.<f->print</f->(<s->"The first argument is not a double\n"</s->);
                 }
                 <t->void</t-> <f->f</f->(<t->double</t-> <a->arg</a->) {
-                    io.<f->print</f->(<s->"The first argument is a double"</s->);
+                    io.<f->print</f->(<s->"The first argument is a double\n"</s->);
                 }
 
 
@@ -4352,32 +3597,14 @@
             <div>
                 The first argument is not a double
                 The first argument is a double
-                More than one argument provided<cursor-></cursor->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                More than one argument provided
+                <cursor-></cursor->
             </div>
         </example2->
     </split-example-container-right->
 </split-example-container->
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Templates                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="templates"></h1>
 
 <p>//TODO</p>
@@ -4556,22 +3783,12 @@
 </example2->
 
 
-<!--------------------------------------------------------------------->
-<!-- Abbreviated template sytntax                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="abbreviated-template-syntax"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Template constraints                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="template-constraints"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Statements                                                      -->
-<!--------------------------------------------------------------------->
 <h1 id="statements"></h1>
 <p>
     <b>Statements</b> are the <b>instructions</b> that are <b>executed during runtime</b>.<br>
@@ -4587,78 +3804,39 @@
 </p>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Selection                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="selection"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- If statement                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="if-statement"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Match statement                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="match-statement"></h1>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Iteration                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="iteration"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- For loops                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="for-loops"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- While loops                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="while-loops"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Continue and break statements                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="continue-and-break-statements"></h1>
 <p>
     //TODO break 2; continue 40;
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Once statement                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="once-statement"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Then statement                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="then-statement"></h1>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Non local flow control                                          -->
-<!--------------------------------------------------------------------->
 <h1 id="non-local-flow-control"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Return statement                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="return-statement"></h1>
 <p>
     The <b><code><w->return</w-></code></b> statement skips all remaining statements in the function and <b>returns</b> the <b>code execution</b> to the <b>caller function</b>.<br>
@@ -4679,92 +3857,27 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Defer statement                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="defer-statement"></h1>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Misc                                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="statements.misc"></h1>
 
 
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Else statement                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="else-statement"></h1>
 
 
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Expression statement                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="expression-statement"></h1>
 
 
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Empty statement                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="empty-statement"></h1>
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Unnamed scope                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="unnamed-scope"></h1>
 
 
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Misc                                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="misc"></h1>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Namespaces                                                      -->
-<!--------------------------------------------------------------------->
 <h1 id="declarations.namespaces"></h1>
 <p>
     <b>Namespaces</b> are used to create <b>named <a href="#scopes">scopes</a></b> to group <a href="#name-resolution">symbols</a>.<br>
@@ -4794,19 +3907,6 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Symbol aliases                                                  -->
-<!--------------------------------------------------------------------->
 <h1 id="symbol-aliases"></h1>
 <p>
     <b>Symbol aliases</b> are <b>alternative names</b> for symbols.
@@ -4843,127 +3943,34 @@
 </example2->
 
 
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Inline declarations                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="inline-declarations"></h1>
 <p>
 </p>
 
 
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Inline GLSL                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="inline-glsl"></h1>
-<!--------------------------------------------------------------------->
-<!-- Reflection                                                      -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="reflection"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Syntactic sugar                                                 -->
-<!--------------------------------------------------------------------->
 <h1 id="syntactic-sugar"></h1>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Compilation                                                     -->
-            <!--------------------------------------------------------------------->
             <h1 id="compilation"></h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Modules                                                         -->
-            <!--------------------------------------------------------------------->
             <h1 id="modules"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Compilation phases and error types                              -->
-            <!--------------------------------------------------------------------->
             <h1 id="compilation-phases-and-error-types"></h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Global initialization order                                     -->
-            <!--------------------------------------------------------------------->
             <h1 id="global-initialization-order"></h1>
-
-
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Runtime performance                                             -->
-            <!--------------------------------------------------------------------->
             <h1 id="runtime-performance"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Branching performance                                           -->
-            <!--------------------------------------------------------------------->
             <h1 id="branching-performance"></h1>
-
-
-            <!--------------------------------------------------------------------->
-            <!-- Value precomputation                                            -->
-            <!--------------------------------------------------------------------->
             <h1 id="value-precomputation"></h1>
 
 
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Core module                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="core-module"></h1>
 <p>
     //TODO
 </p>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Operators                                                       -->
-<!--------------------------------------------------------------------->
 <h1 id="core.operators"></h1>
 <p style="margin-bottom: 20px;">
     The language defines a total of 44 operators.<br>
@@ -4980,9 +3987,6 @@
 </ul>
 
 
-<!--------------------------------------------------------------------->
-<!-- Common operators                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="common-operators"></h1>
 <p>
     //TODO
@@ -4990,27 +3994,7 @@
     //TODO
     //TODO
     //TODO
-    //TODO
-
-
-    <!-- #include <stdio.h> -->
-    <!-- #include <math.h> -->
-    <!-- int sign2_(int a, int b) { -->
-        <!-- static int s[2] = { 1, -1 }; -->
-        <!-- printf("i = %-8d",((unsigned)a ^ (unsigned)b) >> 31); -->
-        <!-- return s[((unsigned)a ^ (unsigned)b) >> 31]; -->
-    <!-- } -->
-
-    <!-- int div_(int a, int b) { --> //TODO this is mod
-        <!-- return abs(a-a/b*b) * sign2_(a, b); -->
-    <!-- } -->
-
-    <!-- int main() { -->
-        <!-- printf("n = %d\n", div_(59, -3)); -->
-        <!-- printf("n = %d\n", div_(-59, -3)); -->
-        <!-- printf("n = %d\n", div_(-59, 3)); -->
-        <!-- printf("n = %d\n", div_(59, 3)); -->
-    <!-- } -->
+    //TODO //TODO this is mod
 
     //TODO the mod function returns the same sign of /
     //TODO add other types
@@ -5115,7 +4099,6 @@
                 <td class="left">Postfix decrement</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 3 -->
             <tr>
                 <td class="center" rowspan="6">3</td>
                 <td class="center"><code>++</code></td>
@@ -5158,7 +4141,6 @@
                 <td class="left">Logical NOT</td>
                 <td class="left">Logical</td>
             </tr>
-        <!-- 4 -->
             <tr>
                 <td class="center" rowspan="3">4</td>
                 <td class="center"><code>*</code></td>
@@ -5180,7 +4162,6 @@
                 <td class="left">Modulus</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 5 -->
             <tr>
                 <td class="center" rowspan="2">5</td>
                 <td class="center"><code>+</code></td>
@@ -5195,7 +4176,6 @@
                 <td class="left">Subtraction</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 6 -->
             <tr>
                 <td class="center" rowspan="2">6</td>
                 <td class="center"><code>&lt;&lt;</code></td>
@@ -5210,7 +4190,6 @@
                 <td class="left">Right bit shift</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 7 -->
             <tr>
                 <td class="center" rowspan="4">7</td>
                 <td class="center"><code>&lt;</code></td>
@@ -5239,7 +4218,6 @@
                 <td class="left">Greater or equal than</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 8 -->
             <tr>
                 <td class="center" rowspan="4">8</td>
                 <td class="center"><code>==</code></td>
@@ -5257,18 +4235,17 @@
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>=:</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <a->a</a->) <f->=:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <a->a</a->) <f->=:</f-> (?<t->T</t-> <a->b</a->)</code></td>
                 <td class="left">Existence</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!:</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <a->a</a->) <f->!:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <a->a</a->) <f->!:</f-> (?<t->T</t-> <a->b</a->)</code></td>
                 <td class="left">Inexistence</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 9 -->
             <tr>
                 <td class="center">9</td>
                 <td class="center"><code>&</code></td>
@@ -5276,7 +4253,6 @@
                 <td class="left">Bitwise AND</td>
                 <td class="left" rowspan="3">Bitwise</td>
             </tr>
-        <!-- 10 -->
             <tr>
                 <td class="center">10</td>
                 <td class="center"><code>^</code></td>
@@ -5284,7 +4260,6 @@
                 <td class="left">Bitwise XOR</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 11 -->
             <tr>
                 <td class="center">11</td>
                 <td class="center"><code>|</code></td>
@@ -5292,7 +4267,6 @@
                 <td class="left">Bitwise OR</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 12 -->
             <tr>
                 <td class="center">12</td>
                 <td class="center"><code>&&</code></td>
@@ -5300,7 +4274,6 @@
                 <td class="left">Logical AND</td>
                 <td class="left" rowspan="3">Logical</td>
             </tr>
-        <!-- 13 -->
             <tr>
                 <td class="center">13</td>
                 <td class="center"><code>^^</code></td>
@@ -5308,7 +4281,6 @@
                 <td class="left">Logical XOR</td>
                 <fake-td></fake-td>
             </tr>
-        <!-- 14 -->
             <tr>
                 <td class="center">14</td>
                 <td class="center"><code>||</code></td>
@@ -5506,7 +4478,7 @@
         <example2- style="margin: 0;">
             <label2->Existence</label2->
             <div>
-                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
+                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { 
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                         <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
                     }
@@ -5519,7 +4491,7 @@
         <example2- style="margin: 0;">
             <label2->Inexistence</label2->
             <div>
-                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
+                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { 
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                         <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
                     }
@@ -5531,11 +4503,6 @@
 </div>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Assignment opeatos                                              -->
-<!--------------------------------------------------------------------->
 <h1 id="assignment-operators"></h1>
 <p>
     <b>Assignment operators</b> are used to <b>change the value</b> of <a href="#left-and-right-values">l-value</a> symbols.<br>
@@ -5557,7 +4524,6 @@
         <th class="left">Category</th>
     </tr></thead>
     <tbody>
-        <!-- 16 -->
             <tr>
                 <td class="center" rowspan="11">16</td>
                 <td class="center"><code>=</code></td>
@@ -5639,9 +4605,6 @@
 </table></div>
 
 
-<!--------------------------------------------------------------------->
-<!-- Special operators                                               -->
-<!--------------------------------------------------------------------->
 <h1 id="special-operators"></h1>
 <div class="table-container"><table>
     <thead><tr>
@@ -5652,7 +4615,6 @@
         <th class="left">Category</th>
     </tr></thead>
     <tbody>
-        <!-- 1 -->
             <tr>
                 <td class="center" >1</td>
                 <td class="center"><elm-><code>(</code><code>)</code></elm-></td>
@@ -5660,7 +4622,6 @@
                 <td class="left">Grouping</td>
                 <td class="left" rowspan="10">Misc</td>
             </tr>
-        <!-- 15 -->
             <tr>
                 <td class="center">15</td>
                 <td class="center"><elm-><code>?</code><code>:</code></elm-></td>
@@ -5682,9 +4643,6 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Arithmetic exceptions                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="arithmetic-exceptions"></h1>
 <p>
     Only <b>certain</b> <a href="#primitive-types">floating point</a> <b>operations</b> that generate or use <b>special double literals</b> have <b>defined</b> result.<br>
@@ -5695,7 +4653,6 @@
         <th>Operation</th>
         <th>Result</th>
     </tr>
-    <!-- +*-, +*-/ -->
     <tr>
         <td class="center"><code>±n</code> + <code><k->±inf</k-></code></td>
         <td class="center" rowspan="3"><code><k->±inf</k-></code></td>
@@ -5728,8 +4685,6 @@
         <td class="center"><code><k->±inf</k-></code> / <code>±n</code></td>
         <fake-td></fake-td>
     </tr>
-
-    <!-- 2 infs -->
     <tr>
         <td class="center"><code><k->+inf</k-></code> + <code><k->+inf</k-></code></td>
         <td class="center"><code><k->+inf</k-></code></td>
@@ -5795,9 +4750,6 @@
 </p>
 
 
-<!--------------------------------------------------------------------->
-<!-- Array operations                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="array-operations"></h1>
 <p>
     All <a href="#common-operators">common</a> and <a href="#assignment-operators">assignment</a> operators in the core module, excluding <a href="#common-operators"><code>=:</code></a> and <a href="#common-operators"><code>!:</code></a>, can be used to operate on whole <a href="#arrays">arrays</a>.
@@ -5815,10 +4767,6 @@
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                     <w->return</w-> <f->~</f->a;
                 }
-
-
-
-
             </div>
         </example2->
     </split-example-container-left->
@@ -5854,8 +4802,6 @@
                     <t->int</t->[<k->4</k->] b;
                     b = a;
                 }
-
-
             </div>
         </example2->
     </split-example-container-left->
@@ -5890,8 +4836,6 @@
                     <t->int</t-> b <f->=</f-> <k->8</k->;
                     a <f->*=</f-> b;
                 }
-
-
             </div>
         </example2->
     </split-example-container-left->
@@ -5910,81 +4854,48 @@
         </example2->
     </split-example-container-right->
 </split-example-container->
-<!--------------------------------------------------------------------->
-<!-- Data types                                                      -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="core.data-types"></h1>
 <p>
     //TODO
 </p>
 
 
-
-
-<!--------------------------------------------------------------------->
-<!-- Arrays                                                          -->
-<!--------------------------------------------------------------------->
 <h1 id="core.arrays"></h1>
 <p>
 </p>
 
 
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Tuples                                                          -->
-<!--------------------------------------------------------------------->
 <h1 id="core.tuples"></h1>
 <p>
 </p>
-<!--------------------------------------------------------------------->
-<!-- Standard modules                                                -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="standard-modules"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Limits module                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="limits-module"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Math module                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="math-module"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Bits module                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="bits-module"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Types module                                                    -->
-<!--------------------------------------------------------------------->
 <h1 id="types-module"></h1>
 
 
-<!--------------------------------------------------------------------->
-<!-- Memory module                                                   -->
-<!--------------------------------------------------------------------->
 <h1 id="memory-module"></h1>
-<!--------------------------------------------------------------------->
-<!-- Quick reference tabs                                            -->
-<!--------------------------------------------------------------------->
+
+
+
 <h1 id="quick-reference-tabs"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Syntaxes                                                        -->
-<!--------------------------------------------------------------------->
 <h1 id="syntaxes"></h1>
 
 
@@ -6273,54 +5184,6 @@
 </syntax2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Symbol declarations                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="symbol-declarations"></h1>
 <p>
     This section summarizes all the syntaxes used to declare user-defined symbols.<br>
@@ -7109,81 +5972,7 @@
 
 
 
-<!-- TODO replace "definition(s)" with declaration(s) -->
 
-
-
-
-
-
-
-<!-- TODO SPECIAL FUNCTION SECTION -->
-<!-- TODO main -->
-<!-- TODO constructors -->
-<!-- TODO destructors -->
-
-
-
-<!-- TODO default values not allowed in operators -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Statement syntaxes                                              -->
-<!--------------------------------------------------------------------->
 <h1 id="statement-syntaxes"></h1>
 
 
@@ -7707,18 +6496,6 @@
 
 
 
-
-
-
-
-
-<!-- TODO reflection, inline glsl, inline cpp -->
-
-
-
-
-
-
 <syntax2- class="qrt">
     <label2- class="sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label2->
     <table class="sub">
@@ -7819,80 +6596,10 @@
         </tr>
     </table>
 </syntax2->
-<!-- TODO try -->
-<!-- TODO build -->
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Expression syntaxes                                             -->
-<!--------------------------------------------------------------------->
 <h1 id="expression-syntaxes"></h1>
 
 
@@ -8163,76 +6870,6 @@
 </syntax2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Local names                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="local-names"></h1>
 <p>
     This section summarizes all the syntaxes used to reference any type of <a href="#semantic-elements">symbol</a>.<br>
@@ -8370,109 +7007,38 @@
 </syntax2->
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- Welp that's a lot of syntax -->
-
-
-<!--------------------------------------------------------------------->
-<!-- Undefined behaviours                                            -->
-<!--------------------------------------------------------------------->
 <h1 id="undefined-behaviours"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Conversions                                                     -->
-<!--------------------------------------------------------------------->
 <h1 id="conversions"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Core module operators                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="core-module-operators"></h1>
 
 
-
-<!--------------------------------------------------------------------->
-<!-- Math module functions                                           -->
-<!--------------------------------------------------------------------->
 <h1 id="math-module-functions"></h1>
 
 
-
-
-            <!--
-            //TODO
-            //module.x module.y module.z
-            module.pos.x
-            module.pos.y
-            module.pos.z
-            ^ coordinates in current workspace
-
-            sequence function //TODO
-            sequence(start, end, step)
-            -->
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Omitted features                                                -->
-<!--------------------------------------------------------------------->
 <h1 id="omitted-features"></h1>
 
         </main-scroll->
     </div></right->
-
-
-    <!-- Page format -->
     <script src="Scripts/Setup/Fix.js"></script>
     <script src="Scripts/Setup/Syntax.js"></script>
     <script src="Scripts/Setup/Index.js"></script>
     <script src="Scripts/Setup/CopySyntax.js"></script>
     <script src="Scripts/Init.js"></script>
-
-    <!-- Functionalities -->
     <script src="Scripts/UI/Slider.js"></script>
     <script src="Scripts/UI/CopyCode.js"></script>
-
-    <!-- Custom -->
     <script src="Scripts/Custom/SummaryList.js"></script>
-
-    <!-- Other -->
     <script src="Scripts/Readability.js"></script>
 
     <script>
         window.addEventListener('popstate', move_to_view);
         document.addEventListener('DOMContentLoaded', init);
         window.addEventListener('beforeunload', unload);
-        //<!--! view() called after readability css load -->
+        //
         //TODO implement counter to manage more dynamic css loadings
     </script>
 </body>
 </html>
-
-
-
-
-
-
-<!--
-    TODO [[likely]] [[unlikely]]
--->
