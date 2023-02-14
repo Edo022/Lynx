@@ -441,6 +441,7 @@ b-c-, b-c--t-, b-c--b- {
 /* Notes */
 syntax-note- {
     display: block;
+    white-space: nowrap;
     margin-top: var(--syntax-note-margin-top);
     margin-bottom: 0;
 }

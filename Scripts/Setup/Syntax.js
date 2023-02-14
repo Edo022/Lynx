@@ -76,6 +76,7 @@ var setup_syntax = {
             'B-C-, B-C--T-, B-C--B-'
         );
         for(let j = 0; j < children.length; ++j) {
+            console.log(children[j].tagName);
             let tagName = children[j].tagName;                              // Name of the tag
             let w = children[j].parentElement.clientWidth - margin * 2;     // SVG width
             let h = children[j].clientHeight;                               // SVG height
@@ -201,13 +202,27 @@ var setup_syntax = {
 
 
 
+
     // Even out the height of right and left example tags
     even_heights : function() {
         let c = document.querySelectorAll('split-example-container-');
-        for(let i = 0; i < c.length; i++){
-            let l = c[i].querySelectorAll('split-example-container-left-') [0].querySelectorAll('div')[0];
-            let r = c[i].querySelectorAll('split-example-container-right-')[0].querySelectorAll('div')[0];
 
+        for(let i = 0; i < c.length; i++){
+            // Find left and right containers
+            let lc = c[i].querySelector('split-example-container-left-');
+            let rc = c[i].querySelector('split-example-container-right-');
+
+            // Return if containers arent used for examples //TODO REPLACE WITH ACTUAL DEDICATED TAG
+            if(
+                lc.querySelectorAll('example2-').length == 0 ||
+                rc.querySelectorAll('example2-').length == 0
+            ) continue;
+
+            // Get contained divs
+            let l = lc.querySelector('DIV');
+            let r = rc.querySelector('DIV');
+
+            // Fix heights
             if(r.clientHeight < l.clientHeight) r.style.minHeight = r.style.maxHeight = `${ l.clientHeight }px` //TODO this doesnt work properly
             if(l.clientHeight < r.clientHeight) l.style.minHeight = l.style.maxHeight = `${ r.clientHeight }px` //TODO this doesnt work properly
         }

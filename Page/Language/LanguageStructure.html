@@ -142,7 +142,7 @@
                 <div class="split-td">
                     <a href="#templates">                  <code><w->template</w-></code></a>
                     <elm-><code>&lt;</code><code>&gt;</code></elm->
-                    <a href="#template-constraints">       <code><w->when</w-></code></a>
+                    <a href="#specialization-constraints">       <code><w->when</w-></code></a>
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
                 </div>
                 <div class="split-td">
@@ -316,7 +316,7 @@
     <ul class="summary-list">
         <li>
             <span><elm-><code>(</code><code>)</code></elm-></span>
-            <span>Groups an <a href="#expressions">expression</a>, or encloses a list of <a href="#routine-parameters">routine parameters</a>. Also used for <a href="#declarations.operator-precedence">operator precedence</a> and <a href="#template-constraints">template constraints.</a></span>
+            <span>Groups an <a href="#expressions">expression</a>, or encloses a list of <a href="#routine-parameters">routine parameters</a>. Also used for <a href="#declarations.operator-precedence">operator precedence</a> and <a href="#specialization-constraints">specialization constraints.</a></span>
         </li>
         <li>
             <span><a href="#scopes"><elm-><code>{</code><code>}</code></elm-></a></span>
@@ -395,7 +395,7 @@
         <li>
             <span><a href="#templates"><code><w->when</w-></code></a></span>
             <span>
-                Specifies a <a href="#template-constraints">template constraint</a><br>
+                Specifies a <a href="#specialization-constraints">specialization constraint</a><br>
                 <span class="meta-keyword-constraint">[When used before a body of a <a href="#templates">template</a> declaration]</span>.
             </span>
         </li>
@@ -681,8 +681,8 @@
             <span>Defines the name and parameters of a <a href="#templates">template</a></span>
         </li>
         <li>
-            <span><a href="#template-constraints">Template constraint</a></span>
-            <span>Defines the <a href="#template-constraints">constraint</a> that determines when the subsequent element body is available</span>
+            <span><a href="#specialization-constraints">Specialization constraint</a></span>
+            <span>Defines the <a href="#specialization-constraints">constraint</a> that determines when the subsequent element body is suitable for specialization</span>
         </li>
     </ul><br>
     <li>Other sub-elements</li>
@@ -1439,7 +1439,7 @@
 <h1 id="compile-time-expressions"></h1>
 <p>
     <b>Compile time expressions</b> are <a href="#expressions">expressions</a> that can be <b>calculated during</b> the <a href="#compilation"><b>compilation</b></a> phase.<br>
-    These <a href="#expressions">expressions</a> are required in certain syntaxes, such as <a href="#operators">operator</a> declarations, <a href="#enums">enum</a> elements, <a href="#template">template</a> <a href="#name-resolution">paths</a> and <a href="#template-constraints">template constraints</a>.<br>
+    These <a href="#expressions">expressions</a> are required in certain syntaxes, such as <a href="#operators">operator</a> declarations, <a href="#enums">enum</a> elements, <a href="#template">template</a> <a href="#name-resolution">paths</a> and <a href="#specialization-constraints">specialization constraints</a>.<br>
 </p>
 <ul>
     <li>Whether an <a href="#expressions">expression</a> can be compile time or not is determined in the following way:</li>
