@@ -2431,6 +2431,49 @@
 
 
 <h1 id="void-type"></h1>
+<p>
+    The <code><t->void</t-></code> type is used to declare routines that don't return any value.<br>
+    It has no other purpose but it can be passed to type template parameters to generate different declarations.
+</p>
+<example2->
+    <label2->Example2</label2->
+    <div>
+        <f->uint</f-> counter = <k->0</k->;
+        <t->void</t-> <f->inc_counter</f->(){ counter<f->++</f->; }
+
+        <t->void</t-> <f->main</f->(){
+            <f->inc_counter</f->();
+        }
+    </div>
+</example2->
+<split-example-container->
+    <split-example-container-left->
+        <example2->
+            <label2->Example2</label2->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+                <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->void</t-> <f->print_template_info</f->()
+                <w->when</w->(<t->t</t->:<k->id</k-> <f->!=</f-> <t->void</t->:<k->id</k->) { io.<f->print</f->(<s->"not void"</s->); }
+                <w->when</w->(<t->t</t->:<k->id</k-> <f->==</f-> <t->void</t->:<k->id</k->) { io.<f->print</f->(<s->"void"</s->); }
+
+                <t->void</t-> <f->main</f->(){
+                    <f->print_template_info</f->&lt;<t->void</t->&gt;();
+                    <f->print_template_info</f->&lt;<t->int</t->&gt;();
+                }
+            </div>
+        </example2->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example2->
+            <label2->Output</label2->
+            <div>
+                void
+                not void
+                <cursor-></cursor->
+            </div>
+        </example2->
+    </split-example-container-right->
+</split-example-container->
 
 
 <h1 id="pointer-types"></h1>
@@ -3192,7 +3235,7 @@
 <p>
     Each routine can <a href="#return-statement">return</a> a single value when <a href="#routine-calls">called</a>.<br>
     The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
-    Routines that don't return a value have to be declared using the <code><w->void</w-></code> keyword.
+    Routines that don't return a value have to be declared using the <code><t->void</t-></code> type.
 </p>
 <p>
     The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
