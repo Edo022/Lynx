@@ -13,9 +13,12 @@
     The type of each <a href="#values">value</a> must be known at compile time, as there are no runtime type informations.
 </p>
 <p>
-    There are no classes, strings, characters, matrices or vectors. The latter 2 are <a href="#symbol-aliases">aliases</a> of <a href="#arrays">array</a> types. See <a href="#standard-modules">Standard Modules</a>.
-    //FIXME
+    There are no classes, characters, matrices or vectors. The latter 2 are <a href="#symbol-aliases">aliases</a> of <a href="#arrays">array</a> types. See <a href="#standard-modules">Standard Modules</a>.
+    //FIXME ^
+
+    //TODO specify that types are a subset of symbol paths that contains any path to structs, enums, primitive types or special types, which are all considered symbols
 </p>
+
 
 
 <!--------------------------------------------------------------------->
@@ -580,7 +583,7 @@
 <!-- Struct specialization                                           -->
 <!--------------------------------------------------------------------->
 <h1 id="struct-specialization"></h1>
-
+<p>//TODO</p>
 
 
 
@@ -600,7 +603,7 @@
 <!-- Special types                                                   -->
 <!--------------------------------------------------------------------->
 <h1 id="special-types"></h1>
-
+<p></p>
 
 
 
@@ -667,6 +670,17 @@
 <!-- Pointer types                                                   -->
 <!--------------------------------------------------------------------->
 <h1 id="pointer-types"></h1>
+<p>
+    Pointer types are implicit types that can store a memory address of a specific type. Their size is always 8 byes<br>
+    They are referenced through the symbol path of the pointed type, also known as base type, followed by the <code>@</code> keyword.<br>
+    The <code><t->const</t-></code> meta keyword can be placed between the base type and the <code>@</code> keyword to reference the corresponding const pointer. Const pointers are detailedly explained in <a href="#const-qualifier">Const qualifier</a>.
+</p>
+<p>
+    Pointer types don't have to be declared. Each existing type but <code><t->void</t-></code> has its own corresponding pointer type and <code><t->const</t-></code> pointer type ready to use, including the pointer types themselves.
+    <code><t->void</t-></code> pointers are not allowed.<br>
+    There is no limit to the amount of nested pointer types you can use as base type.
+</p>
+
 
 
 

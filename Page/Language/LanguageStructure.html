@@ -632,16 +632,11 @@
         </div></td>
     </tr>
     <tr>
-        <th class="nowrap medium"><a href="#language-structure.symbol-paths">Symbol paths</a></th>
+        <th class="nowrap medium"><a href="#language-structure.paths">Paths</a></th>
         <td><div class="split-td-outer">
-            <div class="split-td">
-                <even-elm-><a href="#symbol-paths">Standard symbol path</a></even-elm->
-                <even-elm-><a href="#primitive-types">Primitive type path</a></even-elm->
-            </div>
-            <div class="split-td">
-                <even-elm-><a href="#reflection">Reflection path</a></even-elm->
-                <even-elm-><a href="#references">Reference type path</a></even-elm->
-                <even-elm-><a href="#addresses">Address type path</a></even-elm->
+            <div>
+                <even-elm-><a href="#symbol-paths">Symbol path</a></even-elm->
+                <even-elm-><a href="#symbol-reflection-paths">Symbol reflection path</a></even-elm->
             </div>
         </div></td>
     </tr>
@@ -944,43 +939,30 @@
 
 <!-- TODO RENAME SYMBOL PATHS as they aren't just for symbols -->
 <!--------------------------------------------------------------------->
-<!-- Symbol paths                                                    -->
+<!-- Paths                                                           -->
 <!--------------------------------------------------------------------->
-<h1 id="language-structure.symbol-paths"></h1>
+<h1 id="language-structure.paths"></h1>
 <p>
-    Symbol paths reference user defined <a href="#name-resolution">symbols</a>, generated compile time informations or default symbols that have no declaration.<br>
-    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a>.
+    Paths are used to reference things declared in in the code, either explicitly or implicitly, in order to retrieve or pass informations about them.<br>
+    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a> and are divided in two categories:
 </p>
-<ul>
-    <li>Symbol paths</li>
-    <ul class="summary-list">
-        <li>
-            <span><elm-><a href="#symbol-paths">Standard symbol path</a></elm-></span>
-            <span>References a user defined <a href="@name-resolution">symbol</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#primitive-types">Primitive type paths</a></elm-></span>
-            <span>References a <a href="#primitive-types">primitive type</a>.</span>
-        </li>
-    </ul><br>
-    <li>?? paths</li> //TODO
-    <ul class="summary-list">
-        <li>
-            <span><elm-><a href="#reflection-path">Reflection path</a></elm-></span>
-            <span>Accesses compile time informations about a symbol</span>
-        </li>
-        <li>
-            <span><elm-><a href="#references">Reference type paths</a></elm-></span>
-            <span>References a <a href="#references">reference type</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#addresses">Address type paths</a></elm-></span>
-            <span>References an <a href="#addresses">address type</a>.</span>
-        </li>
-    </ul>
-</ul>
+<ul><ul class="summary-list">
+    <li>
+        <span><elm->Symbol paths</elm-></span>
+        <span>Reference symbols. Any accessible module, namespace, symbol alias, primitive type, enum, struct, special type, routine, variable and temporary variable is considered a symbol.</span>
+    </li>
+    <li>
+        <span><elm->Symbol reflection paths</elm-></span>
+        <span>Accesse compile time informations about a symbol referenced by another path.</span>
+    </li>
+</ul></ul>
+<syntax2->
+    <label2- id="copy.syntax--symbol-path">Symbol path syntax</label2->
+    <label2- id="copy.syntax--symbol-name">Symbol name</label2->
+    <label2- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label2->
+</syntax2->
 <p>
-    <a href="#types">Type</a> paths are a subcategory of symbol paths that point to symbols suitable to be used as types.
+    <a href="#types">Type</a> paths are a subset of Symbol paths that point to symbols suitable to be used as types, such as primitive types, enums,structs and special types.
 </p>
 
 

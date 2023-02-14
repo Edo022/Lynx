@@ -76,7 +76,6 @@ var setup_syntax = {
             'B-C-, B-C--T-, B-C--B-'
         );
         for(let j = 0; j < children.length; ++j) {
-            console.log(children[j].tagName);
             let tagName = children[j].tagName;                              // Name of the tag
             let w = children[j].parentElement.clientWidth - margin * 2;     // SVG width
             let h = children[j].clientHeight;                               // SVG height

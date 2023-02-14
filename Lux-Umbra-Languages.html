@@ -70,7 +70,7 @@
                 <indexd->language-structure.declarations</indexd->
                 <indexd->language-structure.statements</indexd->
                 <indexd->language-structure.expressions</indexd->
-                <indexd->language-structure.symbol-paths</indexd->
+                <indexd->language-structure.paths</indexd->
             </index->
         </index->
         <index-><indexh->concepts</indexh->
@@ -1062,16 +1062,11 @@
         </div></td>
     </tr>
     <tr>
-        <th class="nowrap medium"><a href="#language-structure.symbol-paths">Symbol paths</a></th>
+        <th class="nowrap medium"><a href="#language-structure.paths">Paths</a></th>
         <td><div class="split-td-outer">
-            <div class="split-td">
-                <even-elm-><a href="#symbol-paths">Standard symbol path</a></even-elm->
-                <even-elm-><a href="#primitive-types">Primitive type path</a></even-elm->
-            </div>
-            <div class="split-td">
-                <even-elm-><a href="#reflection">Reflection path</a></even-elm->
-                <even-elm-><a href="#references">Reference type path</a></even-elm->
-                <even-elm-><a href="#addresses">Address type path</a></even-elm->
+            <div>
+                <even-elm-><a href="#symbol-paths">Symbol path</a></even-elm->
+                <even-elm-><a href="#symbol-reflection-paths">Symbol reflection path</a></even-elm->
             </div>
         </div></td>
     </tr>
@@ -1346,41 +1341,28 @@
 
 
 
-<h1 id="language-structure.symbol-paths"></h1>
+<h1 id="language-structure.paths"></h1>
 <p>
-    Symbol paths reference user defined <a href="#name-resolution">symbols</a>, generated compile time informations or default symbols that have no declaration.<br>
-    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a>.
+    Paths are used to reference things declared in in the code, either explicitly or implicitly, in order to retrieve or pass informations about them.<br>
+    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a> and are divided in two categories:
 </p>
-<ul>
-    <li>Symbol paths</li>
-    <ul class="summary-list">
-        <li>
-            <span><elm-><a href="#symbol-paths">Standard symbol path</a></elm-></span>
-            <span>References a user defined <a href="@name-resolution">symbol</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#primitive-types">Primitive type paths</a></elm-></span>
-            <span>References a <a href="#primitive-types">primitive type</a>.</span>
-        </li>
-    </ul><br>
-    <li>?? paths</li> //TODO
-    <ul class="summary-list">
-        <li>
-            <span><elm-><a href="#reflection-path">Reflection path</a></elm-></span>
-            <span>Accesses compile time informations about a symbol</span>
-        </li>
-        <li>
-            <span><elm-><a href="#references">Reference type paths</a></elm-></span>
-            <span>References a <a href="#references">reference type</a>.</span>
-        </li>
-        <li>
-            <span><elm-><a href="#addresses">Address type paths</a></elm-></span>
-            <span>References an <a href="#addresses">address type</a>.</span>
-        </li>
-    </ul>
-</ul>
+<ul><ul class="summary-list">
+    <li>
+        <span><elm->Symbol paths</elm-></span>
+        <span>Reference symbols. Any accessible module, namespace, symbol alias, primitive type, enum, struct, special type, routine, variable and temporary variable is considered a symbol.</span>
+    </li>
+    <li>
+        <span><elm->Symbol reflection paths</elm-></span>
+        <span>Accesse compile time informations about a symbol referenced by another path.</span>
+    </li>
+</ul></ul>
+<syntax2->
+    <label2- id="copy.syntax--symbol-path">Symbol path syntax</label2->
+    <label2- id="copy.syntax--symbol-name">Symbol name</label2->
+    <label2- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label2->
+</syntax2->
 <p>
-    <a href="#types">Type</a> paths are a subcategory of symbol paths that point to symbols suitable to be used as types.
+    <a href="#types">Type</a> paths are a subset of Symbol paths that point to symbols suitable to be used as types, such as primitive types, enums,structs and special types.
 </p>
 
 
@@ -1960,8 +1942,10 @@
     The type of each <a href="#values">value</a> must be known at compile time, as there are no runtime type informations.
 </p>
 <p>
-    There are no classes, strings, characters, matrices or vectors. The latter 2 are <a href="#symbol-aliases">aliases</a> of <a href="#arrays">array</a> types. See <a href="#standard-modules">Standard Modules</a>.
-    //FIXME
+    There are no classes, characters, matrices or vectors. The latter 2 are <a href="#symbol-aliases">aliases</a> of <a href="#arrays">array</a> types. See <a href="#standard-modules">Standard Modules</a>.
+    //FIXME ^
+
+    //TODO specify that types are a subset of symbol paths that contains any path to structs, enums, primitive types or special types, which are all considered symbols
 </p>
 
 
@@ -2425,9 +2409,11 @@
 
 
 <h1 id="struct-specialization"></h1>
+<p>//TODO</p>
 
 
 <h1 id="special-types"></h1>
+<p></p>
 
 
 <h1 id="void-type"></h1>
@@ -2477,6 +2463,16 @@
 
 
 <h1 id="pointer-types"></h1>
+<p>
+    Pointer types are implicit types that can store a memory address of a specific type. Their size is always 8 byes<br>
+    They are referenced through the symbol path of the pointed type, also known as base type, followed by the <code>@</code> keyword.<br>
+    The <code><t->const</t-></code> meta keyword can be placed between the base type and the <code>@</code> keyword to reference the corresponding const pointer. Const pointers are detailedly explained in <a href="#const-qualifier">Const qualifier</a>.
+</p>
+<p>
+    Pointer types don't have to be declared. Each existing type but <code><t->void</t-></code> has its own corresponding pointer type and <code><t->const</t-></code> pointer type ready to use, including the pointer types themselves.
+    <code><t->void</t-></code> pointers are not allowed.<br>
+    There is no limit to the amount of nested pointer types you can use as base type.
+</p>
 
 
 <h1 id="function-types"></h1>
@@ -5008,6 +5004,156 @@
 
 
 <syntax2- class="qrt">
+    <label2- id="syntax--symbol-path" class="s-path">Symbol path</label2->
+    <table class="s-path">
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td><sub->symbol name</sub-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>.</code></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td><b-br-></b-br-><b-tr-></b-tr-></td>
+            <td><code>const</code></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
+            <td><code>@</code></td>
+            <td><b-lbc-></b-lbc-><b-ltc-></b-ltc-></td>
+        </tr>
+        <tr>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
+        </tr>
+    </table>
+    <label2- id="syntax--symbol-name" class="sub">Symbol name</label2->
+    <table class="sub">
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><wrd->name</wrd-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>&lt;</code></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td><typ->type</typ-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td><code>&gt;</code></td>
+            <td><b-ltc-></b-ltc-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-btc-></b-btc-></td>
+            <td><b-tr-></b-tr-></td>
+            <td><exp->value</exp-></td>
+            <td><b-ltc-></b-ltc-></td>
+            <td><b-tr-></b-tr-></td>
+            <td><code>,</code></td>
+            <td><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
+        </tr>
+    </table>
+</syntax2->
+
+
+
+
+<syntax2- class="qrt">
+    <label2- id="syntax--symbol-reflection-path" class="s-path">Symbol reflection path</label2->
+    <table class="s-path">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><s-path->symbol path</s-path-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><code>:</code></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td><wrd->member name</wrd-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><code>.</code></td>
+            <td><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
+        </tr>
+    </table>
+</syntax2->
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax2- class="qrt">
     <label2- id="syntax--typeof" class="stx"><a href="#modules">Typeof</a></label2->
     <table class="stx">
         <tr>
@@ -5585,9 +5731,9 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><code>)</code></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
             <td><b-lbc-></b-lbc-><b-lr-></b-lr-></td>
@@ -5600,9 +5746,9 @@
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
             <td><stx->routine parameter</stx-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
+            <td><code>)</code></td>
+            <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-tr-></b-tr-></td>
@@ -5613,11 +5759,11 @@
             <td></td>
             <td><b-btc-></b-btc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><stx->function parameter pack</stx-></td>
+            <td><stx->function parameter pack<span class="hidden">&nbsp;***</span></stx-></td>
             <td><b-ltc-></b-ltc-></td>
-            <td></td>
-            <td></td>
-            <td><b-tbc-></b-tbc-></td>
+            <td><b-tr-></b-tr-></td>
+            <td><code>,</code></td>
+            <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
             <td></td>
@@ -5742,7 +5888,9 @@
         <a href="#syntax--variables">variable</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
 
-        ** At least one name and one parameter declaration.
+        ** At least one name and one parameter declaration.<br>
+
+        *** No more than once.
     </syntax-note->
 </syntax2->
 
