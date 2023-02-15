@@ -308,13 +308,13 @@
     //TODO move the "alphanumeric or symbolic" stuff here
 </p>
 <p>
-    <vbtm- class="syntax-glossary">x             </vbtm-> The literal character "x"<br>
-    <any-  class="syntax-glossary">x             </any->  x is an user-defined sequence of characters<br>
-    <sub-  class="syntax-glossary">x             </sub->  x is a semantic sub-element<br>
-    <decl- class="syntax-glossary">x             </decl-> x is a declaration<br>
-    <expr- class="syntax-glossary"><t->[t]</t-> x</expr-> x is an expression of type t<br>
-    <path- class="syntax-glossary">x             </path-> x is a symbol path<br>
-    <sgr-  class="syntax-glossary">x             </sgr->  x is syntactic sugar
+    <s-vbtm- class="syntax-glossary">x             </s-vbtm-> The literal character "x"<br>
+    <s-any-  class="syntax-glossary">x             </s-any->  x is an user-defined sequence of characters<br>
+    <s-sub-  class="syntax-glossary">x             </s-sub->  x is a semantic sub-element<br>
+    <s-decl- class="syntax-glossary">x             </s-decl-> x is a declaration<br>
+    <s-expr- class="syntax-glossary"><t->[t]</t-> x</s-expr-> x is an expression of type t<br>
+    <s-path- class="syntax-glossary">x             </s-path-> x is a symbol path<br>
+    <s-sgr-  class="syntax-glossary">x             </s-sgr->  x is syntactic sugar
 </p>
 
 
@@ -876,7 +876,7 @@
             </span>
         </li>
         <li>
-            <span><a href="#abbreviated-template-syntax"><sgr->?</sgr-></a></span>
+            <span><a href="#abbreviated-template-syntax"><s-sgr->?</s-sgr-></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
                 <span class="meta-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
@@ -1116,6 +1116,10 @@
             <span><a href="#while-loops">While</a> signature</span>
             <span>Defines the <a href="boolean-type">condition</a> of a <a href="while-loops">while loop</a></span>
         </li>
+        <li>
+            <span>Specialization constraint</span>
+            <span>Specifies a constraint whose result determines when a struct or routine declaration can be used.</span>
+        </li>
     </ul>
 </ul>
 
@@ -1344,29 +1348,18 @@
 <h1 id="language-structure.paths"></h1>
 <p>
     Paths are used to reference things declared in in the code, either explicitly or implicitly, in order to retrieve or pass informations about them.<br>
-    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a> and are divided in two categories:
+    Any accessible module, namespace, symbol alias, primitive type, enum, struct, special type, routine, variable and temporary variable is considered a symbol.<br>
+    Paths are a foundamental part of most <a href="#semantic-elements">semantic elements</a>.
 </p>
-<ul><ul class="summary-list">
-    <li>
-        <span><elm->Symbol paths</elm-></span>
-        <span>
-            Reference symbols. Any accessible module, namespace, symbol alias, primitive type, enum, struct, special type, routine, variable and temporary variable is considered a symbol.
-        </span>
-    </li>
-    <li>
-        <span><elm->Symbol reflection paths</elm-></span>
-        <span>
-            Access compile time informations about a symbol referenced by a symbol path.
-        </span>
-    </li>
-</ul></ul>
 <p>
     Type paths are a subset of Symbol paths that point to symbols suitable to be used as types, such as primitive types, enums, structs and special types.
+</p>
+<p>
+    Reflection paths are a subset of Symbol paths that can access compile time informations about the referenced symbol.
 </p>
 <syntax->
     <label- id="copy.syntax--symbol-path">Symbol path syntax</label->
     <label- id="copy.syntax--symbol-name">Symbol name</label->
-    <label- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label->
 </syntax->
 
 
@@ -3154,7 +3147,7 @@
     </div>
 </example->
 <p>
-    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+    The <a href="#const-qualifier"><s-sgr->const</s-sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
 </p>
 
 
@@ -4957,8 +4950,8 @@
 
 
 <syntax- class="qrt">
-    <label- id="syntax--module" class="stx"><a href="#modules">Module</a></label->
-    <table class="stx">
+    <label- id="syntax--module" class="s-decl"><a href="#modules">Module</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -4966,17 +4959,17 @@
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><decl->import directive</decl-></td>
+            <td><s-decl->import directive</s-decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><decl->export directive</decl-></td>
+            <td><s-decl->export directive</s-decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-></td>
-            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
+            <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-tl-></b-tl-></td>
         </tr>
     </table>
@@ -5011,7 +5004,22 @@
     <label- id="syntax--symbol-path" class="s-path">Symbol path</label->
     <table class="s-path">
         <tr>
-            <td></td>
+            <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-blc-></b-blc-></td>
+        </tr>
+        <tr>
+            <td><b-tbc-></b-tbc-></td>
             <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -5020,19 +5028,25 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td><s-vbtm->:</s-vbtm-></td>
+            <td><b-ltc-></b-ltc-></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><sub->symbol name</sub-></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-><b-tr-></b-tr-></td>
+            <td><s-sub->symbol name</s-sub-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->.</vbtm-></td>
+            <td><s-vbtm->.</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-></td>
-            <td><vbtm->const</vbtm-></td>
+            <td><s-vbtm->const</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><vbtm->@</vbtm-></td>
+            <td><s-vbtm->@</s-vbtm-></td>
             <td><b-lbc-></b-lbc-><b-ltc-></b-ltc-></td>
+            <td><b-trc-></b-trc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-></td>
+            <td></td>
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
@@ -5045,10 +5059,13 @@
             <td><b-rlc-></b-rlc-><b-rtc-></b-rtc-><b-c-></b-c-></td>
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
     </table>
-    <label- id="syntax--symbol-name" class="sub">Symbol name</label->
-    <table class="sub">
+    <label- id="syntax--symbol-name" class="s-sub">Symbol name</label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -5064,15 +5081,15 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->&lt;</vbtm-></td>
+            <td><s-vbtm->&lt;</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><path->type</path-></td>
+            <td><s-path->type</s-path-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->&gt;</vbtm-></td>
+            <td><s-vbtm->&gt;</s-vbtm-></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
         <tr>
@@ -5082,10 +5099,10 @@
             <td></td>
             <td><b-btc-></b-btc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><expr->value</expr-></td>
+            <td><s-expr->value</s-expr-></td>
             <td><b-ltc-></b-ltc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5107,45 +5124,6 @@
 
 
 
-<syntax- class="qrt">
-    <label- id="syntax--symbol-reflection-path" class="s-expr">Symbol reflection path</label->
-    <table class="s-expr">
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><s-type->symbol path</s-type-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><vbtm->:</vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><any->member name</any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->.</vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-        </tr>
-    </table>
-</syntax->
-
 
 
 
@@ -5158,17 +5136,17 @@
 
 
 <syntax- class="qrt">
-    <label- id="syntax--typeof" class="stx"><a href="#modules">Typeof</a></label->
-    <table class="stx">
+    <label- id="syntax--typeof" class="s-decl"><a href="#modules">Typeof</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->typeof</vbtm-></td>
+            <td><s-vbtm->typeof</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr->expression</expr-></td>
+            <td><s-expr->expression</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -5189,60 +5167,60 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label->
+    <table class="s-decl">
         <tr>
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->&lt;</vbtm-></td>
+            <td><s-vbtm->&lt;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any->module name</any-></td>
+            <td><s-any->module name</s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->&gt;</vbtm-></td>
+            <td><s-vbtm->&gt;</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->include</vbtm-></td>
+            <td><s-vbtm->include</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->*</vbtm-></td>
+            <td><s-vbtm->*</s-vbtm-></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-br-></b-br-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->from</vbtm-></td>
+            <td><s-vbtm->from</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->"</vbtm-></td>
+            <td><s-vbtm->"</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any->path/to/module</any-></td>
+            <td><s-any->path/to/module</s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->"</vbtm-></td>
+            <td><s-vbtm->"</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->as</vbtm-></td>
+            <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
-            <td><vbtm->import</vbtm-></td>
+            <td><s-vbtm->import</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><any-><span>symbol<sup>path</sup></span></any-></td>
+            <td><s-any-><span>symbol<sup>path</sup></span></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->as</vbtm-></td>
+            <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><span><any->name</any-></any-></td>
+            <td><span><s-any->name</s-any-></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5291,45 +5269,45 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label->
+    <table class="s-decl">
         <tr>
             <td></td>
             <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->as</vbtm-></td>
+            <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lbc-></b-lbc-></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->export</vbtm-></td>
+            <td><s-vbtm->export</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><vbtm->*</vbtm-></td>
+            <td><s-vbtm->*</s-vbtm-></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-><b-lr-></b-lr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><any-><span>symbol<sup>path</sup></span></any-></td>
+            <td><s-any-><span>symbol<sup>path</sup></span></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->as</vbtm-></td>
+            <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5368,8 +5346,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label->
+    <table class="s-decl">
         <tr>
             <td></td>
         </tr>
@@ -5397,8 +5375,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label->
-        <table class="stx">
+    <label- class="s-decl"" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label->
+        <table class="s-decl">
         <tr>
             <td></td>
             <td></td>
@@ -5414,15 +5392,15 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->namespace</vbtm-></td>
+            <td><s-vbtm->namespace</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-><b-trc-></b-trc-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
+            <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5460,23 +5438,23 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->enum</vbtm-></td>
+            <td><s-vbtm->enum</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->:</vbtm-></td>
+            <td><s-vbtm->:</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><path->base type</path-></td>
+            <td><s-path->base type</s-path-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5491,7 +5469,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
+            <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -5508,15 +5486,15 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><decl->enum element</decl-></td>
+            <td><s-decl->enum element</s-decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
 
     </table>
-    <label- class="stx" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label->
+    <table class="s-decl">
         <tr>
             <td></td>
             <td></td>
@@ -5526,19 +5504,19 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->=</vbtm-></td>
+            <td><s-vbtm->=</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[base type]</t->&nbsp;value</expr-></td>
+            <td><s-expr-><t->[base type]</t->&nbsp;value</s-expr-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5578,23 +5556,23 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->struct signature</sub-></td>
+            <td><s-sub->struct signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->struct body</sub-></td>
+            <td><s-sub->struct body</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->struct</vbtm-></td>
+            <td><s-vbtm->struct</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5612,17 +5590,17 @@
             <td></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->specialization constraint</sub-></td>
+            <td><s-sub->specialization constraint</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5631,7 +5609,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
+            <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -5642,30 +5620,30 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><decl->struct member</decl-></td>
+            <td><s-decl->struct member</s-decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
     </table>
-    <label- class="stx" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label->
+    <table class="s-decl">
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><path->type</path-></td>
+            <td><s-path->type</s-path-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5702,28 +5680,28 @@
 
 
 <syntax- class="qrt nobottom">
-    <label- class="stx" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->function signature</sub-></td>
+            <td><s-sub->function signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine body</sub-></td>
+            <td><s-sub->routine body</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="stx" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->operator signature</sub-></td>
+            <td><s-sub->operator signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->routine body</sub-></td>
+            <td><s-sub->routine body</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -5741,17 +5719,17 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><path->return type</path-></td>
+            <td><s-path->return type</s-path-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-ltc-></b-ltc-><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><decl->routine parameter</decl-></td>
+            <td><s-decl->routine parameter</s-decl-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5763,10 +5741,10 @@
             <td></td>
             <td><b-btc-></b-btc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><decl->function parameter pack<span class="hidden">&nbsp;***</span></decl-></td>
+            <td><s-decl->function parameter pack<span class="hidden">&nbsp;***</span></s-decl-></td>
             <td><b-ltc-></b-ltc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5785,15 +5763,15 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span><span class="hidden">&nbsp;**</span></any-></td>
+            <td><s-any-><span>name</span><span class="hidden">&nbsp;**</span></s-any-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5808,7 +5786,7 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><path->return type</path-></td>
+            <td><s-path->return type</s-path-></td>
             <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-><b-rtct-></b-rtct-><b-rbcb-></b-rbcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
@@ -5816,24 +5794,24 @@
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-blct-></b-blct-><b-tr-></b-tr-><b-br-></b-br-><b-ltcb-></b-ltcb-></td>
-            <td><vbtm->priority</vbtm-></td>
+            <td><s-vbtm->priority</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[ulong]</t-> &nbsp;priority</expr-></td>
+            <td><s-expr-><t->[ulong]</t-> &nbsp;priority</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td><b-tr-></b-tr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><decl->routine parameter<span class="hidden">&nbsp;**</span></decl-></td>
+            <td><s-decl->routine parameter<span class="hidden">&nbsp;**</span></s-decl-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-tlc-></b-tlc-></td>
             <td></td>
             <td></td>
@@ -5845,17 +5823,17 @@
             <td></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->specialization constraint</sub-></td>
+            <td><s-sub->specialization constraint</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5864,7 +5842,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><sub-><a href="#statement-syntaxes">statement</a></sub-></td>
+            <td><s-sub-><a href="#statement-syntaxes">statement</a></s-sub-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -5875,7 +5853,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
+            <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
@@ -5899,8 +5877,8 @@
 <split-example-container- class="qrt notop">
     <split-example-container-left->
         <syntax->
-            <label- class="stx" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
-            <table class="stx">
+            <label- class="s-decl"" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
+            <table class="s-decl">
                 <tr>
                     <td></td>
                     <td></td>
@@ -5916,15 +5894,15 @@
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-></td>
-                    <td><path->type</path-></td>
+                    <td><s-path->type</s-path-></td>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><vbtm->&<span class="hidden">&nbsp;*</span></vbtm-></td>
+                    <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><any-><span>name</span></any-></td>
+                    <td><s-any-><span>name</span></s-any-></td>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><vbtm->=</vbtm-></td>
+                    <td><s-vbtm->=</s-vbtm-></td>
                     <td><b-lr-></b-lr-></td>
-                    <td><expr-><t->[type]</t->&nbsp;value</expr-></td>
+                    <td><s-expr-><t->[type]</t->&nbsp;value</s-expr-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
                 </tr>
             </table>
@@ -5935,11 +5913,11 @@
     </split-example-container-left->
     <split-example-container-right->
         <syntax->
-            <label- class="stx" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
-            <table class="stx">
+            <label- class="s-decl"" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
+            <table class="s-decl">
                 <tr>
                     <td><b-br-></b-br-></td>
-                    <td><any->template parameter pack name</any-></td>
+                    <td><s-any->template parameter pack name</s-any-></td>
                     <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                     <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                     <td><b-lbc-></b-lbc-></td>
@@ -5950,13 +5928,13 @@
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><path->type</path-></td>
+                    <td><s-path->type</s-path-></td>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><vbtm->&<span class="hidden">&nbsp;*</span></vbtm-></td>
+                    <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><any-><span>name</span></any-></td>
+                    <td><s-any-><span>name</span></s-any-></td>
                     <td><b-lr-></b-lr-></td>
-                    <td><vbtm->...</vbtm-></td>
+                    <td><s-vbtm->...</s-vbtm-></td>
                     <td><b-lr-></b-lr-></td>
                 </tr>
             </table>
@@ -6009,8 +5987,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td></td>
             <td></td>
@@ -6022,21 +6000,21 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><path->type</path-></td>
+            <td><s-path->type</s-path-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->=</vbtm-></td>
+            <td><s-vbtm->=</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[type]</t->&nbsp;value</expr-></td>
+            <td><s-expr-><t->[type]</t->&nbsp;value</s-expr-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6068,19 +6046,19 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->alias</vbtm-></td>
+            <td><s-vbtm->alias</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any->symbol</any-></td>
+            <td><s-any->symbol</s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->as</vbtm-></td>
+            <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6098,17 +6076,17 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->when</vbtm-></td>
+            <td><s-vbtm->when</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
+            <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6144,38 +6122,38 @@
 
 
 <syntax- class="qrt nobottom">
-    <label- class="stx" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
+            <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->struct signature</sub-></td>
+            <td><s-sub->struct signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="stx" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
+            <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->function signature</sub-></td>
+            <td><s-sub->function signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="stx" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
-    <table class="stx">
+    <label- class="s-decl"" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
+    <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->template signature<span class="hidden">&nbsp;*</span></sub-></td>
+            <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->operator signature</sub-></td>
+            <td><s-sub->operator signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -6183,23 +6161,23 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><decl->template parameter</decl-></td>
+            <td><s-decl->template parameter</s-decl-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->&gt;</vbtm-></td>
+            <td><s-vbtm->&gt;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->template</vbtm-></td>
+            <td><s-vbtm->template</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->&lt;</vbtm-></td>
+            <td><s-vbtm->&lt;</s-vbtm-></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><decl->template parameter pack<span class="hidden">&nbsp;**</span></decl-></td>
+            <td><s-decl->template parameter pack<span class="hidden">&nbsp;**</span></s-decl-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6224,20 +6202,20 @@
 <split-example-container- class="qrt notop">
     <split-example-container-left->
         <syntax->
-            <label- class="stx" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
-            <table class="stx">
+            <label- class="s-decl"" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
+            <table class="s-decl">
                 <tr>
                     <td><b-br-></b-br-></td>
-                    <td><vbtm->type</vbtm-></td>
+                    <td><s-vbtm->type</s-vbtm-></td>
                     <td><b-lbc-></b-lbc-></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><path->type<span class="hidden">&nbsp;*</span></path-></td>
+                    <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><any->name</any-></td>
+                    <td><s-any->name</s-any-></td>
                     <td><b-lr-></b-lr-></td>
                 </tr>
             </table>
@@ -6248,11 +6226,11 @@
     </split-example-container-left->
     <split-example-container-right->
         <syntax->
-            <label- class="stx" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
-            <table class="stx">
+            <label- class="s-decl"" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
+            <table class="s-decl">
                 <tr>
                     <td><b-br-></b-br-></td>
-                    <td><vbtm->type</vbtm-></td>
+                    <td><s-vbtm->type</s-vbtm-></td>
                     <td><b-lbc-></b-lbc-></td>
                     <td></td>
                     <td></td>
@@ -6261,11 +6239,11 @@
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><path->type<span class="hidden">&nbsp;*</span></path-></td>
+                    <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><any->name</any-></td>
+                    <td><s-any->name</s-any-></td>
                     <td><b-lr-></b-lr-></td>
-                    <td><vbtm->...</vbtm-></td>
+                    <td><s-vbtm->...</s-vbtm-></td>
                     <td><b-lr-></b-lr-></td>
                 </tr>
             </table>
@@ -6288,19 +6266,19 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-if"><a href="#if-statement">If statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-if"><a href="#if-statement">If statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->if</vbtm-></td>
+            <td><s-vbtm->if</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
+            <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6313,23 +6291,23 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->match</vbtm-></td>
+            <td><s-vbtm->match</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[t]</t->&nbsp;value</expr-></td>
+            <td><s-expr-><t->[t]</t->&nbsp;value</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><sub->match case</sub-></td>
+            <td><s-sub->match case</s-sub-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6350,8 +6328,8 @@
             <td></td>
         </tr>
     </table>
-    <label- class="sub"><a href="#match-statement">Match case</a></label->
-    <table class="sub">
+    <label- class="s-sub"><a href="#match-statement">Match case</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -6361,20 +6339,20 @@
             <td><b-lbc-></b-lbc-></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->:</vbtm-></td>
+            <td><s-vbtm->:</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
         </tr>
         <tr>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><expr-><t->[t]</t->&nbsp;a</expr-></td>
+            <td><s-expr-><t->[t]</t->&nbsp;a</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->to</vbtm-></td>
+            <td><s-vbtm->to</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><expr-><t->[t]</t->&nbsp;b</expr-></td>
+            <td><s-expr-><t->[t]</t->&nbsp;b</s-expr-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td></td>
         </tr>
@@ -6410,8 +6388,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-for"><a href="#for-statement">For statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-for"><a href="#for-statement">For statement</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -6440,15 +6418,15 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-><b-btc-></b-btc-></td>
-            <td><expr->initializer</expr-></td>
+            <td><s-expr->initializer</s-expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
+            <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><expr->iteration</expr-></td>
+            <td><s-expr->iteration</s-expr-></td>
             <td><b-lbc-></b-lbc-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -6458,23 +6436,23 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->for</vbtm-></td>
+            <td><s-vbtm->for</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->in</vbtm-></td>
+            <td><s-vbtm->in</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr->value</expr-></td>
+            <td><s-expr->value</s-expr-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6483,15 +6461,15 @@
             <td></td>
             <td></td>
             <td><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
-            <td><expr-><t->[t]</t->&nbsp;a</expr-></td>
+            <td><s-expr-><t->[t]</t->&nbsp;a</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->to</vbtm-></td>
+            <td><s-vbtm->to</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><expr-><t->[t]</t->&nbsp;b</expr-></td>
+            <td><s-expr-><t->[t]</t->&nbsp;b</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->as</vbtm-></td>
+            <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><any-><span>name</span></any-></td>
+            <td><s-any-><span>name</span></s-any-></td>
             <td><b-ltc-></b-ltc-></td>
             <td></td>
             <td></td>
@@ -6537,39 +6515,39 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-while"><a href="#while-statement">While statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-while"><a href="#while-statement">While statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><sub->while signature</sub-></td>
+            <td><s-sub->while signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--statement-do-while"><a href="#while-statement">Do-while statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-do-while"><a href="#while-statement">Do-while statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->do</vbtm-></td>
+            <td><s-vbtm->do</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->while signature</sub-></td>
+            <td><s-sub->while signature</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="sub" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->while</vbtm-></td>
+            <td><s-vbtm->while</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
+            <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6590,8 +6568,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-continue"><a href="#continue-and-break-statements">Continue statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-continue"><a href="#continue-and-break-statements">Continue statement</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -6603,11 +6581,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->continue</vbtm-></td>
+            <td><s-vbtm->continue</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><expr-><t->[ulong]</t->&nbsp;amount</expr-></td>
+            <td><s-expr-><t->[ulong]</t->&nbsp;amount</s-expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6624,8 +6602,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-break"><a href="#continue-and-break-statements">Break statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-break"><a href="#continue-and-break-statements">Break statement</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -6637,11 +6615,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->break</vbtm-></td>
+            <td><s-vbtm->break</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><expr-><t->[ulong]</t->&nbsp;amount</expr-></td>
+            <td><s-expr-><t->[ulong]</t->&nbsp;amount</s-expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6662,13 +6640,13 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-once"><a href="#once-statement">Once statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-once"><a href="#once-statement">Once statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->once</vbtm-></td>
+            <td><s-vbtm->once</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6688,13 +6666,13 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->then</vbtm-></td>
+            <td><s-vbtm->then</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6714,8 +6692,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label->
+    <table class="s-sub">
         <tr>
             <td></td>
             <td></td>
@@ -6727,11 +6705,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->return</vbtm-></td>
+            <td><s-vbtm->return</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><expr-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></expr-></td>
+            <td><s-expr-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></s-expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6751,15 +6729,15 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-defer"><a href="#defer-statement">Defer statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-defer"><a href="#defer-statement">Defer statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->defer</vbtm-></td>
+            <td><s-vbtm->defer</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><a href="#syntax--expression-routine-call"><expr->call<span class="hidden">&nbsp;*</span></expr-></a></td>
+            <td><a href="#syntax--expression-routine-call"><s-expr->call<span class="hidden">&nbsp;*</span></s-expr-></a></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6783,13 +6761,13 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-else"><a href="#else-statement">Else statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-else"><a href="#else-statement">Else statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->else</vbtm-></td>
+            <td><s-vbtm->else</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6801,22 +6779,22 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><sub->statement</sub-></td>
+            <td><s-sub->statement</s-sub-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -6825,7 +6803,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
+            <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
@@ -6857,13 +6835,13 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><expr->expression</expr-></td>
+            <td><s-expr->expression</s-expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6891,11 +6869,11 @@
 
 
 <syntax- class="qrt">
-    <label- class="sub" id="syntax--statement-empty"><a href="#empty-statement">Empty statement</a></label->
-    <table class="sub">
+    <label- class="s-sub" id="syntax--statement-empty"><a href="#empty-statement">Empty statement</a></label->
+    <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->;</vbtm-></td>
+            <td><s-vbtm->;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6914,11 +6892,11 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-literal"><a href="#literals">Literal</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-literal"><a href="#literals">Literal</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><any->literal token</any-></td>
+            <td><s-any->literal token</s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6931,17 +6909,17 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-try"><a href="#try-expression">Try expression</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-try"><a href="#try-expression">Try expression</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->try</vbtm-></td>
+            <td><s-vbtm->try</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->{</vbtm-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->idk</vbtm-></td>
+            <td><s-vbtm->idk</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->}</vbtm-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -6955,8 +6933,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-variable"><a href="#variables">Variables</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-variable"><a href="#variables">Variables</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -6968,11 +6946,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><any->parent scope name<span class="hidden">&nbsp;*</span></any-></td>
+            <td><s-any->parent scope name<span class="hidden">&nbsp;*</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->.</vbtm-></td>
+            <td><s-vbtm->.</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-trc-></b-trc-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6986,7 +6964,7 @@
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <vbtm->.</vbtm-> token
+        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <s-vbtm->.</s-vbtm-> token
     </syntax-note->
 </syntax->
 
@@ -7005,13 +6983,13 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-temporary-variable"><a href="#temporary-variables">Temporary variables</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-temporary-variable"><a href="#temporary-variables">Temporary variables</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->$</vbtm-></td>
+            <td><s-vbtm->$</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><expr-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></expr-></td>
+            <td><s-expr-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></s-expr-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -7042,11 +7020,11 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-routine-parameter"><a href="#declarations.routine-parameters">Routine parameter</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-routine-parameter"><a href="#declarations.routine-parameters">Routine parameter</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -7067,8 +7045,8 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-function-call"><a href="#declarations.functions">Function call</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-function-call"><a href="#declarations.functions">Function call</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -7081,22 +7059,22 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><any->parent scope name<span class="hidden">&nbsp;*</span></any-></td>
+            <td><s-any->parent scope name<span class="hidden">&nbsp;*</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->.</vbtm-></td>
+            <td><s-vbtm->.</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><any->name</any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><expr->argument</expr-></td>
+            <td><s-expr->argument</s-expr-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -7116,7 +7094,7 @@
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <vbtm->.</vbtm-> token
+        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <s-vbtm->.</s-vbtm-> token
     </syntax-note->
 </syntax->
 
@@ -7137,22 +7115,22 @@
 
 
 <syntax- class="qrt">
-    <label- class="stx" id="syntax--expression-operator-call"><a href="#declarations.operators">Operator call</a></label->
-    <table class="stx">
+    <label- class="s-expr" id="syntax--expression-operator-call"><a href="#declarations.operators">Operator call</a></label->
+    <table class="s-expr">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-brc-></b-brc-><b-lr-></b-lr-></td>
-            <td><any->name<span class="hidden">&nbsp;**</span></any-></td>
+            <td><s-any->name<span class="hidden">&nbsp;**</span></s-any-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><any->parent scope name<span class="hidden">&nbsp;*</span></any-></td>
+            <td><s-any->parent scope name<span class="hidden">&nbsp;*</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->.</vbtm-></td>
+            <td><s-vbtm->.</s-vbtm-></td>
             <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
             <td><b-tb-></b-tb-><b-bt-></b-bt-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-></td>
@@ -7163,12 +7141,12 @@
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
-            <td><expr->argument<span class="hidden">&nbsp;**</span></expr-></td>
+            <td><s-expr->argument<span class="hidden">&nbsp;**</span></s-expr-></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <vbtm->.</vbtm-> token<br>
+        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <s-vbtm->.</s-vbtm-> token<br>
         ** At least one name and one argument
     </syntax-note->
 </syntax->
@@ -7178,7 +7156,7 @@
 <p>
     This section summarizes all the syntaxes used to reference any type of <a href="#semantic-elements">symbol</a>.<br>
     The provided syntaxes are to be interpreted as the <a href="#name-resolution">local name</a> a <a href="#semantic-elements">symbol</a> would have if declared as the corresponding semantic element.<br>
-    They are concatenated with <vbtm->.</vbtm-> tokens to create names for the <a href="#name-resolution">name resolution</a>.
+    They are concatenated with <s-vbtm->.</s-vbtm-> tokens to create names for the <a href="#name-resolution">name resolution</a>.
     //TODO
 </p>
 <syntax- class="qrt">
@@ -7186,7 +7164,7 @@
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><any->name<sup>id</sup></any-></td>
+            <td><s-any->name<sup>id</sup></s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -7200,20 +7178,20 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><any-><t->uint<sup>r</sup></t-></any-></td>
+            <td><s-any-><t->uint<sup>r</sup></t-></s-any-></td>
             <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><any-><t->T<sup>type</sup></t-></any-></td>
+            <td><s-any-><t->T<sup>type</sup></t-></s-any-></td>
             <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-            <td><vbtm->[</vbtm-></td>
+            <td><s-vbtm->[</s-vbtm-></td>
             <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
             <td><loop-connector-></loop-connector-></td>
             <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-            <td><vbtm->]</vbtm-></td>
+            <td><s-vbtm->]</s-vbtm-></td>
             <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
         </tr>
         <tr>
@@ -7238,16 +7216,16 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><vbtm->)</vbtm-></td>
+            <td><s-vbtm->)</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->(</vbtm-></td>
+            <td><s-vbtm->(</s-vbtm-></td>
             <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><any-><t->T<sup>type</sup></t-></any-></td>
+            <td><s-any-><t->T<sup>type</sup></t-></s-any-></td>
             <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
         </tr>
         <tr>
@@ -7266,7 +7244,7 @@
         <table>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><any->name<sup>id</sup></any-></td>
+                <td><s-any->name<sup>id</sup></s-any-></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
         </table>
@@ -7282,18 +7260,18 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><vbtm->&gt;</vbtm-></td>
+            <td><s-vbtm->&gt;</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><any->name<sup>id</sup></any-></td>
+            <td><s-any->name<sup>id</sup></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><vbtm->&lt;</vbtm-></td>
+            <td><s-vbtm->&lt;</s-vbtm-></td>
             <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><any-><t->T<sup>type</sup></t-></any-></td>
+            <td><s-any-><t->T<sup>type</sup></t-></s-any-></td>
             <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><vbtm->,</vbtm-></td>
+            <td><s-vbtm->,</s-vbtm-></td>
             <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
         </tr>
         <tr>

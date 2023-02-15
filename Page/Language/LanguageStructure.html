@@ -948,29 +948,18 @@
 <h1 id="language-structure.paths"></h1>
 <p>
     Paths are used to reference things declared in in the code, either explicitly or implicitly, in order to retrieve or pass informations about them.<br>
-    They are a foundamental part of most <a href="#semantic-elements">semantic elements</a> and are divided in two categories:
+    Any accessible module, namespace, symbol alias, primitive type, enum, struct, special type, routine, variable and temporary variable is considered a symbol.<br>
+    Paths are a foundamental part of most <a href="#semantic-elements">semantic elements</a>.
 </p>
-<ul><ul class="summary-list">
-    <li>
-        <span><elm->Symbol paths</elm-></span>
-        <span>
-            Reference symbols. Any accessible module, namespace, symbol alias, primitive type, enum, struct, special type, routine, variable and temporary variable is considered a symbol.
-        </span>
-    </li>
-    <li>
-        <span><elm->Symbol reflection paths</elm-></span>
-        <span>
-            Access compile time informations about a symbol referenced by a symbol path.
-        </span>
-    </li>
-</ul></ul>
 <p>
     Type paths are a subset of Symbol paths that point to symbols suitable to be used as types, such as primitive types, enums, structs and special types.
+</p>
+<p>
+    Reflection paths are a subset of Symbol paths that can access compile time informations about the referenced symbol. These are detailedly explained in <a href="#reflection">Reflection</a>.
 </p>
 <syntax->
     <label- id="copy.syntax--symbol-path">Symbol path syntax</label->
     <label- id="copy.syntax--symbol-name">Symbol name</label->
-    <label- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label->
 </syntax->
 
 
