@@ -1,6 +1,49 @@
-.notop {
-    margin-top: 0 !important;
+:root {
+    --font-size-xx-small: 8px;
+    --font-size-x-small:  12px;
+    --font-size-small:    13px;
+    --font-size-medium:   14px;
+    --font-size-large:    22px;
+    --font-size-x-large:  28px;
+    --font-size-xx-large: 36px;
+    --font-size-xxx-large:48px;
 }
-.nobottom {
-    margin-bottom: 0 !important;
-}
+
+
+
+
+
+/* Vertical margins*/
+.notop    { margin-top: 0 !important;    }
+.nobottom { margin-bottom: 0 !important; }
+
+
+/* Text position */
+.right    { text-align: right  !important; }
+.left     { text-align: left   !important; }
+.center   { text-align: center !important; }
+
+
+/* Text size */
+.xx-large { font-size: var(--font-size-xx-large) !important; }
+.x-large  { font-size: var(--font-size-x-large)  !important; }
+.small    { font-size: var(--font-size-small)    !important; }
+.medium   { font-size: var(--font-size-medium)   !important; }
+.large    { font-size: var(--font-size-large)    !important; }
+.xx-small { font-size: var(--font-size-xx-small) !important; }
+.x-small  { font-size: var(--font-size-x-small)  !important; }
+
+
+/* Whitespace wrapping */
+.nowrap { white-space: nowrap !important; }
+.wrap   { white-space: normal !important; }
+
+
+/* Pseudo elements */
+.nobefore::before { content: none !important; }
+.noafter::after   { content: none !important; }
+
+
+/* Scrollbar */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

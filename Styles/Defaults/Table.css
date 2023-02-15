@@ -1,4 +1,11 @@
 :root {
+    --bg-table-odd:     hsl(226, 10%, 8%);
+    --bg-table-even:    hsl(226, 10%, 9%);
+    --bg-table-header:  hsl(223, 10%, 11%);
+
+    --bd-table-cell:    hsl(213, 9%, 10%);
+    --bd-table-header:  hsl(213, 9%, 15%);
+
     --padding-h-table-cell: 10px;
     --padding-w-table-cell: 20px;
 }

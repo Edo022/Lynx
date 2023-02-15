@@ -246,7 +246,7 @@ example2- > label2-::after {
     content: "a";
     color: transparent;
     display: inline-block;
-    background-image: url('./Custom/CopyButton.svg');
+    background-image: url('../Custom/CopyButton.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
@@ -258,14 +258,14 @@ example2- > label2-::after {
     max-width: 12px;
 }
 example2- > label2-:hover::after {
-    background-image: url('./Custom/CopyButtonHover.svg');
+    background-image: url('../Custom/CopyButtonHover.svg');
 }
 
 example2- > label2-:active {
     color: var(--syntax-label-active);
 }
 example2- > label2-:active::after {
-    background-image: url('./Custom/CopyButton.svg');
+    background-image: url('../Custom/CopyButton.svg');
 }
 
 

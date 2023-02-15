@@ -1,0 +1,8 @@
+
+ul > ul > * {
+    margin-left: var(--list-indentation);
+}
+ul, ul > li {
+    list-style-type: disc;
+    list-style-position: outside;
+}

@@ -1,3 +1,10 @@
+:root {
+    --slider-w: 2vw;
+}
+
+
+
+
 /* Notice: no one is allowed to modify those 3 selectors. */
 /* Getting this to work on chrome took 6 hours of trying random stuff and any changes could break it
 

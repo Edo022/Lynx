@@ -1,0 +1,53 @@
+:root {
+    --sep-1: 512px;
+    --sep-2: 256px;
+    --sep-3: 256px;
+    --sep-4: 128px;
+}
+
+
+
+
+
+
+sep-1-, sep-2-, sep-3-, sep-4- {
+    display: block;
+    min-width: 100%;
+    max-width: 100%;
+    border-radius: var(--code-decoration-r);
+}
+sep-1- {
+    background-color: var(--fg-separator);
+    margin: calc(var(--sep-1) / 2) 0 calc(var(--sep-1) / 2) 0;
+    min-height: 4px;
+    max-height: 4px;
+}
+sep-2- {
+    background-color: var(--fg-separator);
+    margin: calc(var(--sep-2) / 2) 0 calc(var(--sep-2) / 2) 0;
+    min-height: 1px;
+    max-height: 1px;
+}
+sep-3- {
+    background-color: transparent;
+    margin: var(--sep-3) 0 0;
+    min-height: 0;
+    max-height: 0
+}
+sep-4- {
+    background-color: transparent;
+    margin: var(--sep-4) 0 0 0;
+    min-height: 0;
+    max-height: 0;
+}
+
+
+.h1, .h2, .h3, .h4 {
+    font-weight: bold;
+    display: block;
+    line-height: 1em;
+}
+.h1 { font-size: var(--font-size-xxx-large); }
+.h2 { font-size: var(--font-size-xx-large);  }
+.h3 { font-size: var(--font-size-x-large);   }
+.h4 { font-size: var(--font-size-large);     }

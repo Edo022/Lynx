@@ -1,0 +1,46 @@
+:root {/*
+    Font { */
+        --code-decoration-r:  9px;
+        --char-spacing:      -0.06ch;
+        --word-spacing:       0.5ch;
+        --line-h:             3ch;
+        --wide-line-h:        3.5ch;
+        --code-line-h:        2.5ch;
+
+        --font-size-mono:     13px;
+        --font-size-code:     13px;/*
+    }
+
+    Sizes { */
+        --def-margin:              32px;
+        --list-indentation: 4ch;/*
+    }
+
+    Color { */
+        --bg:               hsl(240, 5%, 8%);
+        --bg-readability-on:hsl(240, 8%, 18%);
+        --bg-readability-hover:hsl(240, 2%, 24%);
+        --bg-code:          hsl(210, 8%, 13%);
+        --bg-pre:           hsl(210, 9%, 9%);
+        --bg-elm:           hsl(216, 12%, 8%);
+
+        --fg-separator:     hsl(213, 12%, 18%);
+        --fg-text:          hsl(240, 2%, 88%);
+        --fg-hidden:        hsl(0, 0%, 33%);/*
+    } */
+}
+
+
+
+
+
+
+*:not(ol) {
+    margin:  0;
+    padding: 0;
+    scrollbar-width: thin;
+    text-rendering: optimizeLegibility;
+}
+p, syntax-, example-, table, h1, h2, h3{
+    margin:  var(--def-margin) 0 var(--def-margin) 0;
+}

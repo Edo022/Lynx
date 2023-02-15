@@ -1,0 +1,60 @@
+:root {
+    --bg-index-hover:   hsl(222, 21%, 12%);
+    --bg-index-active:  hsl(223, 23%, 16%);
+}
+
+
+
+
+
+/* Page index */
+body > left- > index- {
+    display: block;
+
+    min-width: calc(100% - var(--main-padding-l));
+    max-width: calc(100% - var(--main-padding-l));
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+
+/* Inedx elements */
+body > left- > index- indexd-, body > left- > index- indexh- {
+    display: block;
+    background-color: var(--bg);
+    white-space: nowrap;
+    transition: background-color 0.2s cubic-bezier(.17,.84,.44,1);
+    transition: border-color     0.2s cubic-bezier(.17,.84,.44,1);
+    overflow: hidden;
+
+    border-radius: 10px;
+    border: 2px solid transparent;
+    /**/width: 100%;
+    /* max-width: Set from JS */
+}
+
+
+/* Index links */
+body > left- > index- indexd- > a, body > left- > index- indexh- > a {
+    min-width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+}
+
+
+/* Animations */
+body > left- > index- indexd-:hover, body > left- > index- indexh-:hover {
+    background-color: var(--bg-index-hover);
+}
+body > left- > index- indexd-:hover > *, body > left- > index- indexh-:hover > * {
+    transform: matrix(1.025, 0, 0.0, 1.05, 0, 0);
+    transition: transform 0.2s cubic-bezier(.17,.84,.44,1);
+}
+body > left- > index- > indexh-:first-child:hover, body > left- > index- > indexh-:last-child:hover {
+    max-width: 0;
+}
