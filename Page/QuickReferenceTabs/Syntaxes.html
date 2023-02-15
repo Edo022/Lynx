@@ -238,7 +238,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label->
+    <label- class="s-decl" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -340,7 +340,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label->
+    <label- class="s-decl" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -417,7 +417,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label->
+    <label- class="s-decl" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -494,7 +494,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label->
+    <label- class="s-decl" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label->
         <table class="s-decl">
         <tr>
             <td></td>
@@ -557,7 +557,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
+    <label- class="s-decl" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
     <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -612,7 +612,7 @@
         </tr>
 
     </table>
-    <label- class="s-decl"" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label->
+    <label- class="s-decl" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -675,14 +675,37 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label->
+    <label- class="s-decl" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label->
     <table class="s-decl">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><s-sub->struct signature</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-sub->specialization constraint</s-sub-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
             <td><s-sub->struct body</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label->
@@ -694,26 +717,10 @@
             <td><s-any-><span>name</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
     </table>
     <label- class="s-sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><s-sub->specialization constraint</s-sub-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -725,8 +732,6 @@
         <tr>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
@@ -736,8 +741,6 @@
         <tr>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
             <td><b-rtc-></b-rtc-></td>
             <td><s-decl->struct member</s-decl-></td>
             <td><b-tl-></b-tl-></td>
@@ -745,7 +748,7 @@
             <td></td>
         </tr>
     </table>
-    <label- class="s-decl"" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label->
+    <label- class="s-decl" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -799,24 +802,70 @@
 
 
 <syntax- class="qrt nobottom">
-    <label- class="s-decl"" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
+    <label- class="s-decl" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
     <table class="s-decl">
         <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
             <td><b-lr-></b-lr-></td>
-            <td><s-sub->function signature</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><s-sub->struct signature</s-sub-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-sub->specialization constraint</s-sub-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
             <td><s-sub->routine body</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <label- class="s-decl"" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
+    <label- class="s-decl" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
     <table class="s-decl">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><s-sub->operator signature</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-sub->specialization constraint</s-sub-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
             <td><s-sub->routine body</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label->
@@ -946,8 +995,6 @@
     <table class="s-sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><s-sub->specialization constraint</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
             <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
@@ -958,8 +1005,6 @@
         <tr>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
             <td><s-sub-><a href="#statement-syntaxes">statement</a></s-sub-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
@@ -967,8 +1012,6 @@
             <td></td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
@@ -996,7 +1039,7 @@
 <split-example-container- class="qrt notop">
     <split-example-container-left->
         <syntax->
-            <label- class="s-decl"" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
+            <label- class="s-decl" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
             <table class="s-decl">
                 <tr>
                     <td></td>
@@ -1032,7 +1075,7 @@
     </split-example-container-left->
     <split-example-container-right->
         <syntax->
-            <label- class="s-decl"" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
+            <label- class="s-decl" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
             <table class="s-decl">
                 <tr>
                     <td><b-br-></b-br-></td>
@@ -1106,7 +1149,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label->
+    <label- class="s-decl" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -1165,7 +1208,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl"" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
+    <label- class="s-decl" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
     <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -1241,33 +1284,33 @@
 
 
 <syntax- class="qrt nobottom">
-    <label- class="s-decl"" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
+    <label- class="s-decl" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
     <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-sub->struct signature</s-sub-></td>
+            <td><s-decl->struct declaration</s-decl-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="s-decl"" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
+    <label- class="s-decl" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
     <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-sub->function signature</s-sub-></td>
+            <td><s-decl->function declaration</s-decl-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label- class="s-decl"" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
+    <label- class="s-decl" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
     <table class="s-decl">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-sub->operator signature</s-sub-></td>
+            <td><s-decl->operator declaration</s-decl-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -1321,7 +1364,7 @@
 <split-example-container- class="qrt notop">
     <split-example-container-left->
         <syntax->
-            <label- class="s-decl"" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
+            <label- class="s-decl" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
             <table class="s-decl">
                 <tr>
                     <td><b-br-></b-br-></td>
@@ -1345,7 +1388,7 @@
     </split-example-container-left->
     <split-example-container-right->
         <syntax->
-            <label- class="s-decl"" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
+            <label- class="s-decl" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
             <table class="s-decl">
                 <tr>
                     <td><b-br-></b-br-></td>

@@ -221,6 +221,14 @@
             <span>Used to declare an <a href="#enums">enum</a>.</span>
         </li>
         <li>
+            <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
+            <span>Specifies that a pointer type is const. Also used to declare const variables and routine parameters.</span>
+        </li>
+        <li>
+            <span><a href="#templates"><code><w->when</w-></code></a></span>
+            <span>Specifies a <a href="#specialization-constraints">specialization constraint</a><br></span>
+        </li>
+        <li>
             <span><a href="#structs"><code><w->struct</w-></code></a></span>
             <span>Used to declare a <a href="#structs">struct</a>.</span>
         </li>
@@ -259,6 +267,14 @@
         <li>
             <span><a href="#boolean-type"><code><k->false</k-></code></a></span>
             <span>Identifies the <a href="boolean-type">boolean</a> value false.</span>
+        </li>
+        <li>
+            <span><a href="#pointer-types"><code>@</code></a></span>
+            <span>References the <a href="pointer-types">pointer type</a> of a type. Also used to dereference <a href="#pointer-types">pointer</a> values.</span>
+        </li>
+        <li>
+            <span><a href="#pointer-types"><code>$</code></a></span>
+            <span>Retrieves the address of an <a href="#left-and-right-values">r-value</a> as <a href="#pointer-types">pointer</a> <a href="#left-and-right-values">l-value</a>. Also used to reference <a href="#temporary-variables">temporary variables</a>.</span>
         </li>
     </ul><br>
     <li>Flow control keywords</li>
@@ -339,11 +355,11 @@
         </li>
         <li>
             <span><a href="#name-resolution"><code>.</code></a></span>
-            <span>Concatenates 2 or more <a href="#identifiers">identifiers</a> to form a <a href="#name-resolution">symbol path</a>.
+            <span>Concatenates 2 or more symbol names to form a <a href="#language-structure.paths">symbol path</a>.
         </li>
         <li>
             <span><a href="#reflection"><code>:</code></a></span>
-            <span>Concatenates 2 or more <a href="#identifiers">identifiers</a> and <a href="#name-resolution">symbol paths</a> to form a <a href="#reflection">Reflection path</a>. Also used for <a href="#enums">Enum</a> <a href="#auto-scoping">auto scoping</a>.</span>
+            <span>Concatenates 2 or more symbol names to form a <a href="#reflection">Reflection path</a>.</span>
         </li>
     </ul>
 </ul>
@@ -393,13 +409,6 @@
             </span>
         </li>
         <li>
-            <span><a href="#templates"><code><w->when</w-></code></a></span>
-            <span>
-                Specifies a <a href="#specialization-constraints">specialization constraint</a><br>
-                <span class="meta-keyword-constraint">[When used before a body of a <a href="#templates">template</a> declaration]</span>.
-            </span>
-        </li>
-        <li>
             <span><a href="#abbreviated-template-syntax"><s-sgr->?</s-sgr-></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
@@ -407,30 +416,13 @@
             </span>
         </li>
     </ul><br>
-    <li>References</li>
-    <ul class="summary-list">
-        <li>
-            <span><a href="#references"><code>&</code></a></span>
-            <span>
-                Declares a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> as <a href="#references">reference</a>, or returns the <a href="#references">address</a> of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> as <a href="integral-types"><code><t->ulong</t-></code></a><br>
-                <span class="meta-keyword-constraint">[When used before the <a href="#name-resolution">name</a> of a <a href="#variables">variable</a>, <a href="#routines">routine</a>, <a href="#templates">routine template</a>, <a href="#routine-parameters">routine parameter</a> or <a href="#structs">struct member</a> declaration or before a <a href="#name-resolution">path</a> to a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a>]</span>.
-            </span>
-        </li>
-        <li>
-            <span><a href="#references"><code>*</code></a></span>
-            <span>
-                Returns the address stored in a <a href="#references">reference</a> as a <a href="integral-types"><code><t->ulong</t-></code></a> <a href="#references">reference</a> //TODO<br>
-                <span class="meta-keyword-constraint">[When used before a <a href="#references">reference</a> value]</span>.
-            </span>
-        </li>
-    </ul><br>
     <li>Misc</li>
     <ul class="summary-list">
         <li>
-            <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
+            <span><a href="#templates"><code><w->when</w-></code></a></span>
             <span>
-                Prevents the value, and/or, if a <a href="#references">reference</a>, the stored address to be modified after the <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration</a><br>
-                <span class="meta-keyword-constraint">[When used before the <a href="#name-resolution">name</a> or the reference qualifier (<code>&</code>) of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
+                Specifies a <a href="#specialization-constraints">specialization constraint</a><br>
+                <span class="meta-keyword-constraint">[When used before the body of a routine or struct declaration</span>.
             </span>
         </li>
         <li>
@@ -451,14 +443,14 @@
             <span><code><w->to</w-></code></span>
             <span>
                 Defines the end of a numerical range<br>
-                <span class="meta-keyword-constraint">[When used in the <a href="#for-loops">for-range</a> loop or in a <a href="#match-statement">match case</a>]</span>.
+                <span class="meta-keyword-constraint">[When used in the value of a <a href="#for-loops">for-range</a> loop or a <a href="#match-statement">match case</a>]</span>.
             </span>
         </li>
         <li>
-            <span><a href="#temporary-variables"><code>$</code></a></span>
+            <span><code><w->or</w-></code></span>
             <span>
-                References a <a href="#temporary-variables">temporary variable</a><br>
-                <span class="meta-keyword-constraint">[When used before a <a href="#integral-types"><code><t->ulong</t-></code></a> <a href="#literals">literal</a>]</span>.
+                Adds additional accepted values for a match case<br>
+                <span class="meta-keyword-constraint">[When used in the value of a <a href="#match-statement">match case</a>]</span>.
             </span>
         </li>
         <li>
