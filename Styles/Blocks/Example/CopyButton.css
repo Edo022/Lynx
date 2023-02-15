@@ -1,0 +1,33 @@
+:root {
+    --link-copy-button       : url('./CopyButton.svg');
+    --link-copy-button-hover : url('./CopyButtonHover.svg');
+}
+
+
+
+
+example- > label-::after {
+    content: "a";
+    color: transparent;
+    display: inline-block;
+    background-image: var(--link-copy-button);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    -webkit-transition: background-image 0.5s cubic-bezier(.17,.84,.44,1);
+    transition: background-image 0.5s cubic-bezier(.17,.84,.44,1);
+
+    margin-left: 10px;
+    min-width: 12px;
+    max-width: 12px;
+}
+example- > label-:hover::after {
+    background-image: var(--link-copy-button-hover);
+}
+
+example- > label-:active {
+    color: var(--syntax-label-active);
+}
+example- > label-:active::after {
+    background-image: var(--link-copy-button);
+}

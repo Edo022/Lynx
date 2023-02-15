@@ -1,0 +1,100 @@
+syntax- table tr,
+syntax- table tr > td {
+    border: 0px solid transparent !important;
+    background-color: transparent !important;
+    margin: 0;
+    padding: 0;
+
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+    /**/height: var(--syntax-line-h);
+}
+syntax- table tbody {
+    display: flex;
+    flex-direction: column;
+    padding:  var(--syntax-table-padding) 0 var(--syntax-table-padding) 0;
+    margin: 0 var(--syntax-table-padding) 0 var(--syntax-table-padding);
+    overflow: auto;
+
+    min-width:  calc(100% - 2 * var(--syntax-table-padding));
+    max-width:  calc(100% - 2 * var(--syntax-table-padding));
+    /**/width:  calc(100% - 2 * var(--syntax-table-padding));
+    min-height: calc(100% - 2 * var(--syntax-table-padding));
+    max-height: calc(100% - 2 * var(--syntax-table-padding));
+    /**/height: calc(100% - 2 * var(--syntax-table-padding));
+}
+syntax- table tr > td {
+    display: inline-block;
+    font-size: var(--font-size-medium);
+    word-spacing: var(--word-spacing);
+    letter-spacing: var(--char-spacing);
+    text-align: left;
+
+    padding:  0 var(--syntax-arrow-margin) 0 var(--syntax-arrow-margin);
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+    /**/height: var(--syntax-line-h);
+    min-width: 0;
+    max-width: none;
+    /**/width: fit-content; /* Set from JS */
+}
+
+
+
+
+
+
+
+
+syntax- table tr {
+    display: block;
+    font-size: 0;
+    word-spacing: 0;
+    letter-spacing: 0;
+    white-space: nowrap;
+    box-sizing: border-box;
+
+    min-width: calc(100% - 2 * var(--syntax-table-padding));
+    max-width: calc(100% - 2 * var(--syntax-table-padding));
+    /**/width: calc(100% - 2 * var(--syntax-table-padding));
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Border colors */
+
+syntax- > table,
+syntax- > label- {
+    border-color: var(--bd-elm);
+}
+
+syntax- > table.s-sub,
+syntax- > label-.s-sub {
+    border-left-color: var(--bd-sub);
+    border-left-style: dashed;
+}
+
+syntax- > table.s-decl,
+syntax- > label-.s-decl {
+    border-left-color: var(--bd-decl);
+}
+
+syntax- > table.s-path,
+syntax- > label-.s-path {
+    border-left-color: var(--bd-path);
+}
+
+syntax- > table.s-expr,
+syntax- > label-.s-expr {
+    border-left-color: var(--bd-expr);
+}
+
+

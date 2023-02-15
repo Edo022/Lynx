@@ -1,9 +1,14 @@
 @import "./MainMask.css";
+
+/* Multi purpose */
+@import "./Elm.css";
+@import "./SplitExample.css";
+@import "./SplitTd.css";
+@import "./SummaryList.css";
+
+/* Singletons */
 @import "./ConversionRanges.css";
 @import "./ScopeTable.css";
-@import "./SummaryList.css";
 @import "./MetaKeywordConstraint.css";
 @import "./ReadabilityButton.css";
-@import "./SplitTd.css";
-@import "./SplitExample.css";
-@import "./IndexSeparator.css";
+

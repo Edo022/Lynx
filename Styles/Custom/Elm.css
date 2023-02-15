@@ -1,0 +1,29 @@
+:root {
+    --bd-elm: hsl(212, 14%, 20%);
+    --bg-elm: hsl(216, 12%, 8%);
+}
+
+
+
+
+/* elm-: General purpose element | even-elm-: elm- but the padding is the same across all sides and the beackground is transparent*/
+elm-, even-elm-{
+    display: inline-block;
+    font-family: monospace, monospace;
+    border: 1px solid;
+    border-radius: var(--code-decoration-r);
+    font-size: var(--font-size-code);
+    white-space: nowrap;
+}
+elm- {
+    padding: 4px;
+    margin: 4px 2px 4px 2px;
+    border-color: var(--bd-elm );
+    background-color: var(--bg-elm);
+}
+even-elm-  {
+    padding: 6px;
+    margin: 0;
+    border-color: var(--bd-elm);
+    background-color: transparent;
+}

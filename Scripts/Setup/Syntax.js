@@ -3,7 +3,7 @@
 var setup_syntax = {
     // Align the colums to the maximum width of their cells
     even_widths : function(){
-        let tables = document.querySelectorAll('syntax2- > table');
+        let tables = document.querySelectorAll('syntax- > table');
         for(let j = 0; j < tables.length; ++j){
             let trs = tables[j].querySelectorAll('tr');
 
@@ -188,7 +188,7 @@ var setup_syntax = {
 
     // Fix code indentation because apparently HTML5+CSS3 can't do that
     indent_code : function() {
-        let c = document.querySelectorAll('example2-');
+        let c = document.querySelectorAll('example-');
         for(let i = 0; i < c.length; i++){
             let divs = c[i].querySelectorAll('div');
             for(let j = 0; j < divs.length; ++j){
@@ -213,8 +213,8 @@ var setup_syntax = {
 
             // Return if containers arent used for examples //TODO REPLACE WITH ACTUAL DEDICATED TAG
             if(
-                lc.querySelectorAll('example2-').length == 0 ||
-                rc.querySelectorAll('example2-').length == 0
+                lc.querySelectorAll('example-').length == 0 ||
+                rc.querySelectorAll('example-').length == 0
             ) continue;
 
             // Get contained divs

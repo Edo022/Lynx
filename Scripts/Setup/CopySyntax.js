@@ -3,7 +3,7 @@ var setup_copy_syntax = {
     copy : function() {
 
         // For each label
-        let l0 = document.querySelectorAll('label2-');
+        let l0 = document.querySelectorAll('label-');
         for(let i = 0; i < l0.length; ++i) {
             let id = l0[i].id.split('.', 2)[1];
 
@@ -12,11 +12,11 @@ var setup_copy_syntax = {
 
                 // For each syntax
                 let found = false;
-                let s = document.querySelectorAll('syntax2-');
+                let s = document.querySelectorAll('syntax-');
                 for(let k = 0; k < s.length && !found; ++k) {
 
                     // For each child label
-                    let l1 = s[k].querySelectorAll('label2-');
+                    let l1 = s[k].querySelectorAll('label-');
                     for(let l = 0; l < l1.length; ++l) {
 
                         // If id matches

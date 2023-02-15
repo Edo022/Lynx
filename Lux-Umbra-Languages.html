@@ -308,13 +308,13 @@
     //TODO move the "alphanumeric or symbolic" stuff here
 </p>
 <p>
-    <code class="syntax-glossary">x             </code> The literal character "x"<br>
-    <wrd- class="syntax-glossary">x             </wrd-> x is an identifier or another user-defined sequence of characters<br>
-    <sub- class="syntax-glossary">x             </sub-> x is a semantic sub-element<br>
-    <stx- class="syntax-glossary">x             </stx-> x is a semantic element<br>
-    <exp- class="syntax-glossary"><t->[t]</t-> x</exp-> x is an expression of type t<br>
-    <typ- class="syntax-glossary">x             </typ-> x is a type<br>
-    <sgr- class="syntax-glossary">x             </sgr-> x is syntactic sugar
+    <vbtm- class="syntax-glossary">x             </vbtm-> The literal character "x"<br>
+    <any-  class="syntax-glossary">x             </any->  x is an user-defined sequence of characters<br>
+    <sub-  class="syntax-glossary">x             </sub->  x is a semantic sub-element<br>
+    <decl- class="syntax-glossary">x             </decl-> x is a declaration<br>
+    <expr- class="syntax-glossary"><t->[t]</t-> x</expr-> x is an expression of type t<br>
+    <path- class="syntax-glossary">x             </path-> x is a symbol path<br>
+    <sgr-  class="syntax-glossary">x             </sgr->  x is syntactic sugar
 </p>
 
 
@@ -346,8 +346,8 @@
     Not closing a comment is allowed.
 </p>
 
-<syntax2->
-    <label2->Syntax</label2->
+<syntax->
+    <label->Syntax</label->
     <table>
         <tr>
             <td><b-br-></b-br-></td>
@@ -377,9 +377,9 @@
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>
-</syntax2->
-<example2->
-    <label2->Example 1</label2->
+</syntax->
+<example->
+    <label->Example 1</label->
     <div>
         <c->// Single line comment</c->
 
@@ -389,12 +389,12 @@
 
         <c->/* Another multiline comment</c->
     </div>
-    <label2->Example 2</label2->
+    <label->Example 2</label->
     <div>
         <c->/* Multi line /* Another comment */ comment */</c->
                                          <ce->// ^ Error, unexpected token "comment"</ce->
     </div>
-</example2->
+</example->
 
 
 
@@ -423,8 +423,8 @@
     These characters can be escaped by preceding them with a single <code>&bsol;</code> character.<br>
     Unknown escape sequences generate a preprocessing error. //TODO LINK
 </p>
-<syntax2->
-    <label2->Syntax</label2->
+<syntax->
+    <label->Syntax</label->
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -453,9 +453,9 @@
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>
-</syntax2->
-<example2->
-    <label2->Example</label2->
+</syntax->
+<example->
+    <label->Example</label->
     <div>
         <k->#include</k-> <s->"/home/Photon/Lux/file.lux"</s->      <c->// Ok, absolute path</c->
         <k->#include</k-> <s->"./file.lux"</s->                     <c->// Ok, relative path</c->
@@ -468,7 +468,7 @@
         <c->//#include "./non_existent_file"</c->          <ce->// Error, non-glob patterns must correspond to an existing file</ce->
         <c->//#include ""</c->                             <ce->// Error, file name not specified</ce->
     </div>
-</example2->
+</example->
 
 
 
@@ -492,8 +492,8 @@
     Using a line continuation token as the last character of a file is allowed and has no effect.
 </p>
 
-<syntax2->
-    <label2->Syntax</label2->
+<syntax->
+    <label->Syntax</label->
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -503,10 +503,10 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <c->// single line comment</c-><sg->&bsol;</sg->
         <c->on two lines</c->
@@ -531,7 +531,7 @@
         = <k->b</k->;
         }
     </div>
-    <label2->Example 2</label2->
+    <label->Example 2</label->
     <div>
         <ce->// Error, unexpected token "\"</ce->
         <t->void</t-> ma&bsol;<sg->&bsol;</sg->
@@ -539,7 +539,7 @@
         in(){}
         <ce->// Error,  unexpected token "in"</ce->
     </div>
-</example2->
+</example->
 
 
 
@@ -1363,11 +1363,11 @@
 <p>
     Type paths are a subset of Symbol paths that point to symbols suitable to be used as types, such as primitive types, enums, structs and special types.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--symbol-path">Symbol path syntax</label2->
-    <label2- id="copy.syntax--symbol-name">Symbol name</label2->
-    <label2- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--symbol-path">Symbol path syntax</label->
+    <label- id="copy.syntax--symbol-name">Symbol name</label->
+    <label- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label->
+</syntax->
 
 
 <h1 id="concepts"></h1>
@@ -1523,8 +1523,8 @@
     The <code>module</code> identifier is used to reference the <a href="#scopes">scope</a> of the current <a href="#modules">module</a>.<br>
     A path that starts from the module <a href="#scopes">scope</a> of the current <a href="#modules">module</a> or any of the <a href="#import-directive">imported</a> ones is called an absolute path.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <c->// Absolute path: module</c->
 
@@ -1543,7 +1543,7 @@
             <t->uint</t-> n;
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="name-shadowing"></h1>
@@ -1555,8 +1555,8 @@
     This can be avoided by starting the <a href="#name-resolution">path</a> from a parent <a href="#scopes">scope</a> so that the <a href="#identifiers">identifier</a> is not ambiguous.<br>
     Any <a href="#identifiers">identifier</a> can be shadowed, including <a href="#primitive-types">primitive types</a>, the <a href="#name-resolution"><code>module</code></a> <a href="#identifiers">identifier</a> and <a href="#declarations">symbols</a> from the <a href="#core-module">core module</a>.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->namespace</w-> s {
             <w->namespace</w-> {
@@ -1571,13 +1571,13 @@
             <c->// n references module.s.n</c->
         }
     </div>
-</example2->
+</example->
 
 <p>
     The first declaration in a scope is the only one that actually shadows eventual identifiers in parent scopes. Subsequent declarations that use the same identifier will refer to the symbol declared in the same scope.<br>
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <c->// Ok, declares a struct with name "t"</c->
         <w->strct</w-> t {
@@ -1592,7 +1592,7 @@
         }
 
     </div>
-</example2->
+</example->
 
 
 <h1 id="multiple-declarations"></h1>
@@ -1615,8 +1615,8 @@
     Other symbols.<br>
     Multiple declarations of other symbols generate a semantic error. //TODO LINK
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->namespace</w-> a {     <c->// Ok, merges with the second declaration</c->
             <t->int</t-> n;        <c->// Ok</c->
@@ -1633,7 +1633,7 @@
         <t->void</t-> <f->f</f->(<t->int</t-> <a->n</a->) { } <c->// Ok</c->
         <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
     </div>
-</example2->
+</example->
 
 
 <h1 id="left-and-right-values"></h1>
@@ -1731,8 +1731,8 @@
     by containing runtime <a href="#routine-calls">routine calls</a> that are empty or have the aforementioned properties,
     are not considered suitable for compile time <a href="#routine-calls">calls</a>, even though it would be possible to determine their <a href="#return-statement">return value</a> and operations on reference <a href="#routine-parameters">parameters</a> during the <a href="#compilation">compilation</a> process.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->from</w-> <s->&lt;random&gt;</s-> <w->include</w-> rand;
 
@@ -1756,7 +1756,7 @@
             <w->return</w-> q<f->[</f->n<f->]</f->;             <c->// Ok</c->
         }
     </div>
-</example2->
+</example->
 <p>
     Notice that compile time expressions are not required to run during compile time, and they don't affect <a href="#value-precomputation">optimizations</a> in any way.<br>
     Compile time expressions are exclusively used to determine which <a href="#expressions">expressions</a> can be used in contexts where a compile time value is required.
@@ -1800,9 +1800,9 @@
     When an Import directive is used, it creates a new namespace inside the <a href="#root-scope">root scope</a> (.) containing the imported <a href="#name-resolution">symbols</a>, renamed as specified in the directive.<br>
     Anything these <a href="#name-resolution">symbols</a> depend on is automatically imported but not accessible unless intentionally stated.<br>
 </p>
-<syntax2->
-    <label2- id="copy.syntax--import-directive">Import syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--import-directive">Import syntax</label->
+</syntax->
 <p>
     When the <code><w->import</w-></code> <a href="#keywords">keyword</a> is used, the container <a href="#namespaces">namespace</a> is preserved.<br>
     The new <a href="#namespaces">namespace</a> is created using the export <a href="#identifiers">identifier</a> of the <a href="#modules">module</a> you are importing from, or, if not specified, the name of the file without its extensions.<br>
@@ -1817,8 +1817,8 @@
 
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <c->// [module "main.ubr"]</c->
 
@@ -1830,11 +1830,11 @@
                     io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Equivalent code</label2->
+        <example->
+            <label->Equivalent code</label->
             <div>
                 <c->// From the root scope's perspective,</c->
                 <c->// this is what the program looks like</c->
@@ -1858,7 +1858,7 @@
                     }
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -1878,12 +1878,12 @@
     If an export <a href="#identifiers">identifier</a> is not specified, the name of the file without its extensions is used.<br>
     If the file has a name that is not a valid <a href="#identifiers">identifier</a>, a custom export <a href="#identifiers">identifier</a> must be specified.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--export-directive">Export syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--export-directive">Export syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->float</t-> pi = <k->3.14</k->;   <c->// Automatically exported as it is required by the "getTau" function, but not accessible</c->
 
@@ -1894,14 +1894,14 @@
         <w->export</w-> <w->as</w-> notPi;
         <w->export</w-> <f->getTau</f->;
     </div>
-</example2->
+</example->
 
 <p>
     While the Export directive doesn't preserve the parent <a href="#namespaces">namespaces</a> of a <a href="#name-resolution">symbol</a> nor can it add new ones, it can be used in conjunction with <a href="#symbol-aliases">Symbol aliases</a>
     and <a href="#namespaces">Namespaces</a> to create a clean interface while preserving the internal structure of the <a href="#modules">module</a>.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->from</w-> <s->&lt;math&gt;</s-> <w->import</w-> <f->pow</f->;
 
@@ -1924,16 +1924,16 @@
         }
         <w->export</w-> volume, surface;
     </div>
-</example2->
+</example->
 
 
 <h1 id="construct-directive"></h1>
 <p>
 
 </p>
-<syntax2->
-    <label2- id="copy.syntax--construct-directive">Construct syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--construct-directive">Construct syntax</label->
+</syntax->
 
 
 <h1 id="types"></h1>
@@ -2014,7 +2014,7 @@
     All signed integral types use the Two's Complement to represent negative numbers.<br>
     Positive numbers and <code><k->0</k-></code> use the corresponding binary value in both signed and unsigned integral types.
 </p>
-<example2->
+<example->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c->  1              31</c->
                                             <c->sign           value</c->
@@ -2033,7 +2033,7 @@
             <c->┌────────────────────────────────┴─────────────────────────────┐</c->  <t->ulong</t->
             <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
         </div>
-</example2->
+</example->
 <p>
     //TODO GL_EXT_shader_explicit_arithmetic_types_int64
 </p>
@@ -2049,7 +2049,7 @@
     Positive and negative inf, nan and signed <code><k->0</k-></code> are all supported.<br>
     <code><k->+0</k-></code> and <code><k->-0</k-></code> are equal.
 </p>
-<example2->
+<example->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c-> 1      8          23</c->
                                             <c->sign exponent   mantissa</c->
@@ -2073,7 +2073,7 @@
             <c->011111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->  <k->nan</k->
             <c->111111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->  <k->nan</k->
         </div>
-</example2->
+</example->
 <p>
     inf values are generated as required by the standard.<br>
     nan values are not generated for consistency and performance reasons.
@@ -2086,7 +2086,7 @@
     The <b>Boolean type</b> is used to <b>represent boolean values</b>.<br>
     <code><k->true</k-></code> and <code><k->false</k-></code> are the only values that can be stored in a <code><t->bool</t-></code>.
 </p>
-<example2->
+<example->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                             <c->32</c->
                           <c->value</c->
@@ -2095,7 +2095,7 @@
             <c->00000000000000000000000000000001</c->  <k->true</k->
             <c->00000000000000000000000000000000</c->  <k->false</k->
         </div>
-</example2->
+</example->
 <p>
     Booleans purposely waste 31 bits for performance reasons.<br>
     Smaller types require additional bitwise operations and expensive conversions between the CPU and GPU data.
@@ -2116,10 +2116,10 @@
     Empty enums are allowed.
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--enum-declaration">Declaration syntax</label->
+    <label- id="copy.syntax--enum-declaration-element">Element declaration syntax</label->
+</syntax->
 
 <p>
     Enum elements are <a href="#constant-values">constant values</a>.<br>
@@ -2128,8 +2128,8 @@
 </p>
 
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->enum</w-> <t->e</t-> : <t->int</t-> {
             a, b;              <c->// a = 0, b = 1</c->
@@ -2141,7 +2141,7 @@
             <w->return</w-> e.<k->c</k->; <c->// Implicitly convert e to float</c->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="struct-enums"></h1>
@@ -2154,8 +2154,8 @@
     <li>Struct methods declared in the base struct are not inherited.</li>
     <li>Creating or destroying enum values doesn't call constructors or destructors declared in the base struct.</li>
 </ul></ul>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->struct</w-> <t->s</t-> {
             <t->uint</t-> n1, n2;
@@ -2167,7 +2167,7 @@
             c = (<k->50</k->, <k->60</k->)
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -2193,8 +2193,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -2215,16 +2215,16 @@
                     <f->check_day</f->(.<k->mon</k->);
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 OwO
                 TwT<cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -2238,15 +2238,15 @@
     Empty structs are allowed.<br>
     Struct members can be of any <a href="#types">type</a>, including other structs.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
-    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
-    <label2- id="copy.syntax--specialization-constraint">Specialization constraint</label2->
-    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
-</syntax2->
-<example2->
-    <label2->Example</label2->
+<syntax->
+    <label- id="copy.syntax--struct-declaration">Declaration syntax</label->
+    <label- id="copy.syntax--struct-declaration-signature">Struct signature</label->
+    <label- id="copy.syntax--struct-declaration-body">Struct body</label->
+    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
+    <label- id="copy.syntax--struct-declaration-member">Member declaration syntax</label->
+</syntax->
+<example->
+    <label->Example</label->
     <div>
         <w->struct</w-> <t->idk</t-> {
             <t->uint</t-> a, b;        <c->// Ok</c->
@@ -2259,7 +2259,7 @@
             var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="struct-methods"></h1>
@@ -2274,8 +2274,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <c->// 2D uint vector</c->
                 <w->struct</w-> <t->uint2</t-> {
@@ -2294,16 +2294,16 @@
                     <k->v</k->.<f->print</f->();
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 x: 15
                 y: 9<cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -2325,8 +2325,8 @@
     This constructor is not present in structs declared using the <code><w->nodefault</w-></code> meta keyword.<br>
     Constructors are allowed to take no arguments.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->struct</w-> <t->uint2</t-> {
             <t->uint</t-> x, y;
@@ -2357,7 +2357,7 @@
             <c->//uint3 d = (1, 2, 3);</c->  <ce->// Error, no suitable constructor declaration</ce->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="destructor-function"></h1>
@@ -2372,8 +2372,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
                 <t->int</t-> last = <k->0</k->;
@@ -2397,17 +2397,17 @@
                     <t->s</t-> var = { <k->0.5</k-> };
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 Destroyed instance n.0
                 Destroyed instance n.1
                 <cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -2425,8 +2425,8 @@
     The <code><t->void</t-></code> type is used to declare routines that don't return any value.<br>
     It has no other purpose but it can be passed to type template parameters to generate different declarations.
 </p>
-<example2->
-    <label2->Example2</label2->
+<example->
+    <label->Example2</label->
     <div>
         <f->uint</f-> counter = <k->0</k->;
         <t->void</t-> <f->inc_counter</f->(){ counter<f->++</f->; }
@@ -2435,11 +2435,11 @@
             <f->inc_counter</f->();
         }
     </div>
-</example2->
+</example->
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example2</label2->
+        <example->
+            <label->Example2</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
                 <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->void</t-> <f->print_template_info</f->()
@@ -2451,17 +2451,17 @@
                     <f->print_template_info</f->&lt;<t->int</t->&gt;();
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 void
                 not void
                 <cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -2492,8 +2492,8 @@
     <b><code><w->const</w-></code></b> can also be used before the name of a <b>variable</b> or <b>routine parameter</b> to <b>prevent them from being modified</b> after their declaration, although this doesn't turn the type of the symbol into a const type.<br>
     The address of <code><w->const</w-></code> variables or <code><w->const</w-></code> routine parameters is always returned as a <code><t->const</t-></code> pointer.
 </p>
-<example2->
-    <label2->Example 1 - Const pointer</label2->
+<example->
+    <label->Example 1 - Const pointer</label->
     <div>
         <t->void</t-> <f->main</f->(){
             <t->int</t-> var = <k->8</k->;
@@ -2503,7 +2503,7 @@
             <c->//@ptr = 9;</c->  <ce->// Error, cannot modify data pointed by const pointers</ce->
         }
     </div>
-    <label2->Example 2 - Const variable</label2->
+    <label->Example 2 - Const variable</label->
     <div>
         <t->void</t-> <f->main</f->(){
             <t->int</t-> var <w->const</w-> = <k->8</k->;
@@ -2511,7 +2511,7 @@
             <c->var = 9;</c->  <ce->// Error, cannot modify const variables</ce->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="implicit-conversions"></h1>
@@ -2920,8 +2920,8 @@
     <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.<br>
     The <a href="#types">types</a> of the <a href="#expressions">expressions</a> returned from an <code><t->auto</t-></code> <a href="#routines">routine</a> must match.
 </p>
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <t->auto</t-> <f->func</f->(){
             <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
@@ -2934,7 +2934,7 @@
             <c->// No return statement, main has type void</c->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="typeof-specifier"></h1>
@@ -2944,12 +2944,12 @@
     Circular dependencies generate a semantic error. //TODO LINK
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--typeof">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--typeof">Syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
@@ -2958,14 +2958,14 @@
             <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int</c->
         }
     </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
+</example->
+<example->
+    <label->Example 2</label->
     <div>
         <c->//typeof(b) a(){};</c->  <ce->//Error, circular dependency with b</ce->
         <c->//typeof(a) b(){};</c->  <ce->//Error, circular dependency with a</ce->
     </div>
-</example2->
+</example->
 
 
 <h1 id="expressions"></h1>
@@ -3042,8 +3042,8 @@
         <td class="center" colspan="4"><code>true|false</code></td>
     </tr>
 </table></div>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->int</t-> n = <k->4</k->;             <c->// Ok</c->
         <t->bool</t-> b =<k-> true</k->;         <c->// Ok</c->
@@ -3054,20 +3054,20 @@
         <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
         <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
     </div>
-</example2->
+</example->
 <p>
     The <code>_</code> character can be used anywhere after the base prefix of numerical literals to separate digits and improve readability.<br>
     Decimal literals without base prefix cannot start with <code>_</code>.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->int</t-> n = <k->395_935</k->;             <c->// Ok</c->
         <t->int</t-> n = <k->654_3_21___</k->;         <c->// Ok, doesn't make sense but it is allowed</c->
         <t->int</t-> n = <k->0x_32_A4_FF_E2</k->;      <c->// Ok</c->
         <c->//int n = _123_456;</c->          <ce->// Error, undeclared identifier "_123_456".</ce->
     </div>
-</example2->
+</example->
 <p>
     There are no literal suffixes and no <code><t->float</t-></code>, <code><t->uint</t-></code> or <code><t->int</t-></code> literals.<br>
     To create inline values of specific types, <a href="#constructors">Constructors</a> are used.
@@ -3086,13 +3086,13 @@
     //TODO functions are called with *function reference* and a list of parameters. not just their name
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--expression-function-call">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--expression-function-call">Syntax</label->
+</syntax->
 
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
         <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
@@ -3108,7 +3108,7 @@
             n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
         }
     </div>
-</example2->
+</example->
 //TODO update example
 
 
@@ -3117,9 +3117,9 @@
 
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--expression-operator-call">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--expression-operator-call">Syntax</label->
+</syntax->
 
 
 <h1 id="try-expression"></h1>
@@ -3141,18 +3141,18 @@
 <p>
     Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
 </p>
-<syntax2->
-    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--variable-declaration">Declaration syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
         <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
         <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
     </div>
-</example2->
+</example->
 <p>
     The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
 </p>
@@ -3175,8 +3175,8 @@
 </p>
 <p>They act as normal variables for anything else.</p>
 
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
             $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
@@ -3193,9 +3193,9 @@
 
         <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
     </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
+</example->
+<example->
+    <label->Example 2</label->
     <div>
         <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
             <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
@@ -3208,7 +3208,7 @@
             ref = <k->$0</k->;                   <c->// Ok, $0 has type uint2</c->
         }
     </div>
-</example2->
+</example->
 <p>
     See
     <a href="#types">Types</a>,
@@ -3253,14 +3253,14 @@
 <p>
     Function <a href="#identifiers">identifiers</a> must be alphanumeric.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
-    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
-    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
-    <label2- id="copy.syntax--specialization-constraint">Specialization constraint</label2->
-</syntax2->
-<example2->
-    <label2->Example - Add function</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-function">Declaration syntax</label->
+    <label- id="copy.syntax--routine-declaration-function-signature">Function signature</label->
+    <label- id="copy.syntax--routine-declaration-body">Routine body</label->
+    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
+</syntax->
+<example->
+    <label->Example - Add function</label->
     <div>
         <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
             <w->return</w-> a + b;
@@ -3270,7 +3270,7 @@
             <t->int</t-> n = </t-><f->add</f->(<k->4</k->, <k->6</k->)
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="the-main-function"></h1>
@@ -3295,8 +3295,8 @@
     A function can have multiple parameters <b>with</b> a default value, but they must all be declared <b>after</b> the <b>last</b> parameter that <b>doesn't have one</b>.<br>
     Parameters of <a href="#operators">operators</a> cannot have default value.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->import</w-> <s->&lt;math&gt;</s->;
         <t->double</t-> <f->pow</f->(<t->double</t-> <a->a</a->, <t->double</t-> <a->b</a-> = <k->2</k->) {
@@ -3308,7 +3308,7 @@
             <f->pow</f->(<k->3</k->);     <c->// Returns 9</c->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="parameter-packs"></h1>
@@ -3327,11 +3327,11 @@
     Each <a href="#funcitons">function</a> can only use a single parameter pack.<br>
     <a href="#operators">Operators</a> cannot use parameter packs.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-parameter-pack">Declaration syntax</label2->
-</syntax2->
-<example2->
-    <label2->Example 1</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-parameter-pack">Declaration syntax</label->
+</syntax->
+<example->
+    <label->Example 1</label->
     <div>
         <w->struct</w-> <t->NoArg</t-> { };
 
@@ -3352,13 +3352,13 @@
             <t->auto</t-> b = <f->get_middle_arg</f->(<k->1</k->, <k->2</k->);                   <c->// b has type NoArg</c->
         }
     </div>
-</example2->
+</example->
 <p>
     Parameter packs can be used in conjunction with the <a href="#abbreviated-template-syntax">abbreviated template syntax</a>.<br>
     This is explained in <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.
 </p>
-<example2->
-    <label2->Example 2 - Summation function</label2->
+<example->
+    <label->Example 2 - Summation function</label->
     <div>
         <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t->... <a->vals</a->...) {
             <w->return</w-> a <f->+</f-> <f->sum</f->(vals);
@@ -3373,7 +3373,7 @@
             <t->float</t-> r = <f->sum</f->(<k->5.9</k->, <k->n</k->, <k->1</k->, <k->true</k->);  <c->// r has value 12.9</c->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="operators"></h1>
@@ -3390,14 +3390,14 @@
     Declaring consecutive <a href="#idnetifiers">identifiers</a> is not allowed.<br>
     Operator precedence is explained in <a href="#declarations.operator-precedence">Operator precedence</a>.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
-    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
-    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
-    <label2- id="copy.syntax--specialization-constraint">Specialization constraint</label2->
-</syntax2->
-<example2->
-    <label2->Example 1 - Promotion operator</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-operator">Declaration syntax</label->
+    <label- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label->
+    <label- id="copy.syntax--routine-declaration-body">Routine body</label->
+    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
+</syntax->
+<example->
+    <label->Example 1 - Promotion operator</label->
     <div>
         <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
             <w->return</w-> n;
@@ -3407,9 +3407,9 @@
             <t->int</t-> r = <f->+</f->2;
         }
     </div>
-</example2->
-<example2->
-    <label2->Example 2 - Python-like ternary operator</label2->
+</example->
+<example->
+    <label->Example 2 - Python-like ternary operator</label->
     <div>
         <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
             <w->if</w->(condition) <w->return</w-> a;
@@ -3420,7 +3420,7 @@
             <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="operator-precedence"></h1>
@@ -3439,8 +3439,8 @@
     Associativity defines the order in which operators with the same priority and associativity are evaluated.<br>
     Right-associative operators are evaluated starting from the right, whilst left-associative operators are evaluated starting from the left.<br>
 </p>
-<example2->
-    <label2->Example 1 - Priority</label2->
+<example->
+    <label->Example 1 - Priority</label->
     <div>
         <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
@@ -3459,9 +3459,9 @@
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
         }
     </div>
-</example2->
-<example2->
-    <label2->Example 2 - Associativity</label2->
+</example->
+<example->
+    <label->Example 2 - Associativity</label->
     <div>
         <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
@@ -3476,7 +3476,7 @@
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="routine-parameters"></h1>
@@ -3491,11 +3491,11 @@
     They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
     As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
-</syntax2->
-<example2->
-    <label2->Example</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label->
+</syntax->
+<example->
+    <label->Example</label->
     <div>
         <t->int</t-> <f->add</f->(<t->uint</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
             <w->return</w-> a <f->+</f-> b;
@@ -3506,7 +3506,7 @@
             <t->uint</t-> r = <f->add</f->(<k->a</k->, <k->6</k->);
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="reference-parameters"></h1>
@@ -3518,8 +3518,8 @@
     Reference parameters can only be of <a href="#pointer-types">pointer type</a> and the passed arguments must be <a href="#left-and-right-values">l-values</a>.<br>
     Inside the <a href="#routines">routine</a>, reference parameters act exactly as normal parameters.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->void</t-> <f->halve</f->(<t->float</t->@ &<a->n</a->) {
             @n <f->/=</f-> <k->2</k->;
@@ -3531,7 +3531,7 @@
             <c->//halve(8);</c->     <ce->// Error, 8 is not an l-value</ce->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="routine-overloading"></h1>
@@ -3562,8 +3562,8 @@
 <br>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example 1</label2->
+        <example->
+            <label->Example 1</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -3589,15 +3589,15 @@
                     <f->f</f->(<k->0.5</k->);   <c->// No implicit conversions</c->
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 abcc<cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 <p style="margin-bottom: 0;">
@@ -3615,8 +3615,8 @@
 </ol>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example 2</label2->
+        <example->
+            <label->Example 2</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -3637,18 +3637,18 @@
                     <f->f</f->(<k->1.0</k->, <k->2</k->);
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 The first argument is not a double
                 The first argument is a double
                 More than one argument provided
                 <cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -3726,12 +3726,12 @@
     //TODO ADD STRUCT TEMPLATES
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--template-struct-declaration">Syntax</label2->
-    <label2- id="copy.syntax--template-function-declaration">Syntax</label2->
-    <label2- id="copy.syntax--template-operator-declaration">Syntax</label2->
-    <label2- id="copy.syntax--template-declaration-signature">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--template-struct-declaration">Syntax</label->
+    <label- id="copy.syntax--template-function-declaration">Syntax</label->
+    <label- id="copy.syntax--template-operator-declaration">Syntax</label->
+    <label- id="copy.syntax--template-declaration-signature">Syntax</label->
+</syntax->
 
 <p>
     Any function with one or more generic type parameters is considered a function template.<br>
@@ -3741,8 +3741,8 @@
 <p>
     Generic type parameters can be references or const.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
             return a + b + c;
@@ -3760,7 +3760,7 @@
             <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
         }
     </div>
-</example2->
+</example->
 
 <p>
     Templates allow multiple definitions.<br>
@@ -3770,8 +3770,8 @@
     The expression used in the <code><w->when</w-></code> specifier must be known in compile time and cannot depend on the value of variables declared inside one of the function definitions.<br>
     Calling the function with types that don't match any definition is a semantic error.<br>
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
             floating_point, integral, other;
@@ -3795,13 +3795,13 @@
             <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
         }
     </div>
-</example2->
+</example->
 
 <p>
     Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
             floating_point, integral, other;
@@ -3826,7 +3826,7 @@
             <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="abbreviated-template-syntax"></h1>
@@ -3893,9 +3893,9 @@
 <p>
     There is no default return value.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--statement-return">Syntax</label2->
-</syntax2-><p>
+<syntax->
+    <label- id="copy.syntax--statement-return">Syntax</label->
+</syntax-><p>
     //TODO EXAMPLE
 </p>
 
@@ -3931,12 +3931,12 @@
     Namespaces don't affect compiler <a href="#optimizations">optimizations</a> or the <a href="#runtime-performance">runtime performance</a> of the program and can be declared in any <a href="#scopes">scope</a>.<br>
     Unnamed namespaces are allowed. Empty namespaces are also allowed.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--namespace-declaration">Declaration syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--namespace-declaration">Declaration syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->namespace</w-> a {
             <t->int</t-> n = <k->4</k->;
@@ -3947,7 +3947,7 @@
 
         <t->int</t-> n2 = a.<k->n</k->;
     </div>
-</example2->
+</example->
 
 
 <h1 id="symbol-aliases"></h1>
@@ -3964,12 +3964,12 @@
     Variables can be aliased before their declaration, but the alias can only be used after the declaration of the variable.
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--symbol-alias-declaration">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--symbol-alias-declaration">Syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <w->namespace</w-> n {
             <t->void</t-> <f->f</f->(){}
@@ -3983,7 +3983,7 @@
             <f->f3</f->();            <c->// Ok, calls n.f()</c->
         }
     </div>
-</example2->
+</example->
 
 
 <h1 id="inline-declarations"></h1>
@@ -4518,8 +4518,8 @@
 </p>
 <div style="min-width: 100%; display: flex;">
     <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
-        <example2- style="margin: 0;">
-            <label2->Existence</label2->
+        <example- style="margin: 0;">
+            <label->Existence</label->
             <div>
                 <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { 
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
@@ -4528,11 +4528,11 @@
                     <w->return</w-> <k->false</k->;
                 }
             </div>
-        </example2->
+        </example->
     </div>
     <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
-        <example2- style="margin: 0;">
-            <label2->Inexistence</label2->
+        <example- style="margin: 0;">
+            <label->Inexistence</label->
             <div>
                 <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { 
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
@@ -4541,7 +4541,7 @@
                     <w->return</w-> <k->true</k->;
                 }
             </div>
-        </example2->
+        </example->
     </div>
 </div>
 
@@ -4803,19 +4803,19 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2- style="margin: 0;">
-            <label2->Example</label2->
+        <example- style="margin: 0;">
+            <label->Example</label->
             <div>
                 <t->auto</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                     <w->return</w-> <f->~</f->a;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2- style="margin: 0;">
-            <label2->Equivalent code</label2->
+        <example- style="margin: 0;">
+            <label->Equivalent code</label->
             <div>
                 <t->auto</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -4826,7 +4826,7 @@
                     <w->return</w-> ret;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -4837,8 +4837,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2- style="margin: 0;">
-            <label2->Example</label2->
+        <example- style="margin: 0;">
+            <label->Example</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -4846,11 +4846,11 @@
                     b = a;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2- style="margin: 0;">
-            <label2->Equivalent code</label2->
+        <example- style="margin: 0;">
+            <label->Equivalent code</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -4860,7 +4860,7 @@
                     }
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -4871,8 +4871,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2- style="margin: 0;">
-            <label2->Example</label2->
+        <example- style="margin: 0;">
+            <label->Example</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -4880,11 +4880,11 @@
                     a <f->*=</f-> b;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2- style="margin: 0;">
-            <label2->Equivalent code</label2->
+        <example- style="margin: 0;">
+            <label->Equivalent code</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -4894,7 +4894,7 @@
                     }
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -4956,8 +4956,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- id="syntax--module" class="stx"><a href="#modules">Module</a></label2->
+<syntax- class="qrt">
+    <label- id="syntax--module" class="stx"><a href="#modules">Module</a></label->
     <table class="stx">
         <tr>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -4966,21 +4966,21 @@
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><stx->import directive</stx-></td>
+            <td><decl->import directive</decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><stx->export directive</stx-></td>
+            <td><decl->export directive</decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
         </tr>
         <tr>
             <td><b-rtc-></b-rtc-></td>
-            <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
+            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
             <td><b-tl-></b-tl-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 <syntax-note->
     * A
     <a href="#syntax--namespace-declaration">   namespace</a>,
@@ -5007,9 +5007,9 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- id="syntax--symbol-path" class="s-type">Symbol path</label2->
-    <table class="s-type">
+<syntax- class="qrt">
+    <label- id="syntax--symbol-path" class="s-path">Symbol path</label->
+    <table class="s-path">
         <tr>
             <td></td>
             <td></td>
@@ -5026,12 +5026,12 @@
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><sub->symbol name</sub-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>.</code></td>
+            <td><vbtm->.</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-></td>
-            <td><code>const</code></td>
+            <td><vbtm->const</vbtm-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><code>@</code></td>
+            <td><vbtm->@</vbtm-></td>
             <td><b-lbc-></b-lbc-><b-ltc-></b-ltc-></td>
         </tr>
         <tr>
@@ -5047,7 +5047,7 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <label2- id="syntax--symbol-name" class="sub">Symbol name</label2->
+    <label- id="syntax--symbol-name" class="sub">Symbol name</label->
     <table class="sub">
         <tr>
             <td></td>
@@ -5064,15 +5064,15 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>&lt;</code></td>
+            <td><vbtm->&lt;</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><typ->type</typ-></td>
+            <td><path->type</path-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>&gt;</code></td>
+            <td><vbtm->&gt;</vbtm-></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
         <tr>
@@ -5082,10 +5082,10 @@
             <td></td>
             <td><b-btc-></b-btc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><exp->value</exp-></td>
+            <td><expr->value</expr-></td>
             <td><b-ltc-></b-ltc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5102,14 +5102,14 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
 
-<syntax2- class="qrt">
-    <label2- id="syntax--symbol-reflection-path" class="s-path">Symbol reflection path</label2->
-    <table class="s-path">
+<syntax- class="qrt">
+    <label- id="syntax--symbol-reflection-path" class="s-expr">Symbol reflection path</label->
+    <table class="s-expr">
         <tr>
             <td></td>
             <td></td>
@@ -5125,11 +5125,11 @@
             <td><b-lr-></b-lr-></td>
             <td><s-type->symbol path</s-type-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>:</code></td>
+            <td><vbtm->:</vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><wrd->member name</wrd-></td>
+            <td><any->member name</any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>.</code></td>
+            <td><vbtm->.</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5144,7 +5144,7 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -5157,22 +5157,22 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- id="syntax--typeof" class="stx"><a href="#modules">Typeof</a></label2->
+<syntax- class="qrt">
+    <label- id="syntax--typeof" class="stx"><a href="#modules">Typeof</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><elm->typeof</elm-></td>
+            <td><vbtm->typeof</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm->(</elm-></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp->expression</exp-></td>
+            <td><expr->expression</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><elm->)</elm-></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -5188,61 +5188,61 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label->
     <table class="stx">
         <tr>
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><code>&lt;</code></td>
+            <td><vbtm->&lt;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->module name</wrd-></td>
+            <td><any->module name</any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>&gt;</code></td>
+            <td><vbtm->&gt;</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>include</code></td>
+            <td><vbtm->include</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><code>*</code></td>
+            <td><vbtm->*</vbtm-></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-br-></b-br-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>from</code></td>
+            <td><vbtm->from</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>"</code></td>
+            <td><vbtm->"</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->path/to/module</wrd-></td>
+            <td><any->path/to/module</any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>"</code></td>
+            <td><vbtm->"</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>as</code></td>
+            <td><vbtm->as</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
-            <td><code>import</code></td>
+            <td><vbtm->import</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
+            <td><any-><span>symbol<sup>path</sup></span></any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>as</code></td>
+            <td><vbtm->as</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><span><wrd->name</wrd-></wrd-></td>
+            <td><span><any->name</any-></any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5273,7 +5273,7 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -5290,8 +5290,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label->
     <table class="stx">
         <tr>
             <td></td>
@@ -5299,37 +5299,37 @@
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>as</code></td>
+            <td><vbtm->as</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lbc-></b-lbc-></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>export</code></td>
+            <td><vbtm->export</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><code>*</code></td>
+            <td><vbtm->*</vbtm-></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-><b-lr-></b-lr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><wrd-><span>symbol<sup>path</sup></span></wrd-></td>
+            <td><any-><span>symbol<sup>path</sup></span></any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>as</code></td>
+            <td><vbtm->as</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5346,7 +5346,7 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -5367,14 +5367,14 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label->
     <table class="stx">
         <tr>
             <td></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 <h1 id="symbol-declarations"></h1>
@@ -5396,8 +5396,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label->
         <table class="stx">
         <tr>
             <td></td>
@@ -5414,15 +5414,15 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>namespace</code></td>
+            <td><vbtm->namespace</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-><b-trc-></b-trc-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
+            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5442,7 +5442,7 @@
     <syntax-note->
         * One of the <a href="#symbol-declarations">declarations</a> allowed in the parent scope.
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -5459,24 +5459,24 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>enum</code></td>
+            <td><vbtm->enum</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>:</code></td>
+            <td><vbtm->:</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><typ->base type</typ-></td>
+            <td><path->base type</path-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5491,7 +5491,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
+            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -5508,14 +5508,14 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><stx->enum element</stx-></td>
+            <td><decl->enum element</decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
 
     </table>
-    <label2- class="stx" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label2->
+    <label- class="stx" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label->
     <table class="stx">
         <tr>
             <td></td>
@@ -5526,19 +5526,19 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>=</code></td>
+            <td><vbtm->=</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[base type]</t->&nbsp;value</exp-></td>
+            <td><expr-><t->[base type]</t->&nbsp;value</expr-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5561,7 +5561,7 @@
         <a href="#syntax--template-declaration">struct template</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -5577,8 +5577,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -5588,13 +5588,13 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label2->
+    <label- class="sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>struct</code></td>
+            <td><vbtm->struct</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5612,17 +5612,17 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label2->
+    <label- class="sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><sub->specialization constraint</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5631,7 +5631,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
-            <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
+            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
             <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -5642,13 +5642,13 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><stx->struct member</stx-></td>
+            <td><decl->struct member</decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
         </tr>
     </table>
-    <label2- class="stx" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label2->
+    <label- class="stx" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label->
     <table class="stx">
         <tr>
             <td></td>
@@ -5656,16 +5656,16 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><typ->type</typ-></td>
+            <td><path->type</path-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5685,7 +5685,7 @@
         <a href="#syntax--template-declaration">struct template</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -5701,8 +5701,8 @@
 
 
 
-<syntax2- class="qrt nobottom">
-    <label2- class="stx" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label2->
+<syntax- class="qrt nobottom">
+    <label- class="stx" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -5712,7 +5712,7 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="stx" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label2->
+    <label- class="stx" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -5722,7 +5722,7 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label2->
+    <label- class="sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -5740,33 +5740,33 @@
             <td></td>
         </tr>
         <tr>
-            <td><b-lbc-></b-lbc-><b-lr-></b-lr-></td>
-            <td><typ->return type</typ-></td>
-            <td><b-br-></b-br-><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><path->return type</path-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><any-><span>name</span></any-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-ltc-></b-ltc-><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><stx->routine parameter</stx-></td>
+            <td><decl->routine parameter</decl-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
-            <td><b-tr-></b-tr-></td>
-            <td><elm->void</elm-></td>
-            <td><b-ltc-></b-ltc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
             <td><b-btc-></b-btc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><stx->function parameter pack<span class="hidden">&nbsp;***</span></stx-></td>
+            <td><decl->function parameter pack<span class="hidden">&nbsp;***</span></decl-></td>
             <td><b-ltc-></b-ltc-></td>
             <td><b-tr-></b-tr-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -5785,16 +5785,15 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label2->
+    <label- class="sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label->
     <table class="sub">
         <tr>
-            <td><b-br-></b-br-></td>
-            <td><typ->return type</typ-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span><span class="hidden">&nbsp;**</span></wrd-></td>
+            <td><any-><span>name</span><span class="hidden">&nbsp;**</span></any-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5808,9 +5807,8 @@
             <td></td>
         </tr>
         <tr>
-            <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td></td>
-            <td><b-trc-></b-trc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><path->return type</path-></td>
             <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-><b-rtct-></b-rtct-><b-rbcb-></b-rbcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
@@ -5818,25 +5816,24 @@
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
             <td><b-blct-></b-blct-><b-tr-></b-tr-><b-br-></b-br-><b-ltcb-></b-ltcb-></td>
-            <td><code>priority</code></td>
+            <td><vbtm->priority</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[ulong]</t-> &nbsp;priority</exp-></td>
+            <td><expr-><t->[ulong]</t-> &nbsp;priority</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
+            <td></td>
+            <td></td>
             <td><b-tr-></b-tr-></td>
-            <td><elm->void</elm-></td>
-            <td><b-ltc-></b-ltc-></td>
-            <td><b-tr-></b-tr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><stx->routine parameter<span class="hidden">&nbsp;**</span></stx-></td>
+            <td><decl->routine parameter<span class="hidden">&nbsp;**</span></decl-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-tlc-></b-tlc-></td>
             <td></td>
             <td></td>
@@ -5848,17 +5845,17 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label2->
+    <label- class="sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><sub->specialization constraint</sub-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -5878,7 +5875,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
+            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
@@ -5896,13 +5893,13 @@
 
         *** No more than once.
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 <split-example-container- class="qrt notop">
     <split-example-container-left->
-        <syntax2->
-            <label2- class="stx" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label2->
+        <syntax->
+            <label- class="stx" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
             <table class="stx">
                 <tr>
                     <td></td>
@@ -5919,30 +5916,30 @@
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-></td>
-                    <td><typ->type</typ-></td>
+                    <td><path->type</path-></td>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><code>&<span class="hidden">&nbsp;*</span></code></td>
+                    <td><vbtm->&<span class="hidden">&nbsp;*</span></vbtm-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><wrd-><span>name</span></wrd-></td>
+                    <td><any-><span>name</span></any-></td>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><code>=</code></td>
+                    <td><vbtm->=</vbtm-></td>
                     <td><b-lr-></b-lr-></td>
-                    <td><exp-><t->[type]</t->&nbsp;value</exp-></td>
+                    <td><expr-><t->[type]</t->&nbsp;value</expr-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
                 </tr>
             </table>
             <syntax-note->
                 * Only if type is a <a href="#pointer-types">pointer type</a>.
             </syntax-note->
-        </syntax2->
+        </syntax->
     </split-example-container-left->
     <split-example-container-right->
-        <syntax2->
-            <label2- class="stx" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label2->
+        <syntax->
+            <label- class="stx" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
             <table class="stx">
                 <tr>
                     <td><b-br-></b-br-></td>
-                    <td><wrd->template parameter pack name</wrd-></td>
+                    <td><any->template parameter pack name</any-></td>
                     <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
                     <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
                     <td><b-lbc-></b-lbc-></td>
@@ -5953,17 +5950,17 @@
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><typ->type</typ-></td>
+                    <td><path->type</path-></td>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><code>&<span class="hidden">&nbsp;*</span></code></td>
+                    <td><vbtm->&<span class="hidden">&nbsp;*</span></vbtm-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><wrd-><span>name</span></wrd-></td>
+                    <td><any-><span>name</span></any-></td>
                     <td><b-lr-></b-lr-></td>
-                    <td><code>...</code></td>
+                    <td><vbtm->...</vbtm-></td>
                     <td><b-lr-></b-lr-></td>
                 </tr>
             </table>
-        </syntax2->
+        </syntax->
     </split-example-container-right->
 </split-example-container->
 
@@ -6011,8 +6008,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label->
     <table class="stx">
         <tr>
             <td></td>
@@ -6025,21 +6022,21 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><typ->type</typ-></td>
+            <td><path->type</path-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>=</code></td>
+            <td><vbtm->=</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[type]</t->&nbsp;value</exp-></td>
+            <td><expr-><t->[type]</t->&nbsp;value</expr-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6057,7 +6054,7 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6070,24 +6067,24 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>alias</code></td>
+            <td><vbtm->alias</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->symbol</wrd-></td>
+            <td><any->symbol</any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>as</code></td>
+            <td><vbtm->as</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6100,22 +6097,22 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>when</code></td>
+            <td><vbtm->when</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[bool]</t->&nbsp;condition</exp-></td>
+            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6146,8 +6143,8 @@
 
 
 
-<syntax2- class="qrt nobottom">
-    <label2- class="stx" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label2->
+<syntax- class="qrt nobottom">
+    <label- class="stx" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -6157,7 +6154,7 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="stx" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label2->
+    <label- class="stx" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -6167,7 +6164,7 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="stx" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label2->
+    <label- class="stx" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -6177,7 +6174,7 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label2->
+    <label- class="sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -6186,23 +6183,23 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><stx->template parameter</stx-></td>
+            <td><decl->template parameter</decl-></td>
             <td><b-lbc-></b-lbc-></td>
             <td><b-br-></b-br-></td>
-            <td><code>&gt;</code></td>
+            <td><vbtm->&gt;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>template</code></td>
+            <td><vbtm->template</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>&lt;</code></td>
+            <td><vbtm->&lt;</vbtm-></td>
             <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><stx->template parameter pack<span class="hidden">&nbsp;**</span></stx-></td>
+            <td><decl->template parameter pack<span class="hidden">&nbsp;**</span></decl-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -6223,39 +6220,39 @@
         * Can be omitted when using the <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.<br>
         ** No more than once.
     </syntax-note->
-</syntax2->
+</syntax->
 <split-example-container- class="qrt notop">
     <split-example-container-left->
-        <syntax2->
-            <label2- class="stx" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label2->
+        <syntax->
+            <label- class="stx" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
             <table class="stx">
                 <tr>
                     <td><b-br-></b-br-></td>
-                    <td><code>type</code></td>
+                    <td><vbtm->type</vbtm-></td>
                     <td><b-lbc-></b-lbc-></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><typ->type<span class="hidden">&nbsp;*</span></typ-></td>
+                    <td><path->type<span class="hidden">&nbsp;*</span></path-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><wrd->name</wrd-></td>
+                    <td><any->name</any-></td>
                     <td><b-lr-></b-lr-></td>
                 </tr>
             </table>
             <syntax-note->
                 * Can be an integral type or an enum.
             </syntax-note->
-        </syntax2->
+        </syntax->
     </split-example-container-left->
     <split-example-container-right->
-        <syntax2->
-            <label2- class="stx" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label2->
+        <syntax->
+            <label- class="stx" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
             <table class="stx">
                 <tr>
                     <td><b-br-></b-br-></td>
-                    <td><code>type</code></td>
+                    <td><vbtm->type</vbtm-></td>
                     <td><b-lbc-></b-lbc-></td>
                     <td></td>
                     <td></td>
@@ -6264,15 +6261,15 @@
                 </tr>
                 <tr>
                     <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><typ->type<span class="hidden">&nbsp;*</span></typ-></td>
+                    <td><path->type<span class="hidden">&nbsp;*</span></path-></td>
                     <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><wrd->name</wrd-></td>
+                    <td><any->name</any-></td>
                     <td><b-lr-></b-lr-></td>
-                    <td><code>...</code></td>
+                    <td><vbtm->...</vbtm-></td>
                     <td><b-lr-></b-lr-></td>
                 </tr>
             </table>
-        </syntax2->
+        </syntax->
     </split-example-container-right->
 </split-example-container->
 
@@ -6290,24 +6287,24 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-if"><a href="#if-statement">If statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-if"><a href="#if-statement">If statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>if</code></td>
+            <td><vbtm->if</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[bool]</t->&nbsp;condition</exp-></td>
+            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6315,24 +6312,24 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>match</code></td>
+            <td><vbtm->match</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[t]</t->&nbsp;value</exp-></td>
+            <td><expr-><t->[t]</t->&nbsp;value</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><sub->match case</sub-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6353,7 +6350,7 @@
             <td></td>
         </tr>
     </table>
-    <label2- class="sub"><a href="#match-statement">Match case</a></label2->
+    <label- class="sub"><a href="#match-statement">Match case</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -6364,20 +6361,20 @@
             <td><b-lbc-></b-lbc-></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><code>:</code></td>
+            <td><vbtm->:</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
         </tr>
         <tr>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
-            <td><exp-><t->[t]</t->&nbsp;a</exp-></td>
+            <td><expr-><t->[t]</t->&nbsp;a</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>to</code></td>
+            <td><vbtm->to</vbtm-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><exp-><t->[t]</t->&nbsp;b</exp-></td>
+            <td><expr-><t->[t]</t->&nbsp;b</expr-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
             <td></td>
         </tr>
@@ -6395,7 +6392,7 @@
             <td></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6412,8 +6409,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-for"><a href="#for-statement">For statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-for"><a href="#for-statement">For statement</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -6443,15 +6440,15 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-><b-btc-></b-btc-></td>
-            <td><exp->initializer</exp-></td>
+            <td><expr->initializer</expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><exp-><t->[bool]</t->&nbsp;condition</exp-></td>
+            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><exp->iteration</exp-></td>
+            <td><expr->iteration</expr-></td>
             <td><b-lbc-></b-lbc-><b-tbc-></b-tbc-></td>
             <td></td>
             <td></td>
@@ -6461,21 +6458,21 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>for</code></td>
+            <td><vbtm->for</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>in</code></td>
+            <td><vbtm->in</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp->value</exp-></td>
+            <td><expr->value</expr-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
@@ -6486,15 +6483,15 @@
             <td></td>
             <td></td>
             <td><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
-            <td><exp-><t->[t]</t->&nbsp;a</exp-></td>
+            <td><expr-><t->[t]</t->&nbsp;a</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>to</code></td>
+            <td><vbtm->to</vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><exp-><t->[t]</t->&nbsp;b</exp-></td>
+            <td><expr-><t->[t]</t->&nbsp;b</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>as</code></td>
+            <td><vbtm->as</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><span>name</span></wrd-></td>
+            <td><any-><span>name</span></any-></td>
             <td><b-ltc-></b-ltc-></td>
             <td></td>
             <td></td>
@@ -6523,7 +6520,7 @@
             <td></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6539,8 +6536,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-while"><a href="#while-statement">While statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-while"><a href="#while-statement">While statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -6550,11 +6547,11 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--statement-do-while"><a href="#while-statement">Do-while statement</a></label2->
+    <label- class="sub" id="syntax--statement-do-while"><a href="#while-statement">Do-while statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>do</code></td>
+            <td><vbtm->do</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
@@ -6562,21 +6559,21 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <label2- class="sub" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label2->
+    <label- class="sub" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>while</code></td>
+            <td><vbtm->while</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><exp-><t->[bool]</t->&nbsp;condition</exp-></td>
+            <td><expr-><t->[bool]</t->&nbsp;condition</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6592,8 +6589,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-continue"><a href="#continue-and-break-statements">Continue statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-continue"><a href="#continue-and-break-statements">Continue statement</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -6606,15 +6603,15 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>continue</code></td>
+            <td><vbtm->continue</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><exp-><t->[ulong]</t->&nbsp;amount</exp-></td>
+            <td><expr-><t->[ulong]</t->&nbsp;amount</expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6626,8 +6623,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-break"><a href="#continue-and-break-statements">Break statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-break"><a href="#continue-and-break-statements">Break statement</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -6640,15 +6637,15 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>break</code></td>
+            <td><vbtm->break</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><exp-><t->[ulong]</t->&nbsp;amount</exp-></td>
+            <td><expr-><t->[ulong]</t->&nbsp;amount</expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6664,18 +6661,18 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-once"><a href="#once-statement">Once statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-once"><a href="#once-statement">Once statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>once</code></td>
+            <td><vbtm->once</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6690,18 +6687,18 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>then</code></td>
+            <td><vbtm->then</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6716,8 +6713,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-return"><a href="#return-statement">Return statement</a></label->
     <table class="sub">
         <tr>
             <td></td>
@@ -6730,18 +6727,18 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>return</code></td>
+            <td><vbtm->return</vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><exp-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></exp-></td>
+            <td><expr-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></expr-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
     <syntax-note->
         * "return type" = routine return type used in the function or operator signature
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -6753,23 +6750,23 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-defer"><a href="#defer-statement">Defer statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-defer"><a href="#defer-statement">Defer statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>defer</code></td>
+            <td><vbtm->defer</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><a href="#syntax--expression-routine-call"><exp->call<span class="hidden">&nbsp;*</span></exp-></a></td>
+            <td><a href="#syntax--expression-routine-call"><expr->call<span class="hidden">&nbsp;*</span></expr-></a></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
     <syntax-note->
         * The expression must be a <a href="#syntax--expression-routine-call">routine call</a> expression
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -6785,34 +6782,34 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-else"><a href="#else-statement">Else statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-else"><a href="#else-statement">Else statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>else</code></td>
+            <td><vbtm->else</vbtm-></td>
             <td><b-lr-></b-lr-></td>
             <td><sub->statement</sub-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6828,7 +6825,7 @@
             <td></td>
             <td></td>
             <td><b-rtc-></b-rtc-></td>
-            <td><stx->declaration<span class="hidden">&nbsp;*</span></stx-></td>
+            <td><decl->declaration<span class="hidden">&nbsp;*</span></decl-></td>
             <td><b-tl-></b-tl-></td>
             <td></td>
             <td></td>
@@ -6842,7 +6839,7 @@
         <a href="#syntax--variables">variable</a> or a
         <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -6859,18 +6856,18 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><exp->expression</exp-></td>
+            <td><expr->expression</expr-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6893,16 +6890,16 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="sub" id="syntax--statement-empty"><a href="#empty-statement">Empty statement</a></label2->
+<syntax- class="qrt">
+    <label- class="sub" id="syntax--statement-empty"><a href="#empty-statement">Empty statement</a></label->
     <table class="sub">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>;</code></td>
+            <td><vbtm->;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6916,16 +6913,16 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-literal"><a href="#literals">Literal</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-literal"><a href="#literals">Literal</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->literal token</wrd-></td>
+            <td><any->literal token</any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6933,22 +6930,22 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-try"><a href="#try-expression">Try expression</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-try"><a href="#try-expression">Try expression</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>try</code></td>
+            <td><vbtm->try</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>{</code></td>
+            <td><vbtm->{</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>idk</code></td>
+            <td><vbtm->idk</vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>}</code></td>
+            <td><vbtm->}</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -6957,8 +6954,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-variable"><a href="#variables">Variables</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-variable"><a href="#variables">Variables</a></label->
     <table class="stx">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -6971,11 +6968,11 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><wrd->parent scope name<span class="hidden">&nbsp;*</span></wrd-></td>
+            <td><any->parent scope name<span class="hidden">&nbsp;*</span></any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>.</code></td>
+            <td><vbtm->.</vbtm-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-trc-></b-trc-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
@@ -6989,9 +6986,9 @@
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <code>.</code> token
+        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <vbtm->.</vbtm-> token
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -7007,14 +7004,14 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-temporary-variable"><a href="#temporary-variables">Temporary variables</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-temporary-variable"><a href="#temporary-variables">Temporary variables</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>$</code></td>
+            <td><vbtm->$</vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><exp-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></exp-></td>
+            <td><expr-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></expr-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -7028,7 +7025,7 @@
     <syntax-note->
         * Must be a literal
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -7044,16 +7041,16 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-routine-parameter"><a href="#declarations.routine-parameters">Routine parameter</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-routine-parameter"><a href="#declarations.routine-parameters">Routine parameter</a></label->
     <table class="stx">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 
@@ -7069,8 +7066,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-function-call"><a href="#declarations.functions">Function call</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-function-call"><a href="#declarations.functions">Function call</a></label->
     <table class="stx">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -7084,22 +7081,22 @@
             <td></td>
             <td></td>
             <td><b-br-></b-br-></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><wrd->parent scope name<span class="hidden">&nbsp;*</span></wrd-></td>
+            <td><any->parent scope name<span class="hidden">&nbsp;*</span></any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>.</code></td>
+            <td><vbtm->.</vbtm-></td>
             <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><wrd->name</wrd-></td>
+            <td><any->name</any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><exp->argument</exp-></td>
+            <td><expr->argument</expr-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
@@ -7119,9 +7116,9 @@
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <code>.</code> token
+        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <vbtm->.</vbtm-> token
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 
@@ -7139,8 +7136,8 @@
 
 
 
-<syntax2- class="qrt">
-    <label2- class="stx" id="syntax--expression-operator-call"><a href="#declarations.operators">Operator call</a></label2->
+<syntax- class="qrt">
+    <label- class="stx" id="syntax--expression-operator-call"><a href="#declarations.operators">Operator call</a></label->
     <table class="stx">
         <tr>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -7148,14 +7145,14 @@
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-brc-></b-brc-><b-lr-></b-lr-></td>
-            <td><wrd->name<span class="hidden">&nbsp;**</span></wrd-></td>
+            <td><any->name<span class="hidden">&nbsp;**</span></any-></td>
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><wrd->parent scope name<span class="hidden">&nbsp;*</span></wrd-></td>
+            <td><any->parent scope name<span class="hidden">&nbsp;*</span></any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>.</code></td>
+            <td><vbtm->.</vbtm-></td>
             <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
             <td><b-tb-></b-tb-><b-bt-></b-bt-></td>
             <td><b-br-></b-br-><b-tr-></b-tr-></td>
@@ -7166,36 +7163,36 @@
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
-            <td><exp->argument<span class="hidden">&nbsp;**</span></exp-></td>
+            <td><expr->argument<span class="hidden">&nbsp;**</span></expr-></td>
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <code>.</code> token<br>
+        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <vbtm->.</vbtm-> token<br>
         ** At least one name and one argument
     </syntax-note->
-</syntax2->
+</syntax->
 
 
 <h1 id="local-names"></h1>
 <p>
     This section summarizes all the syntaxes used to reference any type of <a href="#semantic-elements">symbol</a>.<br>
     The provided syntaxes are to be interpreted as the <a href="#name-resolution">local name</a> a <a href="#semantic-elements">symbol</a> would have if declared as the corresponding semantic element.<br>
-    They are concatenated with <code>.</code> tokens to create names for the <a href="#name-resolution">name resolution</a>.
+    They are concatenated with <vbtm->.</vbtm-> tokens to create names for the <a href="#name-resolution">name resolution</a>.
     //TODO
 </p>
-<syntax2- class="qrt">
-    <label2-><a href="#primitive-types" style="color: var(--fg-text);">Primitive types</a>, <a href="#enums" style="color: var(--fg-text);">Enums</a>, <a href="#structs" style="color: var(--fg-text);">Structs</a>, <a href="#void" style="color: var(--fg-text);">Void</a>, <a href="#typename" style="color: var(--fg-text);">Typename</a></label2->
+<syntax- class="qrt">
+    <label-><a href="#primitive-types" style="color: var(--fg-text);">Primitive types</a>, <a href="#enums" style="color: var(--fg-text);">Enums</a>, <a href="#structs" style="color: var(--fg-text);">Structs</a>, <a href="#void" style="color: var(--fg-text);">Void</a>, <a href="#typename" style="color: var(--fg-text);">Typename</a></label->
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->name<sup>id</sup></wrd-></td>
+            <td><any->name<sup>id</sup></any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-</syntax2->
-<syntax2- class="qrt">
-    <label2-><a href="#arrays" style="color: var(--fg-text);">Arrays</a></label2->
+</syntax->
+<syntax- class="qrt">
+    <label-><a href="#arrays" style="color: var(--fg-text);">Arrays</a></label->
     <table>
         <tr>
             <td></td>
@@ -7203,20 +7200,20 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><wrd-><t->uint<sup>r</sup></t-></wrd-></td>
+            <td><any-><t->uint<sup>r</sup></t-></any-></td>
             <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><wrd-><t->T<sup>type</sup></t-></wrd-></td>
+            <td><any-><t->T<sup>type</sup></t-></any-></td>
             <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-            <td><code>[</code></td>
+            <td><vbtm->[</vbtm-></td>
             <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
             <td><loop-connector-></loop-connector-></td>
             <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-            <td><code>]</code></td>
+            <td><vbtm->]</vbtm-></td>
             <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
         </tr>
         <tr>
@@ -7231,9 +7228,9 @@
             <td></td>
         </tr>
     </table>
-</syntax2->
-<syntax2- class="qrt">
-    <label2-><a href="#tuples" style="color: var(--fg-text);">Tuples</a></label2->
+</syntax->
+<syntax- class="qrt">
+    <label-><a href="#tuples" style="color: var(--fg-text);">Tuples</a></label->
     <table>
         <tr>
             <td></td>
@@ -7241,16 +7238,16 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><code>)</code></td>
+            <td><vbtm->)</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><code>(</code></td>
+            <td><vbtm->(</vbtm-></td>
             <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><wrd-><t->T<sup>type</sup></t-></wrd-></td>
+            <td><any-><t->T<sup>type</sup></t-></any-></td>
             <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
         </tr>
         <tr>
@@ -7263,19 +7260,19 @@
             <td></td>
         </tr>
     </table>
-</syntax2->
-<syntax2- class="qrt">
-    <label2-><a href="#variables" style="color: var(--fg-text);">Variables</a>, <a href="#functions" style="color: var(--fg-text);">Functions</a>, <a href="#functions-definitions" style="color: var(--fg-text);">Parameters</a>, <a href="#symbol-aliases" style="color: var(--fg-text);">Symbol aliases</a>, <a href="#templates" style="color: var(--fg-text);">Templates</a></label2->
+</syntax->
+<syntax- class="qrt">
+    <label-><a href="#variables" style="color: var(--fg-text);">Variables</a>, <a href="#functions" style="color: var(--fg-text);">Functions</a>, <a href="#functions-definitions" style="color: var(--fg-text);">Parameters</a>, <a href="#symbol-aliases" style="color: var(--fg-text);">Symbol aliases</a>, <a href="#templates" style="color: var(--fg-text);">Templates</a></label->
         <table>
             <tr>
                 <td><b-lr-></b-lr-></td>
-                <td><wrd->name<sup>id</sup></wrd-></td>
+                <td><any->name<sup>id</sup></any-></td>
                 <td><b-lr-></b-lr-></td>
             </tr>
         </table>
-</syntax2->
-<syntax2- class="qrt">
-    <label2-><a href="#struct-templates" style="color: var(--fg-text);">Generated structs</a>, <a href="#function-templates" style="color: var(--fg-text);">Generated functions</a></label2->
+</syntax->
+<syntax- class="qrt">
+    <label-><a href="#struct-templates" style="color: var(--fg-text);">Generated structs</a>, <a href="#function-templates" style="color: var(--fg-text);">Generated functions</a></label->
     <table>
         <tr>
             <td></td>
@@ -7285,18 +7282,18 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><code>&gt;</code></td>
+            <td><vbtm->&gt;</vbtm-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><wrd->name<sup>id</sup></wrd-></td>
+            <td><any->name<sup>id</sup></any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><code>&lt;</code></td>
+            <td><vbtm->&lt;</vbtm-></td>
             <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><wrd-><t->T<sup>type</sup></t-></wrd-></td>
+            <td><any-><t->T<sup>type</sup></t-></any-></td>
             <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><code>,</code></td>
+            <td><vbtm->,</vbtm-></td>
             <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
         </tr>
         <tr>
@@ -7311,7 +7308,7 @@
             <td></td>
         </tr>
     </table>
-</syntax2->
+</syntax->
 
 
 <h1 id="undefined-behaviours"></h1>
@@ -7334,7 +7331,7 @@
     <script src="Scripts/Setup/Syntax.js"></script>
     <script src="Scripts/Setup/Index.js"></script>
     <script src="Scripts/Setup/CopySyntax.js"></script>
-    <script src="Scripts/Init.js"></script>
+    <script src="Scripts/main.js"></script>
     <script src="Scripts/UI/Slider.js"></script>
     <script src="Scripts/UI/CopyCode.js"></script>
     <script src="Scripts/Custom/SummaryList.js"></script>

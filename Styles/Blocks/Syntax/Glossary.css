@@ -1,0 +1,13 @@
+
+
+
+.syntax-glossary {
+    display: inline-block;
+    font-family: monospace, monospace;
+    width: 8em;
+    text-align: center;
+    padding: 0 4px 0 4px;
+    margin: 4px 2px 4px 2px;
+    border-radius: var(--code-decoration-r);
+    height: 2.1em;
+}

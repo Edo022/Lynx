@@ -80,8 +80,8 @@
         <td class="center" colspan="4"><code>true|false</code></td>
     </tr>
 </table></div>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->int</t-> n = <k->4</k->;             <c->// Ok</c->
         <t->bool</t-> b =<k-> true</k->;         <c->// Ok</c->
@@ -92,20 +92,20 @@
         <c->float f4 = 0o97;       </c-><ce->// Error, invalid octal literal</ce->
         <c->float f4 = 0xAEGF;     </c-><ce->// Error, invalid hexadecimal literal</ce->
     </div>
-</example2->
+</example->
 <p>
     The <code>_</code> character can be used anywhere after the base prefix of numerical literals to separate digits and improve readability.<br>
     Decimal literals without base prefix cannot start with <code>_</code>.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->int</t-> n = <k->395_935</k->;             <c->// Ok</c->
         <t->int</t-> n = <k->654_3_21___</k->;         <c->// Ok, doesn't make sense but it is allowed</c->
         <t->int</t-> n = <k->0x_32_A4_FF_E2</k->;      <c->// Ok</c->
         <c->//int n = _123_456;</c->          <ce->// Error, undeclared identifier "_123_456".</ce->
     </div>
-</example2->
+</example->
 <p>
     There are no literal suffixes and no <code><t->float</t-></code>, <code><t->uint</t-></code> or <code><t->int</t-></code> literals.<br>
     To create inline values of specific types, <a href="#constructors">Constructors</a> are used.
@@ -134,13 +134,13 @@
     //TODO functions are called with *function reference* and a list of parameters. not just their name
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--expression-function-call">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--expression-function-call">Syntax</label->
+</syntax->
 
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->void</t-> <f->empty_function_1</f->() { <w->return</w->; }    <c->// Ok</c->
         <t->void</t-> <f->empty_function_2</f->() {}             <c->// Ok</c->
@@ -156,7 +156,7 @@
             n = <f->f</f->(<f->f</f->(<k->n</k->));                       <c->// Ok</c->
         }
     </div>
-</example2->
+</example->
 //TODO update example
 
 
@@ -172,9 +172,9 @@
 
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--expression-operator-call">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--expression-operator-call">Syntax</label->
+</syntax->
 
 
 
@@ -242,20 +242,20 @@
 <p>
     Differently from other <a href="#name-resolution">symbols</a>, each variable <b>must be declared</b> before being <a href="#name-resolution">referenced</a>. Variables <b>cannot be redeclared</b> and their <b><a href="#types">type</a> cannot be changed</b> after the declaration.<br>
 </p>
-<syntax2->
-    <label2- id="copy.syntax--variable-declaration">Declaration syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--variable-declaration">Declaration syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->uint</t-> var = <k->0</k->;              <c->// Ok, var has value 0</c->
         <t->float</t-> nya = <k->5</k-> + <k->var</k->;       <c->// Ok, nya has value 5.0</c->
         <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
     </div>
-</example2->
+</example->
 <p>
-    The <a href="#const-qualifier"><sgr->const</sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
+    The <a href="#const-qualifier"><s-sgr->const</s-sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
 </p>
 
 
@@ -282,8 +282,8 @@
 </p>
 <p>They act as normal variables for anything else.</p>
 
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
             $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
@@ -300,9 +300,9 @@
 
         <c->//uint var = $9;        </c-><ce->// Error, temporary variables cannot be used outside of functions</ce->
     </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
+</example->
+<example->
+    <label->Example 2</label->
     <div>
         <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
             <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
@@ -315,7 +315,7 @@
             ref = <k->$0</k->;                   <c->// Ok, $0 has type uint2</c->
         }
     </div>
-</example2->
+</example->
 <p>
     See
     <a href="#types">Types</a>,

@@ -26,8 +26,8 @@
     These characters can be escaped by preceding them with a single <code>&bsol;</code> character.<br>
     Unknown escape sequences generate a preprocessing error. //TODO LINK
 </p>
-<syntax2->
-    <label2->Syntax</label2->
+<syntax->
+    <label->Syntax</label->
     <table>
         <tr>
             <td><b-lr-></b-lr-></td>
@@ -56,9 +56,9 @@
             <td><b-ltc-></b-ltc-></td>
         </tr>
     </table>
-</syntax2->
-<example2->
-    <label2->Example</label2->
+</syntax->
+<example->
+    <label->Example</label->
     <div>
         <k->#include</k-> <s->"/home/Photon/Lux/file.lux"</s->      <c->// Ok, absolute path</c->
         <k->#include</k-> <s->"./file.lux"</s->                     <c->// Ok, relative path</c->
@@ -71,4 +71,4 @@
         <c->//#include "./non_existent_file"</c->          <ce->// Error, non-glob patterns must correspond to an existing file</ce->
         <c->//#include ""</c->                             <ce->// Error, file name not specified</ce->
     </div>
-</example2->
+</example->

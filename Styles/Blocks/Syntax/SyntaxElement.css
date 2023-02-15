@@ -1,0 +1,66 @@
+:root {
+    --bd-any:        hsl(212, 14%, 20%);
+    --bd-sub:        hsl(210, 31%, 54%);
+    --bd-decl:       hsl(281, 31%, 54%);
+    --bd-expr:       #85b4e0;
+    --bd-path:       #3884dc;
+
+    --bg-vbtm:       hsl(210, 8%, 13%);
+    --bg-syntax-elm: hsl(216, 12%, 8%);;
+    --bg-sgr:        hsla(60, 90%, 44%, 5%);
+
+    --fg-sgr:        hsla(102, 5%, 95%, 75%);
+}
+
+
+
+
+s-vbtm-, /* Verbatim. Literally what the element contains */
+s-any-,  /* User defined sequence of characters           */
+s-sub-,  /* Sub element                                   */
+s-decl-, /* Declaration                                   */
+s-sgr-,  /* Syntactic sugar                               */
+s-expr-, /* Expression                                    */
+s-path-  /* Symbol path                                   */
+{
+    display: inline-block;
+    font-family: monospace, monospace;
+    border: 1px solid;
+    border-radius: var(--code-decoration-r);
+    padding: 0 4px 0 4px;
+    margin: 4px 2px 4px 2px;
+    background-color: var(--bg-syntax-elm);
+    font-size: var(--font-size-code);
+    white-space: nowrap;
+}
+
+
+s-any-  { font-style: italic; border-color: var(--bd-any );                       }
+s-sub-  { font-style: italic; border-color: var(--bd-sub ); border-style: dashed; }
+s-decl- { font-style: italic; border-color: var(--bd-decl);                       }
+s-expr- { font-style: italic; border-color: var(--bd-expr);                       }
+s-path- { font-style: italic; border-color: var(--bd-path);                       }
+
+s-vbtm- {
+    border-width: 0;
+    background-color: var(--bg-vbtm);
+}
+s-sgr- {
+    border-color:     transparent;
+    color:            var(--fg-sgr);
+    background-color: var(--bg-sgr);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,21 @@
+:root {
+    --fg-hidden:        hsl(0, 0%, 33%);
+}
+
+
+
+
+
+
+.hidden, eof-, tab-, space-, nl- {
+    color: var(--fg-hidden) !important;
+    white-space: nowrap;
+    font-weight: normal;
+}
+eof-, tab-, space-, nl- {
+    display: inline;
+}
+eof-::before   { content: "⨯ EOF";     }
+tab-::before   { content: "⇥ tab";     }
+space-::before { content: "␣ space";   }
+nl-::before    { content: "↩ newline"; }

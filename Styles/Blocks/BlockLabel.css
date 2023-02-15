@@ -1,0 +1,52 @@
+:root {
+    --syntax-label-h:           3ch;
+    --syntax-label-padding:     2ch;
+    --syntax-label-padding-top: 0.5ch;
+    --syntax-label-active:      hsl(0, 0%, 65%);
+}
+
+
+
+
+
+
+example- > label-,
+syntax- > label- {
+    display: block;
+    border: 1px solid var(--bd-block);
+    border-radius: var(--code-decoration-r);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0;
+    background-color: var(--bg-pre);
+    z-index: 2;
+    margin-bottom: calc(0px - var(--syntax-overlap-fix));
+    position: relative;
+    padding: var(--syntax-label-padding-top) var(--syntax-label-padding) 0 var(--syntax-label-padding);
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: var(--font-size-medium);
+
+    min-width: 0;
+    max-width: calc(100% - var(--code-decoration-r));
+    /**/width: fit-content;
+    min-height: var(--syntax-label-h);
+    max-height: var(--syntax-label-h);
+    /**/height: var(--syntax-label-h);
+    box-sizing: border-box;
+}
+example- > label-:not(:first-child),
+syntax- > label-:not(:first-child) {
+    margin-top: var(--syntax-internal-margin);
+}
+example- > label- {
+    cursor: pointer;
+}
+syntax- > label- {
+    cursor: default;
+}
+
+
+
+

@@ -400,7 +400,7 @@
             </span>
         </li>
         <li>
-            <span><a href="#abbreviated-template-syntax"><sgr->?</sgr-></a></span>
+            <span><a href="#abbreviated-template-syntax"><s-sgr->?</s-sgr-></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
                 <span class="meta-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
@@ -686,6 +686,10 @@
             <span><a href="#while-loops">While</a> signature</span>
             <span>Defines the <a href="boolean-type">condition</a> of a <a href="while-loops">while loop</a></span>
         </li>
+        <li>
+            <span>Specialization constraint</span>
+            <span>Specifies a constraint whose result determines when a struct or routine declaration can be used.</span>
+        </li>
     </ul>
 </ul>
 
@@ -963,11 +967,11 @@
 <p>
     Type paths are a subset of Symbol paths that point to symbols suitable to be used as types, such as primitive types, enums, structs and special types.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--symbol-path">Symbol path syntax</label2->
-    <label2- id="copy.syntax--symbol-name">Symbol name</label2->
-    <label2- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--symbol-path">Symbol path syntax</label->
+    <label- id="copy.syntax--symbol-name">Symbol name</label->
+    <label- id="copy.syntax--symbol-reflection-path">Symbol reflection path syntax</label->
+</syntax->
 
 
 
@@ -1167,8 +1171,8 @@
     The <code>module</code> identifier is used to reference the <a href="#scopes">scope</a> of the current <a href="#modules">module</a>.<br>
     A path that starts from the module <a href="#scopes">scope</a> of the current <a href="#modules">module</a> or any of the <a href="#import-directive">imported</a> ones is called an absolute path.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <c->// Absolute path: module</c->
 
@@ -1187,7 +1191,7 @@
             <t->uint</t-> n;
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -1216,8 +1220,8 @@
     This can be avoided by starting the <a href="#name-resolution">path</a> from a parent <a href="#scopes">scope</a> so that the <a href="#identifiers">identifier</a> is not ambiguous.<br>
     Any <a href="#identifiers">identifier</a> can be shadowed, including <a href="#primitive-types">primitive types</a>, the <a href="#name-resolution"><code>module</code></a> <a href="#identifiers">identifier</a> and <a href="#declarations">symbols</a> from the <a href="#core-module">core module</a>.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->namespace</w-> s {
             <w->namespace</w-> {
@@ -1232,13 +1236,13 @@
             <c->// n references module.s.n</c->
         }
     </div>
-</example2->
+</example->
 
 <p>
     The first declaration in a scope is the only one that actually shadows eventual identifiers in parent scopes. Subsequent declarations that use the same identifier will refer to the symbol declared in the same scope.<br>
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <c->// Ok, declares a struct with name "t"</c->
         <w->strct</w-> t {
@@ -1253,7 +1257,7 @@
         }
 
     </div>
-</example2->
+</example->
 
 
 
@@ -1284,8 +1288,8 @@
     Other symbols.<br>
     Multiple declarations of other symbols generate a semantic error. //TODO LINK
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->namespace</w-> a {     <c->// Ok, merges with the second declaration</c->
             <t->int</t-> n;        <c->// Ok</c->
@@ -1302,7 +1306,7 @@
         <t->void</t-> <f->f</f->(<t->int</t-> <a->n</a->) { } <c->// Ok</c->
         <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
     </div>
-</example2->
+</example->
 
 
 
@@ -1455,8 +1459,8 @@
     by containing runtime <a href="#routine-calls">routine calls</a> that are empty or have the aforementioned properties,
     are not considered suitable for compile time <a href="#routine-calls">calls</a>, even though it would be possible to determine their <a href="#return-statement">return value</a> and operations on reference <a href="#routine-parameters">parameters</a> during the <a href="#compilation">compilation</a> process.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->from</w-> <s->&lt;random&gt;</s-> <w->include</w-> rand;
 
@@ -1480,7 +1484,7 @@
             <w->return</w-> q<f->[</f->n<f->]</f->;             <c->// Ok</c->
         }
     </div>
-</example2->
+</example->
 <p>
     Notice that compile time expressions are not required to run during compile time, and they don't affect <a href="#value-precomputation">optimizations</a> in any way.<br>
     Compile time expressions are exclusively used to determine which <a href="#expressions">expressions</a> can be used in contexts where a compile time value is required.

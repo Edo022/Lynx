@@ -1,0 +1,22 @@
+
+:core {
+    --syntax-note-margin-top: 32px;
+}
+
+
+
+
+/* Notes */
+syntax-note- {
+    display: block;
+    white-space: nowrap;
+    margin-top: var(--syntax-note-margin-top);
+    margin-bottom: 0;
+}
+syntax-note- > *:link,
+syntax-note- > *:visited,
+syntax-note- > *:hover,
+syntax-note- > *,
+syntax-note- {
+    color: var(--fg-hidden);
+}

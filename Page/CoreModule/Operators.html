@@ -541,8 +541,8 @@
 </p>
 <div style="min-width: 100%; display: flex;">
     <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-right: calc(var(--def-margin) / 2); display: inline-block;">
-        <example2- style="margin: 0;">
-            <label2->Existence</label2->
+        <example- style="margin: 0;">
+            <label->Existence</label->
             <div>
                 <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
@@ -551,11 +551,11 @@
                     <w->return</w-> <k->false</k->;
                 }
             </div>
-        </example2->
+        </example->
     </div>
     <div style="max-width: calc(50% - var(--def-margin) / 2); width: 50%; margin-left: calc(var(--def-margin) / 2); display: inline-block;">
-        <example2- style="margin: 0;">
-            <label2->Inexistence</label2->
+        <example- style="margin: 0;">
+            <label->Inexistence</label->
             <div>
                 <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
@@ -564,7 +564,7 @@
                     <w->return</w-> <k->true</k->;
                 }
             </div>
-        </example2->
+        </example->
     </div>
 </div>
 
@@ -846,19 +846,19 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2- style="margin: 0;">
-            <label2->Example</label2->
+        <example- style="margin: 0;">
+            <label->Example</label->
             <div>
                 <t->auto</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
                     <w->return</w-> <f->~</f->a;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2- style="margin: 0;">
-            <label2->Equivalent code</label2->
+        <example- style="margin: 0;">
+            <label->Equivalent code</label->
             <div>
                 <t->auto</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -869,7 +869,7 @@
                     <w->return</w-> ret;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -880,8 +880,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2- style="margin: 0;">
-            <label2->Example</label2->
+        <example- style="margin: 0;">
+            <label->Example</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -889,11 +889,11 @@
                     b = a;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2- style="margin: 0;">
-            <label2->Equivalent code</label2->
+        <example- style="margin: 0;">
+            <label->Equivalent code</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -903,7 +903,7 @@
                     }
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -914,8 +914,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2- style="margin: 0;">
-            <label2->Example</label2->
+        <example- style="margin: 0;">
+            <label->Example</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -923,11 +923,11 @@
                     a <f->*=</f-> b;
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2- style="margin: 0;">
-            <label2->Equivalent code</label2->
+        <example- style="margin: 0;">
+            <label->Equivalent code</label->
             <div>
                 <t->void</t-> <f->main</f->(){
                     <t->int</t->[] a <f->=</f-> { <k->0</k->, <k->1</k->, <k->2</k->, <k->3</k-> };
@@ -937,6 +937,6 @@
                     }
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->

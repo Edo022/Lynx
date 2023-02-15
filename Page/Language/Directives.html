@@ -25,9 +25,9 @@
     When an Import directive is used, it creates a new namespace inside the <a href="#root-scope">root scope</a> (.) containing the imported <a href="#name-resolution">symbols</a>, renamed as specified in the directive.<br>
     Anything these <a href="#name-resolution">symbols</a> depend on is automatically imported but not accessible unless intentionally stated.<br>
 </p>
-<syntax2->
-    <label2- id="copy.syntax--import-directive">Import syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--import-directive">Import syntax</label->
+</syntax->
 <p>
     When the <code><w->import</w-></code> <a href="#keywords">keyword</a> is used, the container <a href="#namespaces">namespace</a> is preserved.<br>
     The new <a href="#namespaces">namespace</a> is created using the export <a href="#identifiers">identifier</a> of the <a href="#modules">module</a> you are importing from, or, if not specified, the name of the file without its extensions.<br>
@@ -42,8 +42,8 @@
 
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <c->// [module "main.ubr"]</c->
 
@@ -55,11 +55,11 @@
                     io.<f->write</f->(<f->sum</f->((<k->8</k->, <k->9</k->, <k->10</k->)));
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Equivalent code</label2->
+        <example->
+            <label->Equivalent code</label->
             <div>
                 <c->// From the root scope's perspective,</c->
                 <c->// this is what the program looks like</c->
@@ -83,7 +83,7 @@
                     }
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -118,12 +118,12 @@
     If an export <a href="#identifiers">identifier</a> is not specified, the name of the file without its extensions is used.<br>
     If the file has a name that is not a valid <a href="#identifiers">identifier</a>, a custom export <a href="#identifiers">identifier</a> must be specified.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--export-directive">Export syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--export-directive">Export syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->float</t-> pi = <k->3.14</k->;   <c->// Automatically exported as it is required by the "getTau" function, but not accessible</c->
 
@@ -134,14 +134,14 @@
         <w->export</w-> <w->as</w-> notPi;
         <w->export</w-> <f->getTau</f->;
     </div>
-</example2->
+</example->
 
 <p>
     While the Export directive doesn't preserve the parent <a href="#namespaces">namespaces</a> of a <a href="#name-resolution">symbol</a> nor can it add new ones, it can be used in conjunction with <a href="#symbol-aliases">Symbol aliases</a>
     and <a href="#namespaces">Namespaces</a> to create a clean interface while preserving the internal structure of the <a href="#modules">module</a>.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->from</w-> <s->&lt;math&gt;</s-> <w->import</w-> <f->pow</f->;
 
@@ -164,7 +164,7 @@
         }
         <w->export</w-> volume, surface;
     </div>
-</example2->
+</example->
 
 
 
@@ -188,9 +188,9 @@
 <p>
 
 </p>
-<syntax2->
-    <label2- id="copy.syntax--construct-directive">Construct syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--construct-directive">Construct syntax</label->
+</syntax->
 
 
 

@@ -77,12 +77,12 @@
     //TODO ADD STRUCT TEMPLATES
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--template-struct-declaration">Syntax</label2->
-    <label2- id="copy.syntax--template-function-declaration">Syntax</label2->
-    <label2- id="copy.syntax--template-operator-declaration">Syntax</label2->
-    <label2- id="copy.syntax--template-declaration-signature">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--template-struct-declaration">Syntax</label->
+    <label- id="copy.syntax--template-function-declaration">Syntax</label->
+    <label- id="copy.syntax--template-operator-declaration">Syntax</label->
+    <label- id="copy.syntax--template-declaration-signature">Syntax</label->
+</syntax->
 
 <p>
     Any function with one or more generic type parameters is considered a function template.<br>
@@ -92,8 +92,8 @@
 <p>
     Generic type parameters can be references or const.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
             return a + b + c;
@@ -111,7 +111,7 @@
             <f->add2</f->(<k->1</k->, <k->0.4</k->);        <c->// Generates float add2(uint a, float b) </c-> // TODO
         }
     </div>
-</example2->
+</example->
 
 <p>
     Templates allow multiple definitions.<br>
@@ -121,8 +121,8 @@
     The expression used in the <code><w->when</w-></code> specifier must be known in compile time and cannot depend on the value of variables declared inside one of the function definitions.<br>
     Calling the function with types that don't match any definition is a semantic error.<br>
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
             floating_point, integral, other;
@@ -146,13 +146,13 @@
             <f->get_id</f->((<k->0.4</k->));   <c->// Returns type_id.other</c->
         }
     </div>
-</example2->
+</example->
 
 <p>
     Generated functions can be referenced and called using the name of the template and the types of the parameters enclosed in <code>&lt;</code><code>&gt;</code> characters.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->strict</w-> <w->enum</w-> type_id : <t->uint</t-> {
             floating_point, integral, other;
@@ -177,7 +177,7 @@
             <c->//get_id&lt;double&gt;((0.4)); </c-><ce->// Error, cannot convert "(double)" tuple to "double"</ce->
         }
     </div>
-</example2->
+</example->
 
 
 <!--------------------------------------------------------------------->

@@ -88,7 +88,7 @@
     All signed integral types use the Two's Complement to represent negative numbers.<br>
     Positive numbers and <code><k->0</k-></code> use the corresponding binary value in both signed and unsigned integral types.
 </p>
-<example2->
+<example->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c->  1              31</c->
                                             <c->sign           value</c->
@@ -107,7 +107,7 @@
             <c->┌────────────────────────────────┴─────────────────────────────┐</c->  <t->ulong</t->
             <s->┕┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┷┙</s->
         </div>
-</example2->
+</example->
 <p>
     //TODO GL_EXT_shader_explicit_arithmetic_types_int64
 </p>
@@ -126,7 +126,7 @@
     Positive and negative inf, nan and signed <code><k->0</k-></code> are all supported.<br>
     <code><k->+0</k-></code> and <code><k->-0</k-></code> are equal.
 </p>
-<example2->
+<example->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                                             <c-> 1      8          23</c->
                                             <c->sign exponent   mantissa</c->
@@ -150,7 +150,7 @@
             <c->011111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->  <k->nan</k->
             <c->111111111&lt;─────────────────────── not 0 ───────────────────────&gt;</c->  <k->nan</k->
         </div>
-</example2->
+</example->
 <p>
     inf values are generated as required by the standard.<br>
     nan values are not generated for consistency and performance reasons.
@@ -166,7 +166,7 @@
     The <b>Boolean type</b> is used to <b>represent boolean values</b>.<br>
     <code><k->true</k-></code> and <code><k->false</k-></code> are the only values that can be stored in a <code><t->bool</t-></code>.
 </p>
-<example2->
+<example->
         <div style="border-top-left-radius: var(--code-decoration-r);">
                             <c->32</c->
                           <c->value</c->
@@ -175,7 +175,7 @@
             <c->00000000000000000000000000000001</c->  <k->true</k->
             <c->00000000000000000000000000000000</c->  <k->false</k->
         </div>
-</example2->
+</example->
 <p>
     Booleans purposely waste 31 bits for performance reasons.<br>
     Smaller types require additional bitwise operations and expensive conversions between the CPU and GPU data.
@@ -211,10 +211,10 @@
     Empty enums are allowed.
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--enum-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--enum-declaration-element">Element declaration syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--enum-declaration">Declaration syntax</label->
+    <label- id="copy.syntax--enum-declaration-element">Element declaration syntax</label->
+</syntax->
 
 <p>
     Enum elements are <a href="#constant-values">constant values</a>.<br>
@@ -223,8 +223,8 @@
 </p>
 
 
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->enum</w-> <t->e</t-> : <t->int</t-> {
             a, b;              <c->// a = 0, b = 1</c->
@@ -236,7 +236,7 @@
             <w->return</w-> e.<k->c</k->; <c->// Implicitly convert e to float</c->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -264,8 +264,8 @@
     <li>Struct methods declared in the base struct are not inherited.</li>
     <li>Creating or destroying enum values doesn't call constructors or destructors declared in the base struct.</li>
 </ul></ul>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->struct</w-> <t->s</t-> {
             <t->uint</t-> n1, n2;
@@ -277,7 +277,7 @@
             c = (<k->50</k->, <k->60</k->)
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -303,8 +303,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -325,16 +325,16 @@
                     <f->check_day</f->(.<k->mon</k->);
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 OwO
                 TwT<cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -357,15 +357,15 @@
     Empty structs are allowed.<br>
     Struct members can be of any <a href="#types">type</a>, including other structs.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--struct-declaration">Declaration syntax</label2->
-    <label2- id="copy.syntax--struct-declaration-signature">Struct signature</label2->
-    <label2- id="copy.syntax--struct-declaration-body">Struct body</label2->
-    <label2- id="copy.syntax--specialization-constraint">Specialization constraint</label2->
-    <label2- id="copy.syntax--struct-declaration-member">Member declaration syntax</label2->
-</syntax2->
-<example2->
-    <label2->Example</label2->
+<syntax->
+    <label- id="copy.syntax--struct-declaration">Declaration syntax</label->
+    <label- id="copy.syntax--struct-declaration-signature">Struct signature</label->
+    <label- id="copy.syntax--struct-declaration-body">Struct body</label->
+    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
+    <label- id="copy.syntax--struct-declaration-member">Member declaration syntax</label->
+</syntax->
+<example->
+    <label->Example</label->
     <div>
         <w->struct</w-> <t->idk</t-> {
             <t->uint</t-> a, b;        <c->// Ok</c->
@@ -378,7 +378,7 @@
             var.b = <k->var.a</k-> * <k->4</k->;      <c->// Ok, var = (4, 8, ?)</c->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -404,8 +404,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <c->// 2D uint vector</c->
                 <w->struct</w-> <t->uint2</t-> {
@@ -424,16 +424,16 @@
                     <k->v</k->.<f->print</f->();
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 x: 15
                 y: 9<cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -470,8 +470,8 @@
     This constructor is not present in structs declared using the <code><w->nodefault</w-></code> meta keyword.<br>
     Constructors are allowed to take no arguments.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->struct</w-> <t->uint2</t-> {
             <t->uint</t-> x, y;
@@ -502,7 +502,7 @@
             <c->//uint3 d = (1, 2, 3);</c->  <ce->// Error, no suitable constructor declaration</ce->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -528,8 +528,8 @@
 </p>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example</label2->
+        <example->
+            <label->Example</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
                 <t->int</t-> last = <k->0</k->;
@@ -553,17 +553,17 @@
                     <t->s</t-> var = { <k->0.5</k-> };
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 Destroyed instance n.0
                 Destroyed instance n.1
                 <cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -619,8 +619,8 @@
     The <code><t->void</t-></code> type is used to declare routines that don't return any value.<br>
     It has no other purpose but it can be passed to type template parameters to generate different declarations.
 </p>
-<example2->
-    <label2->Example2</label2->
+<example->
+    <label->Example2</label->
     <div>
         <f->uint</f-> counter = <k->0</k->;
         <t->void</t-> <f->inc_counter</f->(){ counter<f->++</f->; }
@@ -629,11 +629,11 @@
             <f->inc_counter</f->();
         }
     </div>
-</example2->
+</example->
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example2</label2->
+        <example->
+            <label->Example2</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
                 <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->void</t-> <f->print_template_info</f->()
@@ -645,17 +645,17 @@
                     <f->print_template_info</f->&lt;<t->int</t->&gt;();
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 void
                 not void
                 <cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 
@@ -720,8 +720,8 @@
     <b><code><w->const</w-></code></b> can also be used before the name of a <b>variable</b> or <b>routine parameter</b> to <b>prevent them from being modified</b> after their declaration, although this doesn't turn the type of the symbol into a const type.<br>
     The address of <code><w->const</w-></code> variables or <code><w->const</w-></code> routine parameters is always returned as a <code><t->const</t-></code> pointer.
 </p>
-<example2->
-    <label2->Example 1 - Const pointer</label2->
+<example->
+    <label->Example 1 - Const pointer</label->
     <div>
         <t->void</t-> <f->main</f->(){
             <t->int</t-> var = <k->8</k->;
@@ -731,7 +731,7 @@
             <c->//@ptr = 9;</c->  <ce->// Error, cannot modify data pointed by const pointers</ce->
         }
     </div>
-    <label2->Example 2 - Const variable</label2->
+    <label->Example 2 - Const variable</label->
     <div>
         <t->void</t-> <f->main</f->(){
             <t->int</t-> var <w->const</w-> = <k->8</k->;
@@ -739,7 +739,7 @@
             <c->var = 9;</c->  <ce->// Error, cannot modify const variables</ce->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -1175,8 +1175,8 @@
     <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.<br>
     The <a href="#types">types</a> of the <a href="#expressions">expressions</a> returned from an <code><t->auto</t-></code> <a href="#routines">routine</a> must match.
 </p>
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <t->auto</t-> <f->func</f->(){
             <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
@@ -1189,7 +1189,7 @@
             <c->// No return statement, main has type void</c->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -1204,12 +1204,12 @@
     Circular dependencies generate a semantic error. //TODO LINK
 </p>
 
-<syntax2->
-    <label2- id="copy.syntax--typeof">Syntax</label2->
-</syntax2->
+<syntax->
+    <label- id="copy.syntax--typeof">Syntax</label->
+</syntax->
 
-<example2->
-    <label2->Example 1</label2->
+<example->
+    <label->Example 1</label->
     <div>
         <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
 
@@ -1218,13 +1218,13 @@
             <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int</c->
         }
     </div>
-</example2->
-<example2->
-    <label2->Example 2</label2->
+</example->
+<example->
+    <label->Example 2</label->
     <div>
         <c->//typeof(b) a(){};</c->  <ce->//Error, circular dependency with b</ce->
         <c->//typeof(a) b(){};</c->  <ce->//Error, circular dependency with a</ce->
     </div>
-</example2->
+</example->
 
 

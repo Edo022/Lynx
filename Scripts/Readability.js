@@ -12,11 +12,11 @@ var readability = {
                 checkParent = function(node){
                     if(node.parentElement == null) return NodeFilter.FILTER_ACCEPT;
                     switch(node.parentElement.tagName) {
-                        case 'EXAMPLE2-': return NodeFilter.FILTER_REJECT;
-                        case 'SYNTAX2-':  return NodeFilter.FILTER_REJECT;
-                        case 'TITLE':     return NodeFilter.FILTER_REJECT;
-                        case 'STYLE':     return NodeFilter.FILTER_REJECT;
-                        default:          return checkParent(node.parentElement);
+                        case 'EXAMPLE-': return NodeFilter.FILTER_REJECT;
+                        case 'SYNTAX-':  return NodeFilter.FILTER_REJECT;
+                        case 'TITLE':    return NodeFilter.FILTER_REJECT;
+                        case 'STYLE':    return NodeFilter.FILTER_REJECT;
+                        default:         return checkParent(node.parentElement);
                     }
                 }
 

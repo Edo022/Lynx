@@ -1,0 +1,93 @@
+:root {
+    --syntax-spacing:           20px;
+    --syntax-width:             65%;
+    --syntax-overlap-fix:       2px;
+    --syntax-table-padding:     2ch;
+    --syntax-margin:            32px;
+    --syntax-margin-2:          128px;
+    --syntax-internal-margin:   32px;
+
+    --syntax-line-h:      36px;
+    --syntax-arrow-w:     36px; /* must be in pixels as it is used by js */
+    --syntax-arrow-margin:6px;  /* must be in pixels as it is used by js */
+    --syntax-fg-arrow:         hsla(212, 14%, 24%, 900%);
+
+    --syntax-elm-margin:         4px;
+    --example-line-h:            2.4ch;
+
+
+    --bd-block:          hsl(212, 14%, 24%);
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Containers */
+syntax-, example- {
+    display: flex;
+    flex-direction: column;
+    word-spacing: normal;
+
+    min-width:  100%;
+    max-width:  100%;
+    /**/width:  100%;
+    margin: var(--syntax-margin) 0 var(--syntax-margin) 0;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+example- {
+    font-size: var(--font-size-medium);
+    white-space: pre;
+}
+example-.qrt, syntax-.qrt {
+    margin: var(--syntax-margin-2) 0 var(--syntax-margin-2) 0;
+}
+
+
+
+
+
+
+
+/* Tables and borders */
+example- div,
+syntax- table {
+    display: block;
+    border: 1px solid var(--bd-block);
+    border-radius: var(--code-decoration-r);
+    border-top-left-radius: 0;
+    background-color: var(--bg-pre);
+    box-sizing: border-box;
+    overflow: hidden;
+    margin: 0;
+
+    min-width: 100%;
+    max-width: 100%;
+    /**/width: 100%;
+    min-height: fit-content;
+    max-height: fit-content;
+    /**/height: fit-content;
+}
+syntax- table:last-child {
+    flex: 1;
+}
+example- > div {
+    font-family: monospace, monospace;
+    font-size: var(--font-size-code);
+    line-height: var(--example-line-h);
+    letter-spacing: 0;
+    font-size: var(--font-size-code);
+    overflow: auto;
+    white-space: pre;
+    padding: 0 var(--syntax-table-padding) 0 var(--syntax-table-padding);
+}

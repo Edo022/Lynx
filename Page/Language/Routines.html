@@ -45,14 +45,14 @@
 <p>
     Function <a href="#identifiers">identifiers</a> must be alphanumeric.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-function">Declaration syntax</label2->
-    <label2- id="copy.syntax--routine-declaration-function-signature">Function signature</label2->
-    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
-    <label2- id="copy.syntax--specialization-constraint">Specialization constraint</label2->
-</syntax2->
-<example2->
-    <label2->Example - Add function</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-function">Declaration syntax</label->
+    <label- id="copy.syntax--routine-declaration-function-signature">Function signature</label->
+    <label- id="copy.syntax--routine-declaration-body">Routine body</label->
+    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
+</syntax->
+<example->
+    <label->Example - Add function</label->
     <div>
         <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
             <w->return</w-> a + b;
@@ -62,7 +62,7 @@
             <t->int</t-> n = </t-><f->add</f->(<k->4</k->, <k->6</k->)
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -108,8 +108,8 @@
     A function can have multiple parameters <b>with</b> a default value, but they must all be declared <b>after</b> the <b>last</b> parameter that <b>doesn't have one</b>.<br>
     Parameters of <a href="#operators">operators</a> cannot have default value.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <w->import</w-> <s->&lt;math&gt;</s->;
         <t->double</t-> <f->pow</f->(<t->double</t-> <a->a</a->, <t->double</t-> <a->b</a-> = <k->2</k->) {
@@ -121,7 +121,7 @@
             <f->pow</f->(<k->3</k->);     <c->// Returns 9</c->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -150,11 +150,11 @@
     Each <a href="#funcitons">function</a> can only use a single parameter pack.<br>
     <a href="#operators">Operators</a> cannot use parameter packs.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-parameter-pack">Declaration syntax</label2->
-</syntax2->
-<example2->
-    <label2->Example 1</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-parameter-pack">Declaration syntax</label->
+</syntax->
+<example->
+    <label->Example 1</label->
     <div>
         <w->struct</w-> <t->NoArg</t-> { };
 
@@ -175,13 +175,13 @@
             <t->auto</t-> b = <f->get_middle_arg</f->(<k->1</k->, <k->2</k->);                   <c->// b has type NoArg</c->
         }
     </div>
-</example2->
+</example->
 <p>
     Parameter packs can be used in conjunction with the <a href="#abbreviated-template-syntax">abbreviated template syntax</a>.<br>
     This is explained in <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.
 </p>
-<example2->
-    <label2->Example 2 - Summation function</label2->
+<example->
+    <label->Example 2 - Summation function</label->
     <div>
         <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t->... <a->vals</a->...) {
             <w->return</w-> a <f->+</f-> <f->sum</f->(vals);
@@ -196,7 +196,7 @@
             <t->float</t-> r = <f->sum</f->(<k->5.9</k->, <k->n</k->, <k->1</k->, <k->true</k->);  <c->// r has value 12.9</c->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -227,14 +227,14 @@
     Declaring consecutive <a href="#idnetifiers">identifiers</a> is not allowed.<br>
     Operator precedence is explained in <a href="#declarations.operator-precedence">Operator precedence</a>.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-operator">Declaration syntax</label2->
-    <label2- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label2->
-    <label2- id="copy.syntax--routine-declaration-body">Routine body</label2->
-    <label2- id="copy.syntax--specialization-constraint">Specialization constraint</label2->
-</syntax2->
-<example2->
-    <label2->Example 1 - Promotion operator</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-operator">Declaration syntax</label->
+    <label- id="copy.syntax--routine-declaration-operator-signature">Operator signature</label->
+    <label- id="copy.syntax--routine-declaration-body">Routine body</label->
+    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
+</syntax->
+<example->
+    <label->Example 1 - Promotion operator</label->
     <div>
         <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
             <w->return</w-> n;
@@ -244,9 +244,9 @@
             <t->int</t-> r = <f->+</f->2;
         }
     </div>
-</example2->
-<example2->
-    <label2->Example 2 - Python-like ternary operator</label2->
+</example->
+<example->
+    <label->Example 2 - Python-like ternary operator</label->
     <div>
         <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
             <w->if</w->(condition) <w->return</w-> a;
@@ -257,7 +257,7 @@
             <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -286,8 +286,8 @@
     Associativity defines the order in which operators with the same priority and associativity are evaluated.<br>
     Right-associative operators are evaluated starting from the right, whilst left-associative operators are evaluated starting from the left.<br>
 </p>
-<example2->
-    <label2->Example 1 - Priority</label2->
+<example->
+    <label->Example 1 - Priority</label->
     <div>
         <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
@@ -306,9 +306,9 @@
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
         }
     </div>
-</example2->
-<example2->
-    <label2->Example 2 - Associativity</label2->
+</example->
+<example->
+    <label->Example 2 - Associativity</label->
     <div>
         <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
@@ -323,7 +323,7 @@
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -351,11 +351,11 @@
     They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
     As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
 </p>
-<syntax2->
-    <label2- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label2->
-</syntax2->
-<example2->
-    <label2->Example</label2->
+<syntax->
+    <label- id="copy.syntax--routine-declaration-parameter">Declaration syntax</label->
+</syntax->
+<example->
+    <label->Example</label->
     <div>
         <t->int</t-> <f->add</f->(<t->uint</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
             <w->return</w-> a <f->+</f-> b;
@@ -366,7 +366,7 @@
             <t->uint</t-> r = <f->add</f->(<k->a</k->, <k->6</k->);
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -389,8 +389,8 @@
     Reference parameters can only be of <a href="#pointer-types">pointer type</a> and the passed arguments must be <a href="#left-and-right-values">l-values</a>.<br>
     Inside the <a href="#routines">routine</a>, reference parameters act exactly as normal parameters.
 </p>
-<example2->
-    <label2->Example</label2->
+<example->
+    <label->Example</label->
     <div>
         <t->void</t-> <f->halve</f->(<t->float</t->@ &<a->n</a->) {
             @n <f->/=</f-> <k->2</k->;
@@ -402,7 +402,7 @@
             <c->//halve(8);</c->     <ce->// Error, 8 is not an l-value</ce->
         }
     </div>
-</example2->
+</example->
 
 
 
@@ -448,8 +448,8 @@
 <br>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example 1</label2->
+        <example->
+            <label->Example 1</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -475,15 +475,15 @@
                     <f->f</f->(<k->0.5</k->);   <c->// No implicit conversions</c->
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 abcc<cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
 <p style="margin-bottom: 0;">
@@ -501,8 +501,8 @@
 </ol>
 <split-example-container->
     <split-example-container-left->
-        <example2->
-            <label2->Example 2</label2->
+        <example->
+            <label->Example 2</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -523,17 +523,17 @@
                     <f->f</f->(<k->1.0</k->, <k->2</k->);
                 }
             </div>
-        </example2->
+        </example->
     </split-example-container-left->
     <split-example-container-right->
-        <example2->
-            <label2->Output</label2->
+        <example->
+            <label->Output</label->
             <div>
                 The first argument is not a double
                 The first argument is a double
                 More than one argument provided
                 <cursor-></cursor->
             </div>
-        </example2->
+        </example->
     </split-example-container-right->
 </split-example-container->
