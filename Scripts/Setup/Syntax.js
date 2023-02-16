@@ -222,8 +222,8 @@ var setup_syntax = {
             let r = rc.querySelector('DIV');
 
             // Fix heights
-            if(r.offsetHeight < l.offsetHeight) r.style.minHeight = r.style.maxHeight = `${ l.offsetHeight }px` //TODO this doesnt work properly
-            if(l.offsetHeight < r.offsetHeight) l.style.minHeight = l.style.maxHeight = `${ r.offsetHeight }px` //TODO this doesnt work properly
+            if(r.offsetHeight < l.offsetHeight) r.style.minHeight = r.style.maxHeight = `${ l.offsetHeight }px`
+            if(l.offsetHeight < r.offsetHeight) l.style.minHeight = l.style.maxHeight = `${ r.offsetHeight }px`
         }
     },
 

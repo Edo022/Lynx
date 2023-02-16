@@ -101,6 +101,7 @@
                     <a href="#namespaces">              <code><w->namespace</w-></code></a>
                     <a href="#enums">                   <code><w->enum</w-></code></a>
                     <a href="#structs">                 <code><w->struct</w-></code></a>
+                    <a href="#const-qualifier">         <code><t->const</t-></code></a>
                     <a href="#auto-specifier">          <code><t->auto</t-></code></a>
                     <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
@@ -110,6 +111,8 @@
                     <a href="#export-directive">        <code><w->export</w-></code></a>
                     <a href="#boolean-type">            <code><k->true</k-></code></a>
                     <a href="#boolean-type">            <code><k->false</k-></code></a>
+                    <a href="#pointer-types">           <code><k->@</k-></code></a>
+                    <a href="#pointer-types">           <code><k->$</k-></code></a>
                 </div>
                 <div class="split-td">
                     <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -146,17 +149,10 @@
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
                 </div>
                 <div class="split-td">
-                    <a href="#references"><code>&</code></a>
-                    <code>*</code>
-                    <a href="#temp  orary-variables"><code>$</code></a>
-                    <code>=</code> //TODO
-                </div>
-                <div class="split-td">
-                    <a href="#const-qualifier">            <code><t->const</t-></code></a>
+                    <a href="#specialization-constraint">       <code><w->when</w-></code></a>
                     <a href="#declarations.operator-precedence"><code><w->priority</w-></code></a>
                     <code><w->as</w-></code>
                     <code><w->to</w-></code>
-                    <a href="#temporary-variables"><code>$</code></a>
                     <code>=</code>
                 </div>
             </div></td>
@@ -221,16 +217,12 @@
             <span>Used to declare an <a href="#enums">enum</a>.</span>
         </li>
         <li>
-            <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
-            <span>Specifies that a pointer type is const. Also used to declare const variables and routine parameters.</span>
-        </li>
-        <li>
-            <span><a href="#templates"><code><w->when</w-></code></a></span>
-            <span>Specifies a <a href="#specialization-constraints">specialization constraint</a><br></span>
-        </li>
-        <li>
             <span><a href="#structs"><code><w->struct</w-></code></a></span>
             <span>Used to declare a <a href="#structs">struct</a>.</span>
+        </li>
+        <li>
+            <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
+            <span>Specifies that a pointer type is const. Also used to declare const variables and routine parameters.</span>
         </li>
         <li>
             <span><a href="#auto-specifier"><code><t->auto</t-></code></a></span>
@@ -347,7 +339,7 @@
     <ul class="summary-list">
         <li>
             <span><a href="#statements"><code>,</code></a></span>
-            <span>Separates 2 or more <a href="#expressions">expressions</a>.</span>
+            <span>Separates 2 or more <a href="#expressions">expressions</a> or <a href="#match-statement">match cases</a>.</span>
         </li>
         <li>
             <span><a href="#statements"><code>;</code></a></span>
@@ -444,13 +436,6 @@
             <span>
                 Defines the end of a numerical range<br>
                 <span class="meta-keyword-constraint">[When used in the value of a <a href="#for-loops">for-range</a> loop or a <a href="#match-statement">match case</a>]</span>.
-            </span>
-        </li>
-        <li>
-            <span><code><w->or</w-></code></span>
-            <span>
-                Adds additional accepted values for a match case<br>
-                <span class="meta-keyword-constraint">[When used in the value of a <a href="#match-statement">match case</a>]</span>.
             </span>
         </li>
         <li>

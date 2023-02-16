@@ -1,13 +1,4 @@
 
-
-function capitalize(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-
-
-
-
 var setup_fix = {
     fix_split_td_height : function(){
         let c = document.querySelectorAll('.split-td-outer');

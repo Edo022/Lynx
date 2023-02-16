@@ -27,7 +27,7 @@
 
 
 
-<body onmouseup="ui_slider._onresize()">
+<body onresize="ui_slider._onresize()">
     <div id="main-mask" class="main-mask"></div>
     <input type="range" min="0" max="99999999" value="0" step="0.00001" class="slider" id="main-slider">
     <left- class="hide-scrollbar" id="main-left">
@@ -251,10 +251,8 @@
     <index-><indexh->quick-reference-tabs</indexh->
         <index-><indexh->syntaxes</indexh->
             <indexd->symbol-declarations</indexd->
-            <index-><indexh->statement-syntaxes</indexh->
+            <indexd->statement-syntaxes</indexd->
             <indexd->expression-syntaxes</indexd->
-            </index->
-            <indexd->local-names</indexd->
         </index->
         <index-><indexh->undefined-behaviours</indexh->
             <indexd->conversions</indexd->
@@ -611,6 +609,7 @@
                     <a href="#namespaces">              <code><w->namespace</w-></code></a>
                     <a href="#enums">                   <code><w->enum</w-></code></a>
                     <a href="#structs">                 <code><w->struct</w-></code></a>
+                    <a href="#const-qualifier">         <code><t->const</t-></code></a>
                     <a href="#auto-specifier">          <code><t->auto</t-></code></a>
                     <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
                     <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
@@ -620,6 +619,8 @@
                     <a href="#export-directive">        <code><w->export</w-></code></a>
                     <a href="#boolean-type">            <code><k->true</k-></code></a>
                     <a href="#boolean-type">            <code><k->false</k-></code></a>
+                    <a href="#pointer-types">           <code><k->@</k-></code></a>
+                    <a href="#pointer-types">           <code><k->$</k-></code></a>
                 </div>
                 <div class="split-td">
                     <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -656,17 +657,10 @@
                     <a href="#abbreviated-template-syntax"><code>?</code></a>
                 </div>
                 <div class="split-td">
-                    <a href="#references"><code>&</code></a>
-                    <code>*</code>
-                    <a href="#temp  orary-variables"><code>$</code></a>
-                    <code>=</code> //TODO
-                </div>
-                <div class="split-td">
-                    <a href="#const-qualifier">            <code><t->const</t-></code></a>
+                    <a href="#specialization-constraint">       <code><w->when</w-></code></a>
                     <a href="#declarations.operator-precedence"><code><w->priority</w-></code></a>
                     <code><w->as</w-></code>
                     <code><w->to</w-></code>
-                    <a href="#temporary-variables"><code>$</code></a>
                     <code>=</code>
                 </div>
             </div></td>
@@ -714,16 +708,12 @@
             <span>Used to declare an <a href="#enums">enum</a>.</span>
         </li>
         <li>
-            <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
-            <span>Specifies that a pointer type is const. Also used to declare const variables and routine parameters.</span>
-        </li>
-        <li>
-            <span><a href="#templates"><code><w->when</w-></code></a></span>
-            <span>Specifies a <a href="#specialization-constraints">specialization constraint</a><br></span>
-        </li>
-        <li>
             <span><a href="#structs"><code><w->struct</w-></code></a></span>
             <span>Used to declare a <a href="#structs">struct</a>.</span>
+        </li>
+        <li>
+            <span><a href="#const-qualifier"><code><t->const</t-></code></a></span>
+            <span>Specifies that a pointer type is const. Also used to declare const variables and routine parameters.</span>
         </li>
         <li>
             <span><a href="#auto-specifier"><code><t->auto</t-></code></a></span>
@@ -840,7 +830,7 @@
     <ul class="summary-list">
         <li>
             <span><a href="#statements"><code>,</code></a></span>
-            <span>Separates 2 or more <a href="#expressions">expressions</a>.</span>
+            <span>Separates 2 or more <a href="#expressions">expressions</a> or <a href="#match-statement">match cases</a>.</span>
         </li>
         <li>
             <span><a href="#statements"><code>;</code></a></span>
@@ -920,13 +910,6 @@
             <span>
                 Defines the end of a numerical range<br>
                 <span class="meta-keyword-constraint">[When used in the value of a <a href="#for-loops">for-range</a> loop or a <a href="#match-statement">match case</a>]</span>.
-            </span>
-        </li>
-        <li>
-            <span><code><w->or</w-></code></span>
-            <span>
-                Adds additional accepted values for a match case<br>
-                <span class="meta-keyword-constraint">[When used in the value of a <a href="#match-statement">match case</a>]</span>.
             </span>
         </li>
         <li>
@@ -5073,7 +5056,7 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><s-any->name</s-any-></td>
+            <td><s-any->symbol identifier<span class="hidden">&nbsp;*</span></s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->&lt;</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -5111,6 +5094,9 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
+    <syntax-note->
+        * For operators, the first identifier is used.
+    </syntax-note->
 </syntax->
 
 
@@ -5201,16 +5187,16 @@
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
             <td><s-vbtm->import</s-vbtm-></td>
             <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><s-any-><span>symbol<sup>path</sup></span></s-any-></td>
+            <td><s-path->symbol</s-path-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><span><s-any->name</s-any-></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5293,11 +5279,11 @@
             <td></td>
             <td></td>
             <td><b-tr-></b-tr-><b-br-></b-br-></td>
-            <td><s-any-><span>symbol<sup>path</sup></span></s-any-></td>
+            <td><s-path->symbol</s-path-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5386,7 +5372,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->namespace</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-trc-></b-trc-></td>
             <td><s-vbtm->{</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
@@ -5436,7 +5422,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->enum</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->:</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
@@ -5501,7 +5487,7 @@
         </tr>
         <tr>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->=</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
@@ -5587,7 +5573,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->struct</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -5636,7 +5622,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-path->type</s-path-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->,</s-vbtm-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5762,7 +5748,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-path->return type</s-path-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->(</s-vbtm-></td>
             <td><b-ltc-></b-ltc-><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
@@ -5812,7 +5798,7 @@
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span><span class="hidden">&nbsp;**</span></s-any-></td>
+            <td><s-any->name<span class="hidden">&nbsp;**</span></s-any-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5927,7 +5913,7 @@
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->=</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
@@ -5942,7 +5928,7 @@
     <table class="s-decl">
         <tr>
             <td><b-br-></b-br-></td>
-            <td><s-any->template parameter pack name</s-any-></td>
+            <td><s-path->template parameter pack</s-path-></td>
             <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
@@ -5957,7 +5943,7 @@
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
             <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->...</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
@@ -6075,7 +6061,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->alias</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any->symbol</s-any-></td>
+            <td><s-path->symbol</s-path-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
@@ -6238,9 +6224,6 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
-    <syntax-note->
-        * Can be an integral type or an enum.
-    </syntax-note->
     <label- class="s-decl" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
     <table class="s-decl">
         <tr>
@@ -6262,6 +6245,9 @@
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
+    <syntax-note->
+        * Can be an integral type or an enum.
+    </syntax-note->
 </syntax->
 
 
@@ -6296,13 +6282,6 @@
         </tr>
     </table>
 </syntax->
-
-
-
-
-
-
-
 <syntax- class="qrt">
     <label- class="s-sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label->
     <table class="s-sub">
@@ -6345,28 +6324,34 @@
     <table class="s-sub">
         <tr>
             <td></td>
+            <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
             <td><b-lbc-></b-lbc-></td>
-            <td></td>
             <td><b-br-></b-br-></td>
-            <td><s-vbtm->:</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><s-vbtm->{</s-vbtm-></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><s-sub->statement</s-sub-></td>
+            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td><s-vbtm->}</s-vbtm-></td>
+            <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
             <td><s-expr-><t->[t]</t->&nbsp;a</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->to</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><b-lr-></b-lr-></td>
             <td><s-expr-><t->[t]</t->&nbsp;b</s-expr-></td>
+            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td><b-rtc-></b-rtc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
+            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
+            <td><b-tlc-></b-tlc-></td>
+            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -6380,6 +6365,9 @@
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
             <td><b-tlc-></b-tlc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
             <td></td>
         </tr>
     </table>
@@ -6453,7 +6441,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->in</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
@@ -6482,7 +6470,7 @@
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->as</s-vbtm-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-any-><span>name</span></s-any-></td>
+            <td><s-any->name</s-any-></td>
             <td><b-ltc-></b-ltc-></td>
             <td></td>
             <td></td>
@@ -6949,36 +6937,11 @@
     <label- class="s-expr" id="syntax--expression-variable"><a href="#variables">Variables</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><s-any->parent scope name<span class="hidden">&nbsp;*</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-vbtm->.</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-trc-></b-trc-></td>
-            <td><s-any->name</s-any-></td>
+            <td><s-path->path to variable</s-path-></td>
             <td><b-lr-></b-lr-></td>
-        </tr>
-        <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-            <td></td>
-            <td></td>
         </tr>
     </table>
-    <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <s-vbtm->.</s-vbtm-> token
-    </syntax-note->
 </syntax->
 
 
@@ -7001,16 +6964,9 @@
         <tr>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->$</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td><b-lr-></b-lr-></td>
             <td><s-expr-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></s-expr-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td><b-lr-></b-lr-></td>
         </tr>
     </table>
     <syntax-note->
@@ -7037,7 +6993,7 @@
     <table class="s-expr">
         <tr>
             <td><b-lr-></b-lr-></td>
-            <td><s-any->name</s-any-></td>
+            <td><s-path->path to parameter</s-path-></td>
             <td><b-lr-></b-lr-></td>
         </tr>
     </table>
@@ -7061,11 +7017,7 @@
     <label- class="s-expr" id="syntax--expression-function-call"><a href="#declarations.functions">Function call</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -7076,12 +7028,8 @@
             <td><b-lr-></b-lr-></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><s-any->parent scope name<span class="hidden">&nbsp;*</span></s-any-></td>
             <td><b-lr-></b-lr-></td>
-            <td><s-vbtm->.</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
-            <td><s-any->name</s-any-></td>
+            <td><s-path->path to function</s-path-></td>
             <td><b-lr-></b-lr-></td>
             <td><s-vbtm->(</s-vbtm-></td>
             <td><b-lr-></b-lr-><b-br-></b-br-></td>
@@ -7091,11 +7039,7 @@
             <td><b-lbc-></b-lbc-></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -7106,9 +7050,6 @@
             <td><b-tlc-></b-tlc-></td>
         </tr>
     </table>
-    <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <s-vbtm->.</s-vbtm-> token
-    </syntax-note->
 </syntax->
 
 
@@ -7131,174 +7072,34 @@
     <label- class="s-expr" id="syntax--expression-operator-call"><a href="#declarations.operators">Operator call</a></label->
     <table class="s-expr">
         <tr>
+            <td></td>
+            <td></td>
+            <td></td>
             <td><b-brc-></b-brc-><b-c-></b-c-></td>
             <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-brc-></b-brc-><b-lr-></b-lr-></td>
-            <td><s-any->name<span class="hidden">&nbsp;**</span></s-any-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td><b-br-></b-br-><b-lr-></b-lr-></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
-            <td><s-any->parent scope name<span class="hidden">&nbsp;*</span></s-any-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><s-vbtm->.</s-vbtm-></td>
+            <td><b-lrc-></b-lrc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
+            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td><s-path->path to operator<span class="hidden">&nbsp;**</span></s-path-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-br-></b-br-></td>
+            <td><s-expr->argument<span class="hidden">&nbsp;*</span></s-expr-></td>
             <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
-            <td><b-tb-></b-tb-><b-bt-></b-bt-></td>
-            <td><b-br-></b-br-><b-tr-></b-tr-></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-            <td><s-expr->argument<span class="hidden">&nbsp;**</span></s-expr-></td>
-            <td><b-ltc-></b-ltc-></td>
+            <td><b-trct-></b-trct-><b-c--t-></b-c--t-></td>
+            <td><b-rtcb-></b-rtcb-><b-c--b-></b-c--b-><b-lrct-></b-lrct-><b-c--t-></b-c--t-></td>
+            <td><b-rlcb-></b-rlcb-><b-c--b-></b-c--b-><b-lrct-></b-lrct-><b-c--t-></b-c--t-></td>
+            <td><b-rlcb-></b-rlcb-><b-c--b-></b-c--b-><b-ltct-></b-ltct-></td>
+            <td><b-rlcb-></b-rlcb-><b-c--b-></b-c--b-></td>
+            <td><b-tlcb-></b-tlcb-></td>
         </tr>
     </table>
     <syntax-note->
-        * The name of the innermost scope enclosing the declaration of the symbol referenced after the <s-vbtm->.</s-vbtm-> token<br>
-        ** At least one name and one argument
+        * At least one argument and one path.<br>
+        ** Noninitial paths are not required to specify the names of parent symbols or template instantiation types. Their identifier is enough.
     </syntax-note->
-</syntax->
-
-
-<h1 id="local-names"></h1>
-<p>
-    This section summarizes all the syntaxes used to reference any type of <a href="#semantic-elements">symbol</a>.<br>
-    The provided syntaxes are to be interpreted as the <a href="#name-resolution">local name</a> a <a href="#semantic-elements">symbol</a> would have if declared as the corresponding semantic element.<br>
-    They are concatenated with <s-vbtm->.</s-vbtm-> tokens to create names for the <a href="#name-resolution">name resolution</a>.
-    //TODO
-</p>
-<syntax- class="qrt">
-    <label-><a href="#primitive-types" style="color: var(--fg-text);">Primitive types</a>, <a href="#enums" style="color: var(--fg-text);">Enums</a>, <a href="#structs" style="color: var(--fg-text);">Structs</a>, <a href="#void" style="color: var(--fg-text);">Void</a>, <a href="#typename" style="color: var(--fg-text);">Typename</a></label->
-    <table>
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><s-any->name<sup>id</sup></s-any-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-    </table>
-</syntax->
-<syntax- class="qrt">
-    <label-><a href="#arrays" style="color: var(--fg-text);">Arrays</a></label->
-    <table>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><s-any-><t->uint<sup>r</sup></t-></s-any-></td>
-            <td><branch-b-></branch-b-><branch-end-></branch-end-></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><s-any-><t->T<sup>type</sup></t-></s-any-></td>
-            <td><loop-end-></loop-end-><b-lr-></b-lr-></td>
-            <td><s-vbtm->[</s-vbtm-></td>
-            <td><branch-cr-></branch-cr-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><branch-cl-></branch-cl-><branch-end-></branch-end-></td>
-            <td><s-vbtm->]</s-vbtm-></td>
-            <td><branch-c-></branch-c-><loop-start-></loop-start-><branch-end-></branch-end-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td></td>
-        </tr>
-    </table>
-</syntax->
-<syntax- class="qrt">
-    <label-><a href="#tuples" style="color: var(--fg-text);">Tuples</a></label->
-    <table>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><s-vbtm->(</s-vbtm-></td>
-            <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><s-any-><t->T<sup>type</sup></t-></s-any-></td>
-            <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><s-vbtm->,</s-vbtm-></td>
-            <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td></td>
-        </tr>
-    </table>
-</syntax->
-<syntax- class="qrt">
-    <label-><a href="#variables" style="color: var(--fg-text);">Variables</a>, <a href="#functions" style="color: var(--fg-text);">Functions</a>, <a href="#functions-definitions" style="color: var(--fg-text);">Parameters</a>, <a href="#symbol-aliases" style="color: var(--fg-text);">Symbol aliases</a>, <a href="#templates" style="color: var(--fg-text);">Templates</a></label->
-        <table>
-            <tr>
-                <td><b-lr-></b-lr-></td>
-                <td><s-any->name<sup>id</sup></s-any-></td>
-                <td><b-lr-></b-lr-></td>
-            </tr>
-        </table>
-</syntax->
-<syntax- class="qrt">
-    <label-><a href="#struct-templates" style="color: var(--fg-text);">Generated structs</a>, <a href="#function-templates" style="color: var(--fg-text);">Generated functions</a></label->
-    <table>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><s-vbtm->&gt;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
-        </tr>
-        <tr>
-            <td><b-lr-></b-lr-></td>
-            <td><s-any->name<sup>id</sup></s-any-></td>
-            <td><b-lr-></b-lr-></td>
-            <td><s-vbtm->&lt;</s-vbtm-></td>
-            <td><branch-c-></branch-c-><loop-end-></loop-end-><branch-end-></branch-end-></td>
-            <td><s-any-><t->T<sup>type</sup></t-></s-any-></td>
-            <td><branch-c-></branch-c-><branch-t-></branch-t-><branch-end-></branch-end-></td>
-            <td><s-vbtm->,</s-vbtm-></td>
-            <td><loop-start-></loop-start-><branch-end-></branch-end-></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td><loop-connector-></loop-connector-></td>
-            <td></td>
-        </tr>
-    </table>
 </syntax->
 
 
@@ -7329,11 +7130,16 @@
     <script src="Scripts/Readability.js"></script>
 
     <script>
-        window.addEventListener('popstate', move_to_view);
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', function(){
+            init_primitive();
+            setTimeout(init_async, 0);
+        });
+        window.addEventListener('popstate', function(){ move_to_view("smooth"); });
         window.addEventListener('beforeunload', unload);
         //
         //TODO implement counter to manage more dynamic css loadings
     </script>
 </body>
 </html>
+
+

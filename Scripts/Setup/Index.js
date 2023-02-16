@@ -1,5 +1,13 @@
 index_indent = '3ch';
 
+
+
+function capitalize(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+
+
 var setup_index = {
     // Indent and enumerate index elements
     format_elm : function(elm, depth, last){
@@ -40,7 +48,6 @@ var setup_index = {
                 header.innerHTML = `${ num } ${ name }`;
                 if(depth == 0) header.insertAdjacentHTML('afterend', '<sep-3-></sep-3->');
                 header.classList.add('h' + depth2);
-                console.debug(`[${ id }] - loaded to ${ num }`);
             }
             else if(c.tagName == 'INDEX-') {
                 setup_index.format_elm(c, depth + 1, last + (i - separators) + '.');
@@ -121,7 +128,6 @@ var setup_index = {
 
 
         // Setup scroll listener
-        let right = document.querySelector('right-');
         right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
 
 

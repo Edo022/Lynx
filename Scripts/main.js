@@ -19,22 +19,6 @@ function move_to_view(smooth){
 
 
 
-function init() {
-    ui_slider.init();
-
-    setup_index.init();
-    setup_fix.init();
-    setup_syntax.init();
-    setup_copy_syntax.init();
-
-    summary_list.init();
-
-    readability.init();
-
-    ui_copy_code.init();
-    //!^ Must be executed after modifying the body as changing the innerHTML recreates all the elements and removes the event listeners
-}
-
 
 function view(){
     // This scrolls to the correct header, which is the same the browser already scrolled to.
@@ -48,6 +32,38 @@ function view(){
     let e = document.getElementById('main-mask');
     e.style.pointerEvents = 'none';
     e.style.opacity = '0%';
+}
+
+
+
+function log_function(f, name){
+    var startTime = performance.now()
+    f();
+    var endTime = performance.now()
+    console.log(`${ name } took ${endTime - startTime} ms`)
+}
+
+
+
+function init_primitive(){
+    log_function(ui_slider.init, "ui_slider");
+    log_function(setup_index.init, "setup_index");
+
+    view();
+}
+
+
+function init_async() {
+    log_function(setup_fix.init, "setup_fix");
+    log_function(setup_syntax.init, "setup_syntax");
+    log_function(setup_copy_syntax.init, "setup_copy_syntax");
+
+    log_function(summary_list.init, "summary_list");
+    log_function(readability.init, "readability");
+    log_function(ui_copy_code.init, "ui_copy_code");
+    //!^ Must be executed after modifying the body as changing the innerHTML recreates all the elements and removes the event listeners
+
+    move_to_view("smooth");
 }
 
 
