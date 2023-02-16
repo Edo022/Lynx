@@ -801,7 +801,7 @@
 
 
 
-<syntax- class="qrt nobottom">
+<syntax- class="qrt">
     <label- class="s-decl" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
     <table class="s-decl">
         <tr>
@@ -1033,76 +1033,64 @@
 
         *** No more than once.
     </syntax-note->
+    <label- class="s-decl" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
+    <table class="s-decl">
+        <tr>
+            <td></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-></td>
+            <td><s-path->type</s-path-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><s-any-><span>name</span></s-any-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-vbtm->=</s-vbtm-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><s-expr-><t->[type]</t->&nbsp;value</s-expr-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+        </tr>
+    </table>
+    <syntax-note->
+        * Only if type is a <a href="#pointer-types">pointer type</a>.
+    </syntax-note->
+    <label- class="s-decl" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
+    <table class="s-decl">
+        <tr>
+            <td><b-br-></b-br-></td>
+            <td><s-any->template parameter pack name</s-any-></td>
+            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
+            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-path->type</s-path-></td>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><s-any-><span>name</span></s-any-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><s-vbtm->...</s-vbtm-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+    </table>
 </syntax->
-
-
-<split-example-container- class="qrt notop">
-    <split-example-container-left->
-        <syntax->
-            <label- class="s-decl" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
-            <table class="s-decl">
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                    <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                    <td><b-lbc-></b-lbc-></td>
-                    <td></td>
-                    <td><b-brc-></b-brc-><b-c-></b-c-></td>
-                    <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                    <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                    <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                    <td><b-lbc-></b-lbc-></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-></td>
-                    <td><s-path->type</s-path-></td>
-                    <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
-                    <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><s-any-><span>name</span></s-any-></td>
-                    <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><s-vbtm->=</s-vbtm-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><s-expr-><t->[type]</t->&nbsp;value</s-expr-></td>
-                    <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                </tr>
-            </table>
-            <syntax-note->
-                * Only if type is a <a href="#pointer-types">pointer type</a>.
-            </syntax-note->
-        </syntax->
-    </split-example-container-left->
-    <split-example-container-right->
-        <syntax->
-            <label- class="s-decl" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
-            <table class="s-decl">
-                <tr>
-                    <td><b-br-></b-br-></td>
-                    <td><s-any->template parameter pack name</s-any-></td>
-                    <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-                    <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-                    <td><b-lbc-></b-lbc-></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><s-path->type</s-path-></td>
-                    <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
-                    <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><s-any-><span>name</span></s-any-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><s-vbtm->...</s-vbtm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </syntax->
-    </split-example-container-right->
-</split-example-container->
 
 
 
@@ -1283,7 +1271,7 @@
 
 
 
-<syntax- class="qrt nobottom">
+<syntax- class="qrt">
     <label- class="s-decl" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
     <table class="s-decl">
         <tr>
@@ -1360,58 +1348,48 @@
         * Can be omitted when using the <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.<br>
         ** No more than once.
     </syntax-note->
+    <label- class="s-decl" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
+    <table class="s-decl">
+        <tr>
+            <td><b-br-></b-br-></td>
+            <td><s-vbtm->type</s-vbtm-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><s-any->name</s-any-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+    </table>
+    <syntax-note->
+        * Can be an integral type or an enum.
+    </syntax-note->
+    <label- class="s-decl" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
+    <table class="s-decl">
+        <tr>
+            <td><b-br-></b-br-></td>
+            <td><s-vbtm->type</s-vbtm-></td>
+            <td><b-lbc-></b-lbc-></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
+            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td><s-any->name</s-any-></td>
+            <td><b-lr-></b-lr-></td>
+            <td><s-vbtm->...</s-vbtm-></td>
+            <td><b-lr-></b-lr-></td>
+        </tr>
+    </table>
 </syntax->
-<split-example-container- class="qrt notop">
-    <split-example-container-left->
-        <syntax->
-            <label- class="s-decl" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
-            <table class="s-decl">
-                <tr>
-                    <td><b-br-></b-br-></td>
-                    <td><s-vbtm->type</s-vbtm-></td>
-                    <td><b-lbc-></b-lbc-></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
-                    <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><s-any->name</s-any-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-            <syntax-note->
-                * Can be an integral type or an enum.
-            </syntax-note->
-        </syntax->
-    </split-example-container-left->
-    <split-example-container-right->
-        <syntax->
-            <label- class="s-decl" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
-            <table class="s-decl">
-                <tr>
-                    <td><b-br-></b-br-></td>
-                    <td><s-vbtm->type</s-vbtm-></td>
-                    <td><b-lbc-></b-lbc-></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
-                    <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
-                    <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
-                    <td><s-any->name</s-any-></td>
-                    <td><b-lr-></b-lr-></td>
-                    <td><s-vbtm->...</s-vbtm-></td>
-                    <td><b-lr-></b-lr-></td>
-                </tr>
-            </table>
-        </syntax->
-    </split-example-container-right->
-</split-example-container->
 
 
 

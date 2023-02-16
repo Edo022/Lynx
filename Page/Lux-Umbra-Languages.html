@@ -164,7 +164,7 @@
     <script src="Scripts/Readability.js"></script>
 
     <script>
-        window.addEventListener('popstate', move_to_view);
+        window.addEventListener('popstate', function(){ move_to_view("smooth"); });
         document.addEventListener('DOMContentLoaded', init);
         window.addEventListener('beforeunload', unload);
         //<!--! view() called after readability css load -->

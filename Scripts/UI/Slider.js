@@ -152,6 +152,7 @@ var ui_slider = {
         ")";
         ui_slider.update_logo_width(slider.value);
         window.localStorage.setItem("slider-value", slider.value);
+        move_to_view("auto"); // Fix random scrolling caused by children resizing
     },
 
     // Update on browser zoom and window resize
@@ -172,15 +173,21 @@ var ui_slider = {
         if(window.localStorage.getItem("slider-set") != "set") {
             ui_slider.init_slider_first_time();
         }
-        slider.addEventListener("input", ui_slider.update_main_width);
+        slider.addEventListener("onmouseup", ui_slider.update_main_width);
         slider.value = window.localStorage.getItem("slider-value");
     },
 
 
 
+
+
+
+
+    //TODO maybe fix this mess of an hacked contraption thingie
     init : function() {
         // Save slider element in global variable
         slider = document.getElementById("main-slider");
+
 
         // Calculate the minimum value of the slider
         let min = document.createElement('div');
@@ -190,6 +197,7 @@ var ui_slider = {
         min.style.maxWidth = "calc(var(--main-padding-l))";
         document.body.appendChild(min);
 
+
         // Calculate the maximum value of the slider (starts from the right)
         let max = document.createElement('div');
         max.style.position = "fixed";
@@ -198,6 +206,7 @@ var ui_slider = {
         max.style.maxWidth = "calc(var(--main-padding-r) * 2 + var(--slider-w))";
         document.body.appendChild(max);
 
+
         // Calculate the workspace width in pixels
         let vw = document.createElement('div');
         vw.style.position = "fixed";
@@ -205,6 +214,7 @@ var ui_slider = {
         vw.style.maxWidth = "100vw";
         vw.id = "CALC-VW";
         document.body.appendChild(vw);
+
 
         // Run initializer functions
         ui_slider.init_slider();

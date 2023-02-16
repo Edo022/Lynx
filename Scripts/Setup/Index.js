@@ -103,11 +103,9 @@ var setup_index = {
         let h = document.querySelectorAll('h1');
         for(var i = 0; i < h.length; i++) {
 
-        console.log("aaa");
             // Check if element is in view
             let view = right.getBoundingClientRect();
             if(h[i].getBoundingClientRect().top >= view.top + parseInt(getComputedStyle(document.body).getPropertyValue('--sep-4'))) {
-        console.log("bbb");
                 setup_index.on_scroll_changed(h, i);
                 return;
             }
@@ -124,8 +122,6 @@ var setup_index = {
 
         // Setup scroll listener
         let right = document.querySelector('right-');
-        console.log("HEREEEE");
-        console.log(document.querySelector('right-'));
         right.addEventListener('scroll', function(){ setup_index.check_scroll(right); });
 
 

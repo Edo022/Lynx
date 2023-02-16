@@ -13,6 +13,7 @@ body {
     color: var(--fg-text);
     position: fixed;
     z-index: -9999;
+    overflow: hidden;
 
     word-spacing: var(--word-spacing);
     letter-spacing: var(--char-spacing);

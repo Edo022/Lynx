@@ -78,7 +78,7 @@ var setup_syntax = {
         for(let j = 0; j < children.length; ++j) {
             let tagName = children[j].tagName;                              // Name of the tag
             let w = children[j].parentElement.clientWidth - margin * 2;     // SVG width
-            let h = children[j].clientHeight;                               // SVG height
+            let h = children[j].offsetHeight;                               // SVG height
             let s = '';                                                     // Output path string
             let f = tagName.charCodeAt(2);                                  // First position (From)
             let t = tagName.charCodeAt(3);                                  // Second potision (To)
@@ -222,8 +222,8 @@ var setup_syntax = {
             let r = rc.querySelector('DIV');
 
             // Fix heights
-            if(r.clientHeight < l.clientHeight) r.style.minHeight = r.style.maxHeight = `${ l.clientHeight }px` //TODO this doesnt work properly
-            if(l.clientHeight < r.clientHeight) l.style.minHeight = l.style.maxHeight = `${ r.clientHeight }px` //TODO this doesnt work properly
+            if(r.offsetHeight < l.offsetHeight) r.style.minHeight = r.style.maxHeight = `${ l.offsetHeight }px` //TODO this doesnt work properly
+            if(l.offsetHeight < r.offsetHeight) l.style.minHeight = l.style.maxHeight = `${ r.offsetHeight }px` //TODO this doesnt work properly
         }
     },
 
