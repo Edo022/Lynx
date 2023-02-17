@@ -87,7 +87,6 @@ var setup_index = {
         }
         window.sessionStorage.setItem('index.selected_id', new_);
 
-        // console.log(new_);
         document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';
     },
 

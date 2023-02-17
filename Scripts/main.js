@@ -40,20 +40,15 @@ function log_function(f, name){
     var startTime = performance.now()
     f();
     var endTime = performance.now()
-    console.log(`${ name } took ${endTime - startTime} ms`)
+    console.debug(`${ name } took ${endTime - startTime} ms`)
 }
 
 
 
-function init_primitive(){
+function init(){
     log_function(ui_slider.init, "ui_slider");
     log_function(setup_index.init, "setup_index");
 
-    view();
-}
-
-
-function init_async() {
     log_function(setup_fix.init, "setup_fix");
     log_function(setup_syntax.init, "setup_syntax");
     log_function(setup_copy_syntax.init, "setup_copy_syntax");
@@ -63,7 +58,7 @@ function init_async() {
     log_function(ui_copy_code.init, "ui_copy_code");
     //!^ Must be executed after modifying the body as changing the innerHTML recreates all the elements and removes the event listeners
 
-    move_to_view("smooth");
+    view();
 }
 
 

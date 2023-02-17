@@ -173,7 +173,7 @@ var ui_slider = {
         if(window.localStorage.getItem("slider-set") != "set") {
             ui_slider.init_slider_first_time();
         }
-        slider.addEventListener("onmouseup", ui_slider.update_main_width);
+        slider.addEventListener("mouseup", ui_slider.update_main_width);
         slider.value = window.localStorage.getItem("slider-value");
     },
 

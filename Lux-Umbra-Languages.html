@@ -7130,10 +7130,7 @@
     <script src="Scripts/Readability.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function(){
-            init_primitive();
-            setTimeout(init_async, 0);
-        });
+        document.addEventListener('DOMContentLoaded', init);
         window.addEventListener('popstate', function(){ move_to_view("smooth"); });
         window.addEventListener('beforeunload', unload);
         //

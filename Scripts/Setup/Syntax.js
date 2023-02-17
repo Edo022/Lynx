@@ -67,7 +67,8 @@ var setup_syntax = {
 
         // For each tag
         let children = document.querySelectorAll(
-            'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,   B-RT-,   B-BL-,   B-BT-,   B-BR-,   B-LT-,   B-LR-,   B-LB-, '   +
+            // 'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,   B-RT-,   B-BL-,   B-BT-,   B-BR-,   B-LT-,   B-LR-,   B-LB-, '   +
+            'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,   B-RT-,   B-BL-,   B-BT-,   B-BR-,   B-LT-,            B-LB-, '   +
             'B-TRC-,  B-TBC-,  B-TLC-,  B-RBC-,  B-RLC-,  B-RTC-,  B-BLC-,  B-BTC-,  B-BRC-,  B-LTC-,  B-LRC-,  B-LBC-, '  +
             'B-TR-T-,          B-TL-T-, B-RB-T-, B-RL-T-, B-RT-T-, B-BL-T-, B-BT-T-, B-BR-T-, B-LT-T-, B-LR-T-, B-LB-T-, ' +
             'B-TRCT-,          B-TLCT-, B-RBCT-, B-RLCT-, B-RTCT-, B-BLCT-, B-BTCT-, B-BRCT-, B-LTCT-, B-LRCT-, B-LBCT-, ' +
@@ -96,8 +97,8 @@ var setup_syntax = {
             // Connector
             if(tagName[2] == 'C') {
                 s =
-                    `M${ this.toDecimalPrecision(w * 1, 4) },${ this.toDecimalPrecision((0.5 + mfix / 2 * m) * h, 4) }` +
-                    `l${ this.toDecimalPrecision(margin * 2, 4) },0`
+                    `M${ setup_syntax.toDecimalPrecision(w * 1, 4) },${ setup_syntax.toDecimalPrecision((0.5 + mfix / 2 * m) * h, 4) }` +
+                    `l${ setup_syntax.toDecimalPrecision(margin * 2, 4) },0`
                 ;
             }
 
@@ -130,18 +131,18 @@ var setup_syntax = {
 
                 // Draw arrow
                 s =
-                    `M${ this.toDecimalPrecision(ax * w, 4) },${ this.toDecimalPrecision(ay * h, 4) }` +                // Starting position
-                    `L${ this.toDecimalPrecision(aX * w, 4) },${ this.toDecimalPrecision(aY * h, 4) }` +                // Draw starting segment
-                    `Q${ this.toDecimalPrecision(cx * w, 4) },${ this.toDecimalPrecision(cy * h, 4) }` +                // Draw first half of curve
-                    ` ${ this.toDecimalPrecision(bX * w, 4) },${ this.toDecimalPrecision(bY * h, 4) }` +                // Draw second hard of curve
-                    `L${ this.toDecimalPrecision(bx * w, 4) },${ this.toDecimalPrecision(by * h, 4) }`                  // Draw ending segment
+                    `M${ setup_syntax.toDecimalPrecision(ax * w, 4) },${ setup_syntax.toDecimalPrecision(ay * h, 4) }` +                // Starting position
+                    `L${ setup_syntax.toDecimalPrecision(aX * w, 4) },${ setup_syntax.toDecimalPrecision(aY * h, 4) }` +                // Draw starting segment
+                    `Q${ setup_syntax.toDecimalPrecision(cx * w, 4) },${ setup_syntax.toDecimalPrecision(cy * h, 4) }` +                // Draw first half of curve
+                    ` ${ setup_syntax.toDecimalPrecision(bX * w, 4) },${ setup_syntax.toDecimalPrecision(bY * h, 4) }` +                // Draw second hard of curve
+                    `L${ setup_syntax.toDecimalPrecision(bx * w, 4) },${ setup_syntax.toDecimalPrecision(by * h, 4) }`                  // Draw ending segment
                 ;
 
                 // Draw head
                 if(tagName[4] != 'C') s +=
-                    `m${ this.toDecimalPrecision(h0x * arrow_d, 4) },${ this.toDecimalPrecision(h0y * arrow_d, 4) }` +  // Starting position
-                    `L${ this.toDecimalPrecision(bx * w,        4) },${ this.toDecimalPrecision(by * h,        4) }` +  // Draw head form 0 to O
-                    `l${ this.toDecimalPrecision(h1x * arrow_d, 4) },${ this.toDecimalPrecision(h1y * arrow_d, 4) }`    // Draw head from O to 1
+                    `m${ setup_syntax.toDecimalPrecision(h0x * arrow_d, 4) },${ setup_syntax.toDecimalPrecision(h0y * arrow_d, 4) }` +  // Starting position
+                    `L${ setup_syntax.toDecimalPrecision(bx * w,        4) },${ setup_syntax.toDecimalPrecision(by * h,        4) }` +  // Draw head form 0 to O
+                    `l${ setup_syntax.toDecimalPrecision(h1x * arrow_d, 4) },${ setup_syntax.toDecimalPrecision(h1y * arrow_d, 4) }`    // Draw head from O to 1
                 ;
             }
 
@@ -211,12 +212,6 @@ var setup_syntax = {
             let lc = c[i].querySelector('split-example-container-left-');
             let rc = c[i].querySelector('split-example-container-right-');
 
-            // Return if containers arent used for examples //TODO REPLACE WITH ACTUAL DEDICATED TAG
-            if(
-                lc.querySelectorAll('example-').length == 0 ||
-                rc.querySelectorAll('example-').length == 0
-            ) continue;
-
             // Get contained divs
             let l = lc.querySelector('DIV');
             let r = rc.querySelector('DIV');
@@ -234,9 +229,9 @@ var setup_syntax = {
 
 
     init : function() {
-        setup_syntax.even_widths();
-        setup_syntax.format_arrows();
-        setup_syntax.indent_code();
-        setup_syntax.even_heights();
+        log_function(setup_syntax.even_widths,   "    even_widths"  );
+        log_function(setup_syntax.format_arrows, "    format_arrows");
+        log_function(setup_syntax.indent_code,   "    indent_code"  );
+        log_function(setup_syntax.even_heights,  "    even_heights" );
     }
 }

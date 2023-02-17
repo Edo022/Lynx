@@ -40,7 +40,26 @@ syntax- svg {
     overflow: visible;
 }
 
-b-tr-,   b-tb-,   b-tl-,   b-rb-,   b-rl-,   b-rt-,   b-bl-,   b-bt-,   b-br-,   b-lt-,   b-lr-,   b-lb-,
+b-lr- {
+    display: inline-block;
+    min-width: 100%;
+    max-width: 100%;
+    min-height: var(--syntax-line-h);
+    max-height: var(--syntax-line-h);
+
+    background-image: url("./lr.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+}
+.test {
+    background-image: url("./lr_test.svg");
+}
+
+
+
+/* b-tr-,   b-tb-,   b-tl-,   b-rb-,   b-rl-,   b-rt-,   b-bl-,   b-bt-,   b-br-,   b-lt-,   b-lr-,   b-lb-, */
+b-tr-,   b-tb-,   b-tl-,   b-rb-,   b-rl-,   b-rt-,   b-bl-,   b-bt-,   b-br-,   b-lt-,            b-lb-,
 b-trc-,  b-tbc-,  b-tlc-,  b-rbc-,  b-rlc-,  b-rtc-,  b-blc-,  b-btc-,  b-brc-,  b-ltc-,  b-lrc-,  b-lbc-,
 b-tr-t-,          b-tl-t-, b-rb-t-, b-rl-t-, b-rt-t-, b-bl-t-, b-bt-t-, b-br-t-, b-lt-t-, b-lr-t-, b-lb-t-,
 b-trct-,          b-tlct-, b-rbct-, b-rlct-, b-rtct-, b-blct-, b-btct-, b-brct-, b-ltct-, b-lrct-, b-lbct-,
