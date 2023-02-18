@@ -12,6 +12,7 @@ var setup_syntax = {
         for(let j = 0; j < tables.length; ++j){
             let trs = tables[j].querySelectorAll('tr');
 
+
             // Calculate max width
             let max = Array();
             for(let k = 0; k < trs.length; ++k) {
@@ -25,19 +26,27 @@ var setup_syntax = {
                 }
             }
 
+
             // Set width
             for(let k = 0; k < trs.length; ++k) {
                 let tds = trs[k].querySelectorAll('td');
                 for(let l = 0; l < tds.length; ++l){
-                    tds[l].style.width = `${ max[l] }px`;
 
-                    // Wrap child elements into a div
+                    // Resize elements and wrap child elements into a div
                     let e = tds[l].childNodes;
-                    if(e.length) e[0].innerHTML =
-                        '<div>' +
-                            e[0].innerHTML +
-                        '</div>'
-                    ;
+                    if(e.length) {
+                        tds[l].style.width = `${ max[l] }px`;
+                        e[0].innerHTML = `<div>${ e[0].innerHTML }</div>`;
+                    }
+
+                    // Stretch arrows to fit long td bois
+                    else {
+                        tds[l].style.width = `${ min_w }px`;
+                        let ratio = max[l] / setup_syntax.min_w;
+                        tds[l].style.transform   = `scaleX(${ ratio })`;
+                        tds[l].style.marginLeft  = `${ (ratio - 1) / 2 * min_w }px`;
+                        tds[l].style.marginRight = `${ (ratio - 1) / 2 * min_w }px`;
+                    }
                 }
             }
         }
@@ -50,24 +59,31 @@ var setup_syntax = {
 
 
 
+
+
+
     format_arrows : function(){
         c = right.querySelectorAll("syntax- > table td");
+
 
         // Fix inverted arrows
         for(let i = 0; i < c.length; ++i){
             if(c[i].dataset.arrows) c[i].dataset.arrows = c[i].dataset.arrows
-                .replace(/\bbt\b/, "tb")
-                .replace(/\brl\b/, "lr")
-                .replace(/\btl\b/, "lt")
-                .replace(/\brt\b/, "tr")
-                .replace(/\bbr\b/, "rb")
-                .replace(/\blb\b/, "bl")
+                .replaceAll(/\bbt\b/g, "tb")
+                .replaceAll(/\brl\b/g, "lr")
+                .replaceAll(/\btl\b/g, "lt")
+                .replaceAll(/\brt\b/g, "tr")
+                .replaceAll(/\bbr\b/g, "rb")
+                .replaceAll(/\blb\b/g, "bl")
             ;
         }
+
 
         // Add automatic connectors
         for(let i = 0; i < c.length; ++i){
             if(c[i].dataset.arrows){
+
+                // Vertical connectors
                 if(/\b(tb|lt|tr)\b/.test(c[i].dataset.arrows)) {
                     let child_index = function(obj){
                         let p = obj.previousElementSibling;
@@ -82,29 +98,48 @@ var setup_syntax = {
                         }
                     }
                 }
-                if(/\b(lr|lt|bl)\b/.test(c[i].dataset.arrows)) {
+
+                // Horizontal connectors
+                let cur_low  = /\b(lr|lt|bl)-low\b/     .test(c[i].dataset.arrows);
+                let cur_std  = /\b(lr|lt|bl)\b($|[^\-])/.test(c[i].dataset.arrows);
+                let cur_high = /\b(lr|lt|bl)-high\b/    .test(c[i].dataset.arrows);
+                if(cur_low | cur_std | cur_high) {
                     let prev = c[i].previousElementSibling;
-                    if(prev && prev.dataset.arrows && /\b(lr|tr|rb)\b/.test(prev.dataset.arrows)) {
-                        prev.dataset.arrows += " connect-r";
-                        c[i].dataset.arrows += " connect-l";
+                    if(prev && prev.dataset.arrows) {
+                        let prev_low  = /\b(lr|tr|rb)-low\b/     .test(prev.dataset.arrows);
+                        let prev_std  = /\b(lr|tr|rb)\b($|[^\-])/.test(prev.dataset.arrows);
+                        let prev_high = /\b(lr|tr|rb)-high\b/    .test(prev.dataset.arrows);
+                        if(cur_low && prev_low) {
+                            prev.dataset.arrows += " connect-r-low";
+                            c[i].dataset.arrows += " connect-l-low";
+                        }
+                        if(cur_std && prev_std) {
+                            prev.dataset.arrows += " connect-r";
+                            c[i].dataset.arrows += " connect-l";
+                        }
+                        if(cur_high && prev_high) {
+                            prev.dataset.arrows += " connect-r-high";
+                            c[i].dataset.arrows += " connect-l-high";
+                        }
                     }
                 }
             }
         }
+
 
         // Set backgrounds
         for(let i = 0; i < c.length; ++i){
             if(c[i].dataset.arrows){
                 let bg = "";
                 let arrows = c[i].dataset.arrows.split(/[\s]+/);
-                for(let j = 0; j < arrows.length; ++j) bg += `url("./Styles/Blocks/Syntax/Arrows/${ arrows[j] }.svg") center/cover no-repeat content-box, `;
+                for(let j = 0; j < arrows.length; ++j) bg += `url("./Styles/Blocks/Syntax/Arrows/${ arrows[j] }.svg") center/contain no-repeat content-box, `;
                 c[i].style.background = bg.slice(0, -2);
-
-                // Stretch lr arrows to fit long td bois
-                c[i].style.transform = `scaleY(${ 1 / (parseFloat(c[i].style.width) / setup_syntax.min_w) })`;
             }
         }
     },
+
+
+
 
 
 

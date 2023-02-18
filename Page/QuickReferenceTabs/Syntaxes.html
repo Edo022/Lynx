@@ -110,7 +110,7 @@
             <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->.</s-vbtm-></td>
             <td data-arrows="lb"></td>
-            <td data-arrows="br tr ar"></td>
+            <td data-arrows="br tr"></td>
             <td><s-vbtm->const</s-vbtm-></td>
             <td data-arrows="lr tr br ar"></td>
             <td><s-vbtm->@</s-vbtm-></td>
@@ -958,13 +958,13 @@
         <tr>
             <td data-arrows="lr ar"></td>
             <td><s-path->return type</s-path-></td>
-            <td data-arrows="lt lb rtct rbcb ct ct cb cb"></td>
-            <td data-arrows="rlct rlcb ct ct cb cb"></td>
-            <td data-arrows="rlct rlcb ct ct cb cb"></td>
-            <td data-arrows="rlct rlcb ct ct cb cb"></td>
-            <td data-arrows="rlct rlcb ct ct cb cb"></td>
-            <td data-arrows="rlct rlcb ct ct cb cb"></td>
-            <td data-arrows="blct tr br ltcb"></td>
+            <td data-arrows="lt lb rt-high rb-low"></td>
+            <td data-arrows="rl-high rl-low"></td>
+            <td data-arrows="rl-high rl-low"></td>
+            <td data-arrows="rl-high rl-low"></td>
+            <td data-arrows="rl-high rl-low"></td>
+            <td data-arrows="rl-high rl-low"></td>
+            <td data-arrows="bl-high tr br ar lt-low"></td>
             <td><s-vbtm->priority</s-vbtm-></td>
             <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
@@ -2376,12 +2376,12 @@
             <td data-arrows="lt lb"></td>
         </tr>
         <tr>
-            <td data-arrows="trct ct ct"></td>
-            <td data-arrows="rtcb cb cb lrct ct ct"></td>
-            <td data-arrows="rlcb cb cb lrct ct ct"></td>
-            <td data-arrows="rlcb cb cb ltct"></td>
-            <td data-arrows="rlcb cb cb"></td>
-            <td data-arrows="tlcb"></td>
+            <td data-arrows="tr-high"></td>
+            <td data-arrows="rt-low lr-high"></td>
+            <td data-arrows="rl-low lr-high"></td>
+            <td data-arrows="rl-low lt-high"></td>
+            <td data-arrows="rl-low"></td>
+            <td data-arrows="tl-low"></td>
         </tr>
     </table>
     <syntax-note->
@@ -2389,7 +2389,6 @@
         ** Noninitial paths are not required to specify the names of parent symbols or template instantiation types. Their identifier is enough.
     </syntax-note->
 </syntax->
-
 
 
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="100px" height="100px" viewBox="0 0 100 100">
+    <style type="text/css">
+        .arrow{
+            stroke: hsl(212, 14%, 24%);
+            stroke-width: 6px;
+            stroke-linecap: butt;
+            fill: none;
+        }
+    </style>
+    <path class="arrow" d="
+        M 95,35
+        L 100,35
+    "/>
+</svg>
