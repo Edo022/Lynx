@@ -4,6 +4,7 @@ let left = document.querySelector("body > left-");
 let right = document.querySelector("body > right-");
 
 
+// Scrolls to the element with id the current url hash
 // smooth = true|false
 function move_to_view(smooth){
     let hash = location.hash.slice(1);
@@ -16,23 +17,6 @@ function move_to_view(smooth){
     e.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
 }
 
-
-
-
-
-function view(){
-    // This scrolls to the correct header, which is the same the browser already scrolled to.
-    // Apparently, JS is loaded after scrolling to it and adding new HTML elements messes everything up,
-    // so JS has to scroll again after the new elements are loaded.
-    // Anything else refuses to work
-    move_to_view("smooth");
-
-    // The id="main-mask" div is used to hide the page before js is done moving stuff around as anything else just doesn't work
-    // This line removes it from the body so that the user can see the page and think it loaded flawlessly
-    let e = document.getElementById('main-mask');
-    e.style.pointerEvents = 'none';
-    e.style.opacity = '0%';
-}
 
 
 
@@ -55,10 +39,18 @@ function init(){
 
     log_function(summary_list.init, "summary_list");
     log_function(readability.init, "readability");
+    log_function(ui_smooth_links.init, "ui_smooth_links");
     log_function(ui_copy_code.init, "ui_copy_code");
     //!^ Must be executed after modifying the body as changing the innerHTML recreates all the elements and removes the event listeners
 
-    view();
+
+
+    // The id="main-mask" div is used to hide the page before js is done moving stuff around as anything else just doesn't work
+    // This line removes it from the body so that the user can see the page and think it loaded flawlessly
+    setTimeout(function(){ move_to_view(true); }, 1000);
+    let e = document.getElementById('main-mask');
+    e.style.pointerEvents = 'none';
+    e.style.opacity = '0%';
 }
 
 

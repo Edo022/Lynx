@@ -1,8 +1,13 @@
 
 
 var setup_syntax = {
+    min_w : parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--syntax-arrow-w')),
+
+
+
     // Align the colums to the maximum width of their cells
     even_widths : function(){
+        let min_w = parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--syntax-arrow-w'));
         let tables = document.querySelectorAll('syntax- > table');
         for(let j = 0; j < tables.length; ++j){
             let trs = tables[j].querySelectorAll('tr');
@@ -14,20 +19,19 @@ var setup_syntax = {
                 let tds = trs[k].querySelectorAll('td');
                 for(let l = 0; l < tds.length; ++l){
                     if(Object.is(max[l], undefined)) {
-                        max[l] = parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--syntax-arrow-w').slice(0, -2));
+                        max[l] = setup_syntax.min_w;
                     }
-                    if(max[l] < tds[l].clientWidth) max[l] = tds[l].clientWidth;
+                    if(max[l] < tds[l].offsetWidth) max[l] = tds[l].offsetWidth;
                 }
             }
 
-            // Set max width
+            // Set width
             for(let k = 0; k < trs.length; ++k) {
                 let tds = trs[k].querySelectorAll('td');
                 for(let l = 0; l < tds.length; ++l){
                     tds[l].style.width = `${ max[l] }px`;
 
-                    // Also add a wrapper div, cause why not?
-                    // if(tds[l].get)
+                    // Wrap child elements into a div
                     let e = tds[l].childNodes;
                     if(e.length) e[0].innerHTML =
                         '<div>' +
@@ -42,120 +46,65 @@ var setup_syntax = {
 
 
 
-    toDecimalPrecision : function(n, digits){
-        let int_digits = n.toFixed().length;
-        return n.toPrecision(int_digits + digits);
-    },
 
 
 
-    // Create syntax path arrows with svg elements
+
     format_arrows : function(){
-        // Calculate constants
-        let margin = parseFloat(window.getComputedStyle(document.documentElement).getPropertyValue('--syntax-arrow-margin').slice(0, -2));
-        let arrow_d = 5;    // Arrow head size                                                                           //!^ Remove 'px' suffix
-        let mfix = 0.3;     // Height difference of height locations
-        let r = 0.2;        // Arrow curve radius
+        c = right.querySelectorAll("syntax- > table td");
 
-        let a = Array();
-            a['T'.charCodeAt(0)] = Math.PI * 1.5; //! T is inverted
-            a['R'.charCodeAt(0)] = Math.PI * 0.0;
-            a['B'.charCodeAt(0)] = Math.PI * 0.5; //! T is inverted
-            a['L'.charCodeAt(0)] = Math.PI * 1.0;
-        ;
-
-
-        // For each tag
-        let children = document.querySelectorAll(
-            // 'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,   B-RT-,   B-BL-,   B-BT-,   B-BR-,   B-LT-,   B-LR-,   B-LB-, '   +
-            'B-TR-,   B-TB-,   B-TL-,   B-RB-,   B-RL-,   B-RT-,   B-BL-,   B-BT-,   B-BR-,   B-LT-,            B-LB-, '   +
-            'B-TRC-,  B-TBC-,  B-TLC-,  B-RBC-,  B-RLC-,  B-RTC-,  B-BLC-,  B-BTC-,  B-BRC-,  B-LTC-,  B-LRC-,  B-LBC-, '  +
-            'B-TR-T-,          B-TL-T-, B-RB-T-, B-RL-T-, B-RT-T-, B-BL-T-, B-BT-T-, B-BR-T-, B-LT-T-, B-LR-T-, B-LB-T-, ' +
-            'B-TRCT-,          B-TLCT-, B-RBCT-, B-RLCT-, B-RTCT-, B-BLCT-, B-BTCT-, B-BRCT-, B-LTCT-, B-LRCT-, B-LBCT-, ' +
-            'B-TR-B-,          B-TL-B-, B-RB-B-, B-RL-B-, B-RT-B-, B-BL-B-, B-BT-B-, B-BR-B-, B-LT-B-, B-LR-B-, B-LB-B-, ' +
-            'B-TRCB-,          B-TLCB-, B-RBCB-, B-RLCB-, B-RTCB-, B-BLCB-, B-BTCB-, B-BRCB-, B-LTCB-, B-LRCB-, B-LBCB-, ' +
-            'B-C-, B-C--T-, B-C--B-'
-        );
-        for(let j = 0; j < children.length; ++j) {
-            let tagName = children[j].tagName;                              // Name of the tag
-            let w = children[j].parentElement.clientWidth - margin * 2;     // SVG width
-            let h = children[j].offsetHeight;                               // SVG height
-            let s = '';                                                     // Output path string
-            let f = tagName.charCodeAt(2);                                  // First position (From)
-            let t = tagName.charCodeAt(3);                                  // Second potision (To)
-            let m = 0; switch(tagName[5]) { case 'T': m = -1; break; case 'B': m = 1; }; //! Y is inverted
-            children[j].className += "syntax-arrow";                        // ^ Height center location (1/0/-1 for top/center/bottom)
-
-
-            // Fix vertical height in non connecting arrows
-            if((tagName[3] == 'T' || tagName[3] == 'B') && tagName[4] != 'C'){
-                h -= margin * 2;
-                children[j].style.padding = "var(--syntax-arrow-margin) 0 var(--syntax-arrow-margin) 0";
-            }
-
-
-            // Connector
-            if(tagName[2] == 'C') {
-                s =
-                    `M${ setup_syntax.toDecimalPrecision(w * 1, 4) },${ setup_syntax.toDecimalPrecision((0.5 + mfix / 2 * m) * h, 4) }` +
-                    `l${ setup_syntax.toDecimalPrecision(margin * 2, 4) },0`
-                ;
-            }
-
-
-            // Arrows
-            else {
-                // Calculate coordinates
-                let ma = (m && (tagName[2] == 'R' || tagName[2] == 'L')) ? (mfix * m) : 0;
-                let mb = (m && (tagName[3] == 'R' || tagName[3] == 'L')) ? (mfix * m) : 0;
-
-                let
-                    ax = (Math.cos(a[f]) * (1    ))      / 2 + 0.5,   // First  segment - x of beginning
-                    aX = (Math.cos(a[f]) * (1 - r))      / 2 + 0.5,   // First  segment - x of end
-                    ay = (Math.sin(a[f]) * (1    ) + ma) / 2 + 0.5,   // First  segment - y of beginning
-                    aY = (Math.sin(a[f]) * (1 - r) + ma) / 2 + 0.5,   // First  segment - y of end
-                    bx = (Math.cos(a[t]) * (1    ))      / 2 + 0.5,   // Second segment - x of beginning
-                    bX = (Math.cos(a[t]) * (1 - r))      / 2 + 0.5,   // Second segment - x of end
-                    by = (Math.sin(a[t]) * (1    ) + mb) / 2 + 0.5,   // Second segment - y of beginning
-                    bY = (Math.sin(a[t]) * (1 - r) + mb) / 2 + 0.5,   // Second segment - y of end
-
-                    cx = 0 / 2 + 0.5,                                       // Curve center - x
-                    cy = (ma ? ma : mb) / 2 + 0.5,                          // Curve center - y
-
-                    h0x = Math.cos(a[t] + Math.PI * 1.25),                  // Head - x of left  segment
-                    h0y = Math.sin(a[t] + Math.PI * 1.25),                  // Head - y of left  segment
-                    h1x = Math.cos(a[t] - Math.PI * 1.25),                  // Head - x of right segment
-                    h1y = Math.sin(a[t] - Math.PI * 1.25)                   // Head - y of right segment
-                ;
-
-
-                // Draw arrow
-                s =
-                    `M${ setup_syntax.toDecimalPrecision(ax * w, 4) },${ setup_syntax.toDecimalPrecision(ay * h, 4) }` +                // Starting position
-                    `L${ setup_syntax.toDecimalPrecision(aX * w, 4) },${ setup_syntax.toDecimalPrecision(aY * h, 4) }` +                // Draw starting segment
-                    `Q${ setup_syntax.toDecimalPrecision(cx * w, 4) },${ setup_syntax.toDecimalPrecision(cy * h, 4) }` +                // Draw first half of curve
-                    ` ${ setup_syntax.toDecimalPrecision(bX * w, 4) },${ setup_syntax.toDecimalPrecision(bY * h, 4) }` +                // Draw second hard of curve
-                    `L${ setup_syntax.toDecimalPrecision(bx * w, 4) },${ setup_syntax.toDecimalPrecision(by * h, 4) }`                  // Draw ending segment
-                ;
-
-                // Draw head
-                if(tagName[4] != 'C') s +=
-                    `m${ setup_syntax.toDecimalPrecision(h0x * arrow_d, 4) },${ setup_syntax.toDecimalPrecision(h0y * arrow_d, 4) }` +  // Starting position
-                    `L${ setup_syntax.toDecimalPrecision(bx * w,        4) },${ setup_syntax.toDecimalPrecision(by * h,        4) }` +  // Draw head form 0 to O
-                    `l${ setup_syntax.toDecimalPrecision(h1x * arrow_d, 4) },${ setup_syntax.toDecimalPrecision(h1y * arrow_d, 4) }`    // Draw head from O to 1
-                ;
-            }
-
-
-            // Add HTML boilerplate
-            children[j].innerHTML =
-                `<svg width="${ w }" height="${ h }">` +
-                    `<path d="${ s }"style="stroke: var(--syntax-fg-arrow); stroke-width: 2px; fill: none;"/>` +
-                `</svg>`
+        // Fix inverted arrows
+        for(let i = 0; i < c.length; ++i){
+            if(c[i].dataset.arrows) c[i].dataset.arrows = c[i].dataset.arrows
+                .replace(/\bbt\b/, "tb")
+                .replace(/\brl\b/, "lr")
+                .replace(/\btl\b/, "lt")
+                .replace(/\brt\b/, "tr")
+                .replace(/\bbr\b/, "rb")
+                .replace(/\blb\b/, "bl")
             ;
         }
-    },
 
+        // Add automatic connectors
+        for(let i = 0; i < c.length; ++i){
+            if(c[i].dataset.arrows){
+                if(/\b(tb|lt|tr)\b/.test(c[i].dataset.arrows)) {
+                    let child_index = function(obj){
+                        let p = obj.previousElementSibling;
+                        return p ? child_index(p) + 1 : 0;
+                    };
+                    let prev_tr = c[i].parentElement.previousElementSibling;
+                    if(prev_tr) {
+                        let prev = prev_tr.children[child_index(c[i])];
+                        if(prev && prev.dataset.arrows && /\b(tb|rb|bl)\b/.test(prev.dataset.arrows)) {
+                            prev.dataset.arrows += " connect-b";
+                            c[i].dataset.arrows += " connect-t";
+                        }
+                    }
+                }
+                if(/\b(lr|lt|bl)\b/.test(c[i].dataset.arrows)) {
+                    let prev = c[i].previousElementSibling;
+                    if(prev && prev.dataset.arrows && /\b(lr|tr|rb)\b/.test(prev.dataset.arrows)) {
+                        prev.dataset.arrows += " connect-r";
+                        c[i].dataset.arrows += " connect-l";
+                    }
+                }
+            }
+        }
+
+        // Set backgrounds
+        for(let i = 0; i < c.length; ++i){
+            if(c[i].dataset.arrows){
+                let bg = "";
+                let arrows = c[i].dataset.arrows.split(/[\s]+/);
+                for(let j = 0; j < arrows.length; ++j) bg += `url("./Styles/Blocks/Syntax/Arrows/${ arrows[j] }.svg") center/cover no-repeat content-box, `;
+                c[i].style.background = bg.slice(0, -2);
+
+                // Stretch lr arrows to fit long td bois
+                c[i].style.transform = `scaleY(${ 1 / (parseFloat(c[i].style.width) / setup_syntax.min_w) })`;
+            }
+        }
+    },
 
 
 

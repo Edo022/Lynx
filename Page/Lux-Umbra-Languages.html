@@ -155,6 +155,7 @@
 
     <!-- Functionalities -->
     <script src="Scripts/UI/Slider.js"></script>
+    <script src="Scripts/UI/SmoothLinks.js"></script>
     <script src="Scripts/UI/CopyCode.js"></script>
 
     <!-- Custom -->
@@ -165,7 +166,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', init);
-        window.addEventListener('popstate', function(){ move_to_view("smooth"); });
+        window.addEventListener('popstate', function(){ move_to_view(true); });
         window.addEventListener('beforeunload', unload);
         //<!--! view() called after readability css load -->
         //TODO implement counter to manage more dynamic css loadings

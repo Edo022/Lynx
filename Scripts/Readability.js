@@ -73,7 +73,6 @@ var readability = {
     toggle : function(){
         localStorage.setItem('readability', localStorage.getItem('readability') != 'true');
         readability.load_css();
-        // move_to_view();
     },
 
 

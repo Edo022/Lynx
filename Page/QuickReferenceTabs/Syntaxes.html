@@ -24,40 +24,40 @@
     <label- id="syntax--module" class="s-decl"><a href="#modules">Module</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar lb"></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+            <td data-arrows="rt bt"></td>
             <td><s-decl->import directive</s-decl-></td>
-            <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            <td data-arrows="tl al tb"></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+            <td data-arrows="rt bt"></td>
             <td><s-decl->export directive</s-decl-></td>
-            <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            <td data-arrows="tl al tb"></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-></td>
+            <td data-arrows="rt"></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
-            <td><b-tl-></b-tl-></td>
+            <td data-arrows="tl al"></td>
         </tr>
     </table>
+    <syntax-note->
+        * A
+        <a href="#syntax--namespace-declaration">   namespace</a>,
+        <a href="#syntax--enum-declaration">        enum</a>,
+        <a href="#syntax--struct-declaration">      struct</a>,
+        <a href="#syntax--template-declaration">    struct template</a>,
+        <a href="#syntax--function-declaration">    function</a>,
+        <a href="#syntax--template-declaration">    function template</a>,
+        <a href="#syntax--operator-declaration">    operator</a>,
+        <a href="#syntax--template-declaration">    operator template</a>,
+        <a href="#syntax--variable-declaration">    variable</a> or a
+        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
+    </syntax-note->
 </syntax->
-<syntax-note->
-    * A
-    <a href="#syntax--namespace-declaration">   namespace</a>,
-    <a href="#syntax--enum-declaration">        enum</a>,
-    <a href="#syntax--struct-declaration">      struct</a>,
-    <a href="#syntax--template-declaration">    struct template</a>,
-    <a href="#syntax--function-declaration">    function</a>,
-    <a href="#syntax--template-declaration">    function template</a>,
-    <a href="#syntax--operator-declaration">    operator</a>,
-    <a href="#syntax--template-declaration">    operator template</a>,
-    <a href="#syntax--variable-declaration">    variable</a> or a
-    <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
-</syntax-note->
 
 
 
@@ -75,61 +75,61 @@
     <label- id="syntax--symbol-path" class="s-path">Symbol path</label->
     <table class="s-path">
         <tr>
-            <td><b-rbc-></b-rbc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-blc-></b-blc-></td>
+            <td data-arrows="rb"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="bl"></td>
         </tr>
         <tr>
-            <td><b-tbc-></b-tbc-></td>
+            <td data-arrows="tb"></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr lb"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->:</s-vbtm-></td>
-            <td><b-ltc-></b-ltc-></td>
+            <td data-arrows="lt"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-tr-></b-tr-></td>
+            <td data-arrows="lr br tr"></td>
             <td><s-sub->symbol name</s-sub-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->.</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-><b-tr-></b-tr-></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br tr ar"></td>
             <td><s-vbtm->const</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
+            <td data-arrows="lr tr br ar"></td>
             <td><s-vbtm->@</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-><b-ltc-></b-ltc-></td>
-            <td><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lb lt"></td>
+            <td data-arrows="tr"></td>
+            <td data-arrows="lr ar"></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -140,54 +140,54 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->symbol identifier<span class="hidden">&nbsp;*</span></s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->&lt;</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-path->type</s-path-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->&gt;</s-vbtm-></td>
-            <td><b-ltc-></b-ltc-></td>
+            <td data-arrows="lt"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td><b-btc-></b-btc-></td>
-            <td><b-tr-></b-tr-></td>
+            <td data-arrows="bt"></td>
+            <td data-arrows="tr ar"></td>
             <td><s-expr->value</s-expr-></td>
-            <td><b-ltc-></b-ltc-></td>
-            <td><b-tr-></b-tr-></td>
+            <td data-arrows="lt"></td>
+            <td data-arrows="tr ar"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <syntax-note->
@@ -213,15 +213,15 @@
     <label- id="syntax--typeof" class="s-decl"><a href="#modules">Typeof</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->typeof</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr->expression</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -246,56 +246,56 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->&lt;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->module name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->&gt;</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->include</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->*</s-vbtm-></td>
-            <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-br-></b-br-></td>
+            <td data-arrows="br lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->from</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->"</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->path/to/module</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->"</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr tr"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->as</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-tr-></b-tr-><b-lr-></b-lr-></td>
+            <td data-arrows="tr lr ar"></td>
             <td><s-vbtm->import</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr tr"></td>
+            <td data-arrows="lr br ar lt"></td>
             <td><s-path->symbol</s-path-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->as</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
@@ -314,15 +314,15 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
 </syntax->
@@ -348,54 +348,54 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->as</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->export</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr lt lb"></td>
             <td><s-vbtm->*</s-vbtm-></td>
-            <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-br-></b-br-><b-tr-></b-tr-><b-lr-></b-lr-></td>
+            <td data-arrows="br lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="br tr ar lr"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-tr-></b-tr-><b-br-></b-br-></td>
+            <td data-arrows="tr br ar"></td>
             <td><s-path->symbol</s-path-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->as</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
 </syntax->
@@ -502,28 +502,28 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->namespace</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-trc-></b-trc-></td>
+            <td data-arrows="lr ar tr"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr br ar lt"></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr"></td>
         </tr>
         <tr>
             <td></td>
@@ -532,9 +532,9 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
             <td></td>
             <td></td>
         </tr>
@@ -563,21 +563,21 @@
     <label- class="s-decl" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->enum</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->:</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->base type</s-path-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
@@ -590,9 +590,9 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+            <td data-arrows="rt bt"></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
-            <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            <td data-arrows="tl al tb"></td>
             <td></td>
             <td></td>
         </tr>
@@ -607,9 +607,9 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-></td>
+            <td data-arrows="rt"></td>
             <td><s-decl->enum element</s-decl-></td>
-            <td><b-tl-></b-tl-></td>
+            <td data-arrows="tl al"></td>
             <td></td>
             <td></td>
         </tr>
@@ -620,38 +620,38 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->=</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[base type]</t->&nbsp;value</s-expr-></td>
-            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr tr"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <syntax-note->
@@ -684,69 +684,69 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->struct signature</s-sub-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-sub->specialization constraint</s-sub-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-sub->struct body</s-sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr ar lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->struct</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+            <td data-arrows="rt bt"></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
-            <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            <td data-arrows="tl al tb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-></td>
+            <td data-arrows="rt"></td>
             <td><s-decl->struct member</s-decl-></td>
-            <td><b-tl-></b-tl-></td>
+            <td data-arrows="tl al"></td>
             <td></td>
             <td></td>
         </tr>
@@ -758,27 +758,27 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->type</s-path-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <syntax-note->
@@ -811,31 +811,31 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->struct signature</s-sub-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-sub->specialization constraint</s-sub-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-sub->routine body</s-sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr ar lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <label- class="s-decl" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
@@ -844,31 +844,31 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->operator signature</s-sub-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-sub->specialization constraint</s-sub-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-sub->routine body</s-sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr ar lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label->
@@ -880,28 +880,28 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->return type</s-path-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-ltc-></b-ltc-><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lt lr br"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-decl->routine parameter</s-decl-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-><b-tr-></b-tr-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr tr ar lb"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
@@ -910,13 +910,13 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-btc-></b-btc-></td>
-            <td><b-tr-></b-tr-></td>
+            <td data-arrows="bt"></td>
+            <td data-arrows="tr ar"></td>
             <td><s-decl->function parameter pack<span class="hidden">&nbsp;***</span></s-decl-></td>
-            <td><b-ltc-></b-ltc-></td>
-            <td><b-tr-></b-tr-></td>
+            <td data-arrows="lt"></td>
+            <td data-arrows="tr ar"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
@@ -925,13 +925,13 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label->
@@ -939,13 +939,13 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name<span class="hidden">&nbsp;**</span></s-any-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -956,34 +956,34 @@
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->return type</s-path-></td>
-            <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-><b-rtct-></b-rtct-><b-rbcb-></b-rbcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
-            <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
-            <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
-            <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
-            <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
-            <td><b-rlct-></b-rlct-><b-rlcb-></b-rlcb-><b-c--t-></b-c--t-><b-c--b-></b-c--b-></td>
-            <td><b-blct-></b-blct-><b-tr-></b-tr-><b-br-></b-br-><b-ltcb-></b-ltcb-></td>
+            <td data-arrows="lt lb rtct rbcb ct ct cb cb"></td>
+            <td data-arrows="rlct rlcb ct ct cb cb"></td>
+            <td data-arrows="rlct rlcb ct ct cb cb"></td>
+            <td data-arrows="rlct rlcb ct ct cb cb"></td>
+            <td data-arrows="rlct rlcb ct ct cb cb"></td>
+            <td data-arrows="rlct rlcb ct ct cb cb"></td>
+            <td data-arrows="blct tr br ltcb"></td>
             <td><s-vbtm->priority</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[ulong]</t-> &nbsp;priority</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-tr-></b-tr-></td>
+            <td data-arrows="tr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-decl->routine parameter<span class="hidden">&nbsp;**</span></s-decl-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="tl"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -997,29 +997,29 @@
     <label- class="s-sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+            <td data-arrows="rt bt"></td>
             <td><s-sub-><a href="#statement-syntaxes">statement</a></s-sub-></td>
-            <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            <td data-arrows="tl al tb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-></td>
+            <td data-arrows="rt"></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
-            <td><b-tl-></b-tl-></td>
+            <td data-arrows="tl al"></td>
             <td></td>
             <td></td>
         </tr>
@@ -1041,28 +1041,28 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->type</s-path-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->=</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[type]</t->&nbsp;value</s-expr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
         </tr>
     </table>
     <syntax-note->
@@ -1071,26 +1071,26 @@
     <label- class="s-decl" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-path->template parameter pack</s-path-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-path->type</s-path-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->&<span class="hidden">&nbsp;*</span></s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->...</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1147,42 +1147,42 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->type</s-path-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->=</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[type]</t->&nbsp;value</s-expr-></td>
-            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr tr"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
 </syntax->
@@ -1202,17 +1202,17 @@
     <label- class="s-decl" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->alias</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->symbol</s-path-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->as</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1232,15 +1232,15 @@
     <label- class="s-sub" id="syntax--specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->when</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1278,31 +1278,31 @@
     <label- class="s-decl" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-decl->struct declaration</s-decl-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-decl" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-decl->function declaration</s-decl-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-decl" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->template signature<span class="hidden">&nbsp;*</span></s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-decl->operator declaration</s-decl-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label->
@@ -1313,38 +1313,38 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-decl->template parameter</s-decl-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->&gt;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->template</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->&lt;</s-vbtm-></td>
-            <td><b-brc-></b-brc-><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+            <td data-arrows="br lr"></td>
+            <td data-arrows="lt lr ar"></td>
             <td><s-decl->template parameter pack<span class="hidden">&nbsp;**</span></s-decl-></td>
-            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-ltc-></b-ltc-><b-lr-></b-lr-></td>
+            <td data-arrows="lr tr"></td>
+            <td data-arrows="lt lr ar"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
     <syntax-note->
@@ -1354,39 +1354,39 @@
     <label- class="s-decl" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->type</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-decl" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
     <table class="s-decl">
         <tr>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->type</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-path->type<span class="hidden">&nbsp;*</span></s-path-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->...</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <syntax-note->
@@ -1394,25 +1394,6 @@
     </syntax-note->
 </syntax->
 
-
-
-
-<!-- TODO replace "definition(s)" with declaration(s) -->
-
-
-
-
-
-
-
-<!-- TODO SPECIAL FUNCTION SECTION -->
-<!-- TODO main -->
-<!-- TODO constructors -->
-<!-- TODO destructors -->
-
-
-
-<!-- TODO default values not allowed in operators -->
 
 
 
@@ -1486,17 +1467,17 @@
     <label- class="s-sub" id="syntax--statement-if"><a href="#if-statement">If statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->if</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1511,21 +1492,21 @@
     <label- class="s-sub" id="syntax--statement-match"><a href="#match-statement">Match statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->match</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[t]</t->&nbsp;value</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-sub->match case</s-sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
@@ -1538,9 +1519,9 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
             <td></td>
             <td></td>
         </tr>
@@ -1550,46 +1531,46 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-expr-><t->[t]</t->&nbsp;a</s-expr-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->to</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[t]</t->&nbsp;b</s-expr-></td>
-            <td><b-lrc-></b-lrc-><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr tr"></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-rtc-></b-rtc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt lb"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -1621,17 +1602,17 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -1643,17 +1624,17 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-br-></b-br-><b-btc-></b-btc-></td>
+            <td data-arrows="br ar bt"></td>
             <td><s-expr->initializer</s-expr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-expr->iteration</s-expr-></td>
-            <td><b-lbc-></b-lbc-><b-tbc-></b-tbc-></td>
+            <td data-arrows="lb tb"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -1661,42 +1642,42 @@
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->for</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr ar lt lb"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->in</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr->value</s-expr-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-><b-br-></b-br-></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr tr br ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td><b-tbc-></b-tbc-><b-tr-></b-tr-></td>
+            <td data-arrows="tb tr ar"></td>
             <td><s-expr-><t->[t]</t->&nbsp;a</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->to</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-expr-><t->[t]</t->&nbsp;b</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->as</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->name</s-any-></td>
-            <td><b-ltc-></b-ltc-></td>
+            <td data-arrows="lt"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -1707,11 +1688,11 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-trc-></b-trc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-ltc-></b-ltc-></td>
+            <td data-arrows="tr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lt"></td>
             <td></td>
             <td></td>
             <td></td>
@@ -1744,37 +1725,37 @@
     <label- class="s-sub" id="syntax--statement-while"><a href="#while-statement">While statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->while signature</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--statement-do-while"><a href="#while-statement">Do-while statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->do</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->while signature</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <label- class="s-sub" id="syntax--statement-while-signature"><a href="#while-statement">While signature</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->while</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[bool]</t->&nbsp;condition</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1799,20 +1780,20 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->continue</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-expr-><t->[ulong]</t->&nbsp;amount</s-expr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1833,20 +1814,20 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->break</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-expr-><t->[ulong]</t->&nbsp;amount</s-expr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1869,11 +1850,11 @@
     <label- class="s-sub" id="syntax--statement-once"><a href="#once-statement">Once statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->once</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1895,11 +1876,11 @@
     <label- class="s-sub" id="syntax--statement-then"><a href="#then-statement">Then statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->then</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -1923,20 +1904,20 @@
         <tr>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->return</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-expr-><t->[return type]</t->&nbsp;value<span class="hidden">&nbsp;*</span></s-expr-></td>
-            <td><b-lr-></b-lr-><b-tr-></b-tr-></td>
+            <td data-arrows="lr tr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <syntax-note->
@@ -1958,13 +1939,13 @@
     <label- class="s-sub" id="syntax--statement-defer"><a href="#defer-statement">Defer statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->defer</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><a href="#syntax--expression-routine-call"><s-expr->call<span class="hidden">&nbsp;*</span></s-expr-></a></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <syntax-note->
@@ -1990,11 +1971,11 @@
     <label- class="s-sub" id="syntax--statement-else"><a href="#else-statement">Else statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->else</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2020,29 +2001,29 @@
     <label- class="s-sub" id="syntax--statement-unnamed-scope"><a href="#unnamed-scopes">Unnamed scope</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lrc-></b-lrc-><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar lb"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-btc-></b-btc-></td>
+            <td data-arrows="rt bt"></td>
             <td><s-sub->statement</s-sub-></td>
-            <td><b-tl-></b-tl-><b-tbc-></b-tbc-></td>
+            <td data-arrows="tl al tb"></td>
             <td></td>
             <td></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-></td>
+            <td data-arrows="rt"></td>
             <td><s-decl->declaration<span class="hidden">&nbsp;*</span></s-decl-></td>
-            <td><b-tl-></b-tl-></td>
+            <td data-arrows="tl al"></td>
             <td></td>
             <td></td>
         </tr>
@@ -2076,11 +2057,11 @@
     <label- class="s-sub" id="syntax--statement-expression"><a href="#expression-statement">Expression statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr->expression</s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2110,9 +2091,9 @@
     <label- class="s-sub" id="syntax--statement-empty"><a href="#empty-statement">Empty statement</a></label->
     <table class="s-sub">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->;</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2203,9 +2184,9 @@
     <label- class="s-expr" id="syntax--expression-literal"><a href="#literals">Literal</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-any->literal token</s-any-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2220,15 +2201,15 @@
     <label- class="s-expr" id="syntax--expression-try"><a href="#try-expression">Try expression</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->try</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->{</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->idk</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->}</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2244,9 +2225,9 @@
     <label- class="s-expr" id="syntax--expression-variable"><a href="#variables">Variables</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->path to variable</s-path-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2269,11 +2250,11 @@
     <label- class="s-expr" id="syntax--expression-temporary-variable"><a href="#temporary-variables">Temporary variables</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->$</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-expr-><t->[ulong]</t->&nbsp;name&nbsp<span class="hidden">*</span></s-expr-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
     <syntax-note->
@@ -2299,9 +2280,9 @@
     <label- class="s-expr" id="syntax--expression-routine-parameter"><a href="#declarations.routine-parameters">Routine parameter</a></label->
     <table class="s-expr">
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->path to parameter</s-path-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
@@ -2330,31 +2311,31 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-br-></b-br-></td>
+            <td data-arrows="br ar"></td>
             <td><s-vbtm->)</s-vbtm-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
         <tr>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-path->path to function</s-path-></td>
-            <td><b-lr-></b-lr-></td>
+            <td data-arrows="lr ar"></td>
             <td><s-vbtm->(</s-vbtm-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-expr->argument</s-expr-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-></td>
+            <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->,</s-vbtm-></td>
-            <td><b-lbc-></b-lbc-></td>
+            <td data-arrows="lb"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <td></td>
             <td></td>
-            <td><b-rtc-></b-rtc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-rlc-></b-rlc-><b-c-></b-c-></td>
-            <td><b-tlc-></b-tlc-></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
         </tr>
     </table>
 </syntax->
@@ -2382,25 +2363,25 @@
             <td></td>
             <td></td>
             <td></td>
-            <td><b-brc-></b-brc-><b-c-></b-c-></td>
-            <td><b-lrc-></b-lrc-><b-c-></b-c-></td>
-            <td><b-br-></b-br-><b-lr-></b-lr-></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="br lr ar"></td>
         </tr>
         <tr>
-            <td><b-lrc-></b-lrc-><b-lbc-></b-lbc-><b-c-></b-c-></td>
-            <td><b-lr-></b-lr-><b-br-></b-br-></td>
+            <td data-arrows="lr lb"></td>
+            <td data-arrows="lr br ar"></td>
             <td><s-path->path to operator<span class="hidden">&nbsp;**</span></s-path-></td>
-            <td><b-lr-></b-lr-><b-ltc-></b-ltc-><b-br-></b-br-></td>
+            <td data-arrows="lr br ar lt"></td>
             <td><s-expr->argument<span class="hidden">&nbsp;*</span></s-expr-></td>
-            <td><b-ltc-></b-ltc-><b-lbc-></b-lbc-></td>
+            <td data-arrows="lt lb"></td>
         </tr>
         <tr>
-            <td><b-trct-></b-trct-><b-c--t-></b-c--t-></td>
-            <td><b-rtcb-></b-rtcb-><b-c--b-></b-c--b-><b-lrct-></b-lrct-><b-c--t-></b-c--t-></td>
-            <td><b-rlcb-></b-rlcb-><b-c--b-></b-c--b-><b-lrct-></b-lrct-><b-c--t-></b-c--t-></td>
-            <td><b-rlcb-></b-rlcb-><b-c--b-></b-c--b-><b-ltct-></b-ltct-></td>
-            <td><b-rlcb-></b-rlcb-><b-c--b-></b-c--b-></td>
-            <td><b-tlcb-></b-tlcb-></td>
+            <td data-arrows="trct ct ct"></td>
+            <td data-arrows="rtcb cb cb lrct ct ct"></td>
+            <td data-arrows="rlcb cb cb lrct ct ct"></td>
+            <td data-arrows="rlcb cb cb ltct"></td>
+            <td data-arrows="rlcb cb cb"></td>
+            <td data-arrows="tlcb"></td>
         </tr>
     </table>
     <syntax-note->

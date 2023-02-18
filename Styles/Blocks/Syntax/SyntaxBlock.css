@@ -30,7 +30,6 @@ syntax- table tr > td {
     letter-spacing: var(--char-spacing);
     text-align: left;
 
-    padding:  0 var(--syntax-arrow-margin) 0 var(--syntax-arrow-margin);
     min-height: var(--syntax-line-h);
     max-height: var(--syntax-line-h);
     /**/height: var(--syntax-line-h);

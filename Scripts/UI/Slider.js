@@ -14,8 +14,8 @@ let slider;
 var ui_slider = {
     // Updates the maximum and minimum values of the slider. Used in browser zoom and window resize
     update_range : function(){
-        slider.min = document.getElementById("CALC-SLIDER-MIN").clientWidth;
-        slider.max = document.getElementById("CALC-VW"        ).clientWidth - document.getElementById("CALC-SLIDER-MAX").clientWidth;
+        slider.min = document.getElementById("CALC-SLIDER-MIN").offsetWidth;
+        slider.max = document.getElementById("CALC-VW"        ).offsetWidth - document.getElementById("CALC-SLIDER-MAX").offsetWidth;
     },
 
 
@@ -139,7 +139,7 @@ var ui_slider = {
 
 
     // Updates the width of the left and right main containers
-    update_main_width : function(){
+    update_main_width : function(move = true){
         document.getElementById("main-left").style.width  = "calc(" +
             slider.value +  "px - " +
             "var(--main-padding-l)" +
@@ -152,7 +152,7 @@ var ui_slider = {
         ")";
         ui_slider.update_logo_width(slider.value);
         window.localStorage.setItem("slider-value", slider.value);
-        move_to_view("auto"); // Fix random scrolling caused by children resizing
+        if(move) move_to_view(true); // Fix random scrolling caused by children resizing
     },
 
     // Update on browser zoom and window resize
@@ -164,8 +164,8 @@ var ui_slider = {
 
     init_slider_first_time : function(){
         window.localStorage.setItem("slider-set", "set");
-        let min = document.getElementById("CALC-SLIDER-MIN").clientWidth;
-        let max = document.getElementById("CALC-VW"        ).clientWidth - document.getElementById("CALC-SLIDER-MAX").clientWidth;
+        let min = document.getElementById("CALC-SLIDER-MIN").offsetWidth;
+        let max = document.getElementById("CALC-VW"        ).offsetWidth - document.getElementById("CALC-SLIDER-MAX").offsetWidth;
         window.localStorage.setItem("slider-value", (min + max) / 2);
     },
     // Set slider value after page refresh and initialize it if needed
@@ -219,6 +219,6 @@ var ui_slider = {
         // Run initializer functions
         ui_slider.init_slider();
         ui_slider.update_range();
-        ui_slider.update_main_width();
+        ui_slider.update_main_width(false);
     }
 }
