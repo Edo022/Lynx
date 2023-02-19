@@ -8,7 +8,7 @@ cw- { display: inline-block; color: #ddcf06; font-weight: 300; }    /* Warning c
 k-  { display: inline-block; color: #85b4e0; }                      /* Constant           */
 t-  { display: inline-block; color: #3884dc; }                      /* Type               */
 f-  { display: inline-block; color: #e6e6b3; }                      /* Function           */
-a-  { display: inline-block; color: #2fc5d0; }                      /* Argument           */
+p-  { display: inline-block; color: #2fc5d0; }                      /* Argument           */
 w-  { display: inline-block; color: #cc94d1; }                      /* Keyword            */
 sr- { display: inline-block; color: #c44e4e; }                      /* String regex token */
 sg- { display: inline-block; color: #c9ca76; }                      /* String regex group */

@@ -1,12 +1,7 @@
-* {
-    font-weight: lighter;
-}
-b {
-    text-decoration: underline;
-}
-b- {
-    font-weight: normal;
-}
+b    { text-decoration: underline; }
+a-   { display: inline; font-weight: normal;  }
+b-   { display: inline; font-weight: lighter;  }
+txt- { display: inline; }
 
 
 .readability-button {

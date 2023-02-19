@@ -16,6 +16,7 @@ var readability = {
                         case 'SYNTAX-':  return NodeFilter.FILTER_REJECT;
                         case 'TITLE':    return NodeFilter.FILTER_REJECT;
                         case 'STYLE':    return NodeFilter.FILTER_REJECT;
+                        case 'CODE':     return NodeFilter.FILTER_REJECT;
                         default:         return checkParent(node.parentElement);
                     }
                 }
@@ -25,46 +26,51 @@ var readability = {
                 return checkParent(node);
             }}
         );
-        let n, lastOld = null, lastNew = null;
-        while(n = walk.nextNode()) {
 
+
+
+        let n = walk.nextNode();
+        while(n) {
             // Load new elements
             let w = n.textContent.split(/((?<=[a-z]+)(?=[^a-z]+)|(?<=[^a-z]+)(?=[a-z]+))/i);
             //!                           ^ word-to-symbol       ^ symbol-to-word
-            let span = document.createElement('span');
+            let c = document.createElement('txt-');
+            let has_text = false;
             for(let j = 0; j < w.length; ++j){
 
                 let text = w[j];
                 // Skip symbolic elements
                 if(/[^a-z]/i.test(text[0])) {
-                    let a = document.createElement('span');
+                    let a = document.createElement('a-');
                     a.innerHTML = text;
-                    span.appendChild(a);
+                    c.appendChild(a);
                 }
                 else {
                     let mid = Math.ceil(text.length / 2);
 
                     // Save the 2 parts as separate elements
-                    let a = document.createElement('b-');
-                    let b = document.createElement('span');
+                    let a = document.createElement('a-');
+                    let b = document.createElement('b-');
                     a.innerHTML = text.slice(0, mid);
                     b.innerHTML = text.slice(mid, text.length);
 
                     // Append them if they are not empty
-                    if(a.innerHTML.length) span.appendChild(a);
-                    if(b.innerHTML.length) span.appendChild(b);
+                    if(a.innerHTML.length && b.innerHTML.length) has_text = true;
+                    if(a.innerHTML.length) c.appendChild(a);
+                    if(b.innerHTML.length) c.appendChild(b);
                 }
-            }
+            };
 
-            // Replace old elements
-            //! Save the current node and replacement and *use them in the next iteration*
-            //! Replacing the current node breaks TreeWalker
-            if(lastOld != null) lastOld.replaceWith(lastNew);
-            lastOld = n;
-            lastNew = span;
+            // Save current element, walk over it and replace it with the new node
+            if(has_text){
+                let cur = n;
+                n = walk.nextNode()
+                cur.replaceWith(c);
+            }
+            else {
+                n = walk.nextNode()
+            }
         }
-        // Replace last element
-        if(lastOld != null) lastOld.replaceWith(lastNew);
     },
 
 

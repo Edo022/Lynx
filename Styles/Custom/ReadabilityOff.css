@@ -1,9 +1,7 @@
-* {
-    font-weight: inherit;
-}
-b {
-    font-weight: bolder;
-}
+b    { text-decoration: bolder; }
+a-   { display: inline; font-weight: inherit;  }
+b-   { display: inline; font-weight: inherit; }
+txt- { display: inline; }
 
 
 .readability-button {

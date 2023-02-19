@@ -1154,7 +1154,7 @@
         <c->// Absolute path: module.s</c->
         <w->namespace</w-> s {
             <c->// Absolute path: module.s.fun</c->
-            <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
+            <t->void</t-> <f->fun</f->(<t->uint</t-> <p->n</p->) {
                 <c->//        ^</c->
                 <c->// Absolute path: module.s.fun.n</c->
             }
@@ -1203,7 +1203,7 @@
                 <c->// n references module.s.*unnamed*.n</c->
             }
 
-            <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
+            <t->void</t-> <f->n</f->(<t->uint</t-> <p->n</p->) {
                 <c->// n references module.s.n.n</c->
             }
 
@@ -1277,7 +1277,7 @@
             a.b <f->=</f-> <k->5</k->;      <c->// Ok</c->
         }
 
-        <t->void</t-> <f->f</f->(<t->int</t-> <a->n</a->) { } <c->// Ok</c->
+        <t->void</t-> <f->f</f->(<t->int</t-> <p->n</p->) { } <c->// Ok</c->
         <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
     </div>
 </example->
@@ -1444,12 +1444,12 @@
         }
 
         <c->// Suitable for compile time calls</c->
-        <t->bool</t-> <f->add_1</f->(<t->ulong</t-> <a->n</a->) {
+        <t->bool</t-> <f->add_1</f->(<t->ulong</t-> <p->n</p->) {
             <w->return</w-> n <f->+</f-> <k->1</k->;
         }
 
 
-        <t->bool</t-> <f->f</f->(<t->ulong</t-> <a->n</a->) {
+        <t->bool</t-> <f->f</f->(<t->ulong</t-> <p->n</p->) {
             <t->ulong</t-> a = <k->True</k->;
 
             <c->// return q::elms[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->

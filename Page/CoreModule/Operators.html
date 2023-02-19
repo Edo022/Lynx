@@ -142,14 +142,14 @@
             <tr>
                 <td class="center" rowspan="2">2</td>
                 <td class="center"><code>++</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<a->n</a->) <f->++</f-></code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<p->n</p->) <f->++</f-></code></td>
                 <td class="left">Postfix increment</td>
                 <td class="left" rowspan="6">Arithmetic</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>--</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<a->n</a->) <f->--</f-></code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<p->n</p->) <f->--</f-></code></td>
                 <td class="left">Postfix decrement</td>
                 <fake-td></fake-td>
             </tr>
@@ -157,42 +157,42 @@
             <tr>
                 <td class="center" rowspan="6">3</td>
                 <td class="center"><code>++</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->++</f-> (?<t->T</t-> &<a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->++</f-> (?<t->T</t-> &<p->n</p->)</code></td>
                 <td class="left">Prefix increment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>--</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->--</f-> (?<t->T</t-> &<a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->--</f-> (?<t->T</t-> &<p->n</p->)</code></td>
                 <td class="left">Prefix decrement</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>+</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->+</f-> (?<t->T</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->+</f-> (?<t->T</t-> <p->n</p->)</code></td>
                 <td class="left">Promotion</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>-</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->-</f-> (?<t->T</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->-</f-> (?<t->T</t-> <p->n</p->)</code></td>
                 <td class="left">Inversion</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>~</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->~</f-> (?<t->T</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->~</f-> (?<t->T</t-> <p->n</p->)</code></td>
                 <td class="left">Bitwise NOT</td>
                 <td class="left">Bitwise</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!</code></td>
-                <td class="center nowrap"><code><t->bool</t-> <f->!</f-> (<t->bool</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> <f->!</f-> (<t->bool</t-> <p->n</p->)</code></td>
                 <td class="left">Logical NOT</td>
                 <td class="left">Logical</td>
             </tr>
@@ -200,21 +200,21 @@
             <tr>
                 <td class="center" rowspan="3">4</td>
                 <td class="center"><code>*</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->*</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->*</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Multiplication</td>
                 <td class="left" rowspan="5">Arithmetic</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>/</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->/</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->/</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Division</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>%</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->%</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->%</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Modulus</td>
                 <fake-td></fake-td>
             </tr>
@@ -222,14 +222,14 @@
             <tr>
                 <td class="center" rowspan="2">5</td>
                 <td class="center"><code>+</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->+</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->+</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Addition</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>-</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->-</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->-</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Subtraction</td>
                 <fake-td></fake-td>
             </tr>
@@ -237,14 +237,14 @@
             <tr>
                 <td class="center" rowspan="2">6</td>
                 <td class="center"><code>&lt;&lt;</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&lt;&lt;</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->&lt;&lt;</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Left bit shift</td>
                 <td class="left" rowspan="2">Bitwise</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;&gt;</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&gt;&gt;</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->&gt;&gt;</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Right bit shift</td>
                 <fake-td></fake-td>
             </tr>
@@ -252,28 +252,28 @@
             <tr>
                 <td class="center" rowspan="4">7</td>
                 <td class="center"><code>&lt;</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&lt;</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&lt;</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Less than</td>
                 <td class="left" rowspan="8">Relational</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&lt;=</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&lt;=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&lt;=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Less or equal than</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&gt;</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&gt;</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Greater than</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;=</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&gt;=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&gt;=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Greater or equal than</td>
                 <fake-td></fake-td>
             </tr>
@@ -281,28 +281,28 @@
             <tr>
                 <td class="center" rowspan="4">8</td>
                 <td class="center"><code>==</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->==</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->==</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Equality</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!=</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->!=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->!=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Inequality</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>=:</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <a->a</a->) <f->=:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <p->a</p->) <f->=:</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Existence</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!:</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <a->a</a->) <f->!:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->baseof<!-- TODO REMOVE BASEOF --></t->(<t->T</t->) <p->a</p->) <f->!:</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Inexistence</td>
                 <fake-td></fake-td>
             </tr>
@@ -310,7 +310,7 @@
             <tr>
                 <td class="center">9</td>
                 <td class="center"><code>&</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->&</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise AND</td>
                 <td class="left" rowspan="3">Bitwise</td>
             </tr>
@@ -318,7 +318,7 @@
             <tr>
                 <td class="center">10</td>
                 <td class="center"><code>^</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->^</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->^</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise XOR</td>
                 <fake-td></fake-td>
             </tr>
@@ -326,7 +326,7 @@
             <tr>
                 <td class="center">11</td>
                 <td class="center"><code>|</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->|</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->|</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise OR</td>
                 <fake-td></fake-td>
             </tr>
@@ -334,7 +334,7 @@
             <tr>
                 <td class="center">12</td>
                 <td class="center"><code>&&</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->&&</f-> (<t->bool</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <p->a</p->) <f->&&</f-> (<t->bool</t-> <p->b</p->)</code></td>
                 <td class="left">Logical AND</td>
                 <td class="left" rowspan="3">Logical</td>
             </tr>
@@ -342,7 +342,7 @@
             <tr>
                 <td class="center">13</td>
                 <td class="center"><code>^^</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->^^</f-> (<t->bool</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <p->a</p->) <f->^^</f-> (<t->bool</t-> <p->b</p->)</code></td>
                 <td class="left">Logical XOR</td>
                 <fake-td></fake-td>
             </tr>
@@ -350,7 +350,7 @@
             <tr>
                 <td class="center">14</td>
                 <td class="center"><code>||</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->||</f-> (<t->bool</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <p->a</p->) <f->||</f-> (<t->bool</t-> <p->b</p->)</code></td>
                 <td class="left">Logical OR</td>
                 <fake-td></fake-td>
             </tr>
@@ -544,7 +544,7 @@
         <example- style="margin: 0;">
             <label->Existence</label->
             <div>
-                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
+                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <p->a</p->) <f->=:</f-> (?<t->t</t-> <p->b</p->) { <!-- TODO REMOVE BASEOF -->
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                         <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
                     }
@@ -557,7 +557,7 @@
         <example- style="margin: 0;">
             <label->Inexistence</label->
             <div>
-                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { <!-- TODO REMOVE BASEOF -->
+                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <p->a</p->) <f->!:</f-> (?<t->t</t-> <p->b</p->) { <!-- TODO REMOVE BASEOF -->
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                         <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
                     }
@@ -599,77 +599,77 @@
             <tr>
                 <td class="center" rowspan="11">16</td>
                 <td class="center"><code>=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Direct assignment</td>
                 <td class="left" rowspan="11">Assignment</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>+=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->+=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->+=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Addition assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>-=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->-=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->-=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Subtraction assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>*=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->*=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->*=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Multiplication assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>/=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->/=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->/=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Division assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>%=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->%=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->%=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Modulus assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->&=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->&=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise AND assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>^=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->^=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->^=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise XOR assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>|=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->|=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->|=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise OR assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&lt;&lt;=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->&lt;&lt;=</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->&lt;&lt;=</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Left bit shift assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;&gt;=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->&gt;&gt;=</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->&gt;&gt;=</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Right bit shift assignment</td>
                 <fake-td></fake-td>
             </tr>
@@ -694,7 +694,7 @@
             <tr>
                 <td class="center" >1</td>
                 <td class="center"><elm-><code>(</code><code>)</code></elm-></td>
-                <td class="center nowrap"><code><t->T</t-> <f->(</f-> (?<t->T</t-> <a->n</a->) <f->)</f-></code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->(</f-> (?<t->T</t-> <p->n</p->) <f->)</f-></code></td>
                 <td class="left">Grouping</td>
                 <td class="left" rowspan="10">Misc</td>
             </tr>
@@ -702,7 +702,7 @@
             <tr>
                 <td class="center">15</td>
                 <td class="center"><elm-><code>?</code><code>:</code></elm-></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->bool</t-> <a->a</a->) <f->?</f-> (?<t->T</t-> <a->b</a->) <f->:</f-> (?<t->T</t-> <a->c</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->bool</t-> <p->a</p->) <f->?</f-> (?<t->T</t-> <p->b</p->) <f->:</f-> (?<t->T</t-> <p->c</p->)</code></td>
                 <td class="left">Selection operator</td>
             </tr>
     </tbody>

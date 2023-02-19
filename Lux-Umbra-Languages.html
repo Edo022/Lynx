@@ -871,7 +871,7 @@
         <li>
             <span><elm-><code>&lt;</code><code>&gt;</code></elm-></span>
             <span>
-                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a>. Also used in <a href="#import-directive">import directives</a>.<br>
+                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a>. Also used in <a href="#import-directive">import directives</a><br>
                 <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword, after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a> or around the module name in an <a href="#import-directive">import directive</a>]</span>.
             </span>
         </li>
@@ -902,7 +902,7 @@
         <li>
             <span><code><w->as</w-></code></span>
             <span>
-                Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the new identifier used for a <a href="#symbol-aliases">symbol alias</a>.<br>
+                Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the new identifier used for a <a href="#symbol-aliases">symbol alias</a><br>
                 <span class="meta-keyword-constraint">[When used in the signature of a <a href="#for-loops">for-each</a>, <a href="#for-loops">for-n</a> or <a href="#for-loops">for-range</a> loop, after the name of a <a href="#symbols">symbol</a> in an <a href="#import-directive">import</a> or <a href="#export-directive">export</a> directive or in a <a href="#symbol-aliases">symbol alias</a> declaration]</span>.
             </span>
         </li>
@@ -916,14 +916,14 @@
         <li>
             <span><code>=</code> </span>
             <span>
-                Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values<br>
+                Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a><br> //TODO templates can prob have def values<br>
                 <span class="meta-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
             </span>
         </li>
         <li>
             <span><code>:</code> </span>
             <span>
-                Specifies the base type of an enum.<br>
+                Specifies the base type of an enum<br>
                 <span class="meta-keyword-constraint">[When used after the identifier of an enum declaration]</span>.
             </span>
         </li>
@@ -1508,7 +1508,7 @@
         <c->// Absolute path: module.s</c->
         <w->namespace</w-> s {
             <c->// Absolute path: module.s.fun</c->
-            <t->void</t-> <f->fun</f->(<t->uint</t-> <a->n</a->) {
+            <t->void</t-> <f->fun</f->(<t->uint</t-> <p->n</p->) {
                 <c->//        ^</c->
                 <c->// Absolute path: module.s.fun.n</c->
             }
@@ -1540,7 +1540,7 @@
                 <c->// n references module.s.*unnamed*.n</c->
             }
 
-            <t->void</t-> <f->n</f->(<t->uint</t-> <a->n</a->) {
+            <t->void</t-> <f->n</f->(<t->uint</t-> <p->n</p->) {
                 <c->// n references module.s.n.n</c->
             }
 
@@ -1606,7 +1606,7 @@
             a.b <f->=</f-> <k->5</k->;      <c->// Ok</c->
         }
 
-        <t->void</t-> <f->f</f->(<t->int</t-> <a->n</a->) { } <c->// Ok</c->
+        <t->void</t-> <f->f</f->(<t->int</t-> <p->n</p->) { } <c->// Ok</c->
         <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
     </div>
 </example->
@@ -1718,15 +1718,15 @@
         }
 
         <c->// Suitable for compile time calls</c->
-        <t->bool</t-> <f->add_1</f->(<t->ulong</t-> <a->n</a->) {
+        <t->bool</t-> <f->add_1</f->(<t->ulong</t-> <p->n</p->) {
             <w->return</w-> n <f->+</f-> <k->1</k->;
         }
 
 
-        <t->bool</t-> <f->f</f->(<t->ulong</t-> <a->n</a->) {
+        <t->bool</t-> <f->f</f->(<t->ulong</t-> <p->n</p->) {
             <t->ulong</t-> a = <k->True</k->;
 
-            <c->// return q:elms[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
+            <c->// return q::elms[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
             <c->// return q[add_1(n)];</c->   <ce->// Error, the routine call is not compile time</ce->
             <c->// return q[rand(2)];</c->    <ce->// Error, the routine "random.rand" is not suitable for compile time calls</ce->
             <w->return</w-> q<f->[</f->n<f->]</f->;             <c->// Ok</c->
@@ -1883,11 +1883,11 @@
 
         <t->float</t-> pi = <k->3.14</k->
 
-        <t->float</t-> <f->cube_v</f->(<t->float</t-> <a->side</a->) { <w->return</w-> math.<p->pow</p->(side, <k->3</k->) }
-        <t->float</t-> <f->cube_s</f->(<t->float</t-> <a->side</a->) { <w->return</w-> math.<p->pow</p->(side, <k->2</k->) <f->*</f-> <k->6</k->; }
+        <t->float</t-> <f->cube_v</f->(<t->float</t-> <p->side</p->) { <w->return</w-> math.<p->pow</p->(side, <k->3</k->) }
+        <t->float</t-> <f->cube_s</f->(<t->float</t-> <p->side</p->) { <w->return</w-> math.<p->pow</p->(side, <k->2</k->) <f->*</f-> <k->6</k->; }
 
-        <t->float</t-> <f->sphere_v</f->(<t->float</t-> <a->r</a->) { <w->return</w-> <k->pi</k-><f->/</f-><k->3</k-><f->*</f-><k->4</k-><f->*</f->math.<f->pow</f->(r, <k->3</k->); }
-        <t->float</t-> <f->sphere_s</f->(<t->float</t-> <a->r</a->) { <w->return</w-> <k->pi</k-><f->*</f-><k->4</k-><f->*</f->math.<f->pow</f->(r, <k->2</k->); }
+        <t->float</t-> <f->sphere_v</f->(<t->float</t-> <p->r</p->) { <w->return</w-> <k->pi</k-><f->/</f-><k->3</k-><f->*</f-><k->4</k-><f->*</f->math.<f->pow</f->(r, <k->3</k->); }
+        <t->float</t-> <f->sphere_s</f->(<t->float</t-> <p->r</p->) { <w->return</w-> <k->pi</k-><f->*</f-><k->4</k-><f->*</f->math.<f->pow</f->(r, <k->2</k->); }
 
 
         <w->namespace</w-> volume {
@@ -2178,7 +2178,7 @@
                     <k->mon</k->, <k->two</k->, <k->wed</k->, <k->thu</k->, <k->fri</k->, <k->sat</k->, <k->sun</k->;
                 }
 
-                <t->void</t-> <f->check_day</f->(<t->day</t-> <a->d</a->) {
+                <t->void</t-> <f->check_day</f->(<t->day</t-> <p->d</p->) {
                     <w->match</w-> d {
                         .<k->mon</k-> to .<k->fri</k-> { io.<f->print</f->(<s->"TwT"</s->); }
                         .<k->sat</k-> or .<k->sun</k-> { io.<f->print</f->(<s->"OwO"</s->); }
@@ -2312,13 +2312,13 @@
         <w->struct</w-> <t->uint3</t-> <w->nodefault</w-> {
             <t->uint</t-> x, y, z;
 
-            <w->constructor</w->(<t->uint2</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+            <w->constructor</w->(<t->uint2</t-> <p->a</p->, <t->uint</t-> <p->b</p->) {
                 x <f->=</f-> a.x;
                 y <f->=</f-> a.y;
                 z <f->=</f-> b;
             }
 
-            <w->constructor</w->(<t->uint</t-> <a->a</a->, <t->uint2</t-> <a->b</a->) {
+            <w->constructor</w->(<t->uint</t-> <p->a</p->, <t->uint2</t-> <p->b</p->) {
                 x <f->=</f-> a;
                 y <f->=</f-> b.x;
                 z <f->=</f-> b.y;
@@ -2358,7 +2358,7 @@
                     <t->float</t-> n;
                     <t->int</t-> i;
 
-                    <w->constructor</w->(<t->float</t-> <a->n</a->){
+                    <w->constructor</w->(<t->float</t-> <p->n</p->){
                         i <f->=</f-> last<f->++</f->;
                         this.n <f->=</f-> n;
                     }
@@ -2402,7 +2402,7 @@
     It has no other purpose but it can be passed to type template parameters to generate different declarations.
 </p>
 <example->
-    <label->Example2</label->
+    <label->Example 1</label->
     <div>
         <f->uint</f-> counter = <k->0</k->;
         <t->void</t-> <f->inc_counter</f->(){ counter<f->++</f->; }
@@ -2415,12 +2415,12 @@
 <split-example-container->
     <split-example-container-left->
         <example->
-            <label->Example2</label->
+            <label->Example 2</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
                 <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->void</t-> <f->print_template_info</f->()
-                <w->when</w->(<t->t</t->:<k->id</k-> <f->!=</f-> <t->void</t->:<k->id</k->) { io.<f->print</f->(<s->"not void"</s->); }
-                <w->when</w->(<t->t</t->:<k->id</k-> <f->==</f-> <t->void</t->:<k->id</k->) { io.<f->print</f->(<s->"void"</s->); }
+                <w->when</w->(<t->t</t->::<k->id</k-> <f->!=</f-> <t->void</t->::<k->id</k->) { io.<f->print</f->(<s->"not void"</s->); }
+                <w->when</w->(<t->t</t->::<k->id</k-> <f->==</f-> <t->void</t->::<k->id</k->) { io.<f->print</f->(<s->"void"</s->); }
 
                 <t->void</t-> <f->main</f->(){
                     <f->print_template_info</f->&lt;<t->void</t->&gt;();
@@ -2449,10 +2449,40 @@
     The <code><t->const</t-></code> meta keyword can be placed between the base type and the <code>@</code> keyword to reference the corresponding const pointer. Const pointers are detailedly explained in <a href="#const-qualifier">Const qualifier</a>.
 </p>
 <p>
+    The <code>@</code> keyword is also used to access the value pointed by a pointer expression.<br>
+    The address of any r-value can be retrieved through the <code>$</code> keyword.
+</p>
+<p>
     Pointer types don't have to be declared. Each existing type but <code><t->void</t-></code> has its own corresponding pointer type and <code><t->const</t-></code> pointer type ready to use, including the pointer types themselves.
     <code><t->void</t-></code> pointers are not allowed.<br>
-    There is no limit to the amount of nested pointer types you can use as base type.
+    There is no limit to the amount of nested pointer types one can use as base type.
 </p>
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example</label->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->void</t-> <f->main</f->(){
+                    <t->int</t-> n = <k->5</k->;
+                    <t->int@</t-> p = $<k->n</k->;
+
+                    @p = <k->6</k->;
+                    io.<f->print</f->(<t->str</t->(<k->n</k->));
+                }
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                6<cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
 
 
 <h1 id="function-types"></h1>
@@ -2523,10 +2553,10 @@
 
         <tr class="even">
             <th rowspan="13"><t->uint</t-><br><br><t->int</t-><br><br><t->ulong</t-><br><br><t->long</t-></th>
-            <th><range-val->== <k->-9223372036854775808</k-><br><range-var->long:min</range-var-></range-val-></th>
-            <td class="center wrap conv-cell-m" rowspan="5">Overflows to (-n - <k->1</k->) % (uint:<k->max</k-> - <k->1</k->)</td>
+            <th><range-val->== <k->-9223372036854775808</k-><br><range-var->long::min</range-var-></range-val-></th>
+            <td class="center wrap conv-cell-m" rowspan="5">Overflows to (-n - <k->1</k->) % (uint::<k->max</k-> - <k->1</k->)</td>
             <td class="center wrap conv-cell-n" rowspan="3">Undefined</td>
-            <td class="center wrap conv-cell-m" rowspan="5">Overflows to (-n - <k->1</k->) % (ulong:<k->max</k-> - <k->1</k->)</td>
+            <td class="center wrap conv-cell-m" rowspan="5">Overflows to (-n - <k->1</k->) % (ulong::<k->max</k-> - <k->1</k->)</td>
             <td class="center wrap conv-cell-y" rowspan="11">Correct result</td>
             <td class="center wrap conv-cell-m" rowspan="4">Conversions are not symmetric</td>
             <td class="center wrap conv-cell-m" rowspan="2">Conversions are not symmetric</td>
@@ -2534,7 +2564,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&lt; <k->-9007199254740992</k-><br><range-var->double:min_precise_int</range-var-></range-val-></th>
+            <th><range-val->&lt; <k->-9007199254740992</k-><br><range-var->double::min_precise_int</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2545,7 +2575,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&lt; <k->-2147483648</k-><br><range-var->int:min</range-var-></range-val-></th>
+            <th><range-val->&lt; <k->-2147483648</k-><br><range-var->int::min</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2556,7 +2586,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&lt; <k->-16777216</k-><br><range-var->float:min_precise_int</range-var-></range-val-></th>
+            <th><range-val->&lt; <k->-16777216</k-><br><range-var->float::min_precise_int</range-var-></range-val-></th>
             <fake-td></fake-td>
             <td class="center wrap conv-cell-y" rowspan="5">Correct result</td>
             <fake-td></fake-td>
@@ -2600,7 +2630,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+16777216</k-><br><range-var->float:max_precise_int</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+16777216</k-><br><range-var->float::max_precise_int</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2611,7 +2641,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+2147483647</k-><br><range-var->int:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+2147483647</k-><br><range-var->int::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <td class="center wrap conv-cell-n" rowspan="5">Undefined</td>
             <fake-td></fake-td>
@@ -2622,8 +2652,8 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+4294967295</k-><br><range-var->uint:max</range-var-></range-val-></th>
-            <td class="center wrap conv-cell-m" rowspan="4">Overflows to n % (uint:<k->max</k-> + <k->1</k->)</td>
+            <th><range-val->&gt; <k->+4294967295</k-><br><range-var->uint::max</range-var-></range-val-></th>
+            <td class="center wrap conv-cell-m" rowspan="4">Overflows to n % (uint::<k->max</k-> + <k->1</k->)</td>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2633,7 +2663,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+9007199254740992</k-><br><range-var->double:max_precise_int</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+9007199254740992</k-><br><range-var->double::max_precise_int</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2644,7 +2674,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+9223372036854775807</k-><br><range-var->long:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+9223372036854775807</k-><br><range-var->long::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2655,7 +2685,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->== <k->+18446744073709551615</k-><br><range-var->ulong:max</range-var-></range-val-></th>
+            <th><range-val->== <k->+18446744073709551615</k-><br><range-var->ulong::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2677,7 +2707,7 @@
 
         <tr class="even">
             <th rowspan="16"><t->float</t-><br><br><t->double</t-></th>
-            <th><range-val->== <k->-inf</k-><br><range-var->-double:inf</range-var-><br><range-var->-float:inf</range-var-></range-val-></th>
+            <th><range-val->== <k->-inf</k-><br><range-var->-double::inf</range-var-><br><range-var->-float::inf</range-var-></range-val-></th>
             <td class="center wrap conv-cell-n" rowspan="6">Undefined</td>
             <td class="center wrap conv-cell-n" rowspan="5">Undefined</td>
             <td class="center wrap conv-cell-n" rowspan="6">Undefined</td>
@@ -2688,7 +2718,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->== <k->-1.7976931348623157081e+308</k-><br><range-var->double:min</range-var-></range-val-></th>
+            <th><range-val->== <k->-1.7976931348623157081e+308</k-><br><range-var->double::min</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2699,7 +2729,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&lt; <k->-3.4028234663852885981e+38</k-><br><range-var->float:min</range-var-></range-val-></th>
+            <th><range-val->&lt; <k->-3.4028234663852885981e+38</k-><br><range-var->float::min</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2710,7 +2740,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&lt; <k->-9223372036854775808.0</k-><br><range-var->long:min</range-var-></range-val-></th>
+            <th><range-val->&lt; <k->-9223372036854775808.0</k-><br><range-var->long::min</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2721,7 +2751,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&lt; <k->-2147483648.0</k-><br><range-var->int:min</range-var-></range-val-></th>
+            <th><range-val->&lt; <k->-2147483648.0</k-><br><range-var->int::min</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2765,7 +2795,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+2147483647.0</k-><br><range-var->int:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+2147483647.0</k-><br><range-var->int::max</range-var-></range-val-></th>
             <td class="center wrap conv-cell-n" rowspan="8">Undefined</td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2776,7 +2806,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+4294967297.0</k-><br><range-var->uint:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+4294967297.0</k-><br><range-var->uint::max</range-var-></range-val-></th>
             <td class="center wrap conv-cell-n" rowspan="7">Undefined</td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2787,7 +2817,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+9223372036854775807.0</k-><br><range-var->long:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+9223372036854775807.0</k-><br><range-var->long::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2798,7 +2828,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+18446744073709551615.0</k-><br><range-var->ulong:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+18446744073709551615.0</k-><br><range-var->ulong::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <td class="center wrap conv-cell-n" rowspan="5">Undefined</td>
@@ -2809,7 +2839,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->&gt; <k->+3.4028234663852885981e+38</k-><br><range-var->float:max</range-var-></range-val-></th>
+            <th><range-val->&gt; <k->+3.4028234663852885981e+38</k-><br><range-var->float::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2820,7 +2850,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->== <k->+1.7976931348623157081e+308</k-><br><range-var->double:max</range-var-></range-val-></th>
+            <th><range-val->== <k->+1.7976931348623157081e+308</k-><br><range-var->double::max</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2831,7 +2861,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val->== <k->+inf</k-><br><range-var->double:inf</range-var-><br><range-var->float:inf</range-var-></range-val-></th>
+            <th><range-val->== <k->+inf</k-><br><range-var->double::inf</range-var-><br><range-var->float::inf</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -2842,7 +2872,7 @@
         </tr>
         <tr class="even">
             <fake-td></fake-td>
-            <th><range-val-><f->isnan</f->(n)<br><br><range-var->double:nan</range-var-><br><range-var->float:nan</range-var-></range-val-></th>
+            <th><range-val-><f->isnan</f->(n)<br><br><range-var->double::nan</range-var-><br><range-var->float::nan</range-var-></range-val-></th>
             <fake-td></fake-td>
             <fake-td></fake-td>
             <fake-td></fake-td>
@@ -3076,7 +3106,7 @@
         <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
         <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
 
-        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+        <t->uint</t-> <f->f</f->(<t->uint</t-> <p->n</p->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
         <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
 
         <t->void</t-> <f->main</f->(){
@@ -3154,7 +3184,7 @@
 <example->
     <label->Example 1</label->
     <div>
-        <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
+        <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <p->arg</p->) {
             $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
             <c->//$2 = $1;          </c-><ce->// Error, $1 has undefined type</ce->
 
@@ -3163,7 +3193,7 @@
             $2 = <k->vec</k->;           <c->// Ok, $2 has type uint3 and value { 0, 1, 2 }</c->
         }
 
-        <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
+        <t->void</t-> <f->fun2</f->(<t->uint3</t-> <p->vec</p->) {
             <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2.$2 has nothing to do with fun1.$2</ce->
         }
 
@@ -3173,7 +3203,7 @@
 <example->
     <label->Example 2</label->
     <div>
-        <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
+        <t->void</t-> <f->fun3</f->(<t->bool</t-> <p->arg</p->, <t->uint2</t-> &<p->ref</p->) {
             <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
             <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
             <c->//ref = $0;                 </c-><ce->// Error, cannot determine the type of $0</ce->
@@ -3238,7 +3268,7 @@
 <example->
     <label->Example - Add function</label->
     <div>
-        <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
+        <t->int</t-> <f->add</f->(<t->int</t-> <p->a</p->, <t->int</t-> <p->b</p->){
             <w->return</w-> a + b;
         }
 
@@ -3275,7 +3305,7 @@
     <label->Example</label->
     <div>
         <w->import</w-> <s->&lt;math&gt;</s->;
-        <t->double</t-> <f->pow</f->(<t->double</t-> <a->a</a->, <t->double</t-> <a->b</a-> = <k->2</k->) {
+        <t->double</t-> <f->pow</f->(<t->double</t-> <p->a</p->, <t->double</t-> <p->b</p-> = <k->2</k->) {
             <w->return</w-> math.<f->pow</f->(a, b);
         }
 
@@ -3312,13 +3342,13 @@
         <w->struct</w-> <t->NoArg</t-> { };
 
         <c->// This function returns the value of the argument in the middle, or a value of type NoArg if an even number of arguments is passed</c->
-        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->..., <w->type</w-> <t->v</t->&gt; <t->auto</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->c</a->..., <t->v</t-> <a->r</a->) {
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->..., <w->type</w-> <t->v</t->&gt; <t->auto</t-> <f->get_middle_arg</f->(<t->t</t-> <p->l</p->, <t->u</t-> <p->c</p->..., <t->v</t-> <p->r</p->) {
             <w->return</w-> <f->get_middle_arg</f->(c);
         }
-        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->&gt; <t->NoArg</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->r</a->) {
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->&gt; <t->NoArg</t-> <f->get_middle_arg</f->(<t->t</t-> <p->l</p->, <t->u</t-> <p->r</p->) {
             <w->return</w-> { };
         }
-        <w->template</w-> &lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->get_middle_arg</f->(<t->t</t-> <a->c</a->) {
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->get_middle_arg</f->(<t->t</t-> <p->c</p->) {
             <w->return</w-> c;
         }
 
@@ -3336,10 +3366,10 @@
 <example->
     <label->Example 2 - Summation function</label->
     <div>
-        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t->... <a->vals</a->...) {
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <p->a</p->, ?<t->u</t->... <p->vals</p->...) {
             <w->return</w-> a <f->+</f-> <f->sum</f->(vals);
         }
-        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t-> <a->b</a->) {
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <p->a</p->, ?<t->u</t-> <p->b</p->) {
             <w->return</w-> a <f->+</f-> b;
         }
 
@@ -3375,7 +3405,7 @@
 <example->
     <label->Example 1 - Promotion operator</label->
     <div>
-        <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
+        <t->int</t-> <f->+</f-> (<t->int</t-> <p->n</p->) <w->priority</w->(<k->3</k->) {
             <w->return</w-> n;
         }
 
@@ -3387,12 +3417,12 @@
 <example->
     <label->Example 2 - Python-like ternary operator</label->
     <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->if_</f-> (<t->bool</t-> <p->condition</p->) <f->else_</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->15</k->) {
             <w->if</w->(condition) <w->return</w-> a;
             <w->else</w-> <w->return</w-> b;
         }
 
-        <t->void</t-> <f->main</f->(<t->bool</t-> <a->c</a->){
+        <t->void</t-> <f->main</f->(<t->bool</t-> <p->c</p->){
             <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
         }
     </div>
@@ -3418,19 +3448,19 @@
 <example->
     <label->Example 1 - Priority</label->
     <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->o</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
         }
 
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->r</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->p</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->r</w->) {
             <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
         }
 
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->q</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->5</k-> <w->r</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->q</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->5</k-> <w->r</w->) {
             <w->return</w-> b <f->-</f-> a;
         }
 
-        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+        <t->void</t-> <f->main</f->(<t->int</t-> <p->a</p->, <t->int</t-> <p->b</p->, <t->int</t-> <p->c</p->){
             <c->// Evaluated as ((a o (b p c)) q a)</c->
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
         }
@@ -3439,15 +3469,15 @@
 <example->
     <label->Example 2 - Associativity</label->
     <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->o</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
         }
 
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->p</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
         }
 
-        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+        <t->void</t-> <f->main</f->(<t->int</t-> <p->a</p->, <t->int</t-> <p->b</p->, <t->int</t-> <p->c</p->){
             <c->// Evaluated as ((a o b) p c)</c->
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
         }
@@ -3473,7 +3503,7 @@
 <example->
     <label->Example</label->
     <div>
-        <t->int</t-> <f->add</f->(<t->uint</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+        <t->int</t-> <f->add</f->(<t->uint</t-> <p->a</p->, <t->uint</t-> <p->b</p->) {
             <w->return</w-> a <f->+</f-> b;
         }
 
@@ -3497,7 +3527,7 @@
 <example->
     <label->Example</label->
     <div>
-        <t->void</t-> <f->halve</f->(<t->float</t->@ &<a->n</a->) {
+        <t->void</t-> <f->halve</f->(<t->float</t->@ &<p->n</p->) {
             @n <f->/=</f-> <k->2</k->;
         }
 
@@ -3543,13 +3573,13 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->void</t-> <f->f</f->(<t->int</t-> <t->const@</t-> <a->p</a->){
+                <t->void</t-> <f->f</f->(<t->int</t-> <t->const@</t-> <p->p</p->){
                     io.<f->print</f->(<s->"a"</s->);
                 }
-                <t->void</t-> <f->f</f->(<t->int@</t-> <a->p</a->){
+                <t->void</t-> <f->f</f->(<t->int@</t-> <p->p</p->){
                     io.<f->print</f->(<s->"b"</s->);
                 }
-                <t->void</t-> <f->f</f->(<t->ulong</t-> <a->p</a->){
+                <t->void</t-> <f->f</f->(<t->ulong</t-> <p->p</p->){
                     io.<f->print</f->(<s->"c"</s->);
                 }
 
@@ -3596,13 +3626,13 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->void</t-> <f->f</f->(?<t->t</t->... <a->args</a->...){
+                <t->void</t-> <f->f</f->(?<t->t</t->... <p->args</p->...){
                     io.<f->print</f->(<s->"More than one argument provided\n"</s->);
                 }
-                <t->void</t-> <f->f</f->(?<t->t</t-> <a->arg</a->) {
+                <t->void</t-> <f->f</f->(?<t->t</t-> <p->arg</p->) {
                     io.<f->print</f->(<s->"The first argument is not a double\n"</s->);
                 }
-                <t->void</t-> <f->f</f->(<t->double</t-> <a->arg</a->) {
+                <t->void</t-> <f->f</f->(<t->double</t-> <p->arg</p->) {
                     io.<f->print</f->(<s->"The first argument is a double\n"</s->);
                 }
 
@@ -3720,10 +3750,10 @@
 <example->
     <label->Example</label->
     <div>
-        <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+        <t->?t</t-> <f->add</f->(<t->?t</t-> <p->a</p->, <t->?t</t-> <p->b</p->, <t->int</t-> <p->c</p->){
             return a + b + c;
         }
-        <t->auto</t-> <f->add2</f->(<t->?t</t-> <a->a</a->, <t->?u</t-> <a->b</a->){
+        <t->auto</t-> <f->add2</f->(<t->?t</t-> <p->a</p->, <t->?u</t-> <p->b</p->){
             <w->return</w-> a + b;
         }
 
@@ -3753,7 +3783,7 @@
             floating_point, integral, other;
         }
 
-        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <p->n</p->)
         <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
             <w->return</w-> type_id.<k->integral</k->;
         }
@@ -3783,7 +3813,7 @@
             floating_point, integral, other;
         }
 
-        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <p->n</p->)
         <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
             <w->return</w-> type_id.<k->integral</k->;
         }
@@ -4107,203 +4137,203 @@
             <tr>
                 <td class="center" rowspan="2">2</td>
                 <td class="center"><code>++</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<a->n</a->) <f->++</f-></code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<p->n</p->) <f->++</f-></code></td>
                 <td class="left">Postfix increment</td>
                 <td class="left" rowspan="6">Arithmetic</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>--</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<a->n</a->) <f->--</f-></code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> &<p->n</p->) <f->--</f-></code></td>
                 <td class="left">Postfix decrement</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center" rowspan="6">3</td>
                 <td class="center"><code>++</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->++</f-> (?<t->T</t-> &<a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->++</f-> (?<t->T</t-> &<p->n</p->)</code></td>
                 <td class="left">Prefix increment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>--</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->--</f-> (?<t->T</t-> &<a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->--</f-> (?<t->T</t-> &<p->n</p->)</code></td>
                 <td class="left">Prefix decrement</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>+</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->+</f-> (?<t->T</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->+</f-> (?<t->T</t-> <p->n</p->)</code></td>
                 <td class="left">Promotion</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>-</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->-</f-> (?<t->T</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->-</f-> (?<t->T</t-> <p->n</p->)</code></td>
                 <td class="left">Inversion</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>~</code></td>
-                <td class="center nowrap"><code><t->T</t-> <f->~</f-> (?<t->T</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->~</f-> (?<t->T</t-> <p->n</p->)</code></td>
                 <td class="left">Bitwise NOT</td>
                 <td class="left">Bitwise</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!</code></td>
-                <td class="center nowrap"><code><t->bool</t-> <f->!</f-> (<t->bool</t-> <a->n</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> <f->!</f-> (<t->bool</t-> <p->n</p->)</code></td>
                 <td class="left">Logical NOT</td>
                 <td class="left">Logical</td>
             </tr>
             <tr>
                 <td class="center" rowspan="3">4</td>
                 <td class="center"><code>*</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->*</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->*</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Multiplication</td>
                 <td class="left" rowspan="5">Arithmetic</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>/</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->/</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->/</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Division</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>%</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->%</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->%</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Modulus</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center" rowspan="2">5</td>
                 <td class="center"><code>+</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->+</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->+</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Addition</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>-</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->-</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->-</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Subtraction</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center" rowspan="2">6</td>
                 <td class="center"><code>&lt;&lt;</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&lt;&lt;</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->&lt;&lt;</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Left bit shift</td>
                 <td class="left" rowspan="2">Bitwise</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;&gt;</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&gt;&gt;</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->&gt;&gt;</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Right bit shift</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center" rowspan="4">7</td>
                 <td class="center"><code>&lt;</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&lt;</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&lt;</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Less than</td>
                 <td class="left" rowspan="8">Relational</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&lt;=</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&lt;=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&lt;=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Less or equal than</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&gt;</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&gt;</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Greater than</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;=</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->&gt;=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->&gt;=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Greater or equal than</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center" rowspan="4">8</td>
                 <td class="center"><code>==</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->==</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->==</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Equality</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!=</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <a->a</a->) <f->!=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (?<t->T</t-> <p->a</p->) <f->!=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Inequality</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>=:</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <a->a</a->) <f->=:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <p->a</p->) <f->=:</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Existence</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>!:</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <a->a</a->) <f->!:</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->baseof</t->(<t->T</t->) <p->a</p->) <f->!:</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Inexistence</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center">9</td>
                 <td class="center"><code>&</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->&</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->&</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise AND</td>
                 <td class="left" rowspan="3">Bitwise</td>
             </tr>
             <tr>
                 <td class="center">10</td>
                 <td class="center"><code>^</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->^</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->^</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise XOR</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center">11</td>
                 <td class="center"><code>|</code></td>
-                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <a->a</a->) <f->|</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (?<t->T</t-> <p->a</p->) <f->|</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise OR</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center">12</td>
                 <td class="center"><code>&&</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->&&</f-> (<t->bool</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <p->a</p->) <f->&&</f-> (<t->bool</t-> <p->b</p->)</code></td>
                 <td class="left">Logical AND</td>
                 <td class="left" rowspan="3">Logical</td>
             </tr>
             <tr>
                 <td class="center">13</td>
                 <td class="center"><code>^^</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->^^</f-> (<t->bool</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <p->a</p->) <f->^^</f-> (<t->bool</t-> <p->b</p->)</code></td>
                 <td class="left">Logical XOR</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <td class="center">14</td>
                 <td class="center"><code>||</code></td>
-                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <a->a</a->) <f->||</f-> (<t->bool</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->bool</t-> (<t->bool</t-> <p->a</p->) <f->||</f-> (<t->bool</t-> <p->b</p->)</code></td>
                 <td class="left">Logical OR</td>
                 <fake-td></fake-td>
             </tr>
@@ -4497,7 +4527,7 @@
         <example- style="margin: 0;">
             <label->Existence</label->
             <div>
-                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->=:</f-> (?<t->t</t-> <a->b</a->) { 
+                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <p->a</p->) <f->=:</f-> (?<t->t</t-> <p->b</p->) { 
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                         <w->if</w->(a == b[i]) <w->return</w-> <k->true</k->;
                     }
@@ -4510,7 +4540,7 @@
         <example- style="margin: 0;">
             <label->Inexistence</label->
             <div>
-                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <a->a</a->) <f->!:</f-> (?<t->t</t-> <a->b</a->) { 
+                <t->bool</t-> (<t->baseof</t->(<t->t</t->) <p->a</p->) <f->!:</f-> (?<t->t</t-> <p->b</p->) { 
                     <w->for</w->(<t->uint</t-> i = <k->0</k->; i &lt; b.<f->len</f->(); ++i) {
                         <w->if</w->(a == b[i]) <w->return</w-> <k->false</k->;
                     }
@@ -4546,77 +4576,77 @@
             <tr>
                 <td class="center" rowspan="11">16</td>
                 <td class="center"><code>=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Direct assignment</td>
                 <td class="left" rowspan="11">Assignment</td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>+=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->+=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->+=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Addition assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>-=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->-=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->-=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Subtraction assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>*=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->*=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->*=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Multiplication assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>/=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->/=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->/=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Division assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>%=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->%=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->%=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Modulus assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->&=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->&=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise AND assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>^=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->^=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->^=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise XOR assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>|=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->|=</f-> (?<t->T</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->|=</f-> (?<t->T</t-> <p->b</p->)</code></td>
                 <td class="left">Bitwise OR assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&lt;&lt;=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->&lt;&lt;=</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->&lt;&lt;=</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Left bit shift assignment</td>
                 <fake-td></fake-td>
             </tr>
             <tr>
                 <fake-td></fake-td>
                 <td class="center"><code>&gt;&gt;=</code></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<a->a</a->) <f->&gt;&gt;=</f-> (<t->uint</t-> <a->b</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->?T</t-> &<p->a</p->) <f->&gt;&gt;=</f-> (<t->uint</t-> <p->b</p->)</code></td>
                 <td class="left">Right bit shift assignment</td>
                 <fake-td></fake-td>
             </tr>
@@ -4637,14 +4667,14 @@
             <tr>
                 <td class="center" >1</td>
                 <td class="center"><elm-><code>(</code><code>)</code></elm-></td>
-                <td class="center nowrap"><code><t->T</t-> <f->(</f-> (?<t->T</t-> <a->n</a->) <f->)</f-></code></td>
+                <td class="center nowrap"><code><t->T</t-> <f->(</f-> (?<t->T</t-> <p->n</p->) <f->)</f-></code></td>
                 <td class="left">Grouping</td>
                 <td class="left" rowspan="10">Misc</td>
             </tr>
             <tr>
                 <td class="center">15</td>
                 <td class="center"><elm-><code>?</code><code>:</code></elm-></td>
-                <td class="center nowrap"><code><t->T</t-> (<t->bool</t-> <a->a</a->) <f->?</f-> (?<t->T</t-> <a->b</a->) <f->:</f-> (?<t->T</t-> <a->c</a->)</code></td>
+                <td class="center nowrap"><code><t->T</t-> (<t->bool</t-> <p->a</p->) <f->?</f-> (?<t->T</t-> <p->b</p->) <f->:</f-> (?<t->T</t-> <p->c</p->)</code></td>
                 <td class="left">Selection operator</td>
             </tr>
     </tbody>
@@ -5013,7 +5043,7 @@
             <td data-arrows="lr"></td>
             <td data-arrows="lr br"></td>
             <td data-arrows="lr ar lb"></td>
-            <td><s-vbtm->:</s-vbtm-></td>
+            <td><s-vbtm->::</s-vbtm-></td>
             <td data-arrows="lt"></td>
         </tr>
         <tr>

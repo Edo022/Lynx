@@ -54,7 +54,7 @@
 <example->
     <label->Example - Add function</label->
     <div>
-        <t->int</t-> <f->add</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->){
+        <t->int</t-> <f->add</f->(<t->int</t-> <p->a</p->, <t->int</t-> <p->b</p->){
             <w->return</w-> a + b;
         }
 
@@ -112,7 +112,7 @@
     <label->Example</label->
     <div>
         <w->import</w-> <s->&lt;math&gt;</s->;
-        <t->double</t-> <f->pow</f->(<t->double</t-> <a->a</a->, <t->double</t-> <a->b</a-> = <k->2</k->) {
+        <t->double</t-> <f->pow</f->(<t->double</t-> <p->a</p->, <t->double</t-> <p->b</p-> = <k->2</k->) {
             <w->return</w-> math.<f->pow</f->(a, b);
         }
 
@@ -159,13 +159,13 @@
         <w->struct</w-> <t->NoArg</t-> { };
 
         <c->// This function returns the value of the argument in the middle, or a value of type NoArg if an even number of arguments is passed</c->
-        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->..., <w->type</w-> <t->v</t->&gt; <t->auto</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->c</a->..., <t->v</t-> <a->r</a->) {
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->..., <w->type</w-> <t->v</t->&gt; <t->auto</t-> <f->get_middle_arg</f->(<t->t</t-> <p->l</p->, <t->u</t-> <p->c</p->..., <t->v</t-> <p->r</p->) {
             <w->return</w-> <f->get_middle_arg</f->(c);
         }
-        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->&gt; <t->NoArg</t-> <f->get_middle_arg</f->(<t->t</t-> <a->l</a->, <t->u</t-> <a->r</a->) {
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->&gt; <t->NoArg</t-> <f->get_middle_arg</f->(<t->t</t-> <p->l</p->, <t->u</t-> <p->r</p->) {
             <w->return</w-> { };
         }
-        <w->template</w-> &lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->get_middle_arg</f->(<t->t</t-> <a->c</a->) {
+        <w->template</w-> &lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->get_middle_arg</f->(<t->t</t-> <p->c</p->) {
             <w->return</w-> c;
         }
 
@@ -183,10 +183,10 @@
 <example->
     <label->Example 2 - Summation function</label->
     <div>
-        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t->... <a->vals</a->...) {
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <p->a</p->, ?<t->u</t->... <p->vals</p->...) {
             <w->return</w-> a <f->+</f-> <f->sum</f->(vals);
         }
-        <t->auto</t-> <f->sum</f->(?<t->t</t-> <a->a</a->, ?<t->u</t-> <a->b</a->) {
+        <t->auto</t-> <f->sum</f->(?<t->t</t-> <p->a</p->, ?<t->u</t-> <p->b</p->) {
             <w->return</w-> a <f->+</f-> b;
         }
 
@@ -236,7 +236,7 @@
 <example->
     <label->Example 1 - Promotion operator</label->
     <div>
-        <t->int</t-> <f->+</f-> (<t->int</t-> <a->n</a->) <w->priority</w->(<k->3</k->) {
+        <t->int</t-> <f->+</f-> (<t->int</t-> <p->n</p->) <w->priority</w->(<k->3</k->) {
             <w->return</w-> n;
         }
 
@@ -248,12 +248,12 @@
 <example->
     <label->Example 2 - Python-like ternary operator</label->
     <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->if_</f-> (<t->bool</t-> <a->condition</a->) <f->else_</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->15</k->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->if_</f-> (<t->bool</t-> <p->condition</p->) <f->else_</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->15</k->) {
             <w->if</w->(condition) <w->return</w-> a;
             <w->else</w-> <w->return</w-> b;
         }
 
-        <t->void</t-> <f->main</f->(<t->bool</t-> <a->c</a->){
+        <t->void</t-> <f->main</f->(<t->bool</t-> <p->c</p->){
             <t->int</t-> r = 5 <f->if_</f-> c <f->else_</f-> 6;
         }
     </div>
@@ -289,19 +289,19 @@
 <example->
     <label->Example 1 - Priority</label->
     <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->o</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
         }
 
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->r</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->p</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->r</w->) {
             <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
         }
 
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->q</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->5</k-> <w->r</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->q</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->5</k-> <w->r</w->) {
             <w->return</w-> b <f->-</f-> a;
         }
 
-        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+        <t->void</t-> <f->main</f->(<t->int</t-> <p->a</p->, <t->int</t-> <p->b</p->, <t->int</t-> <p->c</p->){
             <c->// Evaluated as ((a o (b p c)) q a)</c->
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c <f->q</f-> a;
         }
@@ -310,15 +310,15 @@
 <example->
     <label->Example 2 - Associativity</label->
     <div>
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->o</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->o</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->+</f-> b <f->*</f-> b;
         }
 
-        <t->int</t-> (<t->int</t-> <a->a</a->) <f->p</f-> (<t->int</t-> <a->b</a->) <w->priority</w->(<k->4</k-> <w->l</w->) {
+        <t->int</t-> (<t->int</t-> <p->a</p->) <f->p</f-> (<t->int</t-> <p->b</p->) <w->priority</w->(<k->4</k-> <w->l</w->) {
             <w->return</w-> a <f->*</f-> 2 <f->+</f-> b;
         }
 
-        <t->void</t-> <f->main</f->(<t->int</t-> <a->a</a->, <t->int</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+        <t->void</t-> <f->main</f->(<t->int</t-> <p->a</p->, <t->int</t-> <p->b</p->, <t->int</t-> <p->c</p->){
             <c->// Evaluated as ((a o b) p c)</c->
             <t->int</t-> r = a <f->o</f-> b <f->p</f-> c
         }
@@ -357,7 +357,7 @@
 <example->
     <label->Example</label->
     <div>
-        <t->int</t-> <f->add</f->(<t->uint</t-> <a->a</a->, <t->uint</t-> <a->b</a->) {
+        <t->int</t-> <f->add</f->(<t->uint</t-> <p->a</p->, <t->uint</t-> <p->b</p->) {
             <w->return</w-> a <f->+</f-> b;
         }
 
@@ -392,7 +392,7 @@
 <example->
     <label->Example</label->
     <div>
-        <t->void</t-> <f->halve</f->(<t->float</t->@ &<a->n</a->) {
+        <t->void</t-> <f->halve</f->(<t->float</t->@ &<p->n</p->) {
             @n <f->/=</f-> <k->2</k->;
         }
 
@@ -453,13 +453,13 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->void</t-> <f->f</f->(<t->int</t-> <t->const@</t-> <a->p</a->){
+                <t->void</t-> <f->f</f->(<t->int</t-> <t->const@</t-> <p->p</p->){
                     io.<f->print</f->(<s->"a"</s->);
                 }
-                <t->void</t-> <f->f</f->(<t->int@</t-> <a->p</a->){
+                <t->void</t-> <f->f</f->(<t->int@</t-> <p->p</p->){
                     io.<f->print</f->(<s->"b"</s->);
                 }
-                <t->void</t-> <f->f</f->(<t->ulong</t-> <a->p</a->){
+                <t->void</t-> <f->f</f->(<t->ulong</t-> <p->p</p->){
                     io.<f->print</f->(<s->"c"</s->);
                 }
 
@@ -506,13 +506,13 @@
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
-                <t->void</t-> <f->f</f->(?<t->t</t->... <a->args</a->...){
+                <t->void</t-> <f->f</f->(?<t->t</t->... <p->args</p->...){
                     io.<f->print</f->(<s->"More than one argument provided\n"</s->);
                 }
-                <t->void</t-> <f->f</f->(?<t->t</t-> <a->arg</a->) {
+                <t->void</t-> <f->f</f->(?<t->t</t-> <p->arg</p->) {
                     io.<f->print</f->(<s->"The first argument is not a double\n"</s->);
                 }
-                <t->void</t-> <f->f</f->(<t->double</t-> <a->arg</a->) {
+                <t->void</t-> <f->f</f->(<t->double</t-> <p->arg</p->) {
                     io.<f->print</f->(<s->"The first argument is a double\n"</s->);
                 }
 

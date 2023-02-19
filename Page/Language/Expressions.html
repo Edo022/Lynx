@@ -148,7 +148,7 @@
         <t->uint</t-> <f->empty_function_3</f->() { <w->return</w-> <k->0</k->; }  <c->// Ok</c->
         <c->//uint empty_function_4() {}           </c-><ce->// Error, non-void functions must return a value</ce->
 
-        <t->uint</t-> <f->f</f->(<t->uint</t-> <a->n</a->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
+        <t->uint</t-> <f->f</f->(<t->uint</t-> <p->n</p->) { <w->return</w-> n * <k->2</k->; }       <c->// Ok</c->
         <c->//void f() { }                         </c-><ce->// Error, f is already defined</ce->
 
         <t->void</t-> <f->main</f->(){
@@ -285,7 +285,7 @@
 <example->
     <label->Example 1</label->
     <div>
-        <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <a->arg</a->) {
+        <t->uint3</t-> <f->fun1</f->(<t->bool</t-> <p->arg</p->) {
             $0 = <k->1</k->;             <c->// Ok, $0 has type uint and value 1</c->
             <c->//$2 = $1;          </c-><ce->// Error, $1 has undefined type</ce->
 
@@ -294,7 +294,7 @@
             $2 = <k->vec</k->;           <c->// Ok, $2 has type uint3 and value { 0, 1, 2 }</c->
         }
 
-        <t->void</t-> <f->fun2</f->(<t->uint3</t-> <a->vec</a->) {
+        <t->void</t-> <f->fun2</f->(<t->uint3</t-> <p->vec</p->) {
             <c->//uint var = $2;    </c-><ce->// Error, $2 has undefined type. fun2.$2 has nothing to do with fun1.$2</ce->
         }
 
@@ -304,7 +304,7 @@
 <example->
     <label->Example 2</label->
     <div>
-        <t->void</t-> <f->fun3</f->(<t->bool</t-> <a->arg</a->, <t->uint2</t-> &<a->ref</a->) {
+        <t->void</t-> <f->fun3</f->(<t->bool</t-> <p->arg</p->, <t->uint2</t-> &<p->ref</p->) {
             <w->if</w->(arg) $0 = <k->1</k->;             <c->// $0 has type uint</c->
             <w->else</w->    $0 = { <k->0</k->, <k->1</k-> };      <c->// $0 has type uint2</c->
             <c->//ref = $0;                 </c-><ce->// Error, cannot determine the type of $0</ce->

@@ -95,10 +95,10 @@
 <example->
     <label->Example</label->
     <div>
-        <t->?t</t-> <f->add</f->(<t->?t</t-> <a->a</a->, <t->?t</t-> <a->b</a->, <t->int</t-> <a->c</a->){
+        <t->?t</t-> <f->add</f->(<t->?t</t-> <p->a</p->, <t->?t</t-> <p->b</p->, <t->int</t-> <p->c</p->){
             return a + b + c;
         }
-        <t->auto</t-> <f->add2</f->(<t->?t</t-> <a->a</a->, <t->?u</t-> <a->b</a->){
+        <t->auto</t-> <f->add2</f->(<t->?t</t-> <p->a</p->, <t->?u</t-> <p->b</p->){
             <w->return</w-> a + b;
         }
 
@@ -128,7 +128,7 @@
             floating_point, integral, other;
         }
 
-        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <p->n</p->)
         <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
             <w->return</w-> type_id.<k->integral</k->;
         }
@@ -158,7 +158,7 @@
             floating_point, integral, other;
         }
 
-        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <a->n</a->)
+        <t->type_id</t-> <f->get_id</f->(<t->?t</t-> <p->n</p->)
         <w->when</w->(<t->t</t-> == <t->int</t-> || <t->t</t-> == <t->uint</t->) {
             <w->return</w-> type_id.<k->integral</k->;
         }
