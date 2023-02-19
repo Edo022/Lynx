@@ -85,7 +85,7 @@ var readability = {
 
 
     spanw_button : function(){
-        document.body.querySelector('right-').innerHTML +=
+        right.innerHTML +=
             '<div class="readability-button" onclick="readability.toggle()">' +
                 '<span class="a">A</span>' +
                 '<span class="b">a</span>' +

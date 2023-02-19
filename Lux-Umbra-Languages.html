@@ -690,11 +690,11 @@
         </li>
         <li>
             <span><a href="#pointer-types"><code>@</code></a></span>
-            <span>References the <a href="pointer-types">pointer type</a> of a type. Also used to dereference <a href="#pointer-types">pointer</a> values.</span>
+            <span>Identifies the <a href="pointer-types">pointer version</a> of a type. Also used to dereference <a href="#pointer-types">pointer</a> values.</span>
         </li>
         <li>
             <span><a href="#pointer-types"><code>$</code></a></span>
-            <span>Retrieves the address of an <a href="#left-and-right-values">r-value</a> as <a href="#pointer-types">pointer</a> <a href="#left-and-right-values">l-value</a>. Also used to reference <a href="#temporary-variables">temporary variables</a>.</span>
+            <span>Retrieves the address of an <a href="#left-and-right-values">l-value</a> as a <a href="#pointer-types">pointer</a> <a href="#left-and-right-values">r-value</a>. Also used to access <a href="#temporary-variables">temporary variables</a>.</span>
         </li>
     </ul><br>
     <li>Flow control keywords</li>
@@ -1560,7 +1560,7 @@
         <th>Right values</th>
     </tr>
     <tr>
-        <td>Non-const <a href="#functions">parameters</a> and <a href="#references">referece (<code>&</code>) parameters</a></td>
+        <td>Non-const <a href="#functions">parameters</a></td>
         <td><a href="#const-qualifier">Const</a> parameters</td>
     </tr>
     <tr>
@@ -2386,7 +2386,7 @@
 </p>
 <p>
     The <code>@</code> keyword is also used to access the value pointed by a pointer expression.<br>
-    The address of any r-value can be retrieved through the <code>$</code> keyword.
+    The address of any l-value can be retrieved through the <code>$</code> keyword.
 </p>
 <p>
     Pointer types don't have to be declared. Each existing type but <code><t->void</t-></code> has its own corresponding pointer type and <code><t->const</t-></code> pointer type ready to use, including the pointer types themselves.
@@ -3095,9 +3095,6 @@
         <t->bool</t-> var2, &var3 = var2;   <c->// Ok, both var2 and var3 have undefined value.</c->
     </div>
 </example->
-<p>
-    The <a href="#const-qualifier"><s-sgr->const</s-sgr-> qualifier</a> is applicable to the variable itself and/or its <a href="#references">reference</a> qualifier.
-</p>
 
 
 <h1 id="temporary-variables"></h1>
@@ -3218,12 +3215,13 @@
 <h1 id="the-main-function"></h1>
 <p>
     The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
-    Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
+    Every module passed to the compiler <b>must define</b> a <b><code><f->main</f-></code></b> function.<br>
 </p>
 <p>
-    The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
-    The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
-    It can also be called by other functions or itself, but it cannot be a template.<br>
+    //TODO interaction btween the languages
+</p>
+<p>
+    The main function cannot use templates and cannot be <a href="#routine-specialization">specialized</a> in any way.
 </p>
 
 
@@ -3427,7 +3425,7 @@
 <h1 id="parameter-declarations"></h1>
 <p>
     Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
-    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference</a> or a <a href="#parameter-packs">parameter pack</a>.
+    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference parameter</a> or a <a href="#parameter-packs">parameter pack</a>.
 </p>
 <p>
     They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
@@ -3679,9 +3677,6 @@
     Any function with one or more generic type parameters is considered a function template.<br>
     Generic type parameters are declared in the same way as normal parameters, but the type is replaced by a new identifier preceded by a <code>?</code> <a href="#syntactic-elements">token</a>.<br>
     Parameters declared using the same type identifier will always have the same type in any generated function.
-</p>
-<p>
-    Generic type parameters can be references or const.
 </p>
 <example->
     <label->Example</label->

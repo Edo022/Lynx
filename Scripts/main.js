@@ -11,10 +11,10 @@ function move_to_view(smooth){
     let id = hash;
     if(hash.length == 0 || hash == null || document.getElementById(id) == null) id = "overview";
 
-    let e = document.getElementById(id); if(!e) return;
-    e.scrollIntoView({ block: "start"  , behavior: smooth ? "smooth" : "auto" });
-    e = document.getElementById("index--" + id); if(!e) return;
-    e.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
+    let e = document.getElementById(id);                           if(!e) return;
+    let i = document.getElementById("index--" + id).parentElement; if(!i) return;
+    e.scrollIntoView({ block: "start",   behavior: smooth ? "smooth" : "auto" }); //FIXME
+    i.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" }); //FIXME
 }
 
 

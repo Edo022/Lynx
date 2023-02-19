@@ -74,12 +74,13 @@
 <h1 id="the-main-function"></h1>
 <p>
     The <b><code><f->main</f-></code> function</b> is where the <b>code execution starts and ends</b>.<br>
-    Every shader <b>must define</b> the <b><code><f->main</f-></code></b> function.<br>
+    Every module passed to the compiler <b>must define</b> a <b><code><f->main</f-></code></b> function.<br>
 </p>
 <p>
-    The parameters of the <code><f->main</f-></code> are passed from the <a href="./Umbra.html">Umbra Language</a> and contain all the inputs and outputs the shader needs to run and interact with other shaders.<br>
-    The <code><f->main</f-></code> function can return any type and take const or reference parameters.<br>
-    It can also be called by other functions or itself, but it cannot be a template.<br>
+    //TODO interaction btween the languages
+</p>
+<p>
+    The main function cannot use templates and cannot be <a href="#routine-specialization">specialized</a> in any way.
 </p>
 
 
@@ -345,7 +346,7 @@
 <h1 id="parameter-declarations"></h1>
 <p>
     Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
-    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference</a> or a <a href="#parameter-packs">parameter pack</a>.
+    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference parameter</a> or a <a href="#parameter-packs">parameter pack</a>.
 </p>
 <p>
     They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
