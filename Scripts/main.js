@@ -13,8 +13,8 @@ function move_to_view(smooth){
 
     let e = document.getElementById(id);                           if(!e) return;
     let i = document.getElementById("index--" + id).parentElement; if(!i) return;
-    e.scrollIntoView({ block: "start",   behavior: smooth ? "smooth" : "auto" }); //FIXME
-    i.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" }); //FIXME
+    e.scrollIntoView({ block: "start",   behavior: smooth ? "smooth" : "auto" });
+    i.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
 }
 
 

@@ -28,26 +28,23 @@ var setup_index = {
                 let name = capitalize(id.split('.').pop()).replaceAll('-', ' ');
                 let num = (c.tagName == 'INDEXH-' ? last : (last + (i - separators) + '.'));
 
+
                 // Fix index
-                c.innerHTML =
-                    `<a ` +
-                        `style="display: inline-block; padding: 0 1ch 0 1ch; color: var(--fg-link);" ` +
-                        `href="#${ id }"` +
-                        `id="index--${ id }"` +
-                    `>${ num } ${ name }</a>`
-                ;
+                c.innerHTML = `<span id="index--${ id }">${ num } ${ name }</span>`;
                 c.style.paddingLeft = `calc(` +   `${ index_indent } * ${ (depth - (c.tagName == 'INDEXH-')) })`;
                 c.style.maxWidth    = `calc(100% - ${ index_indent } * ${ (depth - (c.tagName == 'INDEXH-')) })`;
+                c.addEventListener('click', function(){ setup_index.go_to_index(`#${ id }`); });
 
-                //Fix header
+
+                //Fix heading
                 let depth2 = (c.tagName == 'INDEXH-' ? depth : depth + 1);
-                let header = document.getElementById(id);
-                if(header == null) console.error(`header for ID ${ id } not found`);
+                let heading = document.getElementById(id);
+                if(heading == null) console.error(`heading for ID ${ id } not found`);
 
-                header.insertAdjacentHTML('beforebegin', `<sep-${ depth2 }-></sep-${ depth2 }->`);
-                header.innerHTML = `${ num } ${ name }`;
-                if(depth == 0) header.insertAdjacentHTML('afterend', '<sep-3-></sep-3->');
-                header.classList.add('h' + depth2);
+                heading.insertAdjacentHTML('beforebegin', `<sep-${ depth2 }-></sep-${ depth2 }->`);
+                heading.innerHTML = `${ num } ${ name }`;
+                if(depth == 0) heading.insertAdjacentHTML('afterend', '<sep-3-></sep-3->');
+                heading.classList.add('h' + depth2);
             }
             else if(c.tagName == 'INDEX-') {
                 setup_index.format_elm(c, depth + 1, last + (i - separators) + '.');
@@ -55,10 +52,6 @@ var setup_index = {
         }
     },
 
-
-    format : function(){
-        setup_index.format_elm(document.querySelector('index-'), 0, '');
-    },
 
 
 
@@ -89,6 +82,16 @@ var setup_index = {
 
         document.getElementById(new_).parentElement.style.backgroundColor = 'var(--bg-index-active)';
     },
+
+
+
+    // full link or #hash
+    go_to_index : function(link){
+        history.pushState(null, '', link);
+        setup_index.on_location_changed();
+        move_to_view(true);
+    },
+
 
 
     on_scroll_changed : function(h, i) {
@@ -122,7 +125,7 @@ var setup_index = {
 
 
     init : function(){
-        setup_index.format();
+        setup_index.format_elm(document.querySelector('index-'), 0, '');
         setup_index.on_location_changed();
 
 
