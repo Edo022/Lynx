@@ -20,6 +20,218 @@
 
 
 
+
+<!--------------------------------------------------------------------->
+<!-- Preprocessor syntaxes                                           -->
+<!--------------------------------------------------------------------->
+<h1 id="preprocessor-syntaxes"></h1>
+
+
+
+
+
+
+
+<syntax->
+    <label- id="syntax--comment">Comment</label->
+    <table>
+        <tr>
+            <td data-arrows="br ar"></td>
+            <td><code>//</code></td>
+            <td data-arrows="lb"></td>
+            <td></td>
+            <td data-arrows="br ar"></td>
+            <td><code><nl-></nl-></code></td>
+            <td data-arrows="lb"></td>
+        </tr>
+        <tr>
+            <td data-arrows="lt lb"></td>
+            <td></td>
+            <td data-arrows="tr-high ar-high br-low ar-low"></td>
+            <td><elm->comment string</elm-></td>
+            <td data-arrows="lt-high lb-low"></td>
+            <td></td>
+            <td data-arrows="tr br ar"></td>
+        </tr>
+        <tr>
+            <td data-arrows="tr ar"></td>
+            <td><code>/*</code></td>
+            <td data-arrows="lt"></td>
+            <td></td>
+            <td data-arrows="tr ar"></td>
+            <td><code>*/</code></td>
+            <td data-arrows="lt"></td>
+        </tr>
+    </table>
+</syntax->
+
+
+
+
+
+
+
+
+
+
+
+<syntax->
+    <label- id="syntax--include">Include</label->
+    <table>
+        <tr>
+            <td data-arrows="lr ar"></td>
+            <td><code>#include</code></td>
+            <td data-arrows="lr ar"></td>
+            <td><code><space-></space-></code></td>
+            <td data-arrows="lr ar lb"></td>
+            <td><code>"</code></td>
+            <td data-arrows="lr ar"></td>
+            <td class="center"><elm->path/to/file</elm-></td>
+            <td data-arrows="lr ar"></td>
+            <td><code>"</code></td>
+            <td data-arrows="lr br ar"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td data-arrows="tr ar"></td>
+            <td><code>&lt;</code></td>
+            <td data-arrows="lr ar"></td>
+            <td class="center"><elm->module name</elm-></td>
+            <td data-arrows="lr ar"></td>
+            <td><code>&gt;</code></td>
+            <td data-arrows="lt"></td>
+        </tr>
+    </table>
+</syntax->
+
+
+
+
+
+
+
+
+
+
+
+<syntax->
+    <label- id="syntax--line-continuation-token">Line continuation token</label->
+    <table>
+        <tr>
+            <td data-arrows="lr ar"></td>
+            <td><code>&bsol;</code></td>
+            <td data-arrows="lr ar"></td>
+            <td><code><nl-></nl-></code></td>
+            <td data-arrows="lr ar"></td>
+        </tr>
+    </table>
+</syntax->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Misc syntaxes                                                   -->
+<!--------------------------------------------------------------------->
+<h1 id="misc-syntaxes"></h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <syntax- class="qrt">
     <label- id="syntax--module" class="s-decl"><a href="#modules">Module</a></label->
     <table class="s-decl">
@@ -427,6 +639,52 @@
         </tr>
     </table>
 </syntax->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1450,6 +1708,47 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Statement syntaxes                                              -->
 <!--------------------------------------------------------------------->
@@ -2099,6 +2398,24 @@
 </syntax->
 <!-- TODO try -->
 <!-- TODO build -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
