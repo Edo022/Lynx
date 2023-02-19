@@ -643,7 +643,7 @@
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
-                    <a href="#reflection">                   <code>:</code></a>
+                    <a href="#reflection">                   <code>::</code></a>
                 </div>
             </div></td>
         </tr>
@@ -662,6 +662,7 @@
                     <code><w->as</w-></code>
                     <code><w->to</w-></code>
                     <code>=</code>
+                    <code>:</code>
                 </div>
             </div></td>
         </tr>
@@ -841,7 +842,7 @@
             <span>Concatenates 2 or more symbol names to form a <a href="#language-structure.paths">symbol path</a>.
         </li>
         <li>
-            <span><a href="#reflection"><code>:</code></a></span>
+            <span><a href="#reflection"><code>::</code></a></span>
             <span>Concatenates 2 or more symbol names to form a <a href="#reflection">Reflection path</a>.</span>
         </li>
     </ul>
@@ -917,6 +918,13 @@
             <span>
                 Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values<br>
                 <span class="meta-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
+            </span>
+        </li>
+        <li>
+            <span><code>:</code> </span>
+            <span>
+                Specifies the base type of an enum.<br>
+                <span class="meta-keyword-constraint">[When used after the identifier of an enum declaration]</span>.
             </span>
         </li>
     </ul>

@@ -135,7 +135,7 @@
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
-                    <a href="#reflection">                   <code>:</code></a>
+                    <a href="#reflection">                   <code>::</code></a>
                 </div>
             </div></td>
         </tr>
@@ -154,6 +154,7 @@
                     <code><w->as</w-></code>
                     <code><w->to</w-></code>
                     <code>=</code>
+                    <code>:</code>
                 </div>
             </div></td>
         </tr>
@@ -350,7 +351,7 @@
             <span>Concatenates 2 or more symbol names to form a <a href="#language-structure.paths">symbol path</a>.
         </li>
         <li>
-            <span><a href="#reflection"><code>:</code></a></span>
+            <span><a href="#reflection"><code>::</code></a></span>
             <span>Concatenates 2 or more symbol names to form a <a href="#reflection">Reflection path</a>.</span>
         </li>
     </ul>
@@ -396,7 +397,7 @@
         <li>
             <span><elm-><code>&lt;</code><code>&gt;</code></elm-></span>
             <span>
-                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a>. Also used in <a href="#import-directive">import directives</a>.<br>
+                Part of the <a href="#templates">template</a> declaration, or part of the the <a href="#local-names">local name</a> of <a href="#templates">template</a> <a href="#symbols">symbols</a>. Also used in <a href="#import-directive">import directives</a><br>
                 <span class="meta-keyword-constraint">[When used after the <a href="#templates"><code><w->template</w-></code></a> meta keyword, after the <a href="#name-resolution">path</a> to a <a href="#templates">template</a> <a href="#symbols">symbol</a> or around the module name in an <a href="#import-directive">import directive</a>]</span>.
             </span>
         </li>
@@ -427,7 +428,7 @@
         <li>
             <span><code><w->as</w-></code></span>
             <span>
-                Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the new identifier used for a <a href="#symbol-aliases">symbol alias</a>.<br>
+                Defines the name of the counter <a href="#variables">variable</a> of a <a href="#for-loops">for loop</a>, a new name for an <a href="#export-directive">exported</a> or <a href="#import-directive">imported</a> <a href="#symbols"> symbol</a>, or the new identifier used for a <a href="#symbol-aliases">symbol alias</a><br>
                 <span class="meta-keyword-constraint">[When used in the signature of a <a href="#for-loops">for-each</a>, <a href="#for-loops">for-n</a> or <a href="#for-loops">for-range</a> loop, after the name of a <a href="#symbols">symbol</a> in an <a href="#import-directive">import</a> or <a href="#export-directive">export</a> directive or in a <a href="#symbol-aliases">symbol alias</a> declaration]</span>.
             </span>
         </li>
@@ -441,8 +442,15 @@
         <li>
             <span><code>=</code> </span>
             <span>
-                Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a>.<br> //TODO templates can prob have def values<br>
+                Used to assign initializer values to <a href="#variables">variables</a> and default values to <a href="#routine-parameter">routine parameters</a><br> //TODO templates can prob have def values<br>
                 <span class="meta-keyword-constraint">[When used after the name of a <a href="#variables">variable</a> or <a href="#routine-parameters">routine parameter</a> declaration]</span>.
+            </span>
+        </li>
+        <li>
+            <span><code>:</code> </span>
+            <span>
+                Specifies the base type of an enum<br>
+                <span class="meta-keyword-constraint">[When used after the identifier of an enum declaration]</span>.
             </span>
         </li>
     </ul>
@@ -1444,7 +1452,7 @@
         <t->bool</t-> <f->f</f->(<t->ulong</t-> <a->n</a->) {
             <t->ulong</t-> a = <k->True</k->;
 
-            <c->// return q:elms[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
+            <c->// return q::elms[n];</c->          <ce->// Error, "n" is not a compile time expression</ce->
             <c->// return q[add_1(n)];</c->   <ce->// Error, the routine call is not compile time</ce->
             <c->// return q[rand(2)];</c->    <ce->// Error, the routine "random.rand" is not suitable for compile time calls</ce->
             <w->return</w-> q<f->[</f->n<f->]</f->;             <c->// Ok</c->
