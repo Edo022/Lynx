@@ -4,6 +4,7 @@ let left = document.querySelector("body > left-");
 let right = document.querySelector("body > right-");
 
 
+
 // Scrolls to the element with id the current url hash
 // smooth = true|false
 function move_to_view(smooth){
@@ -13,8 +14,8 @@ function move_to_view(smooth){
 
     let e = document.getElementById(id);                           if(!e) return;
     let i = document.getElementById("index--" + id).parentElement; if(!i) return;
-    e.scrollIntoView({ block: "start",   behavior: smooth ? "smooth" : "auto" });
-    i.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
+    e.scrollIntoView({ block: "start",   behavior: (smooth && !window.chrome) ? "smooth" : "auto" });
+    i.scrollIntoView({ block: "nearest", behavior: (smooth && !window.chrome) ? "smooth" : "auto" });
 }
 
 
