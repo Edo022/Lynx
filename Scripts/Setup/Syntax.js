@@ -68,7 +68,7 @@ var setup_syntax = {
 
         // Fix inverted arrows
         for(let i = 0; i < c.length; ++i){
-            if(c[i].dataset.arrows) c[i].dataset.arrows = c[i].dataset.arrows
+            if(c[i].dataset.arrows && c[i].dataset.arrows.length) c[i].dataset.arrows = c[i].dataset.arrows
                 .replaceAll(/\bbt\b/g, "tb")
                 .replaceAll(/\brl\b/g, "lr")
                 .replaceAll(/\btl\b/g, "lt")
@@ -81,7 +81,7 @@ var setup_syntax = {
 
         // Add automatic connectors
         for(let i = 0; i < c.length; ++i){
-            if(c[i].dataset.arrows){
+            if(c[i].dataset.arrows && c[i].dataset.arrows.length){
 
                 // Vertical connectors
                 if(/\b(tb|lt|tr)\b/.test(c[i].dataset.arrows)) {
@@ -92,9 +92,11 @@ var setup_syntax = {
                     let prev_tr = c[i].parentElement.previousElementSibling;
                     if(prev_tr) {
                         let prev = prev_tr.children[child_index(c[i])];
-                        if(prev && prev.dataset.arrows && /\b(tb|rb|bl)\b/.test(prev.dataset.arrows)) {
-                            prev.dataset.arrows += " connect-b";
-                            c[i].dataset.arrows += " connect-t";
+                        if(prev) {
+                            if(prev.dataset.arrows && /\b(tb|rb|bl)\b/.test(prev.dataset.arrows)) {
+                                prev.dataset.arrows += " connect-b";
+                                c[i].dataset.arrows  += " connect-t";
+                            }
                         }
                     }
                 }
@@ -105,21 +107,23 @@ var setup_syntax = {
                 let cur_high = /\b(lr|lt|bl)-high\b/    .test(c[i].dataset.arrows);
                 if(cur_low | cur_std | cur_high) {
                     let prev = c[i].previousElementSibling;
-                    if(prev && prev.dataset.arrows) {
-                        let prev_low  = /\b(lr|tr|rb)-low\b/     .test(prev.dataset.arrows);
-                        let prev_std  = /\b(lr|tr|rb)\b($|[^\-])/.test(prev.dataset.arrows);
-                        let prev_high = /\b(lr|tr|rb)-high\b/    .test(prev.dataset.arrows);
-                        if(cur_low && prev_low) {
-                            prev.dataset.arrows += " connect-r-low";
-                            c[i].dataset.arrows += " connect-l-low";
-                        }
-                        if(cur_std && prev_std) {
-                            prev.dataset.arrows += " connect-r";
-                            c[i].dataset.arrows += " connect-l";
-                        }
-                        if(cur_high && prev_high) {
-                            prev.dataset.arrows += " connect-r-high";
-                            c[i].dataset.arrows += " connect-l-high";
+                    if(prev) {
+                        if(prev.dataset.arrows && prev.dataset.arrows.length) {
+                            let prev_low  = /\b(lr|tr|rb)-low\b/     .test(prev.dataset.arrows);
+                            let prev_std  = /\b(lr|tr|rb)\b($|[^\-])/.test(prev.dataset.arrows);
+                            let prev_high = /\b(lr|tr|rb)-high\b/    .test(prev.dataset.arrows);
+                            if(cur_low && prev_low) {
+                                prev.dataset.arrows += " connect-r-low";
+                                c[i].dataset.arrows  += " connect-l-low";
+                            }
+                            if(cur_std && prev_std) {
+                                prev.dataset.arrows += " connect-r";
+                                c[i].dataset.arrows  += " connect-l";
+                            }
+                            if(cur_high && prev_high) {
+                                prev.dataset.arrows += " connect-r-high";
+                                c[i].dataset.arrows  += " connect-l-high";
+                            }
                         }
                     }
                 }
@@ -129,7 +133,7 @@ var setup_syntax = {
 
         // Set backgrounds
         for(let i = 0; i < c.length; ++i){
-            if(c[i].dataset.arrows){
+            if(c[i].dataset.arrows && c[i].dataset.arrows.length){
                 let bg = "";
                 let arrows = c[i].dataset.arrows.split(/[\s]+/);
                 for(let j = 0; j < arrows.length; ++j) bg += `url("./Styles/Blocks/Syntax/Arrows/${ arrows[j] }.svg") center/contain no-repeat content-box, `;

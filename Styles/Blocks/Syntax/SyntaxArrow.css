@@ -2,19 +2,3 @@
 syntax- svg {
     overflow: visible;
 }
-
-b-lr- {
-    display: inline-block;
-    min-width: 100%;
-    max-width: 100%;
-    min-height: var(--syntax-line-h);
-    max-height: var(--syntax-line-h);
-
-    background-image: url("./lr.svg");
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-}
-.test {
-    background-image: url("./lr_test.svg");
-}

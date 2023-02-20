@@ -1,6 +1,6 @@
 b    { text-decoration: bolder; }
-a-   { display: inline; font-weight: inherit;  }
-b-   { display: inline; font-weight: inherit; }
+a-   { display: inline; opacity: 100%; }
+b-   { display: inline; opacity: 100%; }
 txt- { display: inline; }
 
 

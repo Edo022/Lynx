@@ -212,8 +212,8 @@
 </p>
 
 <syntax->
-    <label- id="copy.syntax--enum-declaration">Declaration syntax</label->
-    <label- id="copy.syntax--enum-declaration-element">Element declaration syntax</label->
+    <label- id="copy.syntax--declaration-enum">Declaration syntax</label->
+    <label- id="copy.syntax--declaration-enum-element">Element declaration syntax</label->
 </syntax->
 
 <p>
@@ -358,11 +358,11 @@
     Struct members can be of any <a href="#types">type</a>, including other structs.
 </p>
 <syntax->
-    <label- id="copy.syntax--struct-declaration">Declaration syntax</label->
-    <label- id="copy.syntax--struct-declaration-signature">Struct signature</label->
-    <label- id="copy.syntax--struct-declaration-body">Struct body</label->
-    <label- id="copy.syntax--specialization-constraint">Specialization constraint</label->
-    <label- id="copy.syntax--struct-declaration-member">Member declaration syntax</label->
+    <label- id="copy.syntax--declaration-struct">Declaration syntax</label->
+    <label- id="copy.syntax--declaration-struct-signature">Struct signature</label->
+    <label- id="copy.syntax--declaration-struct-body">Struct body</label->
+    <label- id="copy.syntax--declaration-specialization-constraint">Specialization constraint</label->
+    <label- id="copy.syntax--declaration-struct-member">Member declaration syntax</label->
 </syntax->
 <example->
     <label->Example</label->
@@ -671,7 +671,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="pointer-types"></h1>
 <p>
-    Pointer types are implicit types that can store a memory address of a specific type. Their size is always 8 byes<br>
+    Pointer types are implicit types that can store a memory address of a specific type. Their size is always 8 byes.<br>
     They are referenced through the symbol path of the pointed type, also known as base type, followed by the <code>@</code> keyword.<br>
     The <code><t->const</t-></code> meta keyword can be placed between the base type and the <code>@</code> keyword to reference the corresponding const pointer. Const pointers are detailedly explained in <a href="#const-qualifier">Const qualifier</a>.
 </p>
@@ -684,10 +684,11 @@
     <code><t->void</t-></code> pointers are not allowed.<br>
     There is no limit to the amount of nested pointer types one can use as base type.
 </p>
+//TODO add memory allocation examples
 <split-example-container->
     <split-example-container-left->
         <example->
-            <label->Example</label->
+            <label->Example 1</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
 
@@ -697,6 +698,34 @@
 
                     @p = <k->6</k->;
                     io.<f->print</f->(<t->str</t->(<k->n</k->));
+                }
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                6<cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example 2 - Nested pointer types</label->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->void</t-> <f->main</f->(){
+                    <t->int</t-> a = <k->5</k->;
+                    <t->int@</t-> p;
+                    <t->int@@</t-> p2 = $p;
+                    @p2 = $<k->n</k->;
+
+                    @@p2 = <k->6</k->;
+                    io.<f->print</f->(<t->str</t->(<k->a</k->));
                 }
             </div>
         </example->
@@ -723,8 +752,42 @@
 <!-- Function types                                                  -->
 <!--------------------------------------------------------------------->
 <h1 id="function-types"></h1>
-
-
+<p>
+    Function types are implicit types that can store functions.<br>
+    These are used for callbacks and higher level functions.<br>
+    They are referenced by specifying the return type, followed by the type of each
+</p>
+<p>
+    Referencing a function or using a function inline declaration without calling them generate function r-values which can be stored in function types.<br>
+    This is only allowed for non-specialized routines, as specialization is not compatible with function values.<br>
+    Operators cannot be stored as values, but it's still possible to create a wrapper function and save that instead.
+</p>
+<p>
+    Function type expressions can be called like standard functions.<br>
+    As with pointers, function types don't require a declaration in order to be used.<br>
+    Function values can only be implicitly converted based on the constness of their parameters. This is explained in <a href="#implicit-conversions">Implicit conversions</a>.
+</p>
+<syntax->
+    <label- id="copy.syntax--function-type">Syntax</label-> //TODO
+</syntax->
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example</label->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                <cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
 
 
 
@@ -1235,7 +1298,7 @@
 </p>
 
 <syntax->
-    <label- id="copy.syntax--typeof">Syntax</label->
+    <label- id="copy.syntax--path-type">Syntax</label->
 </syntax->
 
 <example->

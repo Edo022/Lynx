@@ -106,7 +106,6 @@ var readability = {
             var link = document.createElement('link');
             link.setAttribute("rel", "stylesheet");
             link.setAttribute("type", "text/css");
-            // link.onload = view;
             link.setAttribute("href", linkStr);
             link.id = 'readability-css';
             let h = document.getElementsByTagName("head")[0];

@@ -1,7 +1,7 @@
 :root {
     --logo-size:        50vw;
-    --logo-link-lux:    url("../Logos/Lux.png");
-    --logo-link-umbra:  url("../Logos/Umbra.png");
+    --logo-link-lux:    url("../../Logos/Lux.png");
+    --logo-link-umbra:  url("../../Logos/Umbra.png");
 }
 
 

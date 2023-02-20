@@ -33,7 +33,7 @@
 
 
 <syntax->
-    <label- id="syntax--comment">Comment</label->
+    <label- id="syntax--preprocessor-comment">Comment</label->
     <table>
         <tr>
             <td data-arrows="br ar"></td>
@@ -76,7 +76,7 @@
 
 
 <syntax->
-    <label- id="syntax--include">Include</label->
+    <label- id="syntax--preprocessor-include">Include</label->
     <table>
         <tr>
             <td data-arrows="lr ar"></td>
@@ -118,7 +118,7 @@
 
 
 <syntax->
-    <label- id="syntax--line-continuation-token">Line continuation token</label->
+    <label- id="syntax--preprocessor-line-continuation-token">Line continuation token</label->
     <table>
         <tr>
             <td data-arrows="lr ar"></td>
@@ -233,7 +233,7 @@
 
 
 <syntax- class="qrt">
-    <label- id="syntax--module" class="s-decl"><a href="#modules">Module</a></label->
+    <label- id="syntax--declaration-module" class="s-decl"><a href="#modules">Module</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="lr br"></td>
@@ -258,152 +258,16 @@
     </table>
     <syntax-note->
         * A
-        <a href="#syntax--namespace-declaration">   namespace</a>,
-        <a href="#syntax--enum-declaration">        enum</a>,
-        <a href="#syntax--struct-declaration">      struct</a>,
+        <a href="#syntax--declaration-namespace">   namespace</a>,
+        <a href="#syntax--declaration-enum">        enum</a>,
+        <a href="#syntax--declaration-struct">      struct</a>,
         <a href="#syntax--template-declaration">    struct template</a>,
         <a href="#syntax--function-declaration">    function</a>,
         <a href="#syntax--template-declaration">    function template</a>,
         <a href="#syntax--operator-declaration">    operator</a>,
         <a href="#syntax--template-declaration">    operator template</a>,
-        <a href="#syntax--variable-declaration">    variable</a> or a
-        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
-    </syntax-note->
-</syntax->
-
-
-
-
-
-
-
-
-
-
-
-
-
-<syntax- class="qrt">
-    <label- id="syntax--symbol-path" class="s-path">Symbol path</label->
-    <table class="s-path">
-        <tr>
-            <td data-arrows="rb"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="bl"></td>
-        </tr>
-        <tr>
-            <td data-arrows="tb"></td>
-            <td></td>
-            <td data-arrows="br"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lb lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr lb"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr br"></td>
-            <td data-arrows="lr ar lb"></td>
-            <td><s-vbtm->::</s-vbtm-></td>
-            <td data-arrows="lt"></td>
-        </tr>
-        <tr>
-            <td data-arrows="lr br tr"></td>
-            <td><s-sub->symbol name</s-sub-></td>
-            <td data-arrows="lr ar lt"></td>
-            <td><s-vbtm->.</s-vbtm-></td>
-            <td data-arrows="lb"></td>
-            <td data-arrows="br tr"></td>
-            <td><s-vbtm->const</s-vbtm-></td>
-            <td data-arrows="lr tr br ar"></td>
-            <td><s-vbtm->@</s-vbtm-></td>
-            <td data-arrows="lb lt"></td>
-            <td data-arrows="tr"></td>
-            <td data-arrows="lr ar"></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td data-arrows="rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="tl"></td>
-            <td data-arrows="rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="tl"></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
-    <label- id="syntax--symbol-name" class="s-sub">Symbol name</label->
-    <table class="s-sub">
-        <tr>
-            <td></td>
-            <td></td>
-            <td data-arrows="br"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr br ar"></td>
-        </tr>
-        <tr>
-            <td data-arrows="lr ar"></td>
-            <td><s-any->symbol identifier<span class="hidden">&nbsp;*</span></s-any-></td>
-            <td data-arrows="lr ar lt"></td>
-            <td><s-vbtm->&lt;</s-vbtm-></td>
-            <td data-arrows="lr br"></td>
-            <td data-arrows="lr ar lb"></td>
-            <td><s-path->type</s-path-></td>
-            <td data-arrows="lr br"></td>
-            <td data-arrows="lr ar lb"></td>
-            <td><s-vbtm->&gt;</s-vbtm-></td>
-            <td data-arrows="lt"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td data-arrows="bt"></td>
-            <td data-arrows="tr ar"></td>
-            <td><s-expr->value</s-expr-></td>
-            <td data-arrows="lt"></td>
-            <td data-arrows="tr ar"></td>
-            <td><s-vbtm->,</s-vbtm-></td>
-            <td data-arrows="lb"></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td data-arrows="rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="tl"></td>
-        </tr>
-    </table>
-    <syntax-note->
-        * For operators, the first identifier is used.
+        <a href="#syntax--declaration-variable">    variable</a> or a
+        <a href="#syntax--declaration-symbol-alias">symbol alias</a>.
     </syntax-note->
 </syntax->
 
@@ -421,31 +285,6 @@
 
 
 
-<syntax- class="qrt">
-    <label- id="syntax--typeof" class="s-decl"><a href="#modules">Typeof</a></label->
-    <table class="s-decl">
-        <tr>
-            <td data-arrows="lr ar"></td>
-            <td><s-vbtm->typeof</s-vbtm-></td>
-            <td data-arrows="lr ar"></td>
-            <td><s-vbtm->(</s-vbtm-></td>
-            <td data-arrows="lr ar"></td>
-            <td><s-expr->expression</s-expr-></td>
-            <td data-arrows="lr ar"></td>
-            <td><s-vbtm->)</s-vbtm-></td>
-            <td data-arrows="lr ar"></td>
-        </tr>
-    </table>
-</syntax->
-
-
-
-
-
-
-
-
-
 
 
 
@@ -453,7 +292,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--import-directive"><a href="#import-directive">Import directive</a></label->
+    <label- class="s-decl" id="syntax--misc-import-directive"><a href="#import-directive">Import directive</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -555,7 +394,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--export-directive"><a href="#export-directive">Export directive</a></label->
+    <label- class="s-decl" id="syntax--misc-export-directive"><a href="#export-directive">Export directive</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -632,7 +471,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--construct-directive"><a href="#construct-directive">Construct directive</a></label->
+    <label- class="s-decl" id="syntax--misc-construct-directive"><a href="#construct-directive">Construct directive</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -654,6 +493,316 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Symbol path syntaxes                                            -->
+<!--------------------------------------------------------------------->
+<h1 id="symbol-path-syntaxes"></h1>
+
+
+
+
+<syntax- class="qrt">
+    <label- id="syntax--path-standard" class="s-path">Standard path</label->
+    <table class="s-path">
+        <tr>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br ar"></td>
+        </tr>
+        <tr>
+            <td data-arrows="lr br ar"></td>
+            <td><s-sub->synbol name</s-sub-></td>
+            <td data-arrows="lr ar lt"></td>
+            <td><s-vbtm->.</s-vbtm-></td>
+            <td data-arrows="lb lt"></td>
+        </tr>
+        <tr>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
+        </tr>
+    </table>
+</syntax->
+
+
+
+
+
+<syntax- class="qrt">
+    <label- id="syntax--path-type" class="s-path">Type path</label->
+    <table class="s-path">
+        <tr>
+            <td data-arrows="br ar"></td>
+            <td><s-vbtm->typeof</s-vbtm-></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-vbtm->(</s-vbtm-></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-expr->value</s-expr-></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-vbtm->)</s-vbtm-></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr lb"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br ar"></td>
+        </tr>
+        <tr>
+            <td data-arrows="lt lb"></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows="tr br"></td>
+            <td data-arrows="lr br ar lt"></td>
+            <td><s-vbtm->const</s-vbtm-></td>
+            <td data-arrows="lr br tr ar"></td>
+            <td><s-vbtm->@</s-vbtm-></td>
+            <td data-arrows="lt lb"></td>
+        </tr>
+        <tr>
+            <td data-arrows="tr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-path->base type</s-path-></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lt"></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
+        </tr>
+    </table>
+</syntax->
+
+
+
+
+
+
+<syntax- class="qrt"> //TODO REMOVE
+    <label- id="syntax--misc-symbol-path" class="s-path">Symbol path</label->
+    <table class="s-path">
+        <tr>
+            <td data-arrows="rb"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="bl"></td>
+        </tr>
+        <tr>
+            <td data-arrows="tb"></td>
+            <td></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lb lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr lb"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lb"></td>
+            <td><s-vbtm->::</s-vbtm-></td>
+            <td data-arrows="lt"></td>
+        </tr>
+        <tr>
+            <td data-arrows="lr br tr"></td>
+            <td><s-sub->symbol name</s-sub-></td>
+            <td data-arrows="lr ar lt"></td>
+            <td><s-vbtm->.</s-vbtm-></td>
+            <td data-arrows="lb"></td>
+            <td data-arrows="br tr"></td>
+            <td><s-vbtm->const</s-vbtm-></td>
+            <td data-arrows="lr tr br ar"></td>
+            <td><s-vbtm->@</s-vbtm-></td>
+            <td data-arrows="lb lt"></td>
+            <td data-arrows="tr"></td>
+            <td data-arrows="lr ar"></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</syntax->
+
+
+
+
+
+
+
+
+
+
+
+
+<syntax->
+    <label- id="syntax--path-name" class="s-sub">Symbol name</label->
+    <table class="s-sub">
+        <tr>
+            <td></td>
+            <td></td>
+            <td data-arrows="br"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr br ar"></td>
+        </tr>
+        <tr>
+            <td data-arrows="lr ar"></td>
+            <td><s-any->symbol identifier<span class="hidden">&nbsp;*</span></s-any-></td>
+            <td data-arrows="lr ar lt"></td>
+            <td><s-vbtm->&lt;</s-vbtm-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lb"></td>
+            <td><s-path->type</s-path-></td>
+            <td data-arrows="lr br"></td>
+            <td data-arrows="lr ar lb"></td>
+            <td><s-vbtm->&gt;</s-vbtm-></td>
+            <td data-arrows="lt"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td data-arrows="bt"></td>
+            <td data-arrows="tr ar"></td>
+            <td><s-expr->value</s-expr-></td>
+            <td data-arrows="lt"></td>
+            <td data-arrows="tr ar"></td>
+            <td><s-vbtm->,</s-vbtm-></td>
+            <td data-arrows="lb"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td data-arrows="rt"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="rl"></td>
+            <td data-arrows="tl"></td>
+        </tr>
+    </table>
+    <syntax-note->
+        * For operators, the first identifier is used.
+    </syntax-note->
+</syntax->
 
 
 
@@ -755,7 +904,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--namespace-declaration"><a href="#namespaces">Namespace declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-namespace"><a href="#namespaces">Namespace declaration</a></label->
         <table class="s-decl">
         <tr>
             <td></td>
@@ -818,7 +967,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--enum-declaration"><a href="#enums">Enum declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-enum"><a href="#enums">Enum declaration</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -873,7 +1022,7 @@
         </tr>
 
     </table>
-    <label- class="s-decl" id="syntax--enum-declaration-element"><a href="#enums">Enum element</a></label->
+    <label- class="s-decl" id="syntax--declaration-enum-element"><a href="#enums">Enum element</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -914,10 +1063,10 @@
     </table>
     <syntax-note->
         * An
-        <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--declaration-enum">enum</a>,
+        <a href="#syntax--declaration-struct">struct</a>,
         <a href="#syntax--template-declaration">struct template</a> or a
-        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
+        <a href="#syntax--declaration-symbol-alias">symbol alias</a>.
     </syntax-note->
 </syntax->
 
@@ -936,7 +1085,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--struct-declaration"><a href="#structs">Struct declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-struct"><a href="#structs">Struct declaration</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -969,7 +1118,7 @@
             <td data-arrows="tl"></td>
         </tr>
     </table>
-    <label- class="s-sub" id="syntax--struct-declaration-signature"><a href="#structs">Struct signature</a></label->
+    <label- class="s-sub" id="syntax--declaration-struct-signature"><a href="#structs">Struct signature</a></label->
     <table class="s-sub">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -979,7 +1128,7 @@
             <td data-arrows="lr ar"></td>
         </tr>
     </table>
-    <label- class="s-sub" id="syntax--struct-declaration-body"><a href="#structs">Struct body</a></label->
+    <label- class="s-sub" id="syntax--declaration-struct-body"><a href="#structs">Struct body</a></label->
     <table class="s-sub">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1009,7 +1158,7 @@
             <td></td>
         </tr>
     </table>
-    <label- class="s-decl" id="syntax--struct-declaration-member"><a href="#structs">Struct member</a></label->
+    <label- class="s-decl" id="syntax--declaration-struct-member"><a href="#structs">Struct member</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -1041,10 +1190,10 @@
     </table>
     <syntax-note->
         * An
-        <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--declaration-enum">enum</a>,
+        <a href="#syntax--declaration-struct">struct</a>,
         <a href="#syntax--template-declaration">struct template</a> or a
-        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.
+        <a href="#syntax--declaration-symbol-alias">symbol alias</a>.
     </syntax-note->
 </syntax->
 
@@ -1063,7 +1212,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--routine-declaration-function"><a href="#functions">Function declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-function"><a href="#functions">Function declaration</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -1096,7 +1245,7 @@
             <td data-arrows="tl"></td>
         </tr>
     </table>
-    <label- class="s-decl" id="syntax--routine-declaration-operator"><a href="#operators">Operator declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-operator"><a href="#operators">Operator declaration</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -1129,7 +1278,7 @@
             <td data-arrows="tl"></td>
         </tr>
     </table>
-    <label- class="s-sub" id="syntax--routine-declaration-function-signature"><a href="#functions">Function signature</a></label->
+    <label- class="s-sub" id="syntax--declaration-function-signature"><a href="#functions">Function signature</a></label->
     <table class="s-sub">
         <tr>
             <td></td>
@@ -1192,7 +1341,7 @@
             <td data-arrows="tl"></td>
         </tr>
     </table>
-    <label- class="s-sub" id="syntax--routine-declaration-operator-signature"><a href="#operators">Operator signature</a></label->
+    <label- class="s-sub" id="syntax--declaration-operator-signature"><a href="#operators">Operator signature</a></label->
     <table class="s-sub">
         <tr>
             <td></td>
@@ -1252,7 +1401,7 @@
             <td></td>
         </tr>
     </table>
-    <label- class="s-sub" id="syntax--routine-declaration-body"><a href="#routines">Routine body</a></label->
+    <label- class="s-sub" id="syntax--declaration-routine-body"><a href="#routines">Routine body</a></label->
     <table class="s-sub">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1284,17 +1433,17 @@
     </table>
     <syntax-note->
         * An
-        <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--declaration-enum">enum</a>,
+        <a href="#syntax--declaration-struct">struct</a>,
         <a href="#syntax--template-declaration">struct template</a>,
         <a href="#syntax--variables">variable</a> or a
-        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
+        <a href="#syntax--declaration-symbol-alias">symbol alias</a>.<br>
 
         ** At least one name and one parameter declaration.<br>
 
         *** No more than once.
     </syntax-note->
-    <label- class="s-decl" id="syntax--routine-declaration-parameter"><a href="#routine-parameters">Routine parameter</a></label->
+    <label- class="s-decl" id="syntax--declaration-routine-parameter"><a href="#routine-parameters">Routine parameter</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -1326,7 +1475,7 @@
     <syntax-note->
         * Only if type is a <a href="#pointer-types">pointer type</a>.
     </syntax-note->
-    <label- class="s-decl" id="syntax--routine-declaration-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
+    <label- class="s-decl" id="syntax--declaration-function-parameter-pack"><a href="#function-parameter-packs">Function parameter pack</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="br ar"></td>
@@ -1398,7 +1547,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--variable-declaration"><a href="#variables">Variable declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-variable"><a href="#variables">Variable declaration</a></label->
     <table class="s-decl">
         <tr>
             <td></td>
@@ -1457,7 +1606,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--symbol-alias-declaration"><a href="#symbol-aliases">Symbol alias declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-symbol-alias"><a href="#symbol-aliases">Symbol alias declaration</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1487,7 +1636,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-sub" id="syntax--specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label->
+    <label- class="s-sub" id="syntax--declaration-specialization-constraint"><a href="#specialization-constraints">Specialization constraint</a></label->
     <table class="s-sub">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1533,7 +1682,7 @@
 
 
 <syntax- class="qrt">
-    <label- class="s-decl" id="syntax--template-struct-declaration"><a href="#templates">Struct template declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-template-struct"><a href="#templates">Struct template declaration</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1543,7 +1692,7 @@
             <td data-arrows="lr ar"></td>
         </tr>
     </table>
-    <label- class="s-decl" id="syntax--template-function-declaration"><a href="#templates">Function template declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-template-function"><a href="#templates">Function template declaration</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1553,7 +1702,7 @@
             <td data-arrows="lr ar"></td>
         </tr>
     </table>
-    <label- class="s-decl" id="syntax--template-operator-declaration"><a href="#templates">Operator template declaration</a></label->
+    <label- class="s-decl" id="syntax--declaration-template-operator"><a href="#templates">Operator template declaration</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="lr ar"></td>
@@ -1563,7 +1712,7 @@
             <td data-arrows="lr ar"></td>
         </tr>
     </table>
-    <label- class="s-sub" id="syntax--template-declaration-signature"><a href="#templates">Template signature</a></label->
+    <label- class="s-sub" id="syntax--declaration-template-signature"><a href="#templates">Template signature</a></label->
     <table class="s-sub">
         <tr>
             <td></td>
@@ -1609,7 +1758,7 @@
         * Can be omitted when using the <a href="#abbreviated-template-syntax">Abbreviated template syntax</a>.<br>
         ** No more than once.
     </syntax-note->
-    <label- class="s-decl" id="syntax--template-declaration-parameter"><a href="#template-parameters">Template parameter</a></label->
+    <label- class="s-decl" id="syntax--declaration-template-parameter"><a href="#template-parameters">Template parameter</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="br ar"></td>
@@ -1626,7 +1775,7 @@
             <td data-arrows="lr ar"></td>
         </tr>
     </table>
-    <label- class="s-decl" id="syntax--template-declaration-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
+    <label- class="s-decl" id="syntax--declaration-template-parameter-pack"><a href="#template-parameter-packs">Template parameter pack</a></label->
     <table class="s-decl">
         <tr>
             <td data-arrows="br ar"></td>
@@ -2329,11 +2478,11 @@
     </table>
     <syntax-note->
         * An
-        <a href="#syntax--enum-declaration">enum</a>,
-        <a href="#syntax--struct-declaration">struct</a>,
+        <a href="#syntax--declaration-enum">enum</a>,
+        <a href="#syntax--declaration-struct">struct</a>,
         <a href="#syntax--template-declaration">struct template</a>,
         <a href="#syntax--variables">variable</a> or a
-        <a href="#syntax--symbol-alias-declaration">symbol alias</a>.<br>
+        <a href="#syntax--declaration-symbol-alias">symbol alias</a>.<br>
     </syntax-note->
 </syntax->
 
