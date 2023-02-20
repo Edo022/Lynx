@@ -147,12 +147,10 @@
             <index-><indexh->operators</indexh->
                 <indexd->operator-declarations</indexd->
                 <indexd->operator-precedence</indexd->
-            </index->
-            <index-><indexh->routine-parameters</indexh->
-                <indexd->parameter-declarations</indexd->
                 <indexd->reference-parameters</indexd->
             </index->
-            <indexd->routine-overloading</indexd->
+            <indexd->routine-parameters</indexd->
+            <indexd->routine-specialization</indexd->
         </index->
         <index-><indexh->templates</indexh->
             <indexd->abbreviated-template-syntax</indexd->
@@ -1517,14 +1515,13 @@
     <code><w->namespace</w-></code>.<br>
     All the declared namespaces with the same absolute path merge their contents.<br>
     <br>
-    Functions.<br>
-    Functions and function templates declared in the same scope using the same identifier create a function overloading.<br>
-    This is explained in <a href="#function-overloading">Function overloading</a>.<br>
-    The <code><f->main</f-></code> function cannot be overloaded.<br>
-    <br>
-    Operators.<br>
-    As with functions, operators and operator templates declared in the same scope using the same identifier create an operator overloading.<br>
-    Explained in <a href="#operator-overloading">Operator overloading</a><br>
+    Routines.<br>
+    Functions and routines declared in the same scope using the same identifier create a specialized routine.<br>
+    This is explained in <a href="#routine-specialization">Routine specialization</a>.<br>
+    The <code><f->main</f-></code> function cannot be specialized.<br>
+    Structs.<br>
+    Structs declared in the same scope using the same identifier create a specialized struct.<br>
+    This is explained in <a href="#struct-specialization">Struct specialization</a>.<br>
     <br>
     Other symbols.<br>
     Multiple declarations of other symbols generate a semantic error. //TODO LINK
@@ -1545,7 +1542,7 @@
         }
 
         <t->void</t-> <f->f</f->(<t->int</t-> <p->n</p->) { } <c->// Ok</c->
-        <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
+        <t->void</t-> <f->f</f->() { }      <c->// Ok, specialization of "module.f"</c->
     </div>
 </example->
 
@@ -2229,7 +2226,7 @@
     Differently from other struct methods, the constructor can modify members when called on constant values.
 </p>
 <p>
-    Each struct can only have one constructor, but it can be overloaded.<br>
+    Each struct can only have one constructor, but it can be specialized.<br>
     Template constructors are allowed, although it is not possible to reference a specific template through the <elm-><code>&lt;</code><code>&gt;</code></elm->
     meta keyword while creating a new value, meaning that the declaration is chosen solely based on the passed arguments.<br>
     Constructors cannot be called after the value has been created, but each constructor declaration can call other declarations in the same struct.
@@ -2280,7 +2277,7 @@
     It has <b>no name</b> and <b>no return value</b> and it's declared using the <code><w->destructor</w-></code> meta keyword.<br>
 </p>
 <p>
-    Each struct can only have one destructor. It cannot be overloaded and cannot take any argument, nor can it be called explicitly.<br>
+    Each struct can only have one destructor. It cannot be specialized and cannot take any argument, nor can it be called explicitly.<br>
     Template destructors are not allowed.<br>
     There is no default destructor.
 </p>
@@ -3530,15 +3527,34 @@
 </example->
 
 
-<h1 id="routine-parameters"></h1>
-
-
-<h1 id="parameter-declarations"></h1>
+<h1 id="reference-parameters"></h1>
 <p>
-    Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
-    A routine parameter can be a normal parameter, a <a href="#reference-parameters">reference parameter</a> or a <a href="#parameter-packs">parameter pack</a>.
+    <b>Reference parameters</b> use the <b>address of the argument</b> as <b>initializer value</b> instead of the argument itself.<br>
+    They are declared by preceding the name of the parameter with the <code>&</code> <a href="#meta-keywords">meta keyword</a> and are only available for operators.<br>
 </p>
 <p>
+    Reference parameters can only be of <a href="#pointer-types">pointer type</a> and the passed arguments must be <a href="#left-and-right-values">l-values</a>.<br>
+    Inside the <a href="#routines">routine</a>, reference parameters act exactly as normal parameters.
+</p>
+<example->
+    <label->Example</label->
+    <div>
+        <t->void</t-> <f->halve</f->(<t->float</t->@ &<p->n</p->) <w->priority</w->(<k->1</k-> <w->l</w->) {
+            @n <f->/=</f-> <k->2</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->float</t-> n = <k->8</k->;    <c->// n has value 8</c->
+            <f->halve</f-> <k->n</k->;         <c->// n has value 4</c->
+            <c->//halve 8;</c->       <ce->// Error, 8 is not an l-value</ce->
+        }
+    </div>
+</example->
+
+
+<h1 id="routine-parameters"></h1>
+<p>
+    Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
     They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
     As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
 </p>
@@ -3560,34 +3576,9 @@
 </example->
 
 
-<h1 id="reference-parameters"></h1>
-<p>
-    <b>Reference parameters</b> use the <b>address of the argument</b> as <b>initializer value</b> instead of the argument itself. This doesn't apply to their <a href="#default-values">default value</a>.<br>
-    They are declared by preceding the name of the parameter with the <code>&</code> <a href="#meta-keywords">meta keyword</a>.<br>
-</p>
-<p>
-    Reference parameters can only be of <a href="#pointer-types">pointer type</a> and the passed arguments must be <a href="#left-and-right-values">l-values</a>.<br>
-    Inside the <a href="#routines">routine</a>, reference parameters act exactly as normal parameters.
-</p>
-<example->
-    <label->Example</label->
-    <div>
-        <t->void</t-> <f->halve</f->(<t->float</t->@ &<p->n</p->) {
-            @n <f->/=</f-> <k->2</k->;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->float</t-> n = <k->8</k->;    <c->// n has value 8</c->
-            <f->halve</f->(<k->n</k->);       <c->// n has value 4</c->
-            <c->//halve(8);</c->     <ce->// Error, 8 is not an l-value</ce->
-        }
-    </div>
-</example->
-
-
-<h1 id="routine-overloading"></h1>
+<h1 id="routine-specialization"></h1>
 <p style="margin-bottom: 0;">
-    <b>Routine overloading</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and the value of any compile time value accessible from their declaration.<br>
+    <b>Routine specialization</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and the value of any compile time value accessible from their declaration.<br>
     This is achieved by declaring the same routine multiple times. Each declaration must be <b>unique</b> and can differ by:
 </p>
 <ul><ul>

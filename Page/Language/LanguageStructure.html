@@ -1252,14 +1252,13 @@
     <code><w->namespace</w-></code>.<br>
     All the declared namespaces with the same absolute path merge their contents.<br>
     <br>
-    Functions.<br>
-    Functions and function templates declared in the same scope using the same identifier create a function overloading.<br>
-    This is explained in <a href="#function-overloading">Function overloading</a>.<br>
-    The <code><f->main</f-></code> function cannot be overloaded.<br>
-    <br>
-    Operators.<br>
-    As with functions, operators and operator templates declared in the same scope using the same identifier create an operator overloading.<br>
-    Explained in <a href="#operator-overloading">Operator overloading</a><br>
+    Routines.<br>
+    Functions and routines declared in the same scope using the same identifier create a specialized routine.<br>
+    This is explained in <a href="#routine-specialization">Routine specialization</a>.<br>
+    The <code><f->main</f-></code> function cannot be specialized.<br>
+    Structs.<br>
+    Structs declared in the same scope using the same identifier create a specialized struct.<br>
+    This is explained in <a href="#struct-specialization">Struct specialization</a>.<br>
     <br>
     Other symbols.<br>
     Multiple declarations of other symbols generate a semantic error. //TODO LINK
@@ -1280,7 +1279,7 @@
         }
 
         <t->void</t-> <f->f</f->(<t->int</t-> <p->n</p->) { } <c->// Ok</c->
-        <t->void</t-> <f->f</f->() { }      <c->// Ok, overloads "module.f"</c->
+        <t->void</t-> <f->f</f->() { }      <c->// Ok, specialization of "module.f"</c->
     </div>
 </example->
 

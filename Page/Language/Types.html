@@ -460,7 +460,7 @@
     Differently from other struct methods, the constructor can modify members when called on constant values.
 </p>
 <p>
-    Each struct can only have one constructor, but it can be overloaded.<br>
+    Each struct can only have one constructor, but it can be specialized.<br>
     Template constructors are allowed, although it is not possible to reference a specific template through the <elm-><code>&lt;</code><code>&gt;</code></elm->
     meta keyword while creating a new value, meaning that the declaration is chosen solely based on the passed arguments.<br>
     Constructors cannot be called after the value has been created, but each constructor declaration can call other declarations in the same struct.
@@ -522,7 +522,7 @@
     It has <b>no name</b> and <b>no return value</b> and it's declared using the <code><w->destructor</w-></code> meta keyword.<br>
 </p>
 <p>
-    Each struct can only have one destructor. It cannot be overloaded and cannot take any argument, nor can it be called explicitly.<br>
+    Each struct can only have one destructor. It cannot be specialized and cannot take any argument, nor can it be called explicitly.<br>
     Template destructors are not allowed.<br>
     There is no default destructor.
 </p>
