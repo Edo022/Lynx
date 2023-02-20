@@ -1279,6 +1279,7 @@
 <syntax->
     <label- id="copy.syntax--path-standard">Standard path</label->
     <label- id="copy.syntax--path-type">Type path</label->
+    <label- id="copy.syntax--path-reflection">Reflection path</label->
     <label- id="copy.syntax--path-name">Symbol name</label->
 </syntax->
 
@@ -5353,6 +5354,9 @@
 
 
 
+
+
+
 <syntax- class="qrt">
     <label- id="syntax--path-type" class="s-path">Type path</label->
     <table class="s-path">
@@ -5373,23 +5377,7 @@
             <td data-arrows="lr br ar"></td>
         </tr>
         <tr>
-            <td data-arrows="lt lb"></td>
-            <td data-arrows=""></td>
-            <td data-arrows=""></td>
-            <td data-arrows=""></td>
-            <td data-arrows=""></td>
-            <td data-arrows=""></td>
-            <td data-arrows=""></td>
-            <td data-arrows=""></td>
-            <td data-arrows="tr br"></td>
-            <td data-arrows="lr br ar lt"></td>
-            <td><s-vbtm->const</s-vbtm-></td>
-            <td data-arrows="lr br tr ar"></td>
-            <td><s-vbtm->@</s-vbtm-></td>
-            <td data-arrows="lt lb"></td>
-        </tr>
-        <tr>
-            <td data-arrows="tr"></td>
+            <td data-arrows="lt lr"></td>
             <td data-arrows="lr"></td>
             <td data-arrows="lr"></td>
             <td data-arrows="lr"></td>
@@ -5397,12 +5385,12 @@
             <td><s-path->base type</s-path-></td>
             <td data-arrows="lr"></td>
             <td data-arrows="lr"></td>
+            <td data-arrows="tr lr"></td>
+            <td data-arrows="lr ar lt"></td>
+            <td><s-vbtm->const</s-vbtm-></td>
+            <td data-arrows="lr tr ar"></td>
+            <td><s-vbtm->@</s-vbtm-></td>
             <td data-arrows="lt"></td>
-            <td data-arrows="rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="tl"></td>
         </tr>
     </table>
 </syntax->
@@ -5412,73 +5400,23 @@
 
 
 
-<syntax- class="qrt"> //TODO REMOVE
-    <label- id="syntax--misc-symbol-path" class="s-path">Symbol path</label->
+
+
+
+<syntax- class="qrt">
+    <label- id="syntax--path-reflection" class="s-path">Reflection path</label->
     <table class="s-path">
         <tr>
-            <td data-arrows="rb"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="bl"></td>
-        </tr>
-        <tr>
-            <td data-arrows="tb"></td>
-            <td></td>
-            <td data-arrows="br"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lb lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr lb"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr br"></td>
-            <td data-arrows="lr ar lb"></td>
-            <td><s-vbtm->::</s-vbtm-></td>
-            <td data-arrows="lt"></td>
-        </tr>
-        <tr>
-            <td data-arrows="lr br tr"></td>
-            <td><s-sub->symbol name</s-sub-></td>
-            <td data-arrows="lr ar lt"></td>
-            <td><s-vbtm->.</s-vbtm-></td>
-            <td data-arrows="lb"></td>
-            <td data-arrows="br tr"></td>
-            <td><s-vbtm->const</s-vbtm-></td>
-            <td data-arrows="lr tr br ar"></td>
-            <td><s-vbtm->@</s-vbtm-></td>
-            <td data-arrows="lb lt"></td>
-            <td data-arrows="tr"></td>
             <td data-arrows="lr ar"></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td data-arrows="rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="tl"></td>
-            <td data-arrows="rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="rl rt"></td>
-            <td data-arrows="rl"></td>
-            <td data-arrows="tl"></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td><s-path->path to target symbol</s-path-></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-vbtm->::</s-sbtm-></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-path->path to element</s-path-></td>
+            <td data-arrows="lr ar"></td>
         </tr>
     </table>
 </syntax->
-
-
 
 
 
