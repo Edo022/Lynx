@@ -2454,13 +2454,13 @@
 
 <h1 id="function-types"></h1>
 <p>
-    Function types are implicit types that can store functions.<br>
+    Function types are implicit types that can store functions.<br> //TODO add size info
     These are used for callbacks and higher level functions.<br>
-    They are referenced by specifying the return type, followed by the type of each
+    They are referenced by specifying the return type, followed by <elm-><code>(</code><code>)</code></elm-> keywords containing the types of each parameter.
 </p>
 <p>
     Referencing a function or using a function inline declaration without calling them generate function r-values which can be stored in function types.<br>
-    This is only allowed for non-specialized routines, as specialization is not compatible with function values.<br>
+    This is only allowed for non-specialized routines, as specialization is not compatible with function values. The only exception are <a href="#default-values">default values</a> which get disabled when retrieving the function value.<br>
     Operators cannot be stored as values, but it's still possible to create a wrapper function and save that instead.
 </p>
 <p>
@@ -2468,15 +2468,27 @@
     As with pointers, function types don't require a declaration in order to be used.<br>
     Function values can only be implicitly converted based on the constness of their parameters. This is explained in <a href="#implicit-conversions">Implicit conversions</a>.
 </p>
-<syntax->
-    <label- id="copy.syntax--function-type">Syntax</label-> //TODO
-</syntax->
 <split-example-container->
     <split-example-container-left->
         <example->
-            <label->Example</label->
+            <label->Example 1 - Callback</label->
             <div>
                 <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <w->struct</w-> <t->t</t-> {
+                    <w->constructor</w->(<t->void</t->() <p->callback</p->) {
+                        <f->callback</f->();
+                    }
+                }
+
+                <t->void</t-> <f->print_owo</f->(){
+                    io.<f->print</f->(<s->"OwO"</s->);
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <t->t</t-> a = { <t->void</t->(){ io.<f->print</f->(<s->"Variable \"a\" created\n"</s->); } };
+                    <t->t</t-> b = { <f->print_owo</f-> };
+                }
             </div>
         </example->
     </split-example-container-left->
@@ -2484,7 +2496,39 @@
         <example->
             <label->Output</label->
             <div>
-                <cursor-></cursor->
+                Variable "a" created
+                OwO<cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example 2 - Higher level function</label->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->void</t-> <f->map</f->(<t->arr</t->&lt;?<t->t</t->&gt;<t->*</t-> <p->a</p->, ?<t->r</t->(<t->t*</t->) <p->f</p->) {
+                    <w->for</w->(e <w->in</w-> a) <f->f</f->(e);
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <t->arr</t->&lt;<f->int</f->&gt; a = { <k->1</k->, <k->2</k-> };
+                    io.<f->print</f->(<s->"Before map: "</s-> <f->+</f-> <t->str</t->(<k->a</k->) <f->+</f-> <s->"\n"</s->);
+
+                    <f->map</f->($<k->a</k->, <t->void</t->(<t->int@</t-> <p->n</p->){ @n <f->*=</f-> <k->5</k->; });
+                    io.<f->print</f->(<s->"After  map: "</s-> <f->+</f-> <t->str</t->(<k->a</k->));
+                }
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                Before map: (1, 2)
+                After  map: (5, 10)<cursor-></cursor->
             </div>
         </example->
     </split-example-container-right->
@@ -5377,20 +5421,52 @@
             <td data-arrows="lr br ar"></td>
         </tr>
         <tr>
-            <td data-arrows="lt lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr"></td>
-            <td data-arrows="lr ar"></td>
+            <td data-arrows="lt lb lr ar"></td>
             <td><s-path->base type</s-path-></td>
             <td data-arrows="lr"></td>
             <td data-arrows="lr"></td>
-            <td data-arrows="tr lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="lr"></td>
+            <td data-arrows="tr br lr"></td>
             <td data-arrows="lr ar lt"></td>
             <td><s-vbtm->const</s-vbtm-></td>
             <td data-arrows="lr tr ar"></td>
             <td><s-vbtm->@</s-vbtm-></td>
             <td data-arrows="lt"></td>
+        </tr>
+        <tr>
+            <td data-arrows="tr ar"></td>
+            <td><s-path->return type</s-path-></td>
+            <td data-arrows="lr ar"></td>
+            <td><s-vbtm->(</s-vbtm-></td>
+            <td data-arrows="lr br ar"></td>
+            <td><s-path->parameter type</s-path-></td>
+            <td data-arrows="lr ar lb"></td>
+            <td><s-vbtm->)</s-vbtm-></td>
+            <td data-arrows="lt"></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+        </tr>
+        <tr>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows="rt"></td>
+            <td><s-vbtm->,</s-vbtm-></td>
+            <td data-arrows="tl al"></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
+            <td data-arrows=""></td>
         </tr>
     </table>
 </syntax->
