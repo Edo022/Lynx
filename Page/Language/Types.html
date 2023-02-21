@@ -935,6 +935,107 @@
 
 
 
+
+<!--------------------------------------------------------------------->
+<!-- Auto specifier                                                  -->
+<!--------------------------------------------------------------------->
+<h1 id="auto-specifier"></h1>
+<p>
+    The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#semantic-elements">symbol</a>.<br>
+    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#routines">routine</a>.<br>
+</p>
+<p>
+    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.<br>
+    The <a href="#types">types</a> of the <a href="#expressions">expressions</a> returned from an <code><t->auto</t-></code> <a href="#routines">routine</a> must match.
+</p>
+<example->
+    <label->Example 1</label->
+    <div>
+        <t->auto</t-> <f->func</f->(){
+            <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
+        }
+
+        <t->auto</t-> <f->main</f->(){
+            <t->auto</t-> a = <k->2</k->;         <c->// a has type ulong</c->
+            <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type double</c->
+            <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
+            <c->// No return statement, main has type void</c->
+        }
+    </div>
+</example->
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Typeof specifier                                                -->
+<!--------------------------------------------------------------------->
+<h1 id="typeof-specifier"></h1>
+<p>
+    The <b><code><t->typeof</t-></code></b> specifier is used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#expressions">expression</a></b> that is passed to it.<br>
+    The <a href="#expressions">expression</a> is exclusively used to determine the type and never evaluated.<br>
+    Circular dependencies generate a semantic error. //TODO LINK
+</p>
+<example->
+    <label->Example 1</label->
+    <div>
+        <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
+
+        <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
+            <t->int</t-> a = <k->1</k->;              <c->// a has type int</c->
+            <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int</c->
+        }
+    </div>
+</example->
+<example->
+    <label->Example 2</label->
+    <div>
+        <c->//typeof(b) a(){};</c->  <ce->//Error, circular dependency with b</ce->
+        <c->//typeof(a) b(){};</c->  <ce->//Error, circular dependency with a</ce->
+    </div>
+</example->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
 <!-- Implicit conversions                                            -->
 <!--------------------------------------------------------------------->
@@ -942,21 +1043,26 @@
 <p>
     <b>Implicit conversions</b> are performed when an <b><a href="#expressions">expression</a></b> of the <b>incorrect <a href="#types">type</a></b> is used in place of the expected one.<br>
     This includes anything whose syntax requires an <a href="#expressions">expression</a>.<br>
-    Conversions are not allowed in <a href="#templates">template</a> calls and inizializer values of <a href="auto-specifier">auto</a> <a href="#semantic-elements">symbols</a>.
 </p>
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Implicit conversions - primitive types                          -->
+<!--------------------------------------------------------------------->
+<h1 id="implicit-conversions.primitive-types"></h1>
 <p>
     <a href="#primitive-types">Primitive types</a> are all implicitly convertible to each other.<br>
-    <a href="#expressions">Expressions</a> of enum <a href="#types">type</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
-    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
-    following the <a href="#impliti-conversions">implicit conversions rules</a> their base <a href="#types">type</a> is subject to.
-</p>
-<p>
     In Lux, some conversions have <a href="#undefined-values">undefined result</a>.<br>
     In Umbra, the same conversions cause <a href="#undefined-behaviour">undefined behaviour</a>.<br>
     The result of the conversions follow these rules:
     //TODO use fedisableexcept(FE_ALL_EXCEPT);
     //TODO it only works on  floating points. integers throw exceptions anyway
 </p>
+
 <div class="table-container"><table>
     <!-- integer -->
         <tr>
@@ -1344,30 +1450,34 @@
 
 
 
+
 <!--------------------------------------------------------------------->
-<!-- Auto specifier                                                  -->
+<!-- Implicit conversions - enums                                    -->
 <!--------------------------------------------------------------------->
-<h1 id="auto-specifier"></h1>
+<h1 id="implicit-conversions.enums"></h1>
+
 <p>
-    The <b><code><t->auto</t-></code></b> specifier can be <b>used as</b> a <b><a href="#types">type</a></b> when declaring a <a href="#semantic-elements">symbol</a>.<br>
-    The actual <a href="#types">type</a> of the <a href="#semantic-elements">symbol</a> is determined by the initializer value if a <a href="#variables">variable</a>, or by the <a href="#return-statement">return value</a> if a <a href="#routines">routine</a>.<br>
-</p>
-<p>
-    <code><t->auto</t-></code> is not allowed in <a href="#structs">struct</a> member declarations or <a href="#routine-parameters">routine parameters</a>.<br>
-    The <a href="#types">types</a> of the <a href="#expressions">expressions</a> returned from an <code><t->auto</t-></code> <a href="#routines">routine</a> must match.
+    <a href="#expressions">Expressions</a> of enum <a href="#types">types</a> are <a href="#implicit-conversions">implicitly convertible</a> to their base <a href="#types">type</a>
+    and those whose base <a href="#types">type</a> is a <a href="#primitive-types">primitive type</a> are implicitly convertible to any <a href="#primitive-types">primitive type</a>,
+    following all the <a href="#impliti-conversions">implicit conversion rules</a> their base <a href="#types">type</a> is subject to.
 </p>
 <example->
-    <label->Example 1</label->
+    <label->Example</label->
     <div>
-        <t->auto</t-> <f->func</f->(){
-            <w->return</w-> <k->true</k->;        <c->// func has type bool</c->
+        <w->enum</w-> <t->e</t-> : <t->int</t-> {
+            <k->a</k->, <k->b</k->, <k->c</k->;
         }
 
-        <t->auto</t-> <f->main</f->(){
-            <t->auto</t-> a = <k->2</k->;         <c->// a has type ulong</c->
-            <t->auto</t-> b = <k->5.4</k-> * <k->a</k->;   <c->// b has type double</c->
-            <t->auto</t-> c = <f->func</f->();    <c->// c has type bool</c->
-            <c->// No return statement, main has type void</c->
+        <w->enum</w-> <t->e2</t-> : <t->e</t-> {
+            <k->a</k-> = e:<k->b</k->, <k->b</k-> = e:<k->a</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t->   a = e.<k->b</k->;
+            <t->float</t-> b = e.<k->c</k->;
+
+            <t->e</t->   c = e2.<k->a</k->;
+            <t->int</t-> d = <k->c</k->;
         }
     </div>
 </example->
@@ -1375,37 +1485,85 @@
 
 
 
+
+
+
+
+
+
+
 <!--------------------------------------------------------------------->
-<!-- Typeof specifier                                                -->
+<!-- Implicit conversions - pointer types                            -->
 <!--------------------------------------------------------------------->
-<h1 id="typeof-specifier"></h1>
+<h1 id="implicit-conversions.pointer-types"></h1>
+
 <p>
-    The <b><code><t->typeof</t-></code></b> specifier is used in the same way as <code><t->auto</t-></code>, but the <b>type</b> is defined by the <b><a href="#expressions">expression</a></b> that is passed to it.<br>
-    The <a href="#expressions">expression</a> is exclusively used to determine the type and never evaluated.<br>
-    Circular dependencies generate a semantic error. //TODO LINK
+    All pointer types are implicitly convertible to <code><t->ulong</t-></code> values.
 </p>
-
-<syntax->
-    <label- id="copy.syntax--path-type">Syntax</label->
-</syntax->
-
 <example->
-    <label->Example 1</label->
+    <label->Example</label->
     <div>
-        <t->auto</t-> <f->f</f->(){}                  <c->// f has type void</c->
-
-        <t->typeof</t->(<f->f</f->()) <f->main</f->(){         <c->// main has type void</c->
-            <t->int</t-> a = <k->1</k->;              <c->// a has type int</c->
-            <t->typeof</t->(<k->a</k->) b = <k->a</k-> * <k->2</k->;    <c->// b has type int</c->
+        <t->void</t-> <f->main</f->(){
+            <t->ulong</t-> var = @var;
         }
     </div>
 </example->
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Implicit conversions - constness conversions                    -->
+<!--------------------------------------------------------------------->
+<h1 id="implicit-conversions.constness-conversions"></h1>
+<p>
+    Non-<code><t->const</t-></code> pointer types are implicitly convertible to their respective <code><t->const</t-></code> pointer type.<br>
+    If the base type is itself a pointer type, then it must be convertible to the base type of the target type.<br>
+    For instance, an <code><t->int@</t-></code> expression would be convertible to <code><t->int const@</t-></code> only,
+    and an <code><t->int const@ const@</t-></code> would be convertible to <code><t->int@ const@</t-></code>, <code><t->int const@@</t-></code> and <code><t->int@@</t-></code>.
+</p>
+<p>
+    This also applies to const pointer types used as part of function types, with the added constraint that
+    all of the pointer types used in the source function type must be implicitly convertible to their respective pointer types in the target function type.
+</p>
 <example->
+    <label->Example 1</label->
+    <div>
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> <k->n</k->;
+            <t->int</t-> <t->const</t->@ p = $<k->n</k->;    <c->// Ok, non-const to const conversion</c->
+            <c->//int@ p2 = p;</c->        <ce->// Error, cannot convert int const@ to int@</ce->
+        }
+    </div>
     <label->Example 2</label->
     <div>
-        <c->//typeof(b) a(){};</c->  <ce->//Error, circular dependency with b</ce->
-        <c->//typeof(a) b(){};</c->  <ce->//Error, circular dependency with a</ce->
+        <t->void</t-> <f->main</f->(){
+            <t->double const@</t->(<t->float@</t->, <t->float const@ const@</t->) f;
+            <f->f</f-> <f->=</f-> <t->double@</t->(<t->float@</t-> <p->a</p->, <t->float@@</t-> <p->b</p->) { <w->return</w-> <k->0</k->; };              <c->// Ok</c->
+            <f->f</f-> <f->=</f-> <t->double</t-> <t->const@</t->(<t->float@</t-> <p->a</p->, <t->float@</t-> <t->const@</t-> <p->b</p->) { <w->return</w-> <k->0</k->; };  <c->// Ok</c->
+            <c->//f = double const @(float const@ a, float@ const@ b) { return 0; };</c->
+            <ce->//  ^ Error, cannot convert double const@(float const@, float@ const@) to double const@(float@, float const@ const@)</ce->
+        }
     </div>
 </example->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
