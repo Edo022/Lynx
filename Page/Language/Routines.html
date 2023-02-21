@@ -419,7 +419,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="routine-specialization"></h1>
 <p style="margin-bottom: 0;">
-    <b>Routine specialization</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and the value of any compile time value accessible from their declaration.<br>
+    <b>Routine specialization</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and user-defined constraints.<br>
     This is achieved by declaring the same routine multiple times. Each declaration must be <b>unique</b> and can differ by:
 </p>
 <ul><ul>
@@ -433,7 +433,7 @@
     <span class="small hidden">[with <i>#a</i> = number of passed arguments]</span><br>
     <br>
     The remaining declarations are organized in categories and the best one is chosen from one of these.<br>
-    The categories are checked one at a time, starting from the first. If no declaration is found, the next category is checked.<br>
+    The categories are checked one at a time, in the order a, b, c. If no declaration is found, the next category is checked.<br>
     If 2 or more declarations are found withing the same category, the routine call is ambiguous and a semantic error is generated.<br>
     If no declaration is found after all the categories have been checked, a suitable declaration doesn't exist and a semantic error is generated.
 </p>

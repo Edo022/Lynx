@@ -583,7 +583,51 @@
 <!-- Struct specialization                                           -->
 <!--------------------------------------------------------------------->
 <h1 id="struct-specialization"></h1>
-<p>//TODO</p>
+<p>
+    Struct specialization allows structs to contain different methods and data based on user-defined constraints.<br>
+    This is achieved by declaring the same struct multiple times. Each declaration must be <b>unique</b>.
+    Arguments passed to the constructor don't affect the chosen struct declaration.
+</p>
+<p>
+    Struct declarations whose specialization constraint is not satisfied are discarded.<br>
+    As with routine specialization, if zero or more than one declaration is suitable, a semantic error is generated.
+</p>
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example</label->
+            <div>
+                <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <w->struct</w-> <t->s</t-> <w->when</w->(<t->t</t->::id <f->!=</f-> <t->void</t->::id) {
+                    <t->t</t-> n;
+                    <w->constructor</w->() {
+                        io.<f->print</f->(<s->"Not void\n"</s->);
+                    }
+                }
+                <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <w->struct</w-> <t->s</t-> <w->when</w->(<t->t</t->::id <f->==</f-> <t->void</t->::id) {
+                    <w->constructor</w->() {
+                        io.<f->print</f->(<s->"Void\n"</s->);
+                    }
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <t->t</t->&lt;<t->int</t->&gt;  <k->a</k->;
+                    <t->t</t->&lt;<t->void</t->&gt; <k->b</k->;
+                }
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                Not void
+                Void
+                <cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
+
 
 
 

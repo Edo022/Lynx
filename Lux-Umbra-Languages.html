@@ -2324,7 +2324,50 @@
 
 
 <h1 id="struct-specialization"></h1>
-<p>//TODO</p>
+<p>
+    Struct specialization allows structs to contain different methods and data based on user-defined constraints.<br>
+    This is achieved by declaring the same struct multiple times. Each declaration must be <b>unique</b>.
+    Arguments passed to the constructor don't affect the chosen struct declaration.
+</p>
+<p>
+    Struct declarations whose specialization constraint is not satisfied are discarded.<br>
+    As with routine specialization, if zero or more than one declaration is suitable, a semantic error is generated.
+</p>
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example</label->
+            <div>
+                <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <w->struct</w-> <t->s</t-> <w->when</w->(<t->t</t->::id <f->!=</f-> <t->void</t->::id) {
+                    <t->t</t-> n;
+                    <w->constructor</w->() {
+                        io.<f->print</f->(<s->"Not void\n"</s->);
+                    }
+                }
+                <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <w->struct</w-> <t->s</t-> <w->when</w->(<t->t</t->::id <f->==</f-> <t->void</t->::id) {
+                    <w->constructor</w->() {
+                        io.<f->print</f->(<s->"Void\n"</s->);
+                    }
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <t->t</t->&lt;<t->int</t->&gt;  <k->a</k->;
+                    <t->t</t->&lt;<t->void</t->&gt; <k->b</k->;
+                }
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                Not void
+                Void
+                <cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
 
 
 <h1 id="special-types"></h1>
@@ -3578,7 +3621,7 @@
 
 <h1 id="routine-specialization"></h1>
 <p style="margin-bottom: 0;">
-    <b>Routine specialization</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and the value of any compile time value accessible from their declaration.<br>
+    <b>Routine specialization</b> allows routines to <b>act differently</b> based on the numer of arguments <b>in each routine call</b>, their types and user-defined constraints.<br>
     This is achieved by declaring the same routine multiple times. Each declaration must be <b>unique</b> and can differ by:
 </p>
 <ul><ul>
@@ -3592,7 +3635,7 @@
     <span class="small hidden">[with <i>#a</i> = number of passed arguments]</span><br>
     <br>
     The remaining declarations are organized in categories and the best one is chosen from one of these.<br>
-    The categories are checked one at a time, starting from the first. If no declaration is found, the next category is checked.<br>
+    The categories are checked one at a time, in the order a, b, c. If no declaration is found, the next category is checked.<br>
     If 2 or more declarations are found withing the same category, the routine call is ambiguous and a semantic error is generated.<br>
     If no declaration is found after all the categories have been checked, a suitable declaration doesn't exist and a semantic error is generated.
 </p>
