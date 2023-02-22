@@ -40,7 +40,7 @@
 <example->
     <label->Example</label->
     <div>
-        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <f->add</f->(<t->t</t-> <p->a</p->, <t->t</t-> <p->b</p->){
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->add</f->(<t->t</t-> <p->a</p->, <t->t</t-> <p->b</p->){
             <w->return</w-> a <f->+</f-> b;
         }
     </div>
@@ -60,17 +60,50 @@
 <!--------------------------------------------------------------------->
 <h1 id="template-parameters"></h1>
 <p>
-    Template parameters either be values of enum or integral type or type paths, and can be used as such by each declaration after it has been instantiated.<br>
+    Template parameters can either be values of enum or integral type or type paths, and can be used as such by each declaration after it has been instantiated.<br>
+    Value parameters are declared using their respective type, whilst type parameters have to be declared using the <code><w->type</w-></code> meta keyword.
 </p>
 <p>
-    //TODO parameters can be specified or deduced, but only for routines
+    When referenced, struct templates always require template arguments to be specified explicitly.<br>
+    Routine templates, instead, can have their type template arguments deduced from the passed routine parameters.<br>
+    If one or more template arguments cannot be deduced and is not passed or one or more value template arguments are required, then all the arguments must be specified explicitly.
 </p>
 <syntax->
     <label- id="copy.syntax--declaration-template-parameter">Template parameter declaration</label->
 </syntax->
 <example->
-    <label->Example</label->
+    <label->Example 1</label->
     <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->twice</f->(<t->t</t-> <p->n</p->){
+            <w->return</w-> n <f->*</f-> <k->2</k->;
+        }
+        <w->template</w->&lt;<t->int</t-> <p->n</p->&gt; <t->int</t-> <f->return_n</f->(){
+            <w->return</w-> <k->n</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->auto</t-> var1 = <f->twice</f->(<k->8</k->);         <c->// Ok, type t deduced as ulong</c->
+            <t->auto</t-> var2 = <f->twice</f->&lt;<t->float</t->&gt;(<k->8</k->);  <c->// Ok, type t specified as float, 8 is converted to from ulong to float</c->
+            <t->auto</t-> var3 = <f->return_n</f->&lt;<k->5</k->&gt;();    <c->// Ok, value n specified as 5</c->
+        }
+    </div>
+    <label->Example 2</label->
+    <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->return_0</f->(){
+            <w->return</w-> <k->0</k->;
+        }
+        <w->template</w->&lt;<t->int</t-> <p->n</p->, <w->type</w-> <t->t</t->&gt; <t->t</t-> <f->mult_by_n</f->(<t->t</t-> <p->arg</p->){
+            <w->return</w-> arg <f->*</f-> <k->n</k->;
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <c->auto var1 = return_0();</c->              <ce->// Error, type t cannot be deduced</ce->
+            <t->auto</t-> var2 = <f->return_0</f->&lt;<t->double</t->&gt;();      <c->// Ok, type t specified as double</c->
+
+            <c->auto var3 = mult_by_n&lt;5&gt;(2);</c->         <ce->// Error, value template parameter present. All arguments must be specified</ce->
+            <t->auto</t-> var3 = <f->mult_by_n</f->&lt;<k->5</k->, <t->ulong</t->&gt;(<k->2</k->);  <c->// Ok, value n specified as 5, type t specified as ulong</c->
+        }
     </div>
 </example->
 

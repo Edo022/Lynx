@@ -549,21 +549,21 @@
             <th class="nowrap medium"><a href="#keywords">Keyword</a></th>
             <td><div class="split-td-outer">
                 <div class="split-td">
-                    <a href="#namespaces">              <code><w->namespace</w-></code></a>
-                    <a href="#enums">                   <code><w->enum</w-></code></a>
-                    <a href="#structs">                 <code><w->struct</w-></code></a>
-                    <a href="#const-qualifier">         <code><t->const</t-></code></a>
-                    <a href="#auto-specifier">          <code><t->auto</t-></code></a>
-                    <a href="#typeof-specifier">        <code><t->typeof</t-></code></a>
-                    <a href="#symbol-aliases">          <code><w->alias</w-></code></a>
-                    <a href="#import-directive">        <code><w->from</w-></code></a>
-                    <a href="#import-directive">        <code><w->import</w-></code></a>
-                    <a href="#import-directive">        <code><w->include</w-></code></a>
-                    <a href="#export-directive">        <code><w->export</w-></code></a>
-                    <a href="#boolean-type">            <code><k->true</k-></code></a>
-                    <a href="#boolean-type">            <code><k->false</k-></code></a>
-                    <a href="#pointer-types">           <code><k->@</k-></code></a>
-                    <a href="#pointer-types">           <code><k->$</k-></code></a>
+                    <a href="#namespaces">                   <code><w->namespace</w-></code></a>
+                    <a href="#enums">                        <code><w->enum</w-></code></a>
+                    <a href="#structs">                      <code><w->struct</w-></code></a>
+                    <a href="#const-qualifier">              <code><t->const</t-></code></a>
+                    <a href="#auto-specifier">               <code><t->auto</t-></code></a>
+                    <a href="#typeof-specifier">             <code><t->typeof</t-></code></a>
+                    <a href="#symbol-aliases">               <code><w->alias</w-></code></a>
+                    <a href="#import-directive">             <code><w->from</w-></code></a>
+                    <a href="#import-directive">             <code><w->import</w-></code></a>
+                    <a href="#import-directive">             <code><w->include</w-></code></a>
+                    <a href="#export-directive">             <code><w->export</w-></code></a>
+                    <a href="#boolean-type">                 <code><k->true</k-></code></a>
+                    <a href="#boolean-type">                 <code><k->false</k-></code></a>
+                    <a href="#pointer-types">                <code>@</code></a>
+                    <a href="#pointer-types">                <code>$</code></a>
                 </div>
                 <div class="split-td">
                     <a href="#if-statement">                 <code><w->if</w-></code></a>
@@ -580,9 +580,9 @@
                     <a href="#defer-statement">              <code><w->defer</w-></code></a>
                 </div>
                 <div class="split-td">
-                    <elm->                              <code>(</code><code>)</code></elm->
-                    <a href="#scopes-and-symbols"><elm-><code>{</code><code>}</code></elm-></a>
-                    <elm-><code>"</code><code>"</code></elm->
+                    <elm->                                   <code>(</code><code>)</code></elm->
+                    <a href="#scopes-and-symbols">           <elm-><code>{</code><code>}</code></elm-></a>
+                    <a href="#string-literals">              <elm-><code>"</code><code>"</code></elm->
                     <a href="#statements">                   <code>,</code></a>
                     <a href="#statements">                   <code> ;</code></a>
                     <a href="#scopes-and-symbols">           <code>.</code></a>
@@ -594,10 +594,10 @@
             <th class="nowrap medium"><a href="#meta-keywords">Meta keyword</a></th>
             <td><div class="split-td-outer">
                 <div class="split-td">
-                    <a href="#templates">                  <code><w->template</w-></code></a>
-                    <elm-><code>&lt;</code><code>&gt;</code></elm->
-                    <a href="#specialization-constraints">       <code><w->when</w-></code></a>
-                    <a href="#abbreviated-template-syntax"><code>?</code></a>
+                    <a href="#templates">                       <code><w->template</w-></code></a>
+                    <a href="#templates">                       <elm-><code>&lt;</code><code>&gt;</code></elm->
+                    <a href="#template-parameters">             <code><w->type</w-></code></a>
+                    <a href="#abbreviated-template-syntax">     <code>?</code></a>
                 </div>
                 <div class="split-td">
                     <a href="#specialization-constraint">       <code><w->when</w-></code></a>
@@ -606,6 +606,7 @@
                     <code><w->to</w-></code>
                     <code>=</code>
                     <code>:</code>
+                    <code>...</code>
                 </div>
             </div></td>
         </tr>
@@ -819,6 +820,13 @@
             </span>
         </li>
         <li>
+            <span><a href="#template-parameters"><code><w->type</w-></code></a></span>
+            <span>
+                Used to declare type <a href="#template-parameters">template parameters</a> or type <a href="#template-parameter-packs">template parameter packs</a><br>
+                <span class="meta-keyword-constraint">[When used as type in the declaration of a <a href="#template-parameters">template parameter</a> or <a href="#template-parameter-packs">template parameter pack</a>]</span>.
+            </span>
+        </li>
+        <li>
             <span><a href="#abbreviated-template-syntax"><s-sgr->?</s-sgr-></a></span>
             <span>
                 <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
@@ -868,6 +876,13 @@
             <span>
                 Specifies the base type of an enum<br>
                 <span class="meta-keyword-constraint">[When used after the identifier of an enum declaration]</span>.
+            </span>
+        </li>
+        <li>
+            <span><code>...</code> </span>
+            <span>
+                Used to declare <a href="#template-parameter-packs">template parameter packs</a> and <a href="function parameter packs">function parameter packs</a><br>
+                <span class="meta-keyword-constraint">[When used after the identifier in the declaration of a template parameter or function parameter, or after the type of a function parameter pack declaration if the abbreviated template syntax is used]</span>.
             </span>
         </li>
     </ul>
@@ -3834,7 +3849,7 @@
 <example->
     <label->Example</label->
     <div>
-        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <f->add</f->(<t->t</t-> <p->a</p->, <t->t</t-> <p->b</p->){
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->add</f->(<t->t</t-> <p->a</p->, <t->t</t-> <p->b</p->){
             <w->return</w-> a <f->+</f-> b;
         }
     </div>
@@ -3843,17 +3858,50 @@
 
 <h1 id="template-parameters"></h1>
 <p>
-    Template parameters either be values of enum or integral type or type paths, and can be used as such by each declaration after it has been instantiated.<br>
+    Template parameters can either be values of enum or integral type or type paths, and can be used as such by each declaration after it has been instantiated.<br>
+    Value parameters are declared using their respective type, whilst type parameters have to be declared using the <code><w->type</w-></code> meta keyword.
 </p>
 <p>
-    //TODO parameters can be specified or deduced, but only for routines
+    When referenced, struct templates always require template arguments to be specified explicitly.<br>
+    Routine templates, instead, can have their type template arguments deduced from the passed routine parameters.<br>
+    If one or more template arguments cannot be deduced and is not passed or one or more value template arguments are required, then all the arguments must be specified explicitly.
 </p>
 <syntax->
     <label- id="copy.syntax--declaration-template-parameter">Template parameter declaration</label->
 </syntax->
 <example->
-    <label->Example</label->
+    <label->Example 1</label->
     <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->twice</f->(<t->t</t-> <p->n</p->){
+            <w->return</w-> n <f->*</f-> <k->2</k->;
+        }
+        <w->template</w->&lt;<t->int</t-> <p->n</p->&gt; <t->int</t-> <f->return_n</f->(){
+            <w->return</w-> <k->n</k->;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->auto</t-> var1 = <f->twice</f->(<k->8</k->);         <c->// Ok, type t deduced as ulong</c->
+            <t->auto</t-> var2 = <f->twice</f->&lt;<t->float</t->&gt;(<k->8</k->);  <c->// Ok, type t specified as float, 8 is converted to from ulong to float</c->
+            <t->auto</t-> var3 = <f->return_n</f->&lt;<k->5</k->&gt;();    <c->// Ok, value n specified as 5</c->
+        }
+    </div>
+    <label->Example 2</label->
+    <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->return_0</f->(){
+            <w->return</w-> <k->0</k->;
+        }
+        <w->template</w->&lt;<t->int</t-> <p->n</p->, <w->type</w-> <t->t</t->&gt; <t->t</t-> <f->mult_by_n</f->(t arg){
+            <w->return</w-> arg <f->*</f-> <k->n</k->;
+        }
+
+
+        <t->void</t-> <f->main</f->(){
+            <c->auto var1 = return_0();</c->              <ce->// Error, type t cannot be deduced</ce->
+            <t->auto</t-> var2 = <f->return_0</f->&lt;<t->double</t->&gt;();      <c->// Ok, type t specified as double</c->
+
+            <c->auto var3 = mult_by_n&lt;5&gt;(2);</c->         <ce->// Error, value template parameter present. All arguments must be specified</ce->
+            <t->auto</t-> var3 = <f->mult_by_n</f->&lt;<k->5</k->, <t->ulong</t->&gt;(<k->2</k->);  <c->// Ok, value n specified as 5, type t specified as ulong</c->
+        }
     </div>
 </example->
 
