@@ -158,7 +158,11 @@
             <indexd->routine-specialization</indexd->
         </index->
         <index-><indexh->templates</indexh->
+            <indexd->template-declarations</indexd->
+            <indexd->template-parameters</indexd->
+            <indexd->template-parameter-packs</indexd->
             <indexd->abbreviated-template-syntax</indexd->
+            <indexd->multi-argument-type-deduction</indexd->
         </index->
         <index-><indexh->statements</indexh->
             <index-><indexh->selection</indexh->
@@ -3803,12 +3807,75 @@
 
 
 <h1 id="templates"></h1>
+<p>
+    Templates allow structs and routines to generate different declarations based on the explicit template arguments or the passed routine argunents.<br>
+    They are compatible with specialization constraints, function parameter packs, default values and reference parameters.
+</p>
+<p>
+    Generated declarations are called template instances, and the act of generating them is called template instantiation.<br>
+    A template is instantiated every time the template symbol is referenced in the code.<br>
 
-<p>//TODO</p>
-<p>//TODO</p>
-<p>//TODO</p>
-<p>//TODO</p>
-<p>//TODO</p>
+</p>
+
+
+<h1 id="template-declarations"></h1>
+<p>
+    Struct and routines that use templates are introduced by the <code><w->template</w-></code> meta keyword,
+    followed by the <elm-><code>&lt;</code><code>&gt;</code></elm-> meta keywords, in which the template parameters are specified.<br>
+    The rest of the declaration is identical to standard routines or structs.<br>
+    Notice that //TODO (maybe?) in specialization constraints, the value of template parameters is decided after the instantiation, but everything else is done from the position of the parameter declaration
+</p>
+<syntax->
+    <label- id="copy.syntax--declaration-template-struct">Template struct declaration</label->
+    <label- id="copy.syntax--declaration-template-function">Template function declaration</label->
+    <label- id="copy.syntax--declaration-template-operator">Template operator declaration</label->
+    <label- id="copy.syntax--declaration-template-signature">Template signature</label->
+</syntax->
+<example->
+    <label->Example</label->
+    <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <f->add</f->(<t->t</t-> <p->a</p->, <t->t</t-> <p->b</p->){
+            <w->return</w-> a <f->+</f-> b;
+        }
+    </div>
+</example->
+
+
+<h1 id="template-parameters"></h1>
+<p>
+    Template parameters either be values of enum or integral type or type paths, and can be used as such by each declaration after it has been instantiated.<br>
+</p>
+<p>
+    //TODO parameters can be specified or deduced, but only for routines
+</p>
+<syntax->
+    <label- id="copy.syntax--declaration-template-parameter">Template parameter declaration</label->
+</syntax->
+<example->
+    <label->Example</label->
+    <div>
+    </div>
+</example->
+
+
+<h1 id="template-parameter-packs"></h1>
+<p>
+</p>
+<syntax->
+    <label- id="copy.syntax--declaration-template-parameter-pack">Template parameter pack declaration</label->
+</syntax->
+<example->
+    <label->Example</label->
+    <div>
+    </div>
+</example->
+
+
+<h1 id="multi-argument-type-deduction"></h1>
+<p>
+</p>
+
+</p>
             <p>
     When values of different primitive types are used with <a href="#standard-operators">standard operators</a> which require values of the same type, implicit conversions are performed in orer to avoid data loss.<br>
     Which values are converted depends on the rank of their type.<br>
