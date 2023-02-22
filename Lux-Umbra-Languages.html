@@ -131,7 +131,7 @@
         </index->
         <index-><indexh->expressions</indexh->
             <index-><indexh->inline-values</indexh->
-                <indexd->literals-and-constants</indexd->
+                <indexd->literals</indexd->
                 <indexd->function-calls</indexd->
                 <indexd->operator-calls</indexd->
                 <indexd->try-expression</indexd->
@@ -143,6 +143,7 @@
             </index->
         </index->
         <index-><indexh->routines</indexh->
+            <indexd->routine-parameters</indexd->
             <index-><indexh->functions</indexh->
                 <indexd->function-declarations</indexd->
                 <indexd->the-main-function</indexd->
@@ -154,7 +155,6 @@
                 <indexd->operator-precedence</indexd->
                 <indexd->reference-parameters</indexd->
             </index->
-            <indexd->routine-parameters</indexd->
             <indexd->routine-specialization</indexd->
         </index->
         <index-><indexh->templates</indexh->
@@ -3146,14 +3146,7 @@
 </p>
 
 
-
-
-
-//FIXME ADD CONSTANTS (values generated from constructors)
-
-
-
-<h1 id="literals-and-constants"></h1>
+<h1 id="literals"></h1>
 <p>
     <b>Literals</b> are used to <b>create</b> compile time known <b><a href="#left-and-right-values">r-values</a></b>.<br>
     The type of the value is determined by the way it is represented in the source code, and it can only be of <code><t->ulong</t-></code>, <code><t->double</t-></code> or <code><t->bool</t-></code> type.<br>
@@ -3402,9 +3395,30 @@
     The <a href="#types">type</a> of the <a href="#return-statement">returned</a> value is defined by the <a href="#types">type</a> of the routine.<br>
     Routines that don't return a value have to be declared using the <code><t->void</t-></code> type.
 </p>
+
+
+<h1 id="routine-parameters"></h1>
 <p>
-    The <a href="#const-qualifier"><code><w->const</w-></code> qualifier</a> cannot be applied to routines.
+    Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
+    They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
+    As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
 </p>
+<syntax->
+    <label- id="copy.syntax--declaration-routine-parameter">Declaration syntax</label->
+</syntax->
+<example->
+    <label->Example</label->
+    <div>
+        <t->int</t-> <f->add</f->(<t->uint</t-> <p->a</p->, <t->uint</t-> <p->b</p->) {
+            <w->return</w-> a <f->+</f-> b;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->uint</t-> a = <k->5</k->;
+            <t->uint</t-> r = <f->add</f->(<k->a</k->, <k->6</k->);
+        }
+    </div>
+</example->
 
 
 <h1 id="functions"></h1>
@@ -3453,9 +3467,8 @@
 
 <h1 id="default-values"></h1>
 <p>
-    <b>Default values</b> are used to <b>initialize</b> the routine parameter <b>when no argument is provided</b>.<br>
-    They are defined in the same way as <a href="#variables">variable initializer values</a>.<br>
-    Both normal and <a href="#reference-parameters">reference parameters</a> can have default values.
+    <b>Default values</b> are used to <b>initialize</b> a routine parameter <b>when no argument is provided</b>.<br>
+    They are defined in the same way as <a href="#variables">variable initializer values</a>.
 </p>
 <p>
     A function can have multiple parameters <b>with</b> a default value, but they must all be declared <b>after</b> the <b>last</b> parameter that <b>doesn't have one</b>.<br>
@@ -3665,30 +3678,6 @@
             <t->float</t-> n = <k->8</k->;    <c->// n has value 8</c->
             <f->halve</f-> <k->n</k->;         <c->// n has value 4</c->
             <c->//halve 8;</c->       <ce->// Error, 8 is not an l-value</ce->
-        }
-    </div>
-</example->
-
-
-<h1 id="routine-parameters"></h1>
-<p>
-    Routine parameters are named memory locations used to pass arguments to <a href="#routine-calls">routine calls</a>.<br>
-    They work in the same way as <a href="#variables">variables</a>, but the initializer value is defined by the caller routine or copied from the <a href="#default-values">default value</a>.<br>
-    As with <a href="#variables">variables</a>, routine parameters are first allocated and then initialized by calling the <code>=</code> operator, one parameter at a time, following the order in which they were declared.
-</p>
-<syntax->
-    <label- id="copy.syntax--declaration-routine-parameter">Declaration syntax</label->
-</syntax->
-<example->
-    <label->Example</label->
-    <div>
-        <t->int</t-> <f->add</f->(<t->uint</t-> <p->a</p->, <t->uint</t-> <p->b</p->) {
-            <w->return</w-> a <f->+</f-> b;
-        }
-
-        <t->void</t-> <f->main</f->(){
-            <t->uint</t-> a = <k->5</k->;
-            <t->uint</t-> r = <f->add</f->(<k->a</k->, <k->6</k->);
         }
     </div>
 </example->
@@ -6016,7 +6005,7 @@
         </tr>
         <tr>
             <td data-arrows="lr ar"></td>
-            <td><s-sub->struct signature</s-sub-></td>
+            <td><s-sub->function signature</s-sub-></td>
             <td data-arrows="lr br"></td>
             <td data-arrows="lr ar lt"></td>
             <td><s-sub->specialization constraint</s-sub-></td>
