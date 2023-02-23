@@ -182,7 +182,7 @@
     When a <a href="#types">type</a> or a type <a href="#templates">template parameter</a> is used, all the arguments have the same type. The type is determined by following the implicit conversion rules for template routine calls.//TODO link
 </p>
 <p>
-    Parameter packs take zero or more arguments and can only be used as arguments in routine calls or template paths.<br>
+    Parameter packs take zero or more arguments and can only be used as arguments of routine parameters.<br>
     The taken arguments are the ones that remain after all the routine parameters have been assigned their argument. Parameters with default values take priority over the arguments.<br>
     Arguments and parameter pack elements are all initialized in the same order in which they were declared.
 </p>
@@ -439,8 +439,7 @@
     <br>
     The remaining declarations are organized in categories and the best one is chosen from one of these.<br>
     The categories are checked one at a time, in the order a, b, c. If no declaration is found, the next category is checked.<br>
-    If 2 or more declarations are found withing the same category, the routine call is ambiguous and a semantic error is generated.<br>
-    If no declaration is found after all the categories have been checked, a suitable declaration doesn't exist and a semantic error is generated.
+    If zero or more than one declaration are found withing the same category, a semantic error is generated.
 </p>
 <ol style="list-style: lower-alpha;">
     <li>Declarations that can take all the parameters without performing implicit conversions.</li>
@@ -489,16 +488,26 @@
     </split-example-container-right->
 </split-example-container->
 <p style="margin-bottom: 0;">
-    Declarations with parameter packs and/or templates undergo an additional instantiation phase before the best declaration is chosen, in which these features are replaced with standard types and parameters.<br>
-    Generated declarations whose number of arguments and argument types are identical to the ones in declarations already defined by the user and any declaration whose suitability constraint is not satisfied are discarded
+    Declarations with parameter packs and/or templates undergo an additional instantiation phase before the best declaration is chosen, in which these features are replaced with standard types and parameters.
 </p>
 <ol style="list-style: decimal;">
     <li>
         Each declaration that uses a function parameter pack and has <i>#a</i> or less parameters has its parameter pack replaced with the exact number of parameters of the correct type in order to bring the total to exactly <i>#a</i>.<br>
-        <span class="small hidden">[with <i>#a</i> = number of passed arguments]
+        <span class="small hidden">[with <i>#a</i> = number of passed arguments]</span>.<br>
+        This phase is skipped if the template arguments are specified explicitly.
     </li>
     <li>
-        Each declaration that uses template types in its parameters has these types replaced with the correct type, following the implicit conversion rules for template calls.
+        Generated declarations whose number of arguments and argument types are identical to the ones in declarations that don't use function parameter packs are discarded.
+    </li>
+    <li>
+        Each declaration that uses a template is instantiated.<br>
+        This phase is skipped if the template arguments are specified explicitly.
+    </li>
+    <li>
+        Generated declarations whose number of arguments and argument types are identical to the ones in declarations that don't use templates are discarded
+    </li>
+    <li>
+        Any declaration whose suitability constraint is not satisfied is discarded
     </li>
 </ol>
 <split-example-container->

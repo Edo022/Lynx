@@ -2591,8 +2591,8 @@
         <example->
             <label->Output</label->
             <div>
-                Before map: (1, 2)
-                After  map: (5, 10)<cursor-></cursor->
+                Before map: [1, 2]
+                After  map: [5, 10]<cursor-></cursor->
             </div>
         </example->
     </split-example-container-right->
@@ -3517,7 +3517,7 @@
     When a <a href="#types">type</a> or a type <a href="#templates">template parameter</a> is used, all the arguments have the same type. The type is determined by following the implicit conversion rules for template routine calls.//TODO link
 </p>
 <p>
-    Parameter packs take zero or more arguments and can only be used as arguments in routine calls or template paths.<br>
+    Parameter packs take zero or more arguments and can only be used as arguments of routine parameters.<br>
     The taken arguments are the ones that remain after all the routine parameters have been assigned their argument. Parameters with default values take priority over the arguments.<br>
     Arguments and parameter pack elements are all initialized in the same order in which they were declared.
 </p>
@@ -3719,8 +3719,7 @@
     <br>
     The remaining declarations are organized in categories and the best one is chosen from one of these.<br>
     The categories are checked one at a time, in the order a, b, c. If no declaration is found, the next category is checked.<br>
-    If 2 or more declarations are found withing the same category, the routine call is ambiguous and a semantic error is generated.<br>
-    If no declaration is found after all the categories have been checked, a suitable declaration doesn't exist and a semantic error is generated.
+    If zero or more than one declaration are found withing the same category, a semantic error is generated.
 </p>
 <ol style="list-style: lower-alpha;">
     <li>Declarations that can take all the parameters without performing implicit conversions.</li>
@@ -3769,16 +3768,26 @@
     </split-example-container-right->
 </split-example-container->
 <p style="margin-bottom: 0;">
-    Declarations with parameter packs and/or templates undergo an additional instantiation phase before the best declaration is chosen, in which these features are replaced with standard types and parameters.<br>
-    Generated declarations whose number of arguments and argument types are identical to the ones in declarations already defined by the user and any declaration whose suitability constraint is not satisfied are discarded
+    Declarations with parameter packs and/or templates undergo an additional instantiation phase before the best declaration is chosen, in which these features are replaced with standard types and parameters.
 </p>
 <ol style="list-style: decimal;">
     <li>
         Each declaration that uses a function parameter pack and has <i>#a</i> or less parameters has its parameter pack replaced with the exact number of parameters of the correct type in order to bring the total to exactly <i>#a</i>.<br>
-        <span class="small hidden">[with <i>#a</i> = number of passed arguments]
+        <span class="small hidden">[with <i>#a</i> = number of passed arguments]</span>.<br>
+        This phase is skipped if the template arguments are specified explicitly.
     </li>
     <li>
-        Each declaration that uses template types in its parameters has these types replaced with the correct type, following the implicit conversion rules for template calls.
+        Generated declarations whose number of arguments and argument types are identical to the ones in declarations that don't use function parameter packs are discarded.
+    </li>
+    <li>
+        Each declaration that uses a template is instantiated.<br>
+        This phase is skipped if the template arguments are specified explicitly.
+    </li>
+    <li>
+        Generated declarations whose number of arguments and argument types are identical to the ones in declarations that don't use templates are discarded
+    </li>
+    <li>
+        Any declaration whose suitability constraint is not satisfied is discarded
     </li>
 </ol>
 <split-example-container->
@@ -3890,7 +3899,7 @@
         <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->return_0</f->(){
             <w->return</w-> <k->0</k->;
         }
-        <w->template</w->&lt;<t->int</t-> <p->n</p->, <w->type</w-> <t->t</t->&gt; <t->t</t-> <f->mult_by_n</f->(t arg){
+        <w->template</w->&lt;<t->int</t-> <p->n</p->, <w->type</w-> <t->t</t->&gt; <t->t</t-> <f->mult_by_n</f->(<t->t</t-> <p->arg</p->){
             <w->return</w-> arg <f->*</f-> <k->n</k->;
         }
 
@@ -3908,6 +3917,16 @@
 
 <h1 id="template-parameter-packs"></h1>
 <p>
+    <b>Template parameter packs</b> allow <b>templates</b> to take an <b>arbitrary number</b> of <b>arguments</b>.<br>
+    They are decalred in the same way as <a href="#routine-parameters">routine parameters</a>, but their name is followed by the <code>...</code> <a href="#meta-keywords">meta keyword</a>.<br>
+</p>
+<p>
+    Template parameter packs take zero or more arguments.
+    Type template parameter packs can be used as arguments of type template parameters or used in conjunction with a <a href="function-parameter-packs">function parameter packs</a> to allow each of its elements to accept a different type.<br>
+    Value template parameter packs can be used as arguments of routine parameters or value template parameters.
+</p>
+<p>
+    Each template declaration can only use a single template parameter pack.<br>
 </p>
 <syntax->
     <label- id="copy.syntax--declaration-template-parameter-pack">Template parameter pack declaration</label->
@@ -3915,6 +3934,17 @@
 <example->
     <label->Example</label->
     <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->...&gt; <t->str</t-> <f->to_str</f->(<t->t</t-> <p->arg</p->, <t->u</t-> <p->args</p->...) {
+            <w->return</w-> <t->str</t->(arg) + <f->to_str</f->(args);
+        }
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->str</t-> <f->to_str</f->(<t->t</t-> <p->arg</p->) {
+            <w->return</w-> <t->str</t->(a);
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> p = <k->101</k->;
+            io.<f->print</f->(<f->to_str</f->(<s->"Programming "</s->, <k->p</k->, <s->" UwU"</s->));
+        }
     </div>
 </example->
 

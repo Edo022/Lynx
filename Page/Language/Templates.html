@@ -121,6 +121,16 @@
 <!--------------------------------------------------------------------->
 <h1 id="template-parameter-packs"></h1>
 <p>
+    <b>Template parameter packs</b> allow <b>templates</b> to take an <b>arbitrary number</b> of <b>arguments</b>.<br>
+    They are decalred in the same way as <a href="#template-parameters">template parameters</a>, but their name is followed by the <code>...</code> <a href="#meta-keywords">meta keyword</a>.<br>
+</p>
+<p>
+    Template parameter packs take zero or more arguments.
+    Type template parameter packs can be used as arguments of type template parameters or used in conjunction with a <a href="function-parameter-packs">function parameter packs</a> to allow each of its elements to accept a different type.<br>
+    Value template parameter packs can be used as arguments of routine parameters or value template parameters.
+</p>
+<p>
+    Each template declaration can only use a single template parameter pack.<br>
 </p>
 <syntax->
     <label- id="copy.syntax--declaration-template-parameter-pack">Template parameter pack declaration</label->
@@ -128,8 +138,47 @@
 <example->
     <label->Example</label->
     <div>
+        <w->template</w->&lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->...&gt; <t->str</t-> <f->to_str</f->(<t->t</t-> <p->arg</p->, <t->u</t-> <p->args</p->...) {
+            <w->return</w-> <t->str</t->(arg) + <f->to_str</f->(args);
+        }
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->str</t-> <f->to_str</f->(<t->t</t-> <p->arg</p->) {
+            <w->return</w-> <t->str</t->(a);
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <t->int</t-> p = <k->101</k->;
+            io.<f->print</f->(<f->to_str</f->(<s->"Programming "</s->, <k->p</k->, <s->" UwU"</s->));
+        }
     </div>
 </example->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--------------------------------------------------------------------->
+<!-- Abbreviated template sytntax                                    -->
+<!--------------------------------------------------------------------->
+<h1 id="abbreviated-template-syntax"></h1>
+<p>
+
+</p>
+
+
+
+
+
 
 
 
@@ -314,22 +363,4 @@
         }
     </div>
 </example->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--------------------------------------------------------------------->
-<!-- Abbreviated template sytntax                                    -->
-<!--------------------------------------------------------------------->
-<h1 id="abbreviated-template-syntax"></h1>
 
