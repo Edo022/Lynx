@@ -156,6 +156,7 @@
                     <code>=</code>
                     <code>:</code>
                     <code>...</code>
+                    <code>?...</code>
                 </div>
             </div></td>
         </tr>
@@ -412,8 +413,8 @@
         <li>
             <span><a href="#abbreviated-template-syntax"><s-sgr->?</s-sgr-></a></span>
             <span>
-                <a href="#abbreviated-template-syntax">Abbreviated template syntax</a><br>
-                <span class="meta-keyword-constraint">[When used before the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a <a href="#templates">template</a> declaration]</span>.
+                    <a href="#abbreviated-template-syntax">Identifies the parameters whose arguments are used to deduce a type template parameter or type template parameter pack, or specifies that an identifier is a type template parameter</a><br>
+                <span class="meta-keyword-constraint">[When used after the <a href="#types">type</a> of a <a href="#symbols">symbol</a> declaration inside a struct or routine declaration]</span>.
             </span>
         </li>
     </ul><br>
@@ -465,7 +466,14 @@
             <span><code>...</code> </span>
             <span>
                 Used to declare <a href="#template-parameter-packs">template parameter packs</a> and <a href="function parameter packs">function parameter packs</a><br>
-                <span class="meta-keyword-constraint">[When used after the identifier in the declaration of a template parameter or function parameter, or after the type of a function parameter pack declaration if the abbreviated template syntax is used]</span>.
+                <span class="meta-keyword-constraint">[When used after the identifier in the declaration of a template parameter pack or function parameter pack, or, if inside a struct or routine declaration, after the type or <code>?</code> meta keyword of the declaration of a routine parameter or function parameter pack]</span>.
+            </span>
+        </li>
+        <li>
+            <span><code>?...</code> </span>
+            <span>
+                Union of <code>?</code> and <code>...</code><br>
+                <span class="meta-keyword-constraint">[When used after the type in a routine parameter declaration]</span>.
             </span>
         </li>
     </ul>

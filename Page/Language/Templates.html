@@ -64,9 +64,14 @@
     Value parameters are declared using their respective type, whilst type parameters have to be declared using the <code><w->type</w-></code> meta keyword.
 </p>
 <p>
-    When referenced, struct templates always require template arguments to be specified explicitly.<br>
-    Routine templates, instead, can have their type template arguments deduced from the passed routine parameters.<br>
-    If one or more template arguments cannot be deduced and is not passed or one or more value template arguments are required, then all the arguments must be specified explicitly.
+    By default, each template parameter must be specified explicitly when referencing a template symbol.<br>
+    If the declaration of a routine parameter uses a type template parameter as type, the <code>?</code> meta keyword can be placed after the type to allow it to be deduced from the passed argument.<br>
+    This also applies to function parameter packs that use a type template parameter pack as type, in which case each type of the type template parameter pack is deduced from the respective argument in the routine parameter pack.<br>
+    If one or more template arguments cannot be deduced, then all the arguments must be specified explicitly.
+</p>
+<p>
+    Type template arguments deduced from multiple routine arguments are explained in <a href="multi-argument-type-deduction">Multi argument type deduction</a><br>
+    Type deduction is not performed when the template arguments are specified.
 </p>
 <syntax->
     <label- id="copy.syntax--declaration-template-parameter">Template parameter declaration</label->
@@ -74,7 +79,7 @@
 <example->
     <label->Example 1</label->
     <div>
-        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->twice</f->(<t->t</t-> <p->n</p->){
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->twice</f->(<t->t</t->? <p->n</p->){
             <w->return</w-> n <f->*</f-> <k->2</k->;
         }
         <w->template</w->&lt;<t->int</t-> <p->n</p->&gt; <t->int</t-> <f->return_n</f->(){
@@ -89,19 +94,12 @@
     </div>
     <label->Example 2</label->
     <div>
-        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->t</t-> <f->return_0</f->(){
-            <w->return</w-> <k->0</k->;
-        }
-        <w->template</w->&lt;<t->int</t-> <p->n</p->, <w->type</w-> <t->t</t->&gt; <t->t</t-> <f->mult_by_n</f->(<t->t</t-> <p->arg</p->){
+        <w->template</w->&lt;<t->int</t-> <p->n</p->, <w->type</w-> <t->t</t->&gt; <t->t</t-> <f->mult_by_n</f->(<t->t</t->? <p->arg</p->){
             <w->return</w-> arg <f->*</f-> <k->n</k->;
         }
 
-
         <t->void</t-> <f->main</f->(){
-            <c->auto var1 = return_0();</c->              <ce->// Error, type t cannot be deduced</ce->
-            <t->auto</t-> var2 = <f->return_0</f->&lt;<t->double</t->&gt;();      <c->// Ok, type t specified as double</c->
-
-            <c->auto var3 = mult_by_n&lt;5&gt;(2);</c->         <ce->// Error, value template parameter present. All arguments must be specified</ce->
+            <c->//auto var3 = mult_by_n&lt;5&gt;(2);</c->       <ce->// Error, n cannot be deduced. All arguments must be specified</ce->
             <t->auto</t-> var3 = <f->mult_by_n</f->&lt;<k->5</k->, <t->ulong</t->&gt;(<k->2</k->);  <c->// Ok, value n specified as 5, type t specified as ulong</c->
         }
     </div>
@@ -138,10 +136,10 @@
 <example->
     <label->Example</label->
     <div>
-        <w->template</w->&lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->...&gt; <t->str</t-> <f->to_str</f->(<t->t</t-> <p->arg</p->, <t->u</t-> <p->args</p->...) {
+        <w->template</w->&lt;<w->type</w-> <t->t</t->, <w->type</w-> <t->u</t->...&gt; <t->str</t-> <f->to_str</f->(<t->t</t->? <p->arg</p->, <t->u</t->? <p->args</p->...) {
             <w->return</w-> <t->str</t->(arg) + <f->to_str</f->(args);
         }
-        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->str</t-> <f->to_str</f->(<t->t</t-> <p->arg</p->) {
+        <w->template</w->&lt;<w->type</w-> <t->t</t->&gt; <t->str</t-> <f->to_str</f->(<t->t</t->? <p->arg</p->) {
             <w->return</w-> <t->str</t->(a);
         }
 
@@ -172,7 +170,7 @@
 <!--------------------------------------------------------------------->
 <h1 id="abbreviated-template-syntax"></h1>
 <p>
-
+    //TODO
 </p>
 
 
@@ -196,13 +194,9 @@
 <!--------------------------------------------------------------------->
 <h1 id="multi-argument-type-deduction"></h1>
 <p>
-    When values of different primitive types are used with <a href="#standard-operators">standard operators</a> which require values of the same type, implicit conversions are performed in orer to avoid data loss.<br>
-    Which values are converted depends on the rank of their type.<br>
-    All the types with low rank are converted to the type of highest rank.
-</p>
-<p>
-    The only exceptions are the bitwise OR, XOR and AND, where no implicit conversions are performed and the result has the same type of the first operand.<br>
-    In assignment operators, the result is converted back to the type of the first operand.
+    When a type template parameter has to be deduced from multiple routine arguments of different types,
+    the primitive type with rank the highest rank between the types of all the significant arguments is selected in order to avoid data losses.<br>
+    Significant arguments with lower rank are converted to the selected rank through implicit conversions.
 </p>
 <div class="table-container"><table>
     <tr>
@@ -210,31 +204,75 @@
         <th>Rank</th>
     </tr>
     <tr>
-        <td class="center"><code><t->bool</t-></code></td>
+        <td class="center"><code><t->bool</t-></code>, <even-elm-><code><t->bool</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">1</td>
     </tr>
     <tr>
-        <td class="center"><code><t->int</t-></code></td>
+        <td class="center"><code><t->int</t-></code>, <even-elm-><code><t->int</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">2</td>
     </tr>
     <tr>
-        <td class="center"><code><t->uint</t-></code></td>
+        <td class="center"><code><t->uint</t-></code>, <even-elm-><code><t->uint</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">3</td>
     </tr>
     <tr>
-        <td class="center"><code><t->long</t-></code></td>
+        <td class="center"><code><t->long</t-></code>, <even-elm-><code><t->long</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">4</td>
     </tr>
     <tr>
-        <td class="center"><code><t->ulong</t-></code></td>
+        <td class="center"><code><t->ulong</t-></code>, <even-elm-><code><t->ulong</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">5</td>
     </tr>
     <tr>
-        <td class="center"><code><t->float</t-></code></td>
+        <td class="center"><code><t->float</t-></code>, <even-elm-><code><t->float</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">6</td>
     </tr>
     <tr>
-        <td class="center"><code><t->double</t-></code></td>
+        <td class="center"><code><t->double</t-></code>, <even-elm-><code><t->double</t-></code> <code><w->enum</w-></code></even-elm-></td>
         <td class="center">7</td>
     </tr>
 </table></div>
+<example->
+    <label->Example 1</label->
+    <div>
+        <t->t</t-> <f->add</f->(<t->t</t->? <p->a</p->, <t->t</t->? <p->b</p->) {
+            <w->return</w-> a <f->+</f-> b;
+        }
+
+        <t->void</t-> <f->main</f->(){
+            <f->add</f->( <k->1</k->, <k->0.2</k->);  <c->// Ok, t deduced as double</c->
+            <f->add</f->(<k->-5</k->, <k->5</k->  );  <c->// Ok, t deduced as ulong</c->
+        }
+    </div>
+</example->
+<split-example-container->
+    <split-example-container-left->
+        <example->
+            <label->Example 2</label->
+            <div>
+                <w->import</w-> <s->&lt;io&gt;</s->;
+
+                <t->void</t-> <f->print_selected_type</f->(<t->t</t->? <p->args</p->...) {
+                    io.<f->print</f->(<t->t</t-> <f->+</f-> <s->"\n"</s->);
+                }
+
+                <t->void</t-> <f->main</f->(){
+                    <f->print_selected_type</f->(<k->5</k->, <t->float</t->(<k->0.5</k->), <k->-99</k->);
+                    <f->print_selected_type</f->(<k->-1</k->, <k->+1</k->);
+                    <f->print_selected_type</f->(<w->enum</w->:<t->int</t->{ <k->a</k->, <k->b</k-> }.<k->b</k->, <w->enum</w->:<t->bool</t->{ <k->a</k-> = <k->true</k->, <k->b</k-> = <k->false</k-> }.<k->a</k->);
+                }
+            </div>
+        </example->
+    </split-example-container-left->
+    <split-example-container-right->
+        <example->
+            <label->Output</label->
+            <div>
+                float
+                ulong
+                int
+                <cursor-></cursor->
+            </div>
+        </example->
+    </split-example-container-right->
+</split-example-container->
