@@ -43,7 +43,7 @@ var setup_syntax = {
                     else {
                         tds[l].style.width = `${ min_w }px`;
                         let ratio = max[l] / setup_syntax.min_w;
-                        tds[l].style.transform   = `scaleX(${ ratio })`;
+                        tds[l].style.transform   = `scaleX(${ ratio + 2 * (1 / setup_syntax.min_w) })`; // Add an extra pixel on each side to connect the arrows seamlessly
                         tds[l].style.marginLeft  = `${ (ratio - 1) / 2 * min_w }px`;
                         tds[l].style.marginRight = `${ (ratio - 1) / 2 * min_w }px`;
                     }
@@ -95,7 +95,7 @@ var setup_syntax = {
                         if(prev) {
                             if(prev.dataset.arrows && /\b(tb|rb|bl)\b/.test(prev.dataset.arrows)) {
                                 prev.dataset.arrows += " connect-b";
-                                c[i].dataset.arrows  += " connect-t";
+                                c[i].dataset.arrows += " connect-t";
                             }
                         }
                     }
@@ -114,15 +114,15 @@ var setup_syntax = {
                             let prev_high = /\b(lr|tr|rb)-high\b/    .test(prev.dataset.arrows);
                             if(cur_low && prev_low) {
                                 prev.dataset.arrows += " connect-r-low";
-                                c[i].dataset.arrows  += " connect-l-low";
+                                c[i].dataset.arrows += " connect-l-low";
                             }
                             if(cur_std && prev_std) {
                                 prev.dataset.arrows += " connect-r";
-                                c[i].dataset.arrows  += " connect-l";
+                                c[i].dataset.arrows += " connect-l";
                             }
                             if(cur_high && prev_high) {
                                 prev.dataset.arrows += " connect-r-high";
-                                c[i].dataset.arrows  += " connect-l-high";
+                                c[i].dataset.arrows += " connect-l-high";
                             }
                         }
                     }
